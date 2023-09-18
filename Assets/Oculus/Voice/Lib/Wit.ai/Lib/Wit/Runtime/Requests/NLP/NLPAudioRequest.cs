@@ -6,6 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+using System;
 using Meta.WitAi.Json;
 using UnityEngine.Events;
 
@@ -103,7 +104,7 @@ namespace Meta.Voice
             {
                 HandlePartialNlpResponse(responseData);
             }
-
+            
             // Error returned
             if (!string.IsNullOrEmpty(error))
             {

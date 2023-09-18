@@ -19,6 +19,8 @@
  */
 
 using Meta.WitAi;
+using Meta.WitAi.Json;
+using Meta.WitAi.Requests;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -67,8 +69,8 @@ namespace Oculus.VoiceSDK.UX
                     service.VoiceEvents.OnStartListening.AddListener(OnStartListening);
                     service.VoiceEvents.OnPartialTranscription.AddListener(OnTranscriptionChange);
                     service.VoiceEvents.OnFullTranscription.AddListener(OnTranscriptionChange);
-                    service.VoiceEvents.OnCanceled.AddListener(OnCanceled);
                     service.VoiceEvents.OnError.AddListener(OnError);
+                    service.VoiceEvents.OnComplete.AddListener(OnComplete);
                 }
             }
         }
@@ -82,8 +84,8 @@ namespace Oculus.VoiceSDK.UX
                     service.VoiceEvents.OnStartListening.RemoveListener(OnStartListening);
                     service.VoiceEvents.OnPartialTranscription.RemoveListener(OnTranscriptionChange);
                     service.VoiceEvents.OnFullTranscription.RemoveListener(OnTranscriptionChange);
-                    service.VoiceEvents.OnCanceled.RemoveListener(OnCanceled);
                     service.VoiceEvents.OnError.RemoveListener(OnError);
+                    service.VoiceEvents.OnComplete.RemoveListener(OnComplete);
                 }
             }
         }
@@ -109,15 +111,18 @@ namespace Oculus.VoiceSDK.UX
         {
             SetText(text, _transcriptionColor);
         }
-        // Reset text if canceled
-        private void OnCanceled(string reason)
-        {
-            SetText(_promptDefault, _promptColor);
-        }
         // Apply error
         private void OnError(string status, string error)
         {
             SetText($"[{status}] {error}", _errorColor);
+        }
+        // If no text came through, show prompt
+        private void OnComplete(VoiceServiceRequest request)
+        {
+            if (string.Equals(_label.text, _promptListening))
+            {
+                SetText(_promptDefault, _promptColor);
+            }
         }
 
         // Refresh text

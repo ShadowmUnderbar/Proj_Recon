@@ -11,8 +11,8 @@ namespace Meta.WitAi
     public static class WitConstants
     {
         // Wit service version info
-        public const string API_VERSION = "20230503";
-        public const string SDK_VERSION = "55.0.0";
+        public const string API_VERSION = "20230513";
+        public const string SDK_VERSION = "56.0.0";
         public const string CLIENT_NAME = "wit-unity";
 
         // Wit service endpoint info
@@ -23,7 +23,6 @@ namespace Meta.WitAi
         public const string HEADER_REQUEST_ID = "X-Wit-Client-Request-Id";
         public const string HEADER_AUTH = "Authorization";
         public const string HEADER_USERAGENT = "User-Agent";
-        public const string HEADER_USERAGENT_PREFIX = "voice-sdk-55.0.0.126.272,";
         public const string HEADER_USERAGENT_CONFID_MISSING = "not-yet-configured";
         public const string HEADER_POST_CONTENT = "Content-Type";
         public const string HEADER_GET_CONTENT = "Accept";
