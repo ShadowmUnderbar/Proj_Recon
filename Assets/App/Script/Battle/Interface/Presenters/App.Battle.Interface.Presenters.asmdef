@@ -2,9 +2,7 @@
     "name": "App.Action.Interface.Presenters",
     "rootNamespace": "",
     "references": [
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
-        "GUID:d0c86628bddfa0746bd1e6557e0a8e17",
-        "GUID:083ea2241df4d0b4d8dc260ff3f5405d"
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
