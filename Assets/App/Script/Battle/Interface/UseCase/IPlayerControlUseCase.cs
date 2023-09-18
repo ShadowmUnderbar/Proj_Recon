@@ -6,5 +6,5 @@ public interface IPlayerControlUseCase
 {
     void Move(Vector2 vector2);
 
-    void Rotate(Vector2 vector2);
+    void Aim(Vector2 angleV2);
 }
