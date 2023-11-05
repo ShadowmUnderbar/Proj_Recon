@@ -33,7 +33,7 @@ namespace App.Common.UseCase
 
         public void Tick()
         {
-            throw new System.NotImplementedException();
+            
         }
     }
 }

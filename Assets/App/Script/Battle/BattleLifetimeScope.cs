@@ -17,8 +17,6 @@ namespace App.Battle
 
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.Register<BattleLifetimeScope>(Lifetime.Singleton);
-
             /*
             builder.RegisterComponentOnNewGameObject<TStore>(Lifetime.Singleton)
                 .UnderTransform(transform)

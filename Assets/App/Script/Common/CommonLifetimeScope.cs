@@ -9,9 +9,6 @@ namespace App.Common
     {
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.Register<CommonLifetimeScope>(Lifetime.Singleton);
-
-
             builder.RegisterEntryPoint<GameInputUsecase>().As<IGameInputUsecase>();
 #if OCULUS
             builder.RegisterEntryPoint<OVRInputUseCase>().As<IOVRInputUseCase>();
