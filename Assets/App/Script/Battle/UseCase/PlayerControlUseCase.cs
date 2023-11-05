@@ -1,27 +1,46 @@
-using System.Collections;
-using System.Collections.Generic;
+using App.Battle.Interface.UseCase;
+using App.Common.Interface.UseCase;
+using App.Battle.Interface.Presenters;
 using UnityEngine;
 using VContainer;
+using VContainer.Unity;
 
-public class PlayerControlUseCase : IPlayerControlUseCase
+namespace App.Battle.UseCase
 {
-    private IPlayerControlPresenter _playerControlPresenter;
-
-    [Inject]
-    public PlayerControlUseCase(
-        IPlayerControlPresenter playerControlPresenter
-    )
+    public class PlayerControlUseCase : IPlayerControlUseCase, ITickable
     {
-        _playerControlPresenter = playerControlPresenter;
-    }
+        private IPlayerControlPresenter _playerControlPresenter;
+        private IGameInputUsecase _gameInputUsecase;
 
-    public void Move(Vector2 moveV2)
-    {
-        _playerControlPresenter.Move(moveV2);
-    }
+        [Inject]
+        public PlayerControlUseCase(
+            IPlayerControlPresenter playerControlPresenter,
+            IGameInputUsecase gameInputUsecase
+        )
+        {
+            _playerControlPresenter = playerControlPresenter;
+            _gameInputUsecase = gameInputUsecase;
+        }
 
-    public void Aim(Vector2 angleV2)
-    {
-        _playerControlPresenter.Move(angleV2);
+        public void Tick()
+        {
+            Move(_gameInputUsecase.V2LeftAxis);
+        }
+
+        public void Move(Vector2 moveV2)
+        {
+            Debug.Log(moveV2);
+            //_playerControlPresenter.Move(moveV2);
+        }
+
+        public void AimLeft(Vector2 position)
+        {
+            _playerControlPresenter.AimLeft(position);
+        }
+
+        public void AimRight(Vector2 position)
+        {
+            _playerControlPresenter.AimRight(position);
+        }
     }
 }

@@ -1,12 +1,8 @@
 {
-    "name": "App.Battle.UseCase",
+    "name": "App.Common.Interface.Views",
     "rootNamespace": "",
     "references": [
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
-        "GUID:6f631004abb19db4599891713eb8f396",
-        "GUID:7040c93f6035f5749888e6fdf5ef28f8",
-        "GUID:9f1411a27be0fcc48b9b9364833a1181",
-        "GUID:092f31aac4d35a5479620d162bc201d6"
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

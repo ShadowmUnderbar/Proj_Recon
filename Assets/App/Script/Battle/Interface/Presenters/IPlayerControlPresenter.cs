@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IPlayerControlPresenter
+namespace App.Battle.Interface.Presenters
 {
-    void Move(Vector2 moveV2);
+    public interface IPlayerControlPresenter
+    {
+        void Move(Vector2 moveV2);
 
-    void Aim(Vector2 angleV2);
-
+        void AimLeft(Vector2 position);
+        void AimRight(Vector2 position);
+    }
 }

@@ -2,7 +2,14 @@
     "name": "App.Battle",
     "rootNamespace": "",
     "references": [
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:db143df6c4e78cb43868695130300696",
+        "GUID:9f1411a27be0fcc48b9b9364833a1181",
+        "GUID:092f31aac4d35a5479620d162bc201d6",
+        "GUID:1a176b07206149746886baa387b995c7",
+        "GUID:083ea2241df4d0b4d8dc260ff3f5405d",
+        "GUID:95ea796625faff84fa3320da3c13aaaa",
+        "GUID:de690dff2a6cfb84da0001311fdf07cf"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
