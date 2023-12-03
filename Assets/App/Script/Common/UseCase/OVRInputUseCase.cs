@@ -21,6 +21,8 @@ namespace App.Common.UseCase
         public void Tick()
         {
 #if OCULUS
+            OVRInput.Update();
+            OVRInput.FixedUpdate();
             _gameInputUsecase.IsRightTrigger = OVRInput.Get(OVRInput.RawButton.RIndexTrigger);
             _gameInputUsecase.IsLeftTrigger = OVRInput.Get(OVRInput.RawButton.LIndexTrigger);
             _gameInputUsecase.IsRightGrip = OVRInput.Get(OVRInput.RawButton.RHandTrigger);
