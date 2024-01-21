@@ -261,6 +261,7 @@ MonoBehaviour:
   - {fileID: 3977644980086350615}
   - {fileID: -4442199518795880770}
   - {fileID: 2950519353257073392}
+  - {fileID: -2365109479202476668}
   - {fileID: -6561879405809474290}
   - {fileID: -9151085579263302658}
   - {fileID: -8882359754259550658}
@@ -353,6 +354,26 @@ MonoBehaviour:
     manifestName: cambria
     enabled: 1
   forceRemoveInternetPermission: 1
+--- !u!114 &-2365109479202476668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4710975c7840e7d499bbb3757c22b0a5, type: 3}
+  m_Name: MetaXRSubsampledLayout Standalone
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: Meta XR Subsampled Layout
+  version: 0.0.1
+  featureIdInternal: com.meta.openxr.feature.subsampledLayout
+  openxrExtensionStrings: XR_META_vulkan_swapchain_create_info
+  company: Meta
+  priority: 0
+  required: 0
 --- !u!114 &-2295942106323454219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -606,6 +627,26 @@ MonoBehaviour:
   company: Meta
   priority: 0
   required: 0
+--- !u!114 &3423271104440537225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4710975c7840e7d499bbb3757c22b0a5, type: 3}
+  m_Name: MetaXRSubsampledLayout Android
+  m_EditorClassIdentifier: 
+  m_enabled: 0
+  nameUi: Meta XR Subsampled Layout
+  version: 0.0.1
+  featureIdInternal: com.meta.openxr.feature.subsampledLayout
+  openxrExtensionStrings: XR_META_vulkan_swapchain_create_info
+  company: Meta
+  priority: 0
+  required: 0
 --- !u!114 &3977644980086350615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -844,6 +885,7 @@ MonoBehaviour:
   - {fileID: 7278609338695393055}
   - {fileID: 5885765577658179042}
   - {fileID: -8858439001033856544}
+  - {fileID: 3423271104440537225}
   - {fileID: -3364928301418400562}
   - {fileID: 8621033736651512316}
   - {fileID: -6722608222233017268}
