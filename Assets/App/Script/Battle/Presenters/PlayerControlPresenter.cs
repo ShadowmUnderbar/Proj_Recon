@@ -10,15 +10,18 @@ namespace App.Battle.Presenters
     {
         private readonly IPlayerMove _playerMove;
         private readonly IPlayerAim _playerAim;
+        private readonly IPlayerShot _playerShot;
 
         [Inject]
         PlayerControlPresenter(
             IPlayerMove playerMove,
-            IPlayerAim playerAim
+            IPlayerAim playerAim,
+            IPlayerShot playerShot
         )
         {
             _playerMove = playerMove;
             _playerAim = playerAim;
+            _playerShot = playerShot;
         }
 
         public void Move(Vector2 moveV2)
@@ -26,12 +29,14 @@ namespace App.Battle.Presenters
             _playerMove.Move(moveV2);
         }
 
-        public void AimLeft(Vector2 angleV2)
+        public void ShotLeft(Vector3 pos)
         {
+            _playerShot.ShotLeft(pos);
         }
 
-        public void AimRight(Vector2 angleV2)
+        public void ShotRight(Vector3 pos)
         {
+            _playerShot.ShotRight(pos);
         }
     }
 }

@@ -12,10 +12,6 @@ public class HandRayView : MonoBehaviour , IHandRayView
 
     private float _maxRayRange = 50f;
 
-    private void Awake()
-    {
-        _lineRenderer.SetPosition(0, transform.position);
-    }
 
     public void Close()
     {
@@ -37,10 +33,8 @@ public class HandRayView : MonoBehaviour , IHandRayView
 
         var ray = new Ray(transform.position, transform.forward);
 
-        if (Physics.Raycast(ray, out var hit, _maxRayRange,_layerMask))
-        {
-            _lineRenderer.SetPosition(1, hit.point);
-        }
+        _lineRenderer.SetPosition(0, transform.position);
+
 
         _lineRenderer.SetPosition(1, transform.forward * _maxRayRange);
     }

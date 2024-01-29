@@ -14,6 +14,8 @@ namespace App.Battle
         private PlayerAim _playerAim;
         [SerializeField]
         private PlayerMove _playerMove;
+        [SerializeField]
+        private PlayerShot _playerShot;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -30,6 +32,7 @@ namespace App.Battle
 
             builder.RegisterComponent(_playerAim).AsImplementedInterfaces().As<IPlayerAim>();
             builder.RegisterComponent(_playerMove).AsImplementedInterfaces().As<IPlayerMove>();
+            builder.RegisterComponent(_playerShot).AsImplementedInterfaces().As<IPlayerShot>();
 
         }
     }
