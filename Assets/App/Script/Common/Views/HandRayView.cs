@@ -36,6 +36,6 @@ public class HandRayView : MonoBehaviour , IHandRayView
         _lineRenderer.SetPosition(0, transform.position);
 
 
-        _lineRenderer.SetPosition(1, transform.forward * _maxRayRange);
+        _lineRenderer.SetPosition(1, transform.position + transform.forward * _maxRayRange);
     }
 }
