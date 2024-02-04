@@ -25,11 +25,17 @@ namespace App.Battle.UseCase
         public void Tick()
         {
             Move(_gameInputUsecase.V2LeftAxis);
+            Aim();
         }
 
-        public void Move(Vector2 moveV2)
+        private void Move(Vector2 moveV2)
         {
             _playerControlPresenter.Move(moveV2);
+        }
+
+        private void Aim()
+        {
+            _playerControlPresenter.Aim();
         }
     }
 }

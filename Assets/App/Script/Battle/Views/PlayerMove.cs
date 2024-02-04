@@ -1,11 +1,15 @@
+using App.Battle.Interface.View;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMove : MonoBehaviour, IPlayerMove
+namespace App.Battle.Views
 {
-    public void Move(Vector2 move)
+    public class PlayerMove : MonoBehaviour, IPlayerMove
     {
-        transform.position += new Vector3(move.x,0, move.y);
+        public void Move(Vector2 move)
+        {
+            transform.position += new Vector3(move.x, 0, move.y);
+        }
     }
 }

@@ -1,11 +1,15 @@
+using App.Battle.Interface.View;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAim : MonoBehaviour, IPlayerAim
+namespace App.Battle.Views
 {
-    public void Aim(Vector2 rotate)
+    public class PlayerAim : MonoBehaviour, IPlayerAim
     {
-        
+        public void Aim(Vector2 rotate)
+        {
+
+        }
     }
 }

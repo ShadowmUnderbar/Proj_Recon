@@ -7,6 +7,7 @@ namespace App.Battle.Interface.Presenters
     public interface IPlayerControlPresenter
     {
         void Move(Vector2 moveV2);
+        void Aim();
 
         void ShotLeft(Vector3 pos);
         void ShotRight(Vector3 pos);

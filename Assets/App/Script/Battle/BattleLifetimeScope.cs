@@ -5,6 +5,8 @@ using App.Battle.UseCase;
 using App.Battle.Interface.UseCase;
 using App.Battle.Interface.Presenters;
 using App.Battle.Presenters;
+using App.Battle.Views;
+using App.Battle.Interface.View;
 
 namespace App.Battle
 {
@@ -16,6 +18,8 @@ namespace App.Battle
         private PlayerMove _playerMove;
         [SerializeField]
         private PlayerShot _playerShot;
+        [SerializeField]
+        private PlayerTopDownAimStoreView _tpoDownAimStoreView;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -34,6 +38,7 @@ namespace App.Battle
             builder.RegisterComponent(_playerMove).AsImplementedInterfaces().As<IPlayerMove>();
             builder.RegisterComponent(_playerShot).AsImplementedInterfaces().As<IPlayerShot>();
 
+            builder.RegisterComponent(_tpoDownAimStoreView).AsImplementedInterfaces().As<IPlayerTopDownAimStoreView>();
         }
     }
 }

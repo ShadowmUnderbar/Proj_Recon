@@ -1,27 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using App.Battle.Interface.Presenters;
 using VContainer;
+using App.Battle.Interface.View;
 
 namespace App.Battle.Presenters
 {
     public class PlayerControlPresenter : IPlayerControlPresenter
     {
         private readonly IPlayerMove _playerMove;
-        private readonly IPlayerAim _playerAim;
         private readonly IPlayerShot _playerShot;
+        private readonly IPlayerTopDownAimStoreView _playerTopDownAimStoreView;
 
         [Inject]
         PlayerControlPresenter(
             IPlayerMove playerMove,
-            IPlayerAim playerAim,
-            IPlayerShot playerShot
+            IPlayerShot playerShot,
+            IPlayerTopDownAimStoreView playerTopDownAimStoreView
         )
         {
             _playerMove = playerMove;
-            _playerAim = playerAim;
             _playerShot = playerShot;
+            _playerTopDownAimStoreView = playerTopDownAimStoreView;
         }
 
         public void Move(Vector2 moveV2)
@@ -37,6 +36,11 @@ namespace App.Battle.Presenters
         public void ShotRight(Vector3 pos)
         {
             _playerShot.ShotRight(pos);
+        }
+
+        public void Aim()
+        {
+            _playerTopDownAimStoreView.Aim();
         }
     }
 }

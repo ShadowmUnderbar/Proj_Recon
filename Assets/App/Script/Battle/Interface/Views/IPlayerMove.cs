@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IPlayerMove
+namespace App.Battle.Interface.View
 {
-    void Move(Vector2 move);
+    public interface IPlayerMove
+    {
+        void Move(Vector2 move);
+    }
 }

@@ -1,22 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
+using App.Battle.Interface.View;
 using UnityEngine;
 
-public class PlayerShot : MonoBehaviour, IPlayerShot
+namespace App.Battle.Views
 {
-    [SerializeField]
-    private GameObject _bullet;
-
-
-    public void ShotLeft(Vector3 pos)
+    public class PlayerShot : MonoBehaviour, IPlayerShot
     {
-        var inst = Instantiate(_bullet);
-        inst.transform.LookAt(pos);
-    }
+        [SerializeField]
+        private GameObject _bullet;
 
-    public void ShotRight(Vector3 pos)
-    {
-        var inst = Instantiate(_bullet);
-        inst.transform.LookAt(pos);
+
+        public void ShotLeft(Vector3 pos)
+        {
+            var inst = Instantiate(_bullet);
+            inst.transform.LookAt(pos);
+        }
+
+        public void ShotRight(Vector3 pos)
+        {
+            var inst = Instantiate(_bullet);
+            inst.transform.LookAt(pos);
+        }
     }
 }
