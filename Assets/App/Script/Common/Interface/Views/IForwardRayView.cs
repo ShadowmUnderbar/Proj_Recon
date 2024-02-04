@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IHandRayView
+public interface IForwardRayView
 {
     void View();
     void Close();

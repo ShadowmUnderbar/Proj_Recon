@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
-public class HandRayView : MonoBehaviour , IHandRayView
+public class ForwardRayView: MonoBehaviour , IForwardRayView
 {
     [SerializeField]
     private LineRenderer _lineRenderer;
