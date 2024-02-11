@@ -8,8 +8,6 @@ namespace App.Battle.Interface.Presenters
     {
         void Move(Vector2 moveV2);
         void Aim();
-
-        void ShotLeft(Vector3 pos);
-        void ShotRight(Vector3 pos);
+        void Shot(bool IsLeft);
     }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace App.Battle.Interface.View
+namespace App.Battle.Interface.Views
 {
     public interface IPlayerMove
     {

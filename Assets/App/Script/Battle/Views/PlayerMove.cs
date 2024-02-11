@@ -1,4 +1,4 @@
-using App.Battle.Interface.View;
+using App.Battle.Interface.Views;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;

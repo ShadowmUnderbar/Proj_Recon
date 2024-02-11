@@ -1,4 +1,4 @@
-﻿using App.Battle.Interface.View;
+﻿using App.Battle.Interface.Views;
 using UnityEngine;
 
 namespace App.Battle.Views
@@ -9,6 +9,8 @@ namespace App.Battle.Views
         private PlayerTopDownAimView[] _playerTopDownAimViews;
         [SerializeField]
         private PlayerAimMuzzleView[] _playerAimMuzzleView;
+        [SerializeField]
+        private PlayerShot[] _playerShotView;
 
         public void Aim()
         {
@@ -18,10 +20,18 @@ namespace App.Battle.Views
             }
         }
 
-
         public Vector3 GetAimPosition(bool isLeft)
         {
             return _playerTopDownAimViews[isLeft ? 0 : 1].GetAimPosition();
+        }
+
+        public bool IsFocus(bool isLeft)
+        {
+            return _playerTopDownAimViews[isLeft ? 0 : 1].IsFocus();
+        }
+        public void Shot(bool isLeft)
+        {
+            _playerShotView[isLeft ? 0 : 1].SpawnBullet();
         }
     }
 }

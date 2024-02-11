@@ -1,24 +1,32 @@
-using App.Battle.Interface.View;
+using App.Battle.Interface.Views;
+using System.Collections.Generic;
+using App.Framework.Utilities;
 using UnityEngine;
+using VContainer;
 
 namespace App.Battle.Views
 {
     public class PlayerShot : MonoBehaviour, IPlayerShot
     {
-        [SerializeField]
-        private GameObject _bullet;
 
+        private ISimpleObjectFactory<ITestBullet> _bulletFactory;
+        private readonly Dictionary<float, ITestBullet> _bulletViews = new();
 
-        public void ShotLeft(Vector3 pos)
+        [Inject]
+        private void Construct(
+            ISimpleObjectFactory<ITestBullet> bulletFactory
+        )
         {
-            var inst = Instantiate(_bullet);
-            inst.transform.LookAt(pos);
+            _bulletFactory = bulletFactory;
         }
 
-        public void ShotRight(Vector3 pos)
+        public void SpawnBullet()
         {
-            var inst = Instantiate(_bullet);
-            inst.transform.LookAt(pos);
+            var bullet = _bulletFactory.Instantiate(transform);
+
+            _bulletViews.Add(Time.time, bullet);
+
+            bullet.Spawn(new (transform.position, transform.rotation));
         }
     }
 }

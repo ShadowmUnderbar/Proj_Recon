@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace App.Battle.Interface.View
+namespace App.Battle.Interface.Views
 {
     public interface IPlayerAimMuzzleView
     {

@@ -1,4 +1,4 @@
-using App.Battle.Interface.View;
+using App.Battle.Interface.Views;
 using UnityEngine;
 
 namespace App.Battle.Views
@@ -15,10 +15,15 @@ namespace App.Battle.Views
         {
             if (!Physics.SphereCast(transform.position, RayRadius, transform.forward, out var hit))
             {
-                return default;
+                return transform.forward * 50f;
             }
 
             return hit.point;
+        }
+
+        public bool IsFocus()
+        {
+            return false;
         }
     }
 }
