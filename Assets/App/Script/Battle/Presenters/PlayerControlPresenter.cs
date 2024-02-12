@@ -7,32 +7,29 @@ namespace App.Battle.Presenters
 {
     public class PlayerControlPresenter : IPlayerControlPresenter
     {
-        private readonly IPlayerMoveView _playerMoveView;
-        private readonly IPlayerTopDownAimStoreView _playerTopDownAimStoreView;
+        private readonly IBattlePlayerView _battlePlayerView;
 
         [Inject]
         public PlayerControlPresenter(
-            IPlayerMoveView playerMoveView,
-            IPlayerTopDownAimStoreView playerTopDownAimStoreView
+            IBattlePlayerView battlePlayerView
         )
         {
-            _playerMoveView = playerMoveView;
-            _playerTopDownAimStoreView = playerTopDownAimStoreView;
+            _battlePlayerView = battlePlayerView;
         }
 
         public void Move(Vector2 moveV2)
         {
-            _playerMoveView.Move(moveV2);
+            _battlePlayerView.Move(moveV2);
         }
 
         public void Shot(bool IsLeft)
         {
-            _playerTopDownAimStoreView.Shot(IsLeft);
+            _battlePlayerView.Shot(IsLeft);
         }
 
         public void Aim()
         {
-            _playerTopDownAimStoreView.Aim();
+            _battlePlayerView.Aim();
         }
     }
 }

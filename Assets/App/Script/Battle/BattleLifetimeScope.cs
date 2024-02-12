@@ -14,9 +14,7 @@ namespace App.Battle
     public class BattleLifetimeScope : LifetimeScope
     {
         [SerializeField]
-        private PlayerMoveView _playerMoveView;
-        [SerializeField]
-        private PlayerTopDownAimStoreView _tpoDownAimStoreView;
+        private BattlePlayerView _playerView;
         [SerializeField]
         private TestBulletView _testBulletView;
         [SerializeField]
@@ -28,22 +26,13 @@ namespace App.Battle
 
         protected override void Configure(IContainerBuilder builder)
         {
-            /*
-            builder.RegisterComponentOnNewGameObject<TStore>(Lifetime.Singleton)
-                .UnderTransform(transform)
-                .AsImplementedInterfaces()
-                .As<TInterface>();
-             */
-
             builder.RegisterEntryPoint<PlayerMoveUseCase>().As<IPlayerMoveUseCase>();
             builder.RegisterEntryPoint<PlayerAimUseCase>().As<IPlayerAimUseCase>();
             builder.RegisterEntryPoint<PlayerShotUseCase>().As<IPlayerShotUseCase>();
 
             builder.Register<PlayerControlPresenter>(Lifetime.Singleton).AsImplementedInterfaces().As<IPlayerControlPresenter>();
 
-            builder.RegisterComponent(_playerMoveView).AsImplementedInterfaces().As<IPlayerMoveView>();
-
-            builder.RegisterComponentInNewPrefab(_tpoDownAimStoreView, Lifetime.Singleton).UnderTransform(transform).AsImplementedInterfaces().As<IPlayerTopDownAimStoreView>();
+            builder.RegisterComponentInNewPrefab(_playerView, Lifetime.Singleton).UnderTransform(transform).AsImplementedInterfaces().As<IBattlePlayerView>();
 
             builder.Register<SimpleObjectFactory<IBulletView, TestBulletView>>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<IBulletView>>()

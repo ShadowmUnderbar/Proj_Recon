@@ -23,7 +23,7 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            _playerControlPresenter.Aim();
+            _playerControlPresenter.Move(_gameInputUsecase.V2LeftAxis);
         }
     }
 }

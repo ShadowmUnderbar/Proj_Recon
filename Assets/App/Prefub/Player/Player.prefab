@@ -402,6 +402,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 378238409096205584}
+  - component: {fileID: 5135707317468556012}
   - component: {fileID: 2787126200944847852}
   - component: {fileID: 3776856170843482917}
   m_Layer: 0
@@ -420,13 +421,33 @@ Transform:
   m_GameObject: {fileID: 7840359772208140253}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -55.585003, y: 0, z: -85.58933}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6843181286471717607}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5135707317468556012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7840359772208140253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d05e4abde749ae4abd49ece2af93035, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerMoveView: {fileID: 2787126200944847852}
+  _playerTopDownAimStoreView: {fileID: 3776856170843482917}
+  _controllers:
+  - {fileID: 3333991633601367814}
+  - {fileID: 6618282900726313118}
+  _muzzles:
+  - {fileID: 7752886480679326358}
+  - {fileID: 5086770727077576014}
 --- !u!114 &2787126200944847852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,12 +472,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0d61414200096147924258419e65354, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _controllers:
-  - {fileID: 3333991633601367814}
-  - {fileID: 6618282900726313118}
-  _muzzles:
-  - {fileID: 7752886480679326358}
-  - {fileID: 5086770727077576014}
 --- !u!1 &8529714038337989525
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,39 +10,18 @@ namespace App.Battle.UseCase
     public class PlayerAimUseCase: IPlayerAimUseCase, ITickable
     {
         private IPlayerControlPresenter _playerControlPresenter;
-        private IGameInputUsecase _gameInputUsecase;
 
         [Inject]
         public PlayerAimUseCase(
-            IPlayerControlPresenter playerControlPresenter,
-            IGameInputUsecase gameInputUsecase
+            IPlayerControlPresenter playerControlPresenter
         )
         {
             _playerControlPresenter = playerControlPresenter;
-            _gameInputUsecase = gameInputUsecase;
         }
 
         public void Tick()
         {
             _playerControlPresenter.Aim();
-            Move(_gameInputUsecase.V2LeftAxis);
-            Aim();
-            Shot();
-        }
-
-        private void Move(Vector2 moveV2)
-        {
-            _playerControlPresenter.Move(moveV2);
-        }
-
-        private void Aim()
-        {
-            _playerControlPresenter.Aim();
-        }
-
-        private void Shot()
-        {
-
         }
     }
 }

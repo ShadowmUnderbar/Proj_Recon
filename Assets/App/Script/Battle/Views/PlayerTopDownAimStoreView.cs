@@ -8,42 +8,22 @@ namespace App.Battle.Views
 {
     public class PlayerTopDownAimStoreView : MonoBehaviour , IPlayerTopDownAimStoreView
     {
-        [SerializeField]
-        private Transform[] _controllers;
-        [SerializeField]
-        private Transform[] _muzzles;
+        private List<IPlayerTopDownAimView> _topdownViews = new();
 
-        private ISimpleObjectFactory<IPlayerTopDownAimView> _topDownFactory;
-        private readonly List<IPlayerTopDownAimView> _topdownViews = new();
+        private List<IPlayerAimMuzzleView> _aimViews = new();
 
-        private ISimpleObjectFactory<IPlayerAimMuzzleView> _aimFactory;
-        private readonly List<IPlayerAimMuzzleView> _aimViews = new();
+        private List<IPlayerShotView> _shotViews = new();
 
-        private ISimpleObjectFactory<IPlayerShotView> _shotFactory;
-        private readonly List<IPlayerShotView> _shotViews = new();
 
-        [Inject]
-        public void Construct(
-            ISimpleObjectFactory<IPlayerTopDownAimView> topDownFactory,
-            ISimpleObjectFactory<IPlayerAimMuzzleView> aimFactory,
-            ISimpleObjectFactory<IPlayerShotView> shotFactory
+        public void Initialize(
+            List<IPlayerTopDownAimView> topDownFactory,
+            List<IPlayerAimMuzzleView> aimFactory,
+            List<IPlayerShotView> shotFactory
         )
         {
-            _topDownFactory = topDownFactory;
-            _aimFactory = aimFactory;
-            _shotFactory = shotFactory;
-
-            foreach(var view in _controllers)
-            {
-                _topdownViews.Add(_topDownFactory.Instantiate(view));
-            }
-
-            foreach(var view in _muzzles)
-            {
-                var aimView = _aimFactory.Instantiate(view);
-                _aimViews.Add(aimView);
-                _shotViews.Add(_shotFactory.Instantiate(aimView.Transform));
-            }
+            _topdownViews = topDownFactory;
+            _aimViews = aimFactory;
+            _shotViews = shotFactory;
         }
 
         public void Aim()
@@ -61,28 +41,16 @@ namespace App.Battle.Views
 
         public Vector3 GetAimPosition(bool isLeft)
         {
-            if (_topdownViews == null)
-            {
-                return default;
-            }
 
             return _topdownViews[isLeft ? 0 : 1].GetAimPosition();
         }
 
-        public bool IsFocus(bool isLeft)
+        public bool SetFocus(bool isLeft)
         {
-            if (_topdownViews == null)
-            {
-                return default;
-            }
             return _topdownViews[isLeft ? 0 : 1].IsFocus();
         }
         public void Shot(bool isLeft)
         {
-            if (_shotViews == null)
-            {
-                return;
-            }
             _shotViews[isLeft ? 0 : 1].SpawnBullet();
         }
     }
