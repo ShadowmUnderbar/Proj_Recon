@@ -23,7 +23,7 @@ namespace App.Battle.Views
 
         public void SpawnBullet()
         {
-            var bullet = _bulletFactory.Instantiate(transform);
+            var bullet = _bulletFactory.Instantiate(null);
 
             _bulletViews.Add(Time.time, bullet);
 

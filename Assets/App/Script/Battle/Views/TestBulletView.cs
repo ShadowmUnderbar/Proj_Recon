@@ -10,6 +10,7 @@ namespace App.Battle.Views
         public void Spawn(Pose pose)
         {
             transform.SetPositionAndRotation(pose.position, pose.rotation);
+            Destroy(gameObject, 5.0f);
         }
         private void Update()
         {
