@@ -6,18 +6,19 @@ using VContainer;
 
 namespace App.Battle.Views
 {
-    public class PlayerShot : MonoBehaviour, IPlayerShot
+    public class PlayerShotView : MonoBehaviour, IPlayerShotView
     {
 
-        private ISimpleObjectFactory<ITestBullet> _bulletFactory;
-        private readonly Dictionary<float, ITestBullet> _bulletViews = new();
+        private ISimpleObjectFactory<IBulletView> _bulletFactory;
+        private readonly Dictionary<float, IBulletView> _bulletViews = new();
 
         [Inject]
-        private void Construct(
-            ISimpleObjectFactory<ITestBullet> bulletFactory
+        public void Construct(
+            ISimpleObjectFactory<IBulletView> bulletFactory
         )
         {
             _bulletFactory = bulletFactory;
+            SpawnBullet();
         }
 
         public void SpawnBullet()

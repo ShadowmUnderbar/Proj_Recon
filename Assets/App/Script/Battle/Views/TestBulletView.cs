@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace App.Battle.Views
 {
-    public class TestBullet : MonoBehaviour ,ITestBullet
+    public class TestBulletView : MonoBehaviour , IBulletView
     {
         [SerializeField]
         private float _speed = 3f; 

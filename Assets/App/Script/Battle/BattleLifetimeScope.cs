@@ -14,11 +14,17 @@ namespace App.Battle
     public class BattleLifetimeScope : LifetimeScope
     {
         [SerializeField]
-        private PlayerMove _playerMove;
+        private PlayerMoveView _playerMoveView;
         [SerializeField]
         private PlayerTopDownAimStoreView _tpoDownAimStoreView;
         [SerializeField]
-        private TestBullet _testBullet;
+        private TestBulletView _testBulletView;
+        [SerializeField]
+        private PlayerShotView _playerShot;
+        [SerializeField]
+        private PlayerAimMuzzleView _playerAimMuzzleView;
+        [SerializeField]
+        private PlayerTopDownAimView _playerTopDownAimView;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -35,13 +41,25 @@ namespace App.Battle
 
             builder.Register<PlayerControlPresenter>(Lifetime.Singleton).AsImplementedInterfaces().As<IPlayerControlPresenter>();
 
-            builder.RegisterComponent(_playerMove).AsImplementedInterfaces().As<IPlayerMove>();
+            builder.RegisterComponent(_playerMoveView).AsImplementedInterfaces().As<IPlayerMoveView>();
 
-            builder.RegisterComponent(_tpoDownAimStoreView).AsImplementedInterfaces().As<IPlayerTopDownAimStoreView>();
+            builder.RegisterComponentInNewPrefab(_tpoDownAimStoreView, Lifetime.Singleton).UnderTransform(transform).AsImplementedInterfaces().As<IPlayerTopDownAimStoreView>();
 
-            builder.Register<SimpleObjectFactory<ITestBullet, TestBullet>>(Lifetime.Singleton)
-                .As<ISimpleObjectFactory<ITestBullet>>()
-                .WithParameter("prefab", _testBullet);
+            builder.Register<SimpleObjectFactory<IBulletView, TestBulletView>>(Lifetime.Singleton)
+                .As<ISimpleObjectFactory<IBulletView>>()
+                .WithParameter("prefab", _testBulletView);
+
+            builder.Register<SimpleObjectFactory<IPlayerShotView, PlayerShotView>>(Lifetime.Singleton)
+                .As<ISimpleObjectFactory<IPlayerShotView>>()
+                .WithParameter("prefab", _playerShot);
+
+            builder.Register<SimpleObjectFactory<IPlayerAimMuzzleView, PlayerAimMuzzleView>>(Lifetime.Singleton)
+                .As<ISimpleObjectFactory<IPlayerAimMuzzleView>>()
+                .WithParameter("prefab", _playerAimMuzzleView);
+
+            builder.Register<SimpleObjectFactory<IPlayerTopDownAimView, PlayerTopDownAimView>>(Lifetime.Singleton)
+                .As<ISimpleObjectFactory<IPlayerTopDownAimView>>()
+                .WithParameter("prefab", _playerTopDownAimView);
         }
     }
 }

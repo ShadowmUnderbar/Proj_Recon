@@ -9,15 +9,15 @@ namespace App.Battle.UseCase
 {
     public class PlayerShotUseCase : IPlayerShotUseCase, ITickable
     {
-        private readonly IPlayerControlPresenter _playerControlPresenter;
-        private readonly IGameInputUsecase _gameInputUsecase;
+        private IPlayerControlPresenter _playerControlPresenter;
+        private IGameInputUsecase _gameInputUsecase;
 
         private const float FireRate = 0.1f;
         private float _leftFireTime = float.PositiveInfinity;
         private float _rightFireTime = float.PositiveInfinity;
 
         [Inject]
-        public PlayerShotUseCase(
+        public void Construct(
             IPlayerControlPresenter playerControlPresenter,
             IGameInputUsecase gameInputUsecase
         )
@@ -47,8 +47,6 @@ namespace App.Battle.UseCase
             {
                 return;
             }
-
-            Debug.Log("TryLeftShot");
 
             _leftFireTime = 0;
             _playerControlPresenter.Shot(true);

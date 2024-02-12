@@ -2,8 +2,8 @@
 
 namespace App.Battle.Interface.Views
 {
-    public interface IPlayerShot
+    public interface IBulletView
     {
-        public void SpawnBullet();
+        void Spawn(Pose pose);
     }
 }

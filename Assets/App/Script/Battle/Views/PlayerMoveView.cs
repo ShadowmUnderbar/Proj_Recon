@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace App.Battle.Views
 {
-    public class PlayerMove : MonoBehaviour, IPlayerMove
+    public class PlayerMoveView : MonoBehaviour, IPlayerMoveView
     {
         public void Move(Vector2 move)
         {

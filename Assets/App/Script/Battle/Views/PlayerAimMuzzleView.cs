@@ -5,6 +5,8 @@ namespace App.Battle.Views
 {
     public class PlayerAimMuzzleView : MonoBehaviour, IPlayerAimMuzzleView
     {
+        public Transform Transform => transform;
+
         public void LookAimPosition(Vector3 position)
         {
             if(position == default)

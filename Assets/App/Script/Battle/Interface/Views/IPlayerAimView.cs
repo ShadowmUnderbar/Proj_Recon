@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace App.Battle.Interface.Views
 {
-    public interface IPlayerMove
+    public interface IPlayerAimView
     {
-        void Move(Vector2 move);
+        void Aim(Vector2 rotate);
     }
 }
