@@ -51,9 +51,9 @@ namespace App.Battle.Interface.Views
             _playerTopDownAimStoreView.Initialize(topdownViews, aimViews, shotViews);
         }
 
-        public void Move(Vector2 _inputV2)
+        public void Move(Vector2 _inputV2, float speed)
         {
-            _playerMoveView.Move(_inputV2);
+            _playerMoveView.Move(_inputV2, speed);
         }
 
         public void Aim() 

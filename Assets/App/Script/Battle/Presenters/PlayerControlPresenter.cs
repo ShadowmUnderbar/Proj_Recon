@@ -17,9 +17,9 @@ namespace App.Battle.Presenters
             _battlePlayerView = battlePlayerView;
         }
 
-        public void Move(Vector2 moveV2)
+        public void Move(Vector2 moveV2, float speed)
         {
-            _battlePlayerView.Move(moveV2);
+            _battlePlayerView.Move(moveV2, speed);
         }
 
         public void Shot(bool IsLeft)

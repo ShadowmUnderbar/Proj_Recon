@@ -7,9 +7,9 @@ namespace App.Battle.Views
 {
     public class PlayerMoveView : MonoBehaviour, IPlayerMoveView
     {
-        public void Move(Vector2 move)
+        public void Move(Vector2 move,float speed)
         {
-            transform.position += new Vector3(move.x, 0, move.y);
+            transform.position += new Vector3(move.x, 0, move.y) * speed;
         }
     }
 }

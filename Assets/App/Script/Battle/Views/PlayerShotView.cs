@@ -18,7 +18,6 @@ namespace App.Battle.Views
         )
         {
             _bulletFactory = bulletFactory;
-            SpawnBullet();
         }
 
         public void SpawnBullet()

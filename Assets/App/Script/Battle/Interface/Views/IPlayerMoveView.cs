@@ -4,6 +4,6 @@ namespace App.Battle.Interface.Views
 {
     public interface IPlayerMoveView
     {
-        void Move(Vector2 move);
+        void Move(Vector2 move,float speed);
     }
 }
