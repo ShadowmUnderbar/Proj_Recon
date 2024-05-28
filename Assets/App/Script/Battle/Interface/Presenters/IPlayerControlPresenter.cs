@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace App.Battle.Interface.Presenters
@@ -7,5 +8,6 @@ namespace App.Battle.Interface.Presenters
         void Move(Vector2 moveV2, float speed);
         void Aim();
         void Shot(bool IsLeft);
+        void MouseAim(Vector2 mousePos);
     }
 }

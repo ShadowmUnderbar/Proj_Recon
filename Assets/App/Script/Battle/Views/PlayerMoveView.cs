@@ -9,7 +9,6 @@ namespace App.Battle.Views
     {
         public void Move(Vector2 move,float speed)
         {
-            Debug.Log($"move {move}");
             transform.position += new Vector3(move.x, 0, move.y) * speed;
         }
     }

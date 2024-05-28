@@ -134,6 +134,15 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Mouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""fc921513-1ae6-4a14-bf57-2a3482cfd089"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -488,6 +497,17 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""action"": ""RightStickAxis"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""da17e376-8b93-4fa1-96db-eeca43de3ec1"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Mouse"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -508,6 +528,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         m_Main_LeftSecondary = m_Main.FindAction("LeftSecondary", throwIfNotFound: true);
         m_Main_PushRightStick = m_Main.FindAction("PushRightStick", throwIfNotFound: true);
         m_Main_PushLeftStick = m_Main.FindAction("PushLeftStick", throwIfNotFound: true);
+        m_Main_Mouse = m_Main.FindAction("Mouse", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -581,6 +602,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_LeftSecondary;
     private readonly InputAction m_Main_PushRightStick;
     private readonly InputAction m_Main_PushLeftStick;
+    private readonly InputAction m_Main_Mouse;
     public struct MainActions
     {
         private @GameMaininput m_Wrapper;
@@ -597,6 +619,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         public InputAction @LeftSecondary => m_Wrapper.m_Main_LeftSecondary;
         public InputAction @PushRightStick => m_Wrapper.m_Main_PushRightStick;
         public InputAction @PushLeftStick => m_Wrapper.m_Main_PushLeftStick;
+        public InputAction @Mouse => m_Wrapper.m_Main_Mouse;
         public InputActionMap Get() { return m_Wrapper.m_Main; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -642,6 +665,9 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
             @PushLeftStick.started += instance.OnPushLeftStick;
             @PushLeftStick.performed += instance.OnPushLeftStick;
             @PushLeftStick.canceled += instance.OnPushLeftStick;
+            @Mouse.started += instance.OnMouse;
+            @Mouse.performed += instance.OnMouse;
+            @Mouse.canceled += instance.OnMouse;
         }
 
         private void UnregisterCallbacks(IMainActions instance)
@@ -682,6 +708,9 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
             @PushLeftStick.started -= instance.OnPushLeftStick;
             @PushLeftStick.performed -= instance.OnPushLeftStick;
             @PushLeftStick.canceled -= instance.OnPushLeftStick;
+            @Mouse.started -= instance.OnMouse;
+            @Mouse.performed -= instance.OnMouse;
+            @Mouse.canceled -= instance.OnMouse;
         }
 
         public void RemoveCallbacks(IMainActions instance)
@@ -713,5 +742,6 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         void OnLeftSecondary(InputAction.CallbackContext context);
         void OnPushRightStick(InputAction.CallbackContext context);
         void OnPushLeftStick(InputAction.CallbackContext context);
+        void OnMouse(InputAction.CallbackContext context);
     }
 }

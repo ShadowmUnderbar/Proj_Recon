@@ -41,7 +41,6 @@ namespace App.Battle.Views
 
         public Vector3 GetAimPosition(bool isLeft)
         {
-
             return _topdownViews[isLeft ? 0 : 1].GetAimPosition();
         }
 

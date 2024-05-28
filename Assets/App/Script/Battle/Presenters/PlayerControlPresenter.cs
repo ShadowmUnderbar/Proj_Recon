@@ -22,6 +22,11 @@ namespace App.Battle.Presenters
             _battlePlayerView.Move(moveV2, speed);
         }
 
+        public void MouseAim(Vector2 mousePos)
+        {
+            _battlePlayerView.MouseAim(mousePos);
+        }
+
         public void Shot(bool IsLeft)
         {
             _battlePlayerView.Shot(IsLeft);

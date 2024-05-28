@@ -1,3 +1,4 @@
+using System;
 using App.Battle.Views;
 using App.Framework.Utilities;
 using System.Collections.Generic;
@@ -8,14 +9,10 @@ namespace App.Battle.Interface.Views
 {
     public class BattlePlayerView : MonoBehaviour, IBattlePlayerView
     {
-        [SerializeField]
-        private PlayerMoveView _playerMoveView;
-        [SerializeField]
-        private PlayerTopDownAimStoreView _playerTopDownAimStoreView;
-        [SerializeField]
-        private Transform[] _controllers;
-        [SerializeField]
-        private Transform[] _muzzles;
+        [SerializeField] private PlayerMoveView _playerMoveView;
+        [SerializeField] private PlayerTopDownAimStoreView _playerTopDownAimStoreView;
+        [SerializeField] private Transform[] _controllers;
+        [SerializeField] private Transform[] _muzzles;
 
         private ISimpleObjectFactory<IPlayerTopDownAimView> _topDownFactory;
         private ISimpleObjectFactory<IPlayerAimMuzzleView> _aimFactory;
@@ -56,9 +53,33 @@ namespace App.Battle.Interface.Views
             _playerMoveView.Move(_inputV2, speed);
         }
 
-        public void Aim() 
+        public void Aim()
         {
             _playerTopDownAimStoreView.Aim();
+        }
+
+        public void MouseAim(Vector2 mousePos)
+        {
+            if (Camera.main == null)
+            {
+                return;
+            }
+
+            Debug.Log($"MouseAim mousePos {mousePos}");
+            var ray = Camera.main.ScreenPointToRay(mousePos);
+
+            var targetPos = new Vector3(mousePos.x, 0, mousePos.y);
+
+            if (Physics.Raycast(ray, out var hit, 100f))
+            {
+                targetPos = hit.point;
+            }
+
+            Debug.Log($"MouseAim targetPos {targetPos.normalized}");
+            foreach (var controller in _controllers)
+            {
+                controller.LookAt(targetPos);
+            }
         }
 
         public void SetFocus(bool isLeft)

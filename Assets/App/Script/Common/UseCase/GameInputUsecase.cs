@@ -1,6 +1,7 @@
 using UnityEngine;
 using VContainer.Unity;
 using App.Common.Interface.UseCase;
+using UnityEngine.InputSystem;
 
 namespace App.Common.UseCase
 {
@@ -30,6 +31,7 @@ namespace App.Common.UseCase
         public bool IsYButton { get; set; }
         public bool IsRightStick { get; set; }
         public bool IsLeftStick { get; set; }
+        public Vector2 MouseInputPosition { get; private set; }
 
         public void Tick()
         {
@@ -48,6 +50,10 @@ namespace App.Common.UseCase
 
             IsRightStick = Input.Main.PushRightStick.inProgress;
             IsLeftStick = Input.Main.PushLeftStick.inProgress;
+
+#if UNITY_EDITOR
+            MouseInputPosition = Mouse.current.position.ReadValue();
+#endif
         }
     }
 }

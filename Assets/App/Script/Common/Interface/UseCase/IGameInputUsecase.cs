@@ -16,5 +16,6 @@ namespace App.Common.Interface.UseCase
         bool IsYButton { get; set; }
         bool IsRightStick { get; set; }
         bool IsLeftStick { get; set; }
+        public Vector2 MouseInputPosition { get; }
     }
 }
