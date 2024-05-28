@@ -6,9 +6,18 @@
             "id": "bfd741a3-106b-4b67-a164-70fe0153d005",
             "actions": [
                 {
-                    "name": "Move",
+                    "name": "LeftStickAxis",
                     "type": "Value",
                     "id": "255d1e97-f1b5-4402-a929-0f1ed57eb976",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "RightStickAxis",
+                    "type": "Value",
+                    "id": "acec7ded-47c8-4163-b39e-0c6bd7ed5b63",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -113,7 +122,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "LeftStickAxis",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -124,7 +133,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "LeftStickAxis",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -135,7 +144,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "LeftStickAxis",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -146,7 +155,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "LeftStickAxis",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -157,7 +166,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "LeftStickAxis",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -168,7 +177,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "LeftStickAxis",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -391,6 +400,72 @@
                     "action": "PushLeftStick",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8336e717-f095-4008-a574-753261df75f0",
+                    "path": "<XRController>{RightHand}/joystick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightStickAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "WASD",
+                    "id": "a2906c56-84a8-465b-8762-2433d56c0e37",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightStickAxis",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "4f0a68c1-e5dd-438a-a0b1-d0e60ee68677",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightStickAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "5de391ba-ddb7-4756-ab09-c41deea3470a",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightStickAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "1aa5ed0e-9484-4b8e-972d-a7aa7f5dfd2a",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightStickAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "e28f514d-d917-4eb4-891c-2880566bac52",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RightStickAxis",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }
