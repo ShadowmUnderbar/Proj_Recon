@@ -1,17 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using App.Script.Battle.Interface.UseCase;
 
-public class EnemySpawnUseCase : MonoBehaviour
+namespace App.Script.Battle.UseCase
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
+    public class EnemySpawnUseCase : IEnemySpawnUseCase
     {
         
     }

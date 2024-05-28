@@ -2,7 +2,8 @@
     "name": "App.Battle.Interface.DataStore",
     "rootNamespace": "",
     "references": [
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:ffe47c0a70669f64fbe18bc4756c7786"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
