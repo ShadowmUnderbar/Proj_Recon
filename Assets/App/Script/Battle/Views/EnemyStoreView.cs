@@ -12,10 +12,6 @@ namespace App.Script.Battle.Views
     {
         private Dictionary<uint, IEnemyView> _enemies = new();
 
-        public EnemyStoreView()
-        {
-        }
-
         public async UniTask Spawn(EnemyData enemyData, Pose spawnPose)
         {
             var enemyobj = Addressables.LoadAssetAsync<GameObject>(enemyData.MasterData.PrefabPath);

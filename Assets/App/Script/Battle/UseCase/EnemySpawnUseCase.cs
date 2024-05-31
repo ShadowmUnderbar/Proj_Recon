@@ -7,7 +7,7 @@ using VContainer.Unity;
 
 namespace App.Script.Battle.UseCase
 {
-    public class EnemySpawnUseCase : IEnemySpawnUseCase,IInitializable
+    public class EnemySpawnUseCase : IEnemySpawnUseCase, IInitializable
     {
         private readonly EnemyDatabase _enemyDatabase;
         private readonly IEnemySpawnPresenter _enemySpawnPresenter;

@@ -65,7 +65,6 @@ namespace App.Battle.Interface.Views
                 return;
             }
 
-            Debug.Log($"MouseAim mousePos {mousePos}");
             var ray = Camera.main.ScreenPointToRay(mousePos);
 
             var targetPos = new Vector3(mousePos.x, 0, mousePos.y);
@@ -75,7 +74,6 @@ namespace App.Battle.Interface.Views
                 targetPos = hit.point;
             }
 
-            Debug.Log($"MouseAim targetPos {targetPos.normalized}");
             foreach (var controller in _controllers)
             {
                 controller.LookAt(targetPos);

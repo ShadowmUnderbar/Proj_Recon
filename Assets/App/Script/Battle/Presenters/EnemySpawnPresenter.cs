@@ -3,6 +3,7 @@ using App.Script.Battle.Data;
 using App.Script.Battle.Interface.Views;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VContainer;
 
 namespace App.Battle.Presenters
 {
@@ -10,6 +11,7 @@ namespace App.Battle.Presenters
     {
         private readonly IEnemyStoreView _enemyStoreView;
         
+        [Inject]
         public EnemySpawnPresenter(
             IEnemyStoreView enemyStoreView
         )

@@ -11,7 +11,7 @@ namespace App.Battle.UseCase
         private IPlayerControlPresenter _playerControlPresenter;
         private IGameInputUsecase _gameInputUsecase;
 
-        private const float speed = 0.25f;
+        private readonly float _speed = 0.05f;
 
         [Inject]
         public PlayerMoveUseCase(
@@ -25,7 +25,7 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            _playerControlPresenter.Move(_gameInputUsecase.V2LeftAxis, speed);
+            _playerControlPresenter.Move(_gameInputUsecase.V2LeftAxis, _speed);
         }
     }
 }

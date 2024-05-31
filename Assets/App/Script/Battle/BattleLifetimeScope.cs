@@ -5,6 +5,8 @@ using App.Battle.Presenters;
 using App.Battle.UseCase;
 using App.Battle.Views;
 using App.Framework.Utilities;
+using App.Script.Battle.DataStore;
+using App.Script.Battle.Interface.DataStore;
 using App.Script.Battle.Interface.UseCase;
 using App.Script.Battle.Interface.Views;
 using App.Script.Battle.UseCase;
@@ -26,6 +28,12 @@ namespace App.Script.Battle
 
         protected override void Configure(IContainerBuilder builder)
         {
+            #region DataStore
+
+            builder.Register<EnemyDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IEnemyDataStore>();
+
+            #endregion
+
             #region UseCase
 
             builder.RegisterEntryPoint<PlayerMoveUseCase>().As<IPlayerMoveUseCase>();
@@ -70,8 +78,8 @@ namespace App.Script.Battle
                 .As<ISimpleObjectFactory<IPlayerTopDownAimView>>()
                 .WithParameter("prefab", _playerTopDownAimView);
 
-            builder.Register<SimpleObjectFactory<IEnemyStoreView, EnemyStoreView>>(Lifetime.Singleton)
-                .As<ISimpleObjectFactory<IEnemyStoreView>>()
+            builder.Register<EnemyStoreView>(Lifetime.Singleton)
+                .As<IEnemyStoreView>()
                 .WithParameter("prefab", _enemyStoreView);
 
             #endregion
