@@ -11,16 +11,16 @@ namespace App.Script.Common.Data.MasterData
 
         public string PrefabPath => _prefabPath;
 
-        [SerializeField] private uint _id;
-        public uint Id => _id;
+        [SerializeField] private string _enemyCode;
+        public string EnemyCode => _enemyCode;
 
-        [SerializeField] private float _damage;
+        [SerializeField] private float _damage = 1;
         public float Damage => _damage;
 
-        [SerializeField] private float _hp;
+        [SerializeField] private float _hp = 10;
         public float Hp => _hp;
 
-        [SerializeField] private float _speed;
+        [SerializeField] private float _speed = 1;
         public float Speed => _speed;
     }
 }

@@ -24,9 +24,9 @@ namespace App.Script.Battle.UseCase
             _enemyDataStore = enemyDataStore;
         }
 
-        public void Spawn(uint enemyId, Pose spawnPose)
+        public void Spawn(string enemyCode, Pose spawnPose)
         {
-            if (!_enemyDatabase.TryGetEnemyMasterData(enemyId, out var enemyMasterData))
+            if (!_enemyDatabase.TryGetEnemyMasterData(enemyCode, out var enemyMasterData))
             {
                 return;
             }
@@ -38,7 +38,7 @@ namespace App.Script.Battle.UseCase
 
         public void Initialize()
         {
-            Spawn(0, new Pose(Vector3.zero, Quaternion.identity));
+            Spawn("TestEnemy", new Pose(Vector3.zero, Quaternion.identity));
         }
     }
 }

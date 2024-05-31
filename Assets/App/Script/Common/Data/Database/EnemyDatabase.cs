@@ -9,9 +9,9 @@ namespace App.Script.Common.Data.Database
     {
         [SerializeField] private EnemyMasterData[] _enemyMasterDataList;
 
-        public bool TryGetEnemyMasterData(uint enemyId ,out EnemyMasterData enemyMasterData)
+        public bool TryGetEnemyMasterData(string enemyCode ,out EnemyMasterData enemyMasterData)
         {
-            enemyMasterData = _enemyMasterDataList.FirstOrDefault(enemyMasterData => enemyMasterData.Id == enemyId);
+            enemyMasterData = _enemyMasterDataList.FirstOrDefault(enemyMasterData => enemyMasterData.EnemyCode == enemyCode);
             return enemyMasterData != null;
         }
     }

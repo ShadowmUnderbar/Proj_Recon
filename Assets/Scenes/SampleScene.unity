@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: App.Common.CommonLifetimeScope
+    TypeName: App.Script.Common.CommonLifetimeScope
   autoRun: 1
   autoInjectGameObjects: []
   _playerView: {fileID: 5135707317468556012, guid: 63eeda3b2ca9c0249aa273426f18c39a, type: 3}
@@ -161,6 +161,7 @@ MonoBehaviour:
   _playerShot: {fileID: 5150771849797122162, guid: ad78e488f18e4674a84415e4cb64d562, type: 3}
   _playerAimMuzzleView: {fileID: 168147134050017325, guid: cf3c0070e705849439f9f207805c5ef5, type: 3}
   _playerTopDownAimView: {fileID: 2907134111677622866, guid: 365f7d30cd8b193498bb7ca49145ec0e, type: 3}
+  _enemyStoreView: {fileID: 4339147710328061394, guid: 36921a23a35ddae4aab98efe0648b985, type: 3}
 --- !u!4 &175168502
 Transform:
   m_ObjectHideFlags: 0
@@ -433,6 +434,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
+  _enemyDatabase: {fileID: 11400000, guid: 25a18e38d2d2dd749b250325309d63e7, type: 2}
 --- !u!4 &1576992900
 Transform:
   m_ObjectHideFlags: 0
