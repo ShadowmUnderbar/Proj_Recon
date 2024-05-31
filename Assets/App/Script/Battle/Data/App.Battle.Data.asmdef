@@ -2,7 +2,8 @@
     "name": "App.Battle.Data",
     "rootNamespace": "",
     "references": [
-        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc"
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:f132077da0b539844bdbbae657da156d"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using App.Script.Battle.Data;
 using App.Script.Battle.Interface.DataStore;
+using App.Script.Common.Data.MasterData;
 using UnityEngine;
 
 namespace App.Script.Battle.DataStore
@@ -21,16 +22,25 @@ namespace App.Script.Battle.DataStore
             return true;
         }
 
-        public uint AddEnemyData(EnemyData enemyData)
+        public EnemyData AddEnemyData(EnemyMasterData enemyMasterData)
         {
-            uint enemyId = 0;
+            uint enemyId;
             do
             {
                 enemyId = (uint)Random.Range(0, int.MaxValue);
             } while (_spawnEnemyDataList.ContainsKey(enemyId));
 
-            _spawnEnemyDataList.Add(enemyId, enemyData);
-            return enemyId;
+            var enemy = new EnemyData
+            {
+                Id = enemyId,
+                MasterData = enemyMasterData,
+                Hp = enemyMasterData.Hp,
+                Damage = enemyMasterData.Damage,
+                Speed = enemyMasterData.Speed,
+            };
+
+            _spawnEnemyDataList.Add(enemyId, enemy);
+            return enemy;
         }
 
         public bool RemoveEnemyData(uint enemyId)
