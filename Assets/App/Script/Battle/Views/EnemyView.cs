@@ -1,14 +1,15 @@
 using App.Script.Battle.Interface.Views;
+using UnityEngine;
 
 namespace App.Script.Battle.Views
 {
-    public class EnemyView : IEnemyView
+    public class EnemyView : MonoBehaviour, IEnemyView
     {
-        private uint _id;
+        public uint Id { get; private set; }
 
         public void Init(uint id)
         {
-            _id = id;
+            Id = id;
         }
     }
 }

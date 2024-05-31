@@ -1,9 +1,12 @@
+using System;
+using App.Script.Battle.Data;
 using UnityEngine;
 
 namespace App.Battle.Interface.Views
 {
     public interface IBattlePlayerView
     {
+        IObservable<HitData> OnHit { get; }
         void Move(Vector2 _inputV2, float speed);
         void Aim();
         void MouseAim(Vector2 mousePos);

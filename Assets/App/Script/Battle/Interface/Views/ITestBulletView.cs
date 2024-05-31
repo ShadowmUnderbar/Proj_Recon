@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using App.Script.Battle.Data;
+using UnityEngine;
 
 namespace App.Battle.Interface.Views
 {
     public interface IBulletView
     {
-        void Spawn(Pose pose);
+        IObservable<HitData> OnHit { get; }
+        void Spawn(Pose pose, BulletData bulletData);
     }
 }

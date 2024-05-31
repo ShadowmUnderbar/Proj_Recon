@@ -2,6 +2,8 @@ using System;
 using App.Battle.Views;
 using App.Framework.Utilities;
 using System.Collections.Generic;
+using App.Script.Battle.Data;
+using UniRx;
 using UnityEngine;
 using VContainer;
 
@@ -13,6 +15,9 @@ namespace App.Battle.Interface.Views
         [SerializeField] private PlayerTopDownAimStoreView _playerTopDownAimStoreView;
         [SerializeField] private Transform[] _controllers;
         [SerializeField] private Transform[] _muzzles;
+
+        public IObservable<HitData> OnHit => _onHit;
+        private readonly Subject<HitData> _onHit = new();
 
         private ISimpleObjectFactory<IPlayerTopDownAimView> _topDownFactory;
         private ISimpleObjectFactory<IPlayerAimMuzzleView> _aimFactory;
@@ -46,6 +51,12 @@ namespace App.Battle.Interface.Views
             }
 
             _playerTopDownAimStoreView.Initialize(topdownViews, aimViews, shotViews);
+        }
+
+        private void Awake()
+        {
+            _onHit.AddTo(this);
+            _playerTopDownAimStoreView.OnHit.Subscribe(_onHit).AddTo(this);
         }
 
         public void Move(Vector2 _inputV2, float speed)

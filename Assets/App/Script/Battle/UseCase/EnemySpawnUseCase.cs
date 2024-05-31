@@ -38,7 +38,7 @@ namespace App.Script.Battle.UseCase
 
         public void Initialize()
         {
-            Spawn("TestEnemy", new Pose(Vector3.zero, Quaternion.identity));
+            Spawn("TestEnemy", new Pose(Vector3.right, Quaternion.identity));
         }
     }
 }

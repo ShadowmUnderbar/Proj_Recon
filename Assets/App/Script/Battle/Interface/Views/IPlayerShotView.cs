@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using App.Script.Battle.Data;
 
 namespace App.Battle.Interface.Views
 {
     public interface IPlayerShotView
     {
-        public void SpawnBullet();
+        IObservable<HitData> OnHit { get; }
+
+        void SpawnBullet();
     }
 }
