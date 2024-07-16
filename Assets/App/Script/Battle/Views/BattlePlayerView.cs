@@ -56,7 +56,7 @@ namespace App.Battle.Interface.Views
         private void Awake()
         {
             _onHit.AddTo(this);
-            _playerTopDownAimStoreView.OnHit.Subscribe(_onHit).AddTo(this);
+            _playerTopDownAimStoreView.OnHit.Subscribe(OnHitBullet).AddTo(this);
         }
 
         public void Move(Vector2 _inputV2, float speed)
@@ -99,6 +99,11 @@ namespace App.Battle.Interface.Views
         public void Shot(bool isLeft)
         {
             _playerTopDownAimStoreView.Shot(isLeft);
+        }
+
+        private void OnHitBullet(HitData hit)
+        {
+            _onHit.OnNext(hit);
         }
     }
 }

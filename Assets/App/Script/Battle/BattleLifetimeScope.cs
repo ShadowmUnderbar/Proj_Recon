@@ -40,6 +40,7 @@ namespace App.Script.Battle
             builder.RegisterEntryPoint<PlayerAimUseCase>().As<IPlayerAimUseCase>();
             builder.RegisterEntryPoint<PlayerShotUseCase>().As<IPlayerShotUseCase>();
             builder.RegisterEntryPoint<EnemySpawnUseCase>().As<IEnemySpawnUseCase>();
+            builder.RegisterEntryPoint<BattleHitUseCase>().As<IBattleHitUseCase>();
 
             #endregion
 
@@ -50,6 +51,8 @@ namespace App.Script.Battle
 
             builder.Register<EnemySpawnPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IEnemySpawnPresenter>();
+            builder.Register<BattleHitPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IBattleHitPresenter>();
 
             #endregion
 

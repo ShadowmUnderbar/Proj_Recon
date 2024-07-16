@@ -12,11 +12,11 @@ namespace App.Battle.Views
 {
     public class PlayerShotView : MonoBehaviour, IPlayerShotView
     {
-        IObservable<HitData> IPlayerShotView.OnHit => _onHit;
-        private readonly Subject<HitData> _onHit = new();
-
         private ISimpleObjectFactory<IBulletView> _bulletFactory;
         private readonly Dictionary<float, IBulletView> _bulletViews = new();
+
+        public IObservable<HitData> OnHit => _onHit;
+        private Subject<HitData> _onHit = new Subject<HitData>();
 
         [Inject]
         public void Construct(
