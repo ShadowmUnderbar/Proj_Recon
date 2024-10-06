@@ -6,7 +6,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace App.Script.Battle.UseCase
+namespace App.Battle.UseCase
 {
     public class BattleHitUseCase : IBattleHitUseCase, IInitializable, IDisposable
     {

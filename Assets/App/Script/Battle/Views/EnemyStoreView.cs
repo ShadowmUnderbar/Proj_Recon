@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface;
-using App.Script.Battle.Interface;
+using App.Battle.Interface;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace App.Script.Battle.Views
+namespace App.Battle.Views
 {
     public class EnemyStoreView : MonoBehaviour, IEnemyStoreView
     {

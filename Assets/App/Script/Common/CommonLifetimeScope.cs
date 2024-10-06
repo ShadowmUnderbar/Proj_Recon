@@ -5,7 +5,7 @@ using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace App.Script.Common
+namespace App.Common
 {
     public class CommonLifetimeScope : LifetimeScope
     {

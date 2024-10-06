@@ -4,7 +4,7 @@ using App.Common.Data.MasterData;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace App.Script.Battle.DataStore
+namespace App.Battle.DataStore
 {
     public class EnemyDataStore : IEnemyDataStore
     {

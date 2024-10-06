@@ -6,7 +6,6 @@ using App.Framework.Utilities.Extensions;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
-using App.Script.Battle.Interface;
 
 namespace App.Battle.Views
 {

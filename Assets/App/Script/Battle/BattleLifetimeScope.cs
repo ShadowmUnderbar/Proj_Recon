@@ -3,14 +3,12 @@ using App.Battle.Presenters;
 using App.Battle.UseCase;
 using App.Battle.Views;
 using App.Framework.Utilities;
-using App.Script.Battle.DataStore;
-using App.Script.Battle.UseCase;
-using App.Script.Battle.Views;
+using App.Battle.DataStore;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
-namespace App.Script.Battle
+namespace App.Battle
 {
     public class BattleLifetimeScope : LifetimeScope
     {

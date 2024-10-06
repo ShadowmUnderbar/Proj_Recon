@@ -1,4 +1,4 @@
-using App.Script.Battle.Interface;
+using App.Battle.Interface;
 using UnityEngine;
 
 namespace App.Script.Battle.Views
