@@ -3,32 +3,30 @@ using VContainer;
 using VContainer.Unity;
 using UnityEngine;
 using App.Common.Interface;
+using App.Battle.DataStore;
 
 namespace App.Battle.UseCase
 {
     public class PlayerShotUseCase : IPlayerShotUseCase, ITickable
     {
-        private IPlayerControlPresenter _playerControlPresenter;
-        private IGameInputUsecase _gameInputUsecase;
-
-        private const float FireRate = 0.1f;
-        private float _leftFireTime = float.PositiveInfinity;
-        private float _rightFireTime = float.PositiveInfinity;
+        private readonly IPlayerDataStore _playerDataStore;
+        private readonly IPlayerControlPresenter _playerControlPresenter;
+        private readonly IGameInputUsecase _gameInputUsecase;
 
         [Inject]
-        public void Construct(
+        public PlayerShotUseCase(
+            IPlayerDataStore playerDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputUsecase gameInputUsecase
         )
         {
+            _playerDataStore = playerDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputUsecase = gameInputUsecase;
         }
 
         public void Tick()
         {
-            _leftFireTime += Time.deltaTime;
-            _rightFireTime += Time.deltaTime;
             if (_gameInputUsecase.IsLeftTrigger)
             {
                 TryLeftShot();
@@ -42,24 +40,24 @@ namespace App.Battle.UseCase
 
         private void TryLeftShot()
         {
-            if(_leftFireTime < FireRate)
+            if(!_playerDataStore.CanLeftNormalShot)
             {
                 return;
             }
 
-            _leftFireTime = 0;
+            _playerDataStore.SetLeftNormalShotCoolDown(_playerDataStore.NormalFireRate);
             _playerControlPresenter.Shot(true);
 
         }
 
         private void TryRightShot()
         {
-            if (_rightFireTime < FireRate)
+            if (_playerDataStore.CanRightNormalShot)
             {
                 return;
             }
 
-            _rightFireTime = 0;
+            _playerDataStore.SetRightNormalShotCoolDown(_playerDataStore.NormalFireRate);
             _playerControlPresenter.Shot(false);
         }
     }

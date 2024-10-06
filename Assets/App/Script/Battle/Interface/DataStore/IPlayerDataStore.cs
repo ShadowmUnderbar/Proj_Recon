@@ -13,6 +13,10 @@ namespace App.Battle.DataStore
         bool CanLeftWaltzShot { get; }
         bool CanRightWaltzShot{ get; }
 
+        float NormalFireRate { get; }
+        float MergeFireRate { get; }
+        float WaltzFireRate { get; }
+
         //フォーカス(照準が敵に重なっている)か
         ReactiveProperty<int> IsFocusLeft { get; }
         ReactiveProperty<int> IsFocusRight { get; }

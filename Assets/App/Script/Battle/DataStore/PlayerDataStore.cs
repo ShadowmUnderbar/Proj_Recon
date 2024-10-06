@@ -17,6 +17,12 @@ namespace App.Battle.DataStore
         public bool CanLeftWaltzShot => _leftWaltzShotCoolDown <= 0;
         public bool CanRightWaltzShot => _rightWaltzShotCoolDown <= 0;
 
+        public float NormalFireRate => 0.6f;
+
+        public float MergeFireRate => 1.2f;
+
+        public float WaltzFireRate => 0.3f;
+
         private float _leftNomalShotCoolDown;
         private float _rightNomalShotCoolDown;
         private float _mergeShotCoolDown;
