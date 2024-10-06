@@ -1,11 +1,11 @@
-﻿//using UniRx;
+﻿using R3;
 using UnityEngine;
 
-namespace App.Battle.Interface.Views
+namespace App.Battle.Interface
 {
     public interface IPlayerTopDownAimView
     {
         Vector3 GetAimPosition();
-        //ReactiveProperty<bool> IsFocus { get; }
+        ReactiveProperty<bool> IsFocus { get; }
     }
 }

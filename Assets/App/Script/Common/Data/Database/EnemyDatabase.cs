@@ -1,8 +1,8 @@
 using System.Linq;
-using App.Script.Common.Data.MasterData;
+using App.Common.Data.MasterData;
 using UnityEngine;
 
-namespace App.Script.Common.Data.Database
+namespace App.Common.Data.Database
 {
     [CreateAssetMenu(fileName = "EnemyDatabase", menuName = "Database/EnemyDatabase")]
     public class EnemyDatabase : ScriptableObject

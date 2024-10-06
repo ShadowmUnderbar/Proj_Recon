@@ -1,4 +1,4 @@
-﻿namespace App.Battle.Interface.UseCase
+﻿namespace App.Battle.Interface
 {
     public interface IPlayerMoveUseCase
     {

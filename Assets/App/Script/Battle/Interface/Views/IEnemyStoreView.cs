@@ -1,8 +1,8 @@
-using App.Script.Battle.Data;
+using App.Battle.Data;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
-namespace App.Script.Battle.Interface.Views
+namespace App.Battle.Interface
 {
     public interface IEnemyStoreView
     {

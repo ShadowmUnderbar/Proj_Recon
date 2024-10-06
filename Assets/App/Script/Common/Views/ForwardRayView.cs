@@ -1,9 +1,10 @@
+using App.Common.Interface;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
-public class ForwardRayView: MonoBehaviour , IForwardRayView
+public class ForwardRayView : MonoBehaviour, IForwardRayView
 {
     [SerializeField]
     private LineRenderer _lineRenderer;

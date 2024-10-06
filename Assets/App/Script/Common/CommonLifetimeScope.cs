@@ -1,6 +1,6 @@
-using App.Common.Interface.UseCase;
+using App.Common.Interface;
 using App.Common.UseCase;
-using App.Script.Common.Data.Database;
+using App.Common.Data.Database;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;

@@ -1,7 +1,7 @@
-using App.Script.Battle.Data;
+using App.Battle.Data;
 using UnityEngine;
 
-namespace App.Battle.Interface.Presenters
+namespace App.Battle.Interface
 {
     public interface IEnemySpawnPresenter
     {

@@ -1,6 +1,6 @@
 using VContainer;
 using VContainer.Unity;
-using App.Common.Interface.UseCase;
+using App.Common.Interface;
 
 namespace App.Common.UseCase
 {

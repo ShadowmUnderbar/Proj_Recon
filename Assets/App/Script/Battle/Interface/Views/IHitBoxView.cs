@@ -1,8 +1,12 @@
+using App.Battle.Data;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IHitBoxView
+namespace App.Battle.Interface
 {
-    public HitBoxType HitBoxType { get; }
+    public interface IHitBoxView
+    {
+        public HitBoxType HitBoxType { get; }
+    }
 }

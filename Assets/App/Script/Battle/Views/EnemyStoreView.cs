@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using App.Script.Battle.Data;
-using App.Script.Battle.Interface.Views;
+using App.Battle.Data;
+using App.Battle.Interface;
+using App.Script.Battle.Interface;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;

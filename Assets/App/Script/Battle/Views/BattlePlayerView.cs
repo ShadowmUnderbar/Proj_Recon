@@ -1,13 +1,13 @@
 using System;
-using App.Battle.Views;
+using App.Battle.Interface;
 using App.Framework.Utilities;
 using System.Collections.Generic;
-using App.Script.Battle.Data;
+using App.Battle.Data;
 using UniRx;
 using UnityEngine;
 using VContainer;
 
-namespace App.Battle.Interface.Views
+namespace App.Battle.Views
 {
     public class BattlePlayerView : MonoBehaviour, IBattlePlayerView
     {

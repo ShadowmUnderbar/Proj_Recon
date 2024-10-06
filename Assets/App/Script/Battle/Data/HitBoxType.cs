@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum HitBoxType
+namespace App.Battle.Data
 {
-    None,
-    Player,
-    Enemy,
-    Object
+
+    public enum HitBoxType
+    {
+        None,
+        Player,
+        Enemy,
+        Object
+    }
 }

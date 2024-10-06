@@ -1,9 +1,8 @@
-﻿using App.Battle.Interface.UseCase;
-using App.Common.Interface.UseCase;
-using App.Battle.Interface.Presenters;
+﻿using App.Battle.Interface;
 using VContainer;
 using VContainer.Unity;
 using UnityEngine;
+using App.Common.Interface;
 
 namespace App.Battle.UseCase
 {

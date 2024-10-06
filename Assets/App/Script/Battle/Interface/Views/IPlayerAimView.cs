@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace App.Battle.Interface.Views
+namespace App.Battle.Interface
 {
     public interface IPlayerAimView
     {

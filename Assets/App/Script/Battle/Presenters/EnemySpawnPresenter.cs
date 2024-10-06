@@ -1,6 +1,5 @@
-using App.Battle.Interface.Presenters;
-using App.Script.Battle.Data;
-using App.Script.Battle.Interface.Views;
+using App.Battle.Interface;
+using App.Battle.Data;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;

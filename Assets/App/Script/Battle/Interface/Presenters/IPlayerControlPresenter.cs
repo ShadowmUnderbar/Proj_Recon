@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace App.Battle.Interface.Presenters
+namespace App.Battle.Interface
 {
     public interface IPlayerControlPresenter
     {

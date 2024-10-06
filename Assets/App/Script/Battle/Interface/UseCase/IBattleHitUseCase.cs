@@ -1,4 +1,4 @@
-namespace App.Script.Battle.Interface.UseCase
+namespace App.Battle.Interface
 {
     public interface IBattleHitUseCase
     {

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using App.Battle.Interface.Views;
-using App.Script.Battle.Data;
-using App.Script.Battle.Interface.Views;
-using App.Script.Framework.Utilities.Extensions;
+using App.Battle.Interface;
+using App.Battle.Data;
+using App.Framework.Utilities.Extensions;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
+using App.Script.Battle.Interface;
 
 namespace App.Battle.Views
 {

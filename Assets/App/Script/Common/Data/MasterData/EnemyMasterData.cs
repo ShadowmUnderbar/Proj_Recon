@@ -1,7 +1,7 @@
 using UnityEngine;
-using App.Script.Framework.Attributes;
+using App.Framework.Attributes;
 
-namespace App.Script.Common.Data.MasterData
+namespace App.Common.Data.MasterData
 {
     [CreateAssetMenu(fileName = "EnemyMasterData", menuName = "MasterData/EnemyMasterData")]
     public class EnemyMasterData : ScriptableObject

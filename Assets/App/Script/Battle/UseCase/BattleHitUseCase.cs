@@ -1,7 +1,6 @@
 using System;
-using App.Battle.Interface.Presenters;
-using App.Script.Battle.Data;
-using App.Script.Battle.Interface.UseCase;
+using App.Battle.Data;
+using App.Battle.Interface;
 using UniRx;
 using UnityEngine;
 using VContainer;

@@ -1,4 +1,4 @@
-namespace App.Script.Battle.Interface.Views
+namespace App.Script.Battle.Interface
 {
     public interface IEnemyView
     {

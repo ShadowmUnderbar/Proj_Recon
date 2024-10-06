@@ -2,7 +2,7 @@
 // https://github.com/ByronMayne/AssetPathAttribute
 
 using System.Collections.Generic;
-using App.Script.Framework.Attributes;
+using App.Framework.Attributes;
 using UnityEditor;
 using UnityEngine;
 

@@ -1,6 +1,6 @@
-using App.Script.Common.Data.MasterData;
+using App.Common.Data.MasterData;
 
-namespace App.Script.Battle.Data
+namespace App.Battle.Data
 {
     public class EnemyData
     {

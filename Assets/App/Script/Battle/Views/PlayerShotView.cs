@@ -1,9 +1,9 @@
 using System;
-using App.Battle.Interface.Views;
+using App.Battle.Interface;
 using System.Collections.Generic;
 using App.Framework.Utilities;
-using App.Script.Battle.Data;
-using App.Script.Framework.Utilities.Extensions;
+using App.Battle.Data;
+using App.Framework.Utilities.Extensions;
 using UniRx;
 using UnityEngine;
 using VContainer;

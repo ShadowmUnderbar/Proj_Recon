@@ -1,7 +1,7 @@
-using App.Script.Battle.Data;
-using App.Script.Common.Data.MasterData;
+using App.Common.Data.MasterData;
+using App.Battle.Data;
 
-namespace App.Script.Battle.Interface.DataStore
+namespace App.Battle.Interface
 {
     public interface IEnemyDataStore
     {

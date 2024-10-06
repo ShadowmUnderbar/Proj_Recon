@@ -1,7 +1,7 @@
 using UnityEngine;
 using VContainer.Unity;
-using App.Common.Interface.UseCase;
 using UnityEngine.InputSystem;
+using App.Common.Interface;
 
 namespace App.Common.UseCase
 {

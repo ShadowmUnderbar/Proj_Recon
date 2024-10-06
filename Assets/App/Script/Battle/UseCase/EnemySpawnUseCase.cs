@@ -1,11 +1,9 @@
-using App.Battle.Interface.Presenters;
-using App.Script.Battle.Interface.DataStore;
-using App.Script.Battle.Interface.UseCase;
-using App.Script.Common.Data.Database;
+using App.Battle.Interface;
+using App.Common.Data.Database;
 using UnityEngine;
 using VContainer.Unity;
 
-namespace App.Script.Battle.UseCase
+namespace App.Battle.UseCase
 {
     public class EnemySpawnUseCase : IEnemySpawnUseCase, IInitializable
     {

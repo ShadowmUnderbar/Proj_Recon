@@ -1,14 +1,9 @@
-using App.Battle.Interface.Presenters;
-using App.Battle.Interface.UseCase;
-using App.Battle.Interface.Views;
+using App.Battle.Interface;
 using App.Battle.Presenters;
 using App.Battle.UseCase;
 using App.Battle.Views;
 using App.Framework.Utilities;
 using App.Script.Battle.DataStore;
-using App.Script.Battle.Interface.DataStore;
-using App.Script.Battle.Interface.UseCase;
-using App.Script.Battle.Interface.Views;
 using App.Script.Battle.UseCase;
 using App.Script.Battle.Views;
 using UnityEngine;

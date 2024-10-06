@@ -1,5 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using App.Battle.Data;
+using App.Battle.Interface;
 using UnityEngine;
 
 public class HitBoxView : MonoBehaviour , IHitBoxView

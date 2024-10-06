@@ -1,7 +1,6 @@
 using UnityEngine;
-using App.Battle.Interface.Presenters;
+using App.Battle.Interface;
 using VContainer;
-using App.Battle.Interface.Views;
 
 namespace App.Battle.Presenters
 {

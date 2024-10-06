@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace App.Script.Framework.Attributes
+namespace App.Framework.Attributes
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class AssetPathAttribute : PropertyAttribute

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace App.Script.Battle.Data
+namespace App.Battle.Data
 {
     public class HitData
     {

@@ -1,7 +1,6 @@
 using System;
-using App.Battle.Interface.Presenters;
-using App.Battle.Interface.Views;
-using App.Script.Battle.Data;
+using App.Battle.Interface;
+using App.Battle.Data;
 using Cysharp.Threading.Tasks;
 using UniRx;
 using VContainer;

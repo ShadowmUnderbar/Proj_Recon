@@ -1,4 +1,4 @@
-﻿namespace App.Common.Interface.UseCase
+﻿namespace App.Common.Interface
 {
     public interface IOVRInputUseCase
     {

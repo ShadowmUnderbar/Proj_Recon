@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace App.Script.Framework.Utilities.Extensions
+namespace App.Framework.Utilities.Extensions
 {
     public static class TopdownVector2Extensions
     {

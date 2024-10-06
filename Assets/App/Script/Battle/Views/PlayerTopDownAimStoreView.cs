@@ -1,7 +1,7 @@
 ﻿using System;
-using App.Battle.Interface.Views;
+using App.Battle.Interface;
 using System.Collections.Generic;
-using App.Script.Battle.Data;
+using App.Battle.Data;
 using UniRx;
 using UnityEngine;
 

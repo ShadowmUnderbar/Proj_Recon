@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace App.Script.Battle.Interface.UseCase
+namespace App.Battle.Interface
 {
     public interface IEnemySpawnUseCase
     {

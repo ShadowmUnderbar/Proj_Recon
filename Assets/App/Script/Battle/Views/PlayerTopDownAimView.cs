@@ -1,5 +1,7 @@
-using App.Battle.Interface.Views;
-using UniRx;
+using App.Battle.Data;
+using App.Battle.Interface;
+using App.Common.Data;
+using R3;
 using UnityEngine;
 
 namespace App.Battle.Views
@@ -11,7 +13,7 @@ namespace App.Battle.Views
         private RaycastHit[] raycastHits = new RaycastHit[5];
         private readonly int TargetLayers = LayerConstants.Default | LayerConstants.Hitbox;
 
-        public ReactiveProperty<bool> IsFocus = new ();
+        public ReactiveProperty<bool> IsFocus { get; } = new();
 
 
         public Vector3 GetAimPosition()

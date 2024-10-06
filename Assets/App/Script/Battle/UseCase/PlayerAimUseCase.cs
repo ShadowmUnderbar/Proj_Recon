@@ -1,9 +1,9 @@
-using App.Battle.Interface.UseCase;
-using App.Battle.Interface.Presenters;
-using App.Common.Interface.UseCase;
+using App.Battle.Interface;
 using App.Common.UseCase;
 using VContainer;
 using VContainer.Unity;
+using App.Common.Interface;
+
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;

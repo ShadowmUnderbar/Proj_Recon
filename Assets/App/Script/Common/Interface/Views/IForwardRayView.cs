@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IForwardRayView
+namespace App.Common.Interface
 {
-    void View();
-    void Close();
+    public interface IForwardRayView
+    {
+        void View();
+        void Close();
+    }
 }

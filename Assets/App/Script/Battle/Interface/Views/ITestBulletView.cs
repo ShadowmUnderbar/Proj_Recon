@@ -1,8 +1,8 @@
 ﻿using System;
-using App.Script.Battle.Data;
+using App.Battle.Data;
 using UnityEngine;
 
-namespace App.Battle.Interface.Views
+namespace App.Battle.Interface
 {
     public interface IBulletView
     {
