@@ -25,7 +25,7 @@ namespace App.Battle.Views
             _bulletFactory = bulletFactory;
         }
 
-        public void SpawnBullet()
+        public void SpawnBullet(ShotType shotType)
         {
             var bullet = _bulletFactory.Instantiate(null);
 

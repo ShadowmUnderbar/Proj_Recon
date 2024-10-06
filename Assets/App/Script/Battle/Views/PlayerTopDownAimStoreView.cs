@@ -75,11 +75,11 @@ namespace App.Battle.Views
         {
             if (isLeft)
             {
-                _leftShotView.SpawnBullet();
+                _leftShotView.SpawnBullet(shotType);
                 return;
             }
 
-            _rightShotView.SpawnBullet();
+            _rightShotView.SpawnBullet(shotType);
         }
     }
 }
