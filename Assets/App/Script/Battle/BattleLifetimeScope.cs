@@ -23,6 +23,7 @@ namespace App.Battle
         {
             #region DataStore
 
+            builder.Register<PlayerDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IPlayerDataStore>();
             builder.Register<EnemyDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IEnemyDataStore>();
 
             #endregion

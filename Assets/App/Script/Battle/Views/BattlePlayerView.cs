@@ -17,6 +17,10 @@ namespace App.Battle.Views
 
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
+        public Observable<int> OnFocus => _onFocus;
+        private readonly Subject<int> _onFocus = new();
+        public Observable<int> OnUnFocus => _onUnFocus;
+        private readonly Subject<int> _onUnFocus = new();
 
         private ISimpleObjectFactory<IPlayerTopDownAimView> _topDownFactory;
         private ISimpleObjectFactory<IPlayerAimMuzzleView> _aimFactory;
@@ -56,6 +60,8 @@ namespace App.Battle.Views
         {
             _onHit.AddTo(this);
             _playerTopDownAimStoreView.OnHit.Subscribe(OnHitBullet).AddTo(this);
+            _playerTopDownAimStoreView.OnFocus.Subscribe(x=> _onFocus.OnNext(x)).AddTo(this);
+            _playerTopDownAimStoreView.OnUnFocus.Subscribe(x=> _onUnFocus.OnNext(x)).AddTo(this);
         }
 
         public void Move(Vector2 _inputV2, float speed)
@@ -90,10 +96,6 @@ namespace App.Battle.Views
             }
         }
 
-        public void SetFocus(bool isLeft)
-        {
-            _playerTopDownAimStoreView.Aim();
-        }
 
         public void Shot(bool isLeft)
         {

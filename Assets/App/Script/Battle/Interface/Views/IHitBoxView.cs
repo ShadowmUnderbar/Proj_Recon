@@ -1,12 +1,10 @@
 using App.Battle.Data;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace App.Battle.Interface
 {
     public interface IHitBoxView
     {
+        public int Id { get; }
         public HitBoxType HitBoxType { get; }
     }
 }

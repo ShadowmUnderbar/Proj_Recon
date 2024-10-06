@@ -1,29 +1,68 @@
 using App.Battle.Interface;
-using App.Common.UseCase;
 using VContainer;
 using VContainer.Unity;
 using App.Common.Interface;
+using App.Battle.DataStore;
+using R3;
+using System;
 
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEngine;
 #endif
 
 namespace App.Battle.UseCase
 {
-    public class PlayerAimUseCase : IPlayerAimUseCase, ITickable
+    public class PlayerAimUseCase : IPlayerAimUseCase, IInitializable, ITickable ,IDisposable
     {
+        private readonly IPlayerDataStore _playerDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputUsecase _gameInputUsecase;
 
+        private readonly CompositeDisposable _disposables = new();
+
         [Inject]
         public PlayerAimUseCase(
+            IPlayerDataStore playerDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputUsecase gameInputUsecase
         )
         {
+            _playerDataStore = playerDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputUsecase = gameInputUsecase;
+        }
+
+        public void Initialize()
+        {
+            _playerControlPresenter.OnFocus
+                .Subscribe(OnFocus)
+                .AddTo(_disposables);
+
+            _playerControlPresenter.OnUnFocus
+                .Subscribe(OnUnFocus)
+                .AddTo(_disposables);
+        }
+
+        private void OnFocus(int id)
+        {
+            if(id == 0)
+            {
+                _playerDataStore.IsFocusLeft.Value = true;
+                return;
+            }
+
+            _playerDataStore.IsFocusRight.Value = true;
+        }
+
+        private void OnUnFocus(int id)
+        {
+            if (id == 0)
+            {
+                _playerDataStore.IsFocusLeft.Value = false;
+                return;
+            }
+
+            _playerDataStore.IsFocusRight.Value = false;
         }
 
         public void Tick()
@@ -35,6 +74,11 @@ namespace App.Battle.UseCase
             }
 #endif
             _playerControlPresenter.Aim();
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
     }
 }

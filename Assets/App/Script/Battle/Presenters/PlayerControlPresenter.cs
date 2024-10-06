@@ -1,12 +1,17 @@
 using UnityEngine;
 using App.Battle.Interface;
 using VContainer;
+using R3;
 
 namespace App.Battle.Presenters
 {
     public class PlayerControlPresenter : IPlayerControlPresenter
     {
         private readonly IBattlePlayerView _playerView;
+
+
+        public Observable<int> OnFocus => _playerView.OnFocus;
+        public Observable<int> OnUnFocus => _playerView.OnUnFocus;
 
         [Inject]
         public PlayerControlPresenter(

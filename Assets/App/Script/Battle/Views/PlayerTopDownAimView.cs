@@ -13,7 +13,11 @@ namespace App.Battle.Views
         private RaycastHit[] raycastHits = new RaycastHit[5];
         private readonly int TargetLayers = LayerConstants.Default | LayerConstants.Hitbox;
 
-        public ReactiveProperty<bool> IsFocus { get; } = new();
+        public Observable<Unit> OnFocus => _onFocus;
+        private Subject<Unit> _onFocus = new();
+        
+        public Observable<Unit> OnUnFocus => _onUnFocus;
+        private Subject<Unit> _onUnFocus = new();
 
 
         public Vector3 GetAimPosition()
@@ -23,7 +27,7 @@ namespace App.Battle.Views
 
                 if (count <= 0)
                 {
-                    IsFocus.Value = false;
+                    _onUnFocus.OnNext(Unit.Default);
                     return transform.forward * Distance;
                 }
 
@@ -46,11 +50,11 @@ namespace App.Battle.Views
 
                     if (view.HitBoxType == HitBoxType.Enemy)
                     {
-                        IsFocus.Value = true;
+                        _onFocus.OnNext(Unit.Default);
                         return hit.collider.transform.position;
                     }
 
-                    IsFocus.Value = false;
+                    _onUnFocus.OnNext(Unit.Default);
                     return hit.point;
                 }
 

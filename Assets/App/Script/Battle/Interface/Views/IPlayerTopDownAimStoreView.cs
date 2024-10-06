@@ -7,9 +7,11 @@ namespace App.Battle.Interface
     public interface IPlayerTopDownAimStoreView
     {
         Observable<HitData> OnHit { get; }
+
+        Observable<int> OnFocus { get; }
+        Observable<int> OnUnFocus { get; }
+
         void Aim();
         void Shot(bool isLeft);
-        void SetFocus(bool isLeft);
-        void SetUnFocus(bool isLeft);
     }
 }

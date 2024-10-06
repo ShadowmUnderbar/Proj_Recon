@@ -10,6 +10,10 @@ namespace App.Battle.Views
     {
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
+        public Observable<int> OnFocus => _onFocus;
+        private readonly Subject<int> _onFocus = new();
+        public Observable<int> OnUnFocus => _onUnFocus;
+        private readonly Subject<int> _onUnFocus = new();
 
         private List<IPlayerTopDownAimView> _topdownViews = new();
 
@@ -31,6 +35,12 @@ namespace App.Battle.Views
             {
                 view.OnHit.Subscribe(x=> _onHit.OnNext(x)).AddTo(this);
             }
+
+            for(var i = 0;i< _topdownViews.Count;i++)
+            {
+                _topdownViews[i].OnFocus.Subscribe(_=> _onFocus.OnNext(i)).AddTo(this);
+                _topdownViews[i].OnUnFocus.Subscribe(_=> _onUnFocus.OnNext(i)).AddTo(this);
+            }
         }
 
         public void Aim()
@@ -49,18 +59,6 @@ namespace App.Battle.Views
         public Vector3 GetAimPosition(bool isLeft)
         {
             return _topdownViews[isLeft ? 0 : 1].GetAimPosition();
-        }
-
-        public void SetFocus(bool isLeft)
-        {
-            _topdownViews[isLeft ? 0 : 1].IsFocus.Value = true;
-            Debug.Log($"IsFocus {(isLeft ? '左' : '右')} {_topdownViews[isLeft ? 0 : 1].IsFocus.Value}");
-        }
-        
-        public void SetUnFocus(bool isLeft)
-        {
-            _topdownViews[isLeft ? 0 : 1].IsFocus.Value = false;
-            Debug.Log($"IsUnFocus {(isLeft ? '左' : '右')} {_topdownViews[isLeft ? 0 : 1].IsFocus.Value}");
         }
 
         public void Shot(bool isLeft)
