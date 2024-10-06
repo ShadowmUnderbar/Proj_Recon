@@ -8,7 +8,7 @@ namespace App.Battle.Views
 {
     public class PlayerTopDownAimView : MonoBehaviour, IPlayerTopDownAimView
     {
-        private const float Radius = 0.5f;
+        private const float Radius = 0.2f;
         private const float Distance = 50f;
         private RaycastHit[] raycastHits = new RaycastHit[5];
         private readonly int TargetLayers = LayerConstants.Default | LayerConstants.Hitbox;
@@ -18,40 +18,44 @@ namespace App.Battle.Views
 
         public Vector3 GetAimPosition()
         {
-            var count = Physics.SphereCastNonAlloc(transform.position, Radius, transform.forward, raycastHits, Distance, TargetLayers);
-
-            if (count <= 0)
             {
-                IsFocus.Value = false;
-                return transform.forward * Distance;
+                var count = Physics.SphereCastNonAlloc(transform.position, Radius, transform.forward, raycastHits, Distance, TargetLayers);
+
+                if (count <= 0)
+                {
+                    IsFocus.Value = false;
+                    return transform.forward * Distance;
+                }
+
+                for(var i = 0; i < count;i++)
+                {
+                    var hit = raycastHits[i];
+
+                    if (hit.collider == null)
+                    {
+                        continue;
+                    }
+
+                    var view = hit.collider.GetComponent<IHitBoxView>();
+
+                    if (view == null || view.HitBoxType == HitBoxType.Player)
+                    {
+                        continue;
+                    }
+
+
+                    if (view.HitBoxType == HitBoxType.Enemy)
+                    {
+                        IsFocus.Value = true;
+                        return hit.collider.transform.position;
+                    }
+
+                    IsFocus.Value = false;
+                    return hit.point;
+                }
+
+                return raycastHits[0].point;
             }
-
-            foreach (var hit in raycastHits)
-            {
-                if (hit.collider == null)
-                {
-                    continue;
-                }
-
-                var view = hit.collider.GetComponent<IHitBoxView>();
-
-                if (view == null || view.HitBoxType == HitBoxType.Player)
-                {
-                    continue;
-                }
-
-
-                if (view.HitBoxType == HitBoxType.Enemy)
-                {
-                    IsFocus.Value = true;
-                    return hit.collider.transform.position;
-                }
-
-                IsFocus.Value = false;
-                return hit.point;
-            }
-
-            return transform.forward * Distance;
         }
     }
 }
