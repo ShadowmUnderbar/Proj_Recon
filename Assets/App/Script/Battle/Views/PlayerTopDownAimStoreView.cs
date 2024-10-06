@@ -71,7 +71,7 @@ namespace App.Battle.Views
             return _rightTopDown.GetAimPosition();
         }
 
-        public void Shot(bool isLeft)
+        public void Shot(ShotType shotType, bool isLeft)
         {
             if (isLeft)
             {

@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using R3;
 
 namespace App.Battle.DataStore
@@ -7,11 +8,7 @@ namespace App.Battle.DataStore
         ReactiveProperty<float> Health { get; }
         ReactiveProperty<float> MaxHealth { get; }
 
-        bool CanLeftNormalShot { get; }
-        bool CanRightNormalShot { get; }
-        bool CanMergeShot { get; }
-        bool CanLeftWaltzShot { get; }
-        bool CanRightWaltzShot{ get; }
+        bool CanShotCoolDown(bool isLeft, ShotType shotType);
 
         float NormalFireRate { get; }
         float MergeFireRate { get; }
@@ -26,5 +23,7 @@ namespace App.Battle.DataStore
         void SetMergeShotCoolDown(float time);
         void SetLeftWaltzShotCoolDown(float time);
         void SetRightWaltzShotCoolDown(float time);
+
+        ShotType GetShotType(bool isLeft);
     }
 }

@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using R3;
 using UnityEngine;
 using VContainer.Unity;
@@ -10,12 +11,6 @@ namespace App.Battle.DataStore
         public ReactiveProperty<float> MaxHealth { get; } = new();
         public ReactiveProperty<int> IsFocusLeft { get; } = new();
         public ReactiveProperty<int> IsFocusRight { get; } = new();
-
-        public bool CanLeftNormalShot => _leftNomalShotCoolDown <= 0;
-        public bool CanRightNormalShot => _rightNomalShotCoolDown <= 0;
-        public bool CanMergeShot => _mergeShotCoolDown <= 0;
-        public bool CanLeftWaltzShot => _leftWaltzShotCoolDown <= 0;
-        public bool CanRightWaltzShot => _rightWaltzShotCoolDown <= 0;
 
         public float NormalFireRate => 0.6f;
 
@@ -58,6 +53,29 @@ namespace App.Battle.DataStore
             }
         }
 
+        public bool CanShotCoolDown(bool isLeft, ShotType shotType)
+        {
+            switch (shotType)
+            {
+                case ShotType.Normal:
+                case ShotType.NormalFocus:
+                    return isLeft ? CanLeftNormalShot : CanRightNormalShot;
+                case ShotType.Merge:
+                    return CanMergeShot;
+                case ShotType.Waltz:
+                case ShotType.WaltzFocus:
+                    return isLeft ? CanLeftWaltzShot : CanRightWaltzShot;
+                default:
+                   return false;
+            }
+        }
+
+        private bool CanLeftNormalShot => _leftNomalShotCoolDown <= 0;
+        private bool CanRightNormalShot => _rightNomalShotCoolDown <= 0;
+        private bool CanMergeShot => _mergeShotCoolDown <= 0;
+        private bool CanLeftWaltzShot => _leftWaltzShotCoolDown <= 0;
+        private bool CanRightWaltzShot => _rightWaltzShotCoolDown <= 0;
+
         public void SetLeftNormalShotCoolDown(float time)
         {
             _leftNomalShotCoolDown = time;
@@ -81,6 +99,28 @@ namespace App.Battle.DataStore
         public void SetRightWaltzShotCoolDown(float time)
         {
             _rightWaltzShotCoolDown = time;
+        }
+
+        public ShotType GetShotType(bool isLeft)
+        {
+            if(IsFocusLeft.Value == IsFocusRight.Value)
+            {
+                return ShotType.Merge;
+            }
+
+            if(isLeft && IsFocusLeft.Value != -1)
+            {
+                return ShotType.NormalFocus;
+            }
+
+
+            if (!isLeft && IsFocusRight.Value != -1)
+            {
+                return ShotType.NormalFocus;
+            }
+
+
+            return ShotType.Normal;
         }
     }
 }

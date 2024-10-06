@@ -16,6 +16,6 @@ namespace App.Battle.Interface
         Observable<int> OnFocusRight { get; }
 
         void Aim();
-        void Shot(bool isLeft);
+        void Shot(ShotType shotType, bool isLeft);
     }
 }

@@ -101,9 +101,9 @@ namespace App.Battle.Views
         }
 
 
-        public void Shot(bool isLeft)
+        public void Shot(ShotType shotType, bool isLeft)
         {
-            _playerTopDownAimStoreView.Shot(isLeft);
+            _playerTopDownAimStoreView.Shot(shotType,isLeft);
         }
 
         private void OnHitBullet(HitData hit)

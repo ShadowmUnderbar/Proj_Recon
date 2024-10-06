@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using R3;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace App.Battle.Interface
         Observable<int> OnFocusRight { get; }
         void Move(Vector2 moveV2, float speed);
         void Aim();
-        void Shot(bool isLeft);
+        void Shot(ShotType shotType, bool isLeft);
         void MouseAim(Vector2 mousePos);
     }
 }

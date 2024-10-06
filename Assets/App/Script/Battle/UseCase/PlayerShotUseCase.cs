@@ -40,25 +40,28 @@ namespace App.Battle.UseCase
 
         private void TryLeftShot()
         {
-            if(!_playerDataStore.CanLeftNormalShot)
+            var shotType = _playerDataStore.GetShotType(true);
+
+            if (!_playerDataStore.CanShotCoolDown(true,shotType))
             {
                 return;
             }
 
             _playerDataStore.SetLeftNormalShotCoolDown(_playerDataStore.NormalFireRate);
-            _playerControlPresenter.Shot(true);
-
+            _playerControlPresenter.Shot(shotType, true);
         }
 
         private void TryRightShot()
         {
-            if (_playerDataStore.CanRightNormalShot)
+            var shotType = _playerDataStore.GetShotType(false);
+
+            if (!_playerDataStore.CanShotCoolDown(false, shotType))
             {
                 return;
             }
 
             _playerDataStore.SetRightNormalShotCoolDown(_playerDataStore.NormalFireRate);
-            _playerControlPresenter.Shot(false);
+            _playerControlPresenter.Shot(shotType, false);
         }
     }
 }
