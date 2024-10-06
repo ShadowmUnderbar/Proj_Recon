@@ -1,7 +1,7 @@
 using System;
 using App.Battle.Data;
 using App.Battle.Interface;
-using UniRx;
+using R3;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -25,7 +25,7 @@ namespace App.Battle.UseCase
 
         public void Initialize()
         {
-            _battleHitPresenter.OnHit.Subscribe(OnHit).AddTo(_disposable);
+            _battleHitPresenter.OnHit.Subscribe(x => OnHit(x)).AddTo(_disposable);
         }
 
         private void OnHit(HitData hitData)

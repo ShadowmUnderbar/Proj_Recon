@@ -1,12 +1,11 @@
-using System;
 using App.Battle.Interface;
 using System.Collections.Generic;
 using App.Framework.Utilities;
 using App.Battle.Data;
 using App.Framework.Utilities.Extensions;
-using UniRx;
 using UnityEngine;
 using VContainer;
+using R3;
 
 namespace App.Battle.Views
 {
@@ -15,7 +14,7 @@ namespace App.Battle.Views
         private ISimpleObjectFactory<IBulletView> _bulletFactory;
         private readonly Dictionary<float, IBulletView> _bulletViews = new();
 
-        public IObservable<HitData> OnHit => _onHit;
+        public Observable<HitData> OnHit => _onHit;
         private Subject<HitData> _onHit = new Subject<HitData>();
 
         [Inject]
@@ -33,7 +32,7 @@ namespace App.Battle.Views
             _bulletViews.Add(Time.time, bullet);
 
             bullet.Spawn(transform.ToPose(), new BulletData());
-            bullet.OnHit.Subscribe(_onHit).AddTo(this);
+            bullet.OnHit.Subscribe(x => _onHit.OnNext(x)).AddTo(this);
         }
     }
 }

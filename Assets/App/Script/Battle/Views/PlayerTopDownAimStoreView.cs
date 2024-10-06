@@ -1,15 +1,14 @@
-﻿using System;
-using App.Battle.Interface;
+﻿using App.Battle.Interface;
 using System.Collections.Generic;
 using App.Battle.Data;
-using UniRx;
 using UnityEngine;
+using R3;
 
 namespace App.Battle.Views
 {
     public class PlayerTopDownAimStoreView : MonoBehaviour, IPlayerTopDownAimStoreView
     {
-        public IObservable<HitData> OnHit => _onHit;
+        public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
 
         private List<IPlayerTopDownAimView> _topdownViews = new();
@@ -28,10 +27,9 @@ namespace App.Battle.Views
             _aimViews = aimFactory;
             _shotViews = shotFactory;
 
-            _onHit.AddTo(this);
             foreach (var view in _shotViews)
             {
-                view.OnHit.Subscribe(_onHit).AddTo(this);
+                view.OnHit.Subscribe(x=> _onHit.OnNext(x)).AddTo(this);
             }
         }
 

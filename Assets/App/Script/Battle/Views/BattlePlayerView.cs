@@ -1,11 +1,10 @@
-using System;
 using App.Battle.Interface;
 using App.Framework.Utilities;
 using System.Collections.Generic;
 using App.Battle.Data;
-using UniRx;
 using UnityEngine;
 using VContainer;
+using R3;
 
 namespace App.Battle.Views
 {
@@ -16,7 +15,7 @@ namespace App.Battle.Views
         [SerializeField] private Transform[] _controllers;
         [SerializeField] private Transform[] _muzzles;
 
-        public IObservable<HitData> OnHit => _onHit;
+        public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
 
         private ISimpleObjectFactory<IPlayerTopDownAimView> _topDownFactory;

@@ -1,12 +1,12 @@
-﻿using System;
-using App.Battle.Data;
+﻿using App.Battle.Data;
+using R3;
 using UnityEngine;
 
 namespace App.Battle.Interface
 {
     public interface IBulletView
     {
-        IObservable<HitData> OnHit { get; }
+        Observable<HitData> OnHit { get; }
         void Spawn(Pose pose, BulletData bulletData);
     }
 }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using App.Battle.Interface;
 using App.Battle.Data;
 using App.Framework.Utilities.Extensions;
-using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
+using R3;
+using R3.Triggers;
 
 namespace App.Battle.Views
 {
@@ -13,7 +13,7 @@ namespace App.Battle.Views
     {
         [SerializeField] private Collider _hitCollider;
 
-        public IObservable<HitData> OnHit => _onHit;
+        public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
 
         private readonly List<uint> _hitTargetIds = new();
@@ -31,7 +31,6 @@ namespace App.Battle.Views
         private void Awake()
         {
             _hitCollider.OnTriggerEnterAsObservable()
-                .Synchronize()
                 .Subscribe(x =>
                 {
                     if (!x.TryGetComponent<IEnemyView>(out var enemyView))

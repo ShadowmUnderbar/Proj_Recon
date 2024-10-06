@@ -1,10 +1,10 @@
-using System;
 using App.Battle.Data;
+using R3;
 
 namespace App.Battle.Interface
 {
     public interface IBattleHitPresenter
     {
-        IObservable<HitData> OnHit { get; }
+        Observable<HitData> OnHit { get; }
     }
 }

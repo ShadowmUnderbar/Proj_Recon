@@ -1,11 +1,11 @@
-﻿using System;
-using App.Battle.Data;
+﻿using App.Battle.Data;
+using R3;
 
 namespace App.Battle.Interface
 {
     public interface IPlayerShotView
     {
-        IObservable<HitData> OnHit { get; }
+        Observable<HitData> OnHit { get; }
 
         void SpawnBullet();
     }

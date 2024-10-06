@@ -2,9 +2,9 @@ using System;
 using App.Battle.Interface;
 using App.Battle.Data;
 using Cysharp.Threading.Tasks;
-using UniRx;
 using VContainer;
 using VContainer.Unity;
+using R3;
 
 namespace App.Battle.Presenters
 {
@@ -12,7 +12,7 @@ namespace App.Battle.Presenters
     {
         private readonly IBattlePlayerView _playerView;
 
-        public IObservable<HitData> OnHit => _onHit;
+        public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
 
         private readonly CompositeDisposable _disposable = new();
@@ -28,7 +28,7 @@ namespace App.Battle.Presenters
 
         public void Initialize()
         {
-            _playerView.OnHit.Subscribe(_onHit).AddTo(_disposable);
+            _playerView.OnHit.Subscribe(x => _onHit.OnNext(x)).AddTo(_disposable);
         }
 
         public void Dispose()
