@@ -55,7 +55,8 @@ namespace App.Battle.Views
 
         public bool SetFocus(bool isLeft)
         {
-            return _topdownViews[isLeft ? 0 : 1].IsFocus();
+            return false;
+            //return _topdownViews[isLeft ? 0 : 1].IsFocus();
         }
 
         public void Shot(bool isLeft)
