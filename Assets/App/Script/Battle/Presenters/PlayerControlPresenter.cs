@@ -10,8 +10,8 @@ namespace App.Battle.Presenters
         private readonly IBattlePlayerView _playerView;
 
 
-        public Observable<int> OnFocus => _playerView.OnFocus;
-        public Observable<int> OnUnFocus => _playerView.OnUnFocus;
+        public Observable<int> OnFocusLeft => _playerView.OnFocusLeft;
+        public Observable<int> OnFocusRight => _playerView.OnFocusRight;
 
         [Inject]
         public PlayerControlPresenter(

@@ -6,7 +6,6 @@ namespace App.Battle.Interface
     public interface IPlayerTopDownAimView
     {
         Vector3 GetAimPosition();
-        Observable<Unit> OnFocus { get; }
-        Observable<Unit> OnUnFocus { get; }
+        Observable<int> OnFocus { get; }
     }
 }

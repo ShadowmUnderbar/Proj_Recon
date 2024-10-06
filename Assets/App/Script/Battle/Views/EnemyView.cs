@@ -10,6 +10,13 @@ namespace App.Script.Battle.Views
         public void Init(uint id)
         {
             Id = id;
+
+            var hitboxes = GetComponentsInChildren<HitBoxView>();
+
+            foreach (var hitbox in hitboxes)
+            {
+                hitbox.Id = Id;
+            }
         }
     }
 }

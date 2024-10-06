@@ -7,10 +7,7 @@ public class HitBoxView : MonoBehaviour, IHitBoxView
     [SerializeField]
     private HitBoxType hitBoxType;
 
-    [SerializeField]
-    private int _id;
-
     public HitBoxType HitBoxType => hitBoxType;
 
-    public int Id => _id;
+    public uint Id { get; set; }
 }

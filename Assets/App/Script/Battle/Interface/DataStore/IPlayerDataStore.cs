@@ -8,7 +8,7 @@ namespace App.Battle.DataStore
         ReactiveProperty<float> MaxHealth { get; }
         ReactiveProperty<float> Bullet { get; }
         ReactiveProperty<float> MaxBullet { get; }
-        ReactiveProperty<bool> IsFocusLeft { get; }
-        ReactiveProperty<bool> IsFocusRight { get; }
+        ReactiveProperty<int> IsFocusLeft { get; }
+        ReactiveProperty<int> IsFocusRight { get; }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using App.Battle.Interface;
-using System.Collections.Generic;
 using App.Battle.Data;
 using UnityEngine;
 using R3;
@@ -10,60 +9,77 @@ namespace App.Battle.Views
     {
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
-        public Observable<int> OnFocus => _onFocus;
-        private readonly Subject<int> _onFocus = new();
-        public Observable<int> OnUnFocus => _onUnFocus;
-        private readonly Subject<int> _onUnFocus = new();
+        public Observable<int> OnFocusLeft => _onFocusLeft;
+        private readonly Subject<int> _onFocusLeft = new();
+        public Observable<int> OnFocusRight => _onFocusRight;
+        private readonly Subject<int> _onFocusRight = new();
 
-        private List<IPlayerTopDownAimView> _topdownViews = new();
+        private IPlayerTopDownAimView _leftTopDown;
+        private IPlayerTopDownAimView _rightTopDown;
+        
+        private IPlayerAimMuzzleView _leftAimView;
+        private IPlayerAimMuzzleView _rightAimView;
 
-        private List<IPlayerAimMuzzleView> _aimViews = new();
+        private IPlayerShotView _leftShotView;
+        private IPlayerShotView _rightShotView;
 
-        private List<IPlayerShotView> _shotViews = new();
-
-        public void Initialize(
-            List<IPlayerTopDownAimView> topDownFactory,
-            List<IPlayerAimMuzzleView> aimFactory,
-            List<IPlayerShotView> shotFactory
+        public void InitStoreView(
+            IPlayerTopDownAimView leftTopDown, IPlayerTopDownAimView rightTopDown,
+            IPlayerAimMuzzleView leftAim, IPlayerAimMuzzleView rightAim,
+            IPlayerShotView leftShot, IPlayerShotView rightShot
         )
         {
-            _topdownViews = topDownFactory;
-            _aimViews = aimFactory;
-            _shotViews = shotFactory;
+            _leftTopDown = leftTopDown;
+            _rightTopDown = rightTopDown;
 
-            foreach (var view in _shotViews)
-            {
-                view.OnHit.Subscribe(x=> _onHit.OnNext(x)).AddTo(this);
-            }
+            leftTopDown.OnFocus
+                .Subscribe(x => _onFocusLeft.OnNext(x))
+                .AddTo(this);
 
-            for(var i = 0;i< _topdownViews.Count;i++)
-            {
-                _topdownViews[i].OnFocus.Subscribe(_=> _onFocus.OnNext(i)).AddTo(this);
-                _topdownViews[i].OnUnFocus.Subscribe(_=> _onUnFocus.OnNext(i)).AddTo(this);
-            }
+            rightTopDown.OnFocus
+                .Subscribe(x => _onFocusLeft.OnNext(x))
+                .AddTo(this);
+
+            _leftAimView = leftAim;
+            _rightAimView = rightAim;
+
+            _leftShotView = leftShot;
+            _rightShotView = rightShot;
+
+            _leftShotView.OnHit
+                .Subscribe(x => _onHit.OnNext(x))
+                .AddTo(this);
+
+            _rightShotView.OnHit
+                .Subscribe(x => _onHit.OnNext(x))
+                .AddTo(this);
         }
 
         public void Aim()
         {
-            if (_aimViews == null)
-            {
-                return;
-            }
-
-            for (var i = 0; i < _aimViews.Count; i++)
-            {
-                _aimViews[i].LookAimPosition(GetAimPosition(i == 0));
-            }
+            _leftAimView?.LookAimPosition(GetAimPosition(true));
+            _rightAimView?.LookAimPosition(GetAimPosition(false));
         }
 
         public Vector3 GetAimPosition(bool isLeft)
         {
-            return _topdownViews[isLeft ? 0 : 1].GetAimPosition();
+            if (isLeft)
+            {
+                return _leftTopDown.GetAimPosition();
+            }
+            
+            return _rightTopDown.GetAimPosition();
         }
 
         public void Shot(bool isLeft)
         {
-            _shotViews[isLeft ? 0 : 1].SpawnBullet();
+            if (isLeft)
+            {
+                _leftShotView.SpawnBullet();
+                return;
+            }
+
+            _rightShotView.SpawnBullet();
         }
     }
 }

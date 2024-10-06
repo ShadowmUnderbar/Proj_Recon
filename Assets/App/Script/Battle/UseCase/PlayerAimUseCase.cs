@@ -34,35 +34,24 @@ namespace App.Battle.UseCase
 
         public void Initialize()
         {
-            _playerControlPresenter.OnFocus
-                .Subscribe(OnFocus)
+            _playerControlPresenter.OnFocusLeft
+                .Subscribe(x => UpdateOnFocus(x,true))
                 .AddTo(_disposables);
 
-            _playerControlPresenter.OnUnFocus
-                .Subscribe(OnUnFocus)
+            _playerControlPresenter.OnFocusRight
+                .Subscribe(x => UpdateOnFocus(x,false))
                 .AddTo(_disposables);
         }
 
-        private void OnFocus(int id)
+        private void UpdateOnFocus(int id,bool isLeft)
         {
-            if(id == 0)
+            if(isLeft)
             {
-                _playerDataStore.IsFocusLeft.Value = true;
+                _playerDataStore.IsFocusLeft.Value = id;
                 return;
             }
 
-            _playerDataStore.IsFocusRight.Value = true;
-        }
-
-        private void OnUnFocus(int id)
-        {
-            if (id == 0)
-            {
-                _playerDataStore.IsFocusLeft.Value = false;
-                return;
-            }
-
-            _playerDataStore.IsFocusRight.Value = false;
+            _playerDataStore.IsFocusRight.Value = id;
         }
 
         public void Tick()

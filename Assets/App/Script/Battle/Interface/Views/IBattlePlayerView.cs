@@ -8,8 +8,8 @@ namespace App.Battle.Interface
     {
         Observable<HitData> OnHit { get; }
 
-        Observable<int> OnFocus { get; }
-        Observable<int> OnUnFocus { get; }
+        Observable<int> OnFocusLeft { get; }
+        Observable<int> OnFocusRight { get; }
         void Move(Vector2 _inputV2, float speed);
         void Aim();
         void MouseAim(Vector2 mousePos);

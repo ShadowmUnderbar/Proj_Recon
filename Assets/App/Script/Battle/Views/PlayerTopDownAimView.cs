@@ -13,53 +13,49 @@ namespace App.Battle.Views
         private RaycastHit[] raycastHits = new RaycastHit[5];
         private readonly int TargetLayers = LayerConstants.Default | LayerConstants.Hitbox;
 
-        public Observable<Unit> OnFocus => _onFocus;
-        private Subject<Unit> _onFocus = new();
-        
-        public Observable<Unit> OnUnFocus => _onUnFocus;
-        private Subject<Unit> _onUnFocus = new();
+        public Observable<int> OnFocus => _onFocus;
+        private Subject<int> _onFocus = new();
 
 
         public Vector3 GetAimPosition()
         {
+            var count = Physics.SphereCastNonAlloc(transform.position, Radius, transform.forward, raycastHits, Distance, TargetLayers);
+
+            if (count <= 0)
             {
-                var count = Physics.SphereCastNonAlloc(transform.position, Radius, transform.forward, raycastHits, Distance, TargetLayers);
-
-                if (count <= 0)
-                {
-                    _onUnFocus.OnNext(Unit.Default);
-                    return transform.forward * Distance;
-                }
-
-                for(var i = 0; i < count;i++)
-                {
-                    var hit = raycastHits[i];
-
-                    if (hit.collider == null)
-                    {
-                        continue;
-                    }
-
-                    var view = hit.collider.GetComponent<IHitBoxView>();
-
-                    if (view == null || view.HitBoxType == HitBoxType.Player)
-                    {
-                        continue;
-                    }
-
-
-                    if (view.HitBoxType == HitBoxType.Enemy)
-                    {
-                        _onFocus.OnNext(Unit.Default);
-                        return hit.collider.transform.position;
-                    }
-
-                    _onUnFocus.OnNext(Unit.Default);
-                    return hit.point;
-                }
-
-                return raycastHits[0].point;
+                _onFocus.OnNext(-1);
+                return transform.forward * Distance;
             }
+
+            for(var i = 0; i < count;i++)
+            {
+                var hit = raycastHits[i];
+
+                if (hit.collider == null)
+                {
+                    continue;
+                }
+
+                var view = hit.collider.GetComponent<IHitBoxView>();
+
+                if (view == null || view.HitBoxType == HitBoxType.Player)
+                {
+                    continue;
+                }
+
+
+                if (view.HitBoxType == HitBoxType.Enemy)
+                {
+                    _onFocus.OnNext((int)view.Id);
+                    return hit.collider.transform.position;
+                }
+
+                _onFocus.OnNext(-1);
+                return hit.point;
+            }
+
+            _onFocus.OnNext(-1);
+            return raycastHits[0].point;
         }
     }
 }

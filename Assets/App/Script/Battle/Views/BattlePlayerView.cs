@@ -17,10 +17,10 @@ namespace App.Battle.Views
 
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
-        public Observable<int> OnFocus => _onFocus;
-        private readonly Subject<int> _onFocus = new();
-        public Observable<int> OnUnFocus => _onUnFocus;
-        private readonly Subject<int> _onUnFocus = new();
+        public Observable<int> OnFocusLeft => _onFocusLeft;
+        private readonly Subject<int> _onFocusLeft = new();
+        public Observable<int> OnFocusRight => _onFocusRight;
+        private readonly Subject<int> _onFocusRight = new();
 
         private ISimpleObjectFactory<IPlayerTopDownAimView> _topDownFactory;
         private ISimpleObjectFactory<IPlayerAimMuzzleView> _aimFactory;
@@ -53,15 +53,19 @@ namespace App.Battle.Views
                 shotViews.Add(_shotFactory.Instantiate(aimView.Transform));
             }
 
-            _playerTopDownAimStoreView.Initialize(topdownViews, aimViews, shotViews);
+            _playerTopDownAimStoreView.InitStoreView(
+                topdownViews[0], topdownViews[1],
+                aimViews[0], aimViews[1],
+                shotViews[0], shotViews[1]
+                );
         }
 
         private void Awake()
         {
             _onHit.AddTo(this);
             _playerTopDownAimStoreView.OnHit.Subscribe(OnHitBullet).AddTo(this);
-            _playerTopDownAimStoreView.OnFocus.Subscribe(x=> _onFocus.OnNext(x)).AddTo(this);
-            _playerTopDownAimStoreView.OnUnFocus.Subscribe(x=> _onUnFocus.OnNext(x)).AddTo(this);
+            _playerTopDownAimStoreView.OnFocusLeft.Subscribe(x=> _onFocusLeft.OnNext(x)).AddTo(this);
+            _playerTopDownAimStoreView.OnFocusRight.Subscribe(x=> _onFocusRight.OnNext(x)).AddTo(this);
         }
 
         public void Move(Vector2 _inputV2, float speed)
