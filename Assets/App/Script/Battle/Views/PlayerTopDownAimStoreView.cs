@@ -53,10 +53,16 @@ namespace App.Battle.Views
             return _topdownViews[isLeft ? 0 : 1].GetAimPosition();
         }
 
-        public bool SetFocus(bool isLeft)
+        public void SetFocus(bool isLeft)
         {
-            return false;
-            //return _topdownViews[isLeft ? 0 : 1].IsFocus();
+            _topdownViews[isLeft ? 0 : 1].IsFocus.Value = true;
+            Debug.Log($"IsFocus {(isLeft ? '左' : '右')} {_topdownViews[isLeft ? 0 : 1].IsFocus.Value}");
+        }
+        
+        public void SetUnFocus(bool isLeft)
+        {
+            _topdownViews[isLeft ? 0 : 1].IsFocus.Value = false;
+            Debug.Log($"IsUnFocus {(isLeft ? '左' : '右')} {_topdownViews[isLeft ? 0 : 1].IsFocus.Value}");
         }
 
         public void Shot(bool isLeft)

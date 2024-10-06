@@ -8,6 +8,7 @@ namespace App.Battle.Interface
         IObservable<HitData> OnHit { get; }
         void Aim();
         void Shot(bool isLeft);
-        bool SetFocus(bool isLeft);
+        void SetFocus(bool isLeft);
+        void SetUnFocus(bool isLeft);
     }
 }

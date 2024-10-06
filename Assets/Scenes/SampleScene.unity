@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: App.Script.Common.CommonLifetimeScope
+    TypeName: App.Common.CommonLifetimeScope
   autoRun: 1
   autoInjectGameObjects: []
   _playerView: {fileID: 5135707317468556012, guid: 63eeda3b2ca9c0249aa273426f18c39a, type: 3}

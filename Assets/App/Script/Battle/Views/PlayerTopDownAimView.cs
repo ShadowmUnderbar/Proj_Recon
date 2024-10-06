@@ -28,6 +28,11 @@ namespace App.Battle.Views
 
             foreach (var hit in raycastHits)
             {
+                if (hit.collider == null)
+                {
+                    continue;
+                }
+
                 var view = hit.collider.GetComponent<IHitBoxView>();
 
                 if (view == null || view.HitBoxType == HitBoxType.Player)

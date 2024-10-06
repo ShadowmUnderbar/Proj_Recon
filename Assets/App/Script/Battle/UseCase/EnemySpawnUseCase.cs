@@ -1,6 +1,7 @@
 using App.Battle.Interface;
 using App.Common.Data.Database;
 using UnityEngine;
+using VContainer;
 using VContainer.Unity;
 
 namespace App.Battle.UseCase
@@ -11,6 +12,7 @@ namespace App.Battle.UseCase
         private readonly IEnemySpawnPresenter _enemySpawnPresenter;
         private readonly IEnemyDataStore _enemyDataStore;
 
+        [Inject]
         public EnemySpawnUseCase(
             EnemyDatabase enemyDatabase,
             IEnemySpawnPresenter enemySpawnPresenter,
