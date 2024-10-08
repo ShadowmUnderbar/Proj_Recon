@@ -32,9 +32,9 @@ namespace App.Battle.Presenters
             _playerView.MouseAim(mousePos);
         }
 
-        public void Shot(ShotType shotType,bool isFocus, bool isLeft)
+        public void Shot(ShotType shotType, int focusTargetIdint, bool isLeft)
         {
-            _playerView.Shot(shotType, isFocus, isLeft);
+            _playerView.Shot(shotType, focusTargetIdint, isLeft);
         }
 
         public void Aim()

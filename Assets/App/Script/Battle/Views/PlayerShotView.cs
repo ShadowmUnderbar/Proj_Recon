@@ -30,9 +30,9 @@ namespace App.Battle.Views
             _bulletDataBase = bulletDataBase;
         }
 
-        public void SpawnBullet(ShotType shotType,bool isFocus)
+        public void SpawnBullet(ShotType shotType, int focusTargetId)
         {
-            if(!_bulletDataBase.TryGetBulletData(shotType,isFocus,out  var bulletData))
+            if(!_bulletDataBase.TryGetBulletData(shotType, focusTargetId != -1, out  var bulletData))
             {
                 return;
             }
@@ -40,8 +40,7 @@ namespace App.Battle.Views
             var bullet = _bulletFactory.Instantiate(null);
 
             _bulletViews.Add(Time.time, bullet);
-            Debug.Log($"Shot {bulletData.Id}");
-            bullet.Spawn(transform.ToPose(), bulletData);
+            bullet.Spawn(transform.ToPose(), bulletData, focusTargetId);
             bullet.OnHit.Subscribe(x => _onHit.OnNext(x)).AddTo(this);
         }
     }

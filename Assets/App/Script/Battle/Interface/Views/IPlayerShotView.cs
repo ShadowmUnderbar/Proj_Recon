@@ -8,6 +8,6 @@ namespace App.Battle.Interface
     {
         Observable<HitData> OnHit { get; }
 
-        void SpawnBullet(ShotType shotType, bool isFocus);
+        void SpawnBullet(ShotType shotType, int focusTargetId);
     }
 }

@@ -15,8 +15,8 @@ namespace App.Battle.DataStore
         float WaltzFireRate { get; }
 
         //フォーカス(照準が敵に重なっている)か
-        ReactiveProperty<int> IsFocusLeft { get; }
-        ReactiveProperty<int> IsFocusRight { get; }
+        ReactiveProperty<int> FocusLeftTargetId { get; }
+        ReactiveProperty<int> FocusRightTargetId { get; }
 
         void SetLeftNormalShotCoolDown(float time);
         void SetRightNormalShotCoolDown(float time);

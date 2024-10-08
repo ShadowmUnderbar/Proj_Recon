@@ -8,6 +8,6 @@ namespace App.Battle.Interface
     public interface IBulletView
     {
         Observable<HitData> OnHit { get; }
-        void Spawn(Pose pose, BulletData bulletData);
+        void Spawn(Pose pose, BulletData bulletData, int focusTargetId);
     }
 }

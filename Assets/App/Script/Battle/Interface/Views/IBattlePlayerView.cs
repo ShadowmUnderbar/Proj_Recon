@@ -14,6 +14,6 @@ namespace App.Battle.Interface
         void Move(Vector2 _inputV2, float speed);
         void Aim();
         void MouseAim(Vector2 mousePos);
-        void Shot(ShotType shotType, bool isFocus, bool isLeft);
+        void Shot(ShotType shotType, int focusTargetIdint, bool isLeft);
     }
 }

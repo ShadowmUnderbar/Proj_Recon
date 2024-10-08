@@ -47,11 +47,11 @@ namespace App.Battle.UseCase
         {
             if(isLeft)
             {
-                _playerDataStore.IsFocusLeft.Value = id;
+                _playerDataStore.FocusLeftTargetId.Value = id;
                 return;
             }
 
-            _playerDataStore.IsFocusRight.Value = id;
+            _playerDataStore.FocusRightTargetId.Value = id;
         }
 
         public void Tick()

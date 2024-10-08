@@ -9,8 +9,8 @@ namespace App.Battle.DataStore
     {
         public ReactiveProperty<float> Health { get; } = new();
         public ReactiveProperty<float> MaxHealth { get; } = new();
-        public ReactiveProperty<int> IsFocusLeft { get; } = new();
-        public ReactiveProperty<int> IsFocusRight { get; } = new();
+        public ReactiveProperty<int> FocusLeftTargetId { get; } = new();
+        public ReactiveProperty<int> FocusRightTargetId { get; } = new();
 
         public float NormalFireRate => 0.6f;
 
