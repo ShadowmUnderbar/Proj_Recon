@@ -5,6 +5,7 @@ using App.Battle.Data;
 using UnityEngine;
 using VContainer;
 using R3;
+using App.Common.Data;
 
 namespace App.Battle.Views
 {
@@ -101,9 +102,9 @@ namespace App.Battle.Views
         }
 
 
-        public void Shot(ShotType shotType, bool isLeft)
+        public void Shot(ShotType shotType, bool isFocus, bool isLeft)
         {
-            _playerTopDownAimStoreView.Shot(shotType,isLeft);
+            _playerTopDownAimStoreView.Shot(shotType, isFocus, isLeft);
         }
 
         private void OnHitBullet(HitData hit)

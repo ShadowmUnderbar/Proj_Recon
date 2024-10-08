@@ -2,7 +2,7 @@ using UnityEngine;
 using App.Battle.Interface;
 using VContainer;
 using R3;
-using App.Battle.Data;
+using App.Common.Data;
 
 namespace App.Battle.Presenters
 {
@@ -32,9 +32,9 @@ namespace App.Battle.Presenters
             _playerView.MouseAim(mousePos);
         }
 
-        public void Shot(ShotType shotType,bool isLeft)
+        public void Shot(ShotType shotType,bool isFocus, bool isLeft)
         {
-            _playerView.Shot(shotType, isLeft);
+            _playerView.Shot(shotType, isFocus, isLeft);
         }
 
         public void Aim()

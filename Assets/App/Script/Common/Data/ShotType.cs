@@ -1,11 +1,9 @@
-namespace App.Battle.Data
+namespace App.Common.Data
 {
     public enum ShotType
     {
         Normal,
-        NormalFocus,
         Merge,
         Waltz,
-        WaltzFocus
     }
 }

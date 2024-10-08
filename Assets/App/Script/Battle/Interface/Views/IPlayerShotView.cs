@@ -1,4 +1,5 @@
 ﻿using App.Battle.Data;
+using App.Common.Data;
 using R3;
 
 namespace App.Battle.Interface
@@ -7,6 +8,6 @@ namespace App.Battle.Interface
     {
         Observable<HitData> OnHit { get; }
 
-        void SpawnBullet(ShotType shotType);
+        void SpawnBullet(ShotType shotType, bool isFocus);
     }
 }

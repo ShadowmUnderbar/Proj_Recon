@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using App.Battle.Interface;
 using App.Battle.Data;
@@ -6,6 +5,7 @@ using App.Framework.Utilities.Extensions;
 using UnityEngine;
 using R3;
 using R3.Triggers;
+using App.Common.Data;
 
 namespace App.Battle.Views
 {

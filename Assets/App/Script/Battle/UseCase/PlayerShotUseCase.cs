@@ -48,7 +48,7 @@ namespace App.Battle.UseCase
             }
 
             _playerDataStore.SetLeftNormalShotCoolDown(_playerDataStore.NormalFireRate);
-            _playerControlPresenter.Shot(shotType, true);
+            _playerControlPresenter.Shot(shotType, _playerDataStore.IsFocusLeft.Value != -1 , true);
         }
 
         private void TryRightShot()
@@ -61,7 +61,7 @@ namespace App.Battle.UseCase
             }
 
             _playerDataStore.SetRightNormalShotCoolDown(_playerDataStore.NormalFireRate);
-            _playerControlPresenter.Shot(shotType, false);
+            _playerControlPresenter.Shot(shotType, _playerDataStore.IsFocusRight.Value != -1, false);
         }
     }
 }

@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb22b6bcdff5042428fd9d61dcb6292e, type: 3}
+  m_Name: BulletDataBase
+  m_EditorClassIdentifier: 
+  _bulletDataBaseList:
+  - Id: NormalBullet
+    Type: 0
+    Damage: 4
+    Speed: 20
+    Penetration: 1
+    Explosive: 0
+    IsFocus: 0
+  - Id: FocusNormalBullet
+    Type: 0
+    Damage: 5
+    Speed: 40
+    Penetration: 3
+    Explosive: 0
+    IsFocus: 1
+  - Id: MergeBullet
+    Type: 1
+    Damage: 10
+    Speed: 30
+    Penetration: 0
+    Explosive: 0.7
+    IsFocus: 0
+  - Id: FocusMergeBullet
+    Type: 1
+    Damage: 10
+    Speed: 50
+    Penetration: 0
+    Explosive: 1.4
+    IsFocus: 1
+  - Id: WaltzBullet
+    Type: 2
+    Damage: 1
+    Speed: 10
+    Penetration: 0
+    Explosive: 0
+    IsFocus: 0
+  - Id: FocusWaltzBullet
+    Type: 2
+    Damage: 2
+    Speed: 30
+    Penetration: 1
+    Explosive: 0
+    IsFocus: 1

@@ -434,6 +434,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
+  _bulletDataBase: {fileID: 11400000, guid: 9558e92b1a108d04092cc18f4a21da91, type: 2}
   _enemyDatabase: {fileID: 11400000, guid: 25a18e38d2d2dd749b250325309d63e7, type: 2}
 --- !u!4 &1576992900
 Transform:

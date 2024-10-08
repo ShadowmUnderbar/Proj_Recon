@@ -1,4 +1,4 @@
-using App.Battle.Data;
+using App.Common.Data;
 using R3;
 using UnityEngine;
 using VContainer.Unity;
@@ -58,12 +58,10 @@ namespace App.Battle.DataStore
             switch (shotType)
             {
                 case ShotType.Normal:
-                case ShotType.NormalFocus:
                     return isLeft ? CanLeftNormalShot : CanRightNormalShot;
                 case ShotType.Merge:
                     return CanMergeShot;
                 case ShotType.Waltz:
-                case ShotType.WaltzFocus:
                     return isLeft ? CanLeftWaltzShot : CanRightWaltzShot;
                 default:
                    return false;
@@ -103,23 +101,6 @@ namespace App.Battle.DataStore
 
         public ShotType GetShotType(bool isLeft)
         {
-            if(IsFocusLeft.Value == IsFocusRight.Value)
-            {
-                return ShotType.Merge;
-            }
-
-            if(isLeft && IsFocusLeft.Value != -1)
-            {
-                return ShotType.NormalFocus;
-            }
-
-
-            if (!isLeft && IsFocusRight.Value != -1)
-            {
-                return ShotType.NormalFocus;
-            }
-
-
             return ShotType.Normal;
         }
     }

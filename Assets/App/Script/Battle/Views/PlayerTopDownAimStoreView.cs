@@ -2,6 +2,7 @@
 using App.Battle.Data;
 using UnityEngine;
 using R3;
+using App.Common.Data;
 
 namespace App.Battle.Views
 {
@@ -71,15 +72,15 @@ namespace App.Battle.Views
             return _rightTopDown.GetAimPosition();
         }
 
-        public void Shot(ShotType shotType, bool isLeft)
+        public void Shot(ShotType shotType, bool isFocus, bool isLeft)
         {
             if (isLeft)
             {
-                _leftShotView.SpawnBullet(shotType);
+                _leftShotView.SpawnBullet(shotType, isFocus);
                 return;
             }
 
-            _rightShotView.SpawnBullet(shotType);
+            _rightShotView.SpawnBullet(shotType, isFocus);
         }
     }
 }
