@@ -11,8 +11,13 @@ namespace App.Battle.Interface
 
         Observable<int> OnFocusLeft { get; }
         Observable<int> OnFocusRight { get; }
-        void Move(Vector2 _inputV2, float speed);
+        Observable<Vector3> OnRightAimPosition { get; }
+        Observable<Vector3> OnLeftAimPosition { get; }
+        ReactiveProperty<Vector3> OnUpdatePosition { get; }
+
+        void Move(Vector2 inputV2, float speed);
         void Aim();
+        void SetRayColor(Color color);
         void MouseAim(Vector2 mousePos);
         void Shot(ShotType shotType, int focusTargetIdint, bool isLeft);
     }

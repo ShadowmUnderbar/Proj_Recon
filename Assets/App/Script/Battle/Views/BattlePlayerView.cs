@@ -19,10 +19,13 @@ namespace App.Battle.Views
 
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
-        public Observable<int> OnFocusLeft => _onFocusLeft;
-        private readonly Subject<int> _onFocusLeft = new();
-        public Observable<int> OnFocusRight => _onFocusRight;
-        private readonly Subject<int> _onFocusRight = new();
+        public Observable<int> OnFocusLeft => _playerTopDownAimStoreView.OnFocusLeft;
+        public Observable<int> OnFocusRight => _playerTopDownAimStoreView.OnFocusRight;
+
+        public Observable<Vector3> OnLeftAimPosition => _playerTopDownAimStoreView.OnLeftAimPosition;
+        public Observable<Vector3> OnRightAimPosition => _playerTopDownAimStoreView.OnRightAimPosition;
+
+        public ReactiveProperty<Vector3> OnUpdatePosition => _playerMoveView.OnUpdatePosition;
 
         private ISimpleObjectFactory<IPlayerTopDownAimView> _topDownFactory;
         private ISimpleObjectFactory<IPlayerAimMuzzleView> _aimFactory;
@@ -55,15 +58,13 @@ namespace App.Battle.Views
                 topdownViews[0], topdownViews[1],
                 aimViews[0], aimViews[1],
                 shotViews[0], shotViews[1]
-                );
+            );
         }
 
         private void Awake()
         {
             _onHit.AddTo(this);
             _playerTopDownAimStoreView.OnHit.Subscribe(OnHitBullet).AddTo(this);
-            _playerTopDownAimStoreView.OnFocusLeft.Subscribe(x=> _onFocusLeft.OnNext(x)).AddTo(this);
-            _playerTopDownAimStoreView.OnFocusRight.Subscribe(x=> _onFocusRight.OnNext(x)).AddTo(this);
         }
 
         public void Move(Vector2 inputV2, float speed)
@@ -71,9 +72,15 @@ namespace App.Battle.Views
             _playerMoveView.Move(inputV2, speed);
         }
 
-        public void Aim()
+        public void
+            Aim()
         {
             _playerTopDownAimStoreView.Aim();
+        }
+
+        public void SetRayColor(Color color)
+        {
+            _playerTopDownAimStoreView.SetRayColor(color);
         }
 
         public void MouseAim(Vector2 mousePos)
@@ -107,6 +114,11 @@ namespace App.Battle.Views
         private void OnHitBullet(HitData hit)
         {
             _onHit.OnNext(hit);
+        }
+
+        private void OnDestroy()
+        {
+            _onHit.Dispose();
         }
     }
 }

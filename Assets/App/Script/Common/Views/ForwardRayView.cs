@@ -1,4 +1,5 @@
-using App.Common.Interface;
+using System;
+using App.Common.Interface.Views;
 using UnityEngine;
 
 namespace App.Common.Views
@@ -6,13 +7,17 @@ namespace App.Common.Views
     [RequireComponent(typeof(LineRenderer))]
     public class ForwardRayView : MonoBehaviour, IForwardRayView
     {
-        [SerializeField]
-        private LineRenderer _lineRenderer;
-        [SerializeField]
-        private LayerMask _layerMask;
+        [SerializeField] private LineRenderer _lineRenderer;
+        [SerializeField] private LayerMask _layerMask;
+
+        private Material _material;
 
         private float _maxRayRange = 50f;
 
+        private void Awake()
+        {
+            _material = _lineRenderer.material;
+        }
 
         public void Close()
         {
@@ -36,6 +41,16 @@ namespace App.Common.Views
             _lineRenderer.SetPosition(0, transform.position);
 
             _lineRenderer.SetPosition(1, transform.position + transform.forward * _maxRayRange);
+        }
+
+        public void SetRayColor(Color color)
+        {
+            if (_material == null)
+            {
+                return;
+            }
+
+            _material.color = color;
         }
     }
 }

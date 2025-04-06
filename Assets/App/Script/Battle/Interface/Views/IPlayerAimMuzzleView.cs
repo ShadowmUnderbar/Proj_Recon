@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace App.Battle.Interface
 {
@@ -7,5 +6,6 @@ namespace App.Battle.Interface
     {
         Transform Transform { get; }
         void LookAimPosition(Vector3 position);
+        void SetRayColor(Color color);
     }
 }

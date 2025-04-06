@@ -18,7 +18,7 @@ namespace App.Battle.Views
         private readonly Dictionary<float, IBulletView> _bulletViews = new();
 
         public Observable<HitData> OnHit => _onHit;
-        private Subject<HitData> _onHit = new Subject<HitData>();
+        private readonly Subject<HitData> _onHit = new();
 
         [Inject]
         public void Construct(

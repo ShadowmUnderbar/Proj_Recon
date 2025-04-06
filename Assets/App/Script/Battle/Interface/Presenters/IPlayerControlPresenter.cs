@@ -1,4 +1,3 @@
-using App.Battle.Data;
 using App.Common.Data;
 using R3;
 using UnityEngine;
@@ -9,8 +8,13 @@ namespace App.Battle.Interface
     {
         Observable<int> OnFocusLeft { get; }
         Observable<int> OnFocusRight { get; }
+        Observable<Vector3> OnLeftAimPosition { get; }
+        Observable<Vector3> OnRightAimPosition { get; }
+        ReactiveProperty<Vector3> OnUpdatePosition { get; }
+
         void Move(Vector2 moveV2, float speed);
         void Aim();
+        void SetRayColor(Color color);
         void Shot(ShotType shotType, int focusTargetIdint, bool isLeft);
         void MouseAim(Vector2 mousePos);
     }

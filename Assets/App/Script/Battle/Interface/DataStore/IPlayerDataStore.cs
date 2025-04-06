@@ -1,20 +1,22 @@
 using App.Common.Data;
 using R3;
+using UnityEngine;
 
-namespace App.Battle.DataStore
+namespace App.Battle.Interface.DataStore
 {
     public interface IPlayerDataStore
     {
+        ReactiveProperty<Vector3> Position { get; }
         ReactiveProperty<float> Health { get; }
         ReactiveProperty<float> MaxHealth { get; }
 
+        ReactiveProperty<ShotType> ShotType { get; }
         bool CanShotCoolDown(bool isLeft, ShotType shotType);
 
         float NormalFireRate { get; }
         float MergeFireRate { get; }
         float WaltzFireRate { get; }
 
-        //フォーカス(照準が敵に重なっている)か
         ReactiveProperty<int> FocusLeftTargetId { get; }
         ReactiveProperty<int> FocusRightTargetId { get; }
 
@@ -23,7 +25,6 @@ namespace App.Battle.DataStore
         void SetMergeShotCoolDown(float time);
         void SetLeftWaltzShotCoolDown(float time);
         void SetRightWaltzShotCoolDown(float time);
-
-        ShotType GetShotType(bool isLeft);
+        void SetAimPosition(bool isLeft, Vector3 position);
     }
 }

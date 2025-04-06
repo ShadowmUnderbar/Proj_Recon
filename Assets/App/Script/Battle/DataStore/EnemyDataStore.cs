@@ -1,7 +1,7 @@
 using App.Battle.Data;
-using App.Battle.Interface;
 using App.Common.Data.MasterData;
 using System.Collections.Generic;
+using App.Battle.Interface.DataStore;
 using UnityEngine;
 
 namespace App.Battle.DataStore

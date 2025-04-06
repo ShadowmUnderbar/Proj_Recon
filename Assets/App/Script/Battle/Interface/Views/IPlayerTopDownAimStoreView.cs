@@ -1,6 +1,7 @@
 ﻿using App.Battle.Data;
 using App.Common.Data;
 using R3;
+using UnityEngine;
 
 namespace App.Battle.Interface
 {
@@ -16,6 +17,9 @@ namespace App.Battle.Interface
         Observable<int> OnFocusLeft { get; }
         Observable<int> OnFocusRight { get; }
 
+        Observable<Vector3> OnRightAimPosition { get; }
+        Observable<Vector3> OnLeftAimPosition { get; }
+        void SetRayColor(Color color);
         void Aim();
         void Shot(ShotType shotType, int focusTargetId, bool isLeft);
     }

@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48d4878025ba73c4296228f2094ac1de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _forwardRayView: {fileID: 2809102946315922726}
 --- !u!120 &540542089555494320
 LineRenderer:
   serializedVersion: 2

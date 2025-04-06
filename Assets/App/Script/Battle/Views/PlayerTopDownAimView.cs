@@ -57,7 +57,6 @@ namespace App.Battle.Views
                     continue;
                 }
 
-
                 if (view.HitBoxType == HitBoxType.Enemy)
                 {
                     _onFocus.OnNext((int)view.Id);

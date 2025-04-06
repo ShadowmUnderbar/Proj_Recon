@@ -10,9 +10,12 @@ namespace App.Battle.Presenters
     {
         private readonly IBattlePlayerView _playerView;
 
-
         public Observable<int> OnFocusLeft => _playerView.OnFocusLeft;
         public Observable<int> OnFocusRight => _playerView.OnFocusRight;
+        public Observable<Vector3> OnLeftAimPosition => _playerView.OnLeftAimPosition;
+        public Observable<Vector3> OnRightAimPosition => _playerView.OnRightAimPosition;
+
+        public ReactiveProperty<Vector3> OnUpdatePosition => _playerView.OnUpdatePosition;
 
         [Inject]
         public PlayerControlPresenter(
@@ -40,6 +43,11 @@ namespace App.Battle.Presenters
         public void Aim()
         {
             _playerView.Aim();
+        }
+
+        public void SetRayColor(Color color)
+        {
+            _playerView.SetRayColor(color);
         }
     }
 }

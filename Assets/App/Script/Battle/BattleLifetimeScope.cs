@@ -4,6 +4,7 @@ using App.Battle.UseCase;
 using App.Battle.Views;
 using App.Framework.Utilities;
 using App.Battle.DataStore;
+using App.Battle.Interface.DataStore;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -30,9 +31,9 @@ namespace App.Battle
 
             #region UseCase
 
-            builder.RegisterEntryPoint<PlayerMoveUseCase>().As<IPlayerMoveUseCase>();
-            builder.RegisterEntryPoint<PlayerAimUseCase>().As<IPlayerAimUseCase>();
-            builder.RegisterEntryPoint<PlayerShotUseCase>().As<IPlayerShotUseCase>();
+            builder.RegisterEntryPoint<PlayerMoveUseCase>();
+            builder.RegisterEntryPoint<PlayerAimUseCase>();
+            builder.RegisterEntryPoint<PlayerShotUseCase>();
             builder.RegisterEntryPoint<EnemySpawnUseCase>().As<IEnemySpawnUseCase>();
             builder.RegisterEntryPoint<BattleHitUseCase>().As<IBattleHitUseCase>();
 

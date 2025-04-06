@@ -2,9 +2,9 @@ using App.Battle.Interface;
 using VContainer;
 using VContainer.Unity;
 using App.Common.Interface;
-using App.Battle.DataStore;
 using R3;
 using System;
+using App.Battle.Interface.DataStore;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -12,11 +12,11 @@ using UnityEditor;
 
 namespace App.Battle.UseCase
 {
-    public class PlayerAimUseCase : IPlayerAimUseCase, IInitializable, ITickable ,IDisposable
+    public class PlayerAimUseCase : IInitializable, ITickable, IDisposable
     {
         private readonly IPlayerDataStore _playerDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
-        private readonly IGameInputUsecase _gameInputUsecase;
+        private readonly IGameInputUsecase _gameInputUseCase;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -24,28 +24,36 @@ namespace App.Battle.UseCase
         public PlayerAimUseCase(
             IPlayerDataStore playerDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputUsecase gameInputUsecase
+            IGameInputUsecase gameInputUseCase
         )
         {
             _playerDataStore = playerDataStore;
             _playerControlPresenter = playerControlPresenter;
-            _gameInputUsecase = gameInputUsecase;
+            _gameInputUseCase = gameInputUseCase;
         }
 
         public void Initialize()
         {
             _playerControlPresenter.OnFocusLeft
-                .Subscribe(x => UpdateOnFocus(x,true))
+                .Subscribe(x => UpdateOnFocus(x, true))
                 .AddTo(_disposables);
 
             _playerControlPresenter.OnFocusRight
-                .Subscribe(x => UpdateOnFocus(x,false))
+                .Subscribe(x => UpdateOnFocus(x, false))
+                .AddTo(_disposables);
+
+            _playerControlPresenter.OnLeftAimPosition
+                .Subscribe(x => _playerDataStore.SetAimPosition(true, x))
+                .AddTo(_disposables);
+
+            _playerControlPresenter.OnRightAimPosition
+                .Subscribe(x => _playerDataStore.SetAimPosition(false, x))
                 .AddTo(_disposables);
         }
 
-        private void UpdateOnFocus(int id,bool isLeft)
+        private void UpdateOnFocus(int id, bool isLeft)
         {
-            if(isLeft)
+            if (isLeft)
             {
                 _playerDataStore.FocusLeftTargetId.Value = id;
                 return;
@@ -59,7 +67,7 @@ namespace App.Battle.UseCase
 #if UNITY_EDITOR
             if (!EditorPrefs.GetBool("VRMode", false))
             {
-                _playerControlPresenter.MouseAim(_gameInputUsecase.MouseInputPosition);
+                _playerControlPresenter.MouseAim(_gameInputUseCase.MouseInputPosition);
             }
 #endif
             _playerControlPresenter.Aim();

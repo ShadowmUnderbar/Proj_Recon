@@ -1,10 +1,9 @@
-using App.Common.Interface;
 using UnityEngine;
 
 namespace App.Common.Views
 {
     [RequireComponent(typeof(LineRenderer))]
-    public class HandForwardRayView : MonoBehaviour, IForwardRayView
+    public class HandForwardRayView : MonoBehaviour
     {
         [SerializeField] private LineRenderer _lineRenderer;
         [SerializeField] private LayerMask _layerMask;
@@ -20,6 +19,11 @@ namespace App.Common.Views
         public void Close()
         {
             _lineRenderer.enabled = false;
+        }
+
+        public void SetRayColor(Color color)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void View()
@@ -40,7 +44,6 @@ namespace App.Common.Views
             }
 
             var direction = _platformHandRotation.Rotation * Vector3.forward;
-            var ray = new Ray(transform.position, direction);
 
             _lineRenderer.SetPosition(0, transform.position);
 

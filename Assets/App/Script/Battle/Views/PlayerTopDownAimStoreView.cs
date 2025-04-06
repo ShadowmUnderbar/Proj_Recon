@@ -15,9 +15,15 @@ namespace App.Battle.Views
         public Observable<int> OnFocusRight => _onFocusRight;
         private readonly Subject<int> _onFocusRight = new();
 
+        public Observable<Vector3> OnRightAimPosition => _onRightAimPosition;
+        private readonly Subject<Vector3> _onRightAimPosition = new();
+
+        public Observable<Vector3> OnLeftAimPosition => _onLeftAimPosition;
+        private readonly Subject<Vector3> _onLeftAimPosition = new();
+
         private IPlayerTopDownAimView _leftTopDown;
         private IPlayerTopDownAimView _rightTopDown;
-        
+
         private IPlayerAimMuzzleView _leftAimView;
         private IPlayerAimMuzzleView _rightAimView;
 
@@ -38,7 +44,7 @@ namespace App.Battle.Views
                 .AddTo(this);
 
             rightTopDown.OnFocus
-                .Subscribe(x => _onFocusLeft.OnNext(x))
+                .Subscribe(x => _onFocusRight.OnNext(x))
                 .AddTo(this);
 
             _leftAimView = leftAim;
@@ -56,19 +62,31 @@ namespace App.Battle.Views
                 .AddTo(this);
         }
 
-        public void Aim()
+        public void SetRayColor(Color color)
         {
-            _leftAimView?.LookAimPosition(GetAimPosition(true));
-            _rightAimView?.LookAimPosition(GetAimPosition(false));
+            _leftAimView.SetRayColor(color);
+            _rightAimView.SetRayColor(color);
         }
 
-        public Vector3 GetAimPosition(bool isLeft)
+        public void Aim()
+        {
+            var leftAimPosition = GetAimPosition(true);
+            var rightAimPosition = GetAimPosition(false);
+
+            _onLeftAimPosition.OnNext(leftAimPosition);
+            _onRightAimPosition.OnNext(rightAimPosition);
+
+            _leftAimView?.LookAimPosition(leftAimPosition);
+            _rightAimView?.LookAimPosition(rightAimPosition);
+        }
+
+        private Vector3 GetAimPosition(bool isLeft)
         {
             if (isLeft)
             {
                 return _leftTopDown.GetAimPosition();
             }
-            
+
             return _rightTopDown.GetAimPosition();
         }
 
@@ -81,6 +99,15 @@ namespace App.Battle.Views
             }
 
             _rightShotView.SpawnBullet(shotType, focusTargetId);
+        }
+
+        private void OnDestroy()
+        {
+            _onHit.Dispose();
+            _onFocusLeft.Dispose();
+            _onFocusRight.Dispose();
+            _onLeftAimPosition.Dispose();
+            _onRightAimPosition.Dispose();
         }
     }
 }

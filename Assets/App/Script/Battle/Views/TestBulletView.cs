@@ -41,6 +41,10 @@ namespace App.Battle.Views
                     {
                         return;
                     }
+                    if (x.gameObject.CompareTag($"Bullet"))
+                    {
+                        return;
+                    }
 
                     if (!x.TryGetComponent<IEnemyView>(out var enemyView))
                     {

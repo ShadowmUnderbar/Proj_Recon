@@ -1,38 +1,57 @@
-﻿using App.Battle.Interface;
+﻿using System;
+using App.Battle.Data;
+using App.Battle.Interface;
+using App.Battle.Interface.DataStore;
+using App.Common.Data;
 using VContainer;
 using VContainer.Unity;
-using UnityEngine;
 using App.Common.Interface;
-using App.Battle.DataStore;
+using R3;
+using UnityEngine;
 
 namespace App.Battle.UseCase
 {
-    public class PlayerShotUseCase : IPlayerShotUseCase, ITickable
+    public class PlayerShotUseCase : IInitializable, ITickable, IDisposable
     {
         private readonly IPlayerDataStore _playerDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
-        private readonly IGameInputUsecase _gameInputUsecase;
+        private readonly IGameInputUsecase _gameInputUseCase;
+
+        private readonly CompositeDisposable _disposable = new();
 
         [Inject]
         public PlayerShotUseCase(
             IPlayerDataStore playerDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputUsecase gameInputUsecase
+            IGameInputUsecase gameInputUseCase
         )
         {
             _playerDataStore = playerDataStore;
             _playerControlPresenter = playerControlPresenter;
-            _gameInputUsecase = gameInputUsecase;
+            _gameInputUseCase = gameInputUseCase;
+        }
+
+        public void Initialize()
+        {
+            _playerDataStore.ShotType
+                .DistinctUntilChanged()
+                .Subscribe(OnUpdateShotType)
+                .AddTo(_disposable);
+        }
+
+        private void OnUpdateShotType(ShotType shotType)
+        {
+            _playerControlPresenter.SetRayColor(ShotTypeRayColors.GetRayColor(shotType));
         }
 
         public void Tick()
         {
-            if (_gameInputUsecase.IsLeftTrigger)
+            if (_gameInputUseCase.IsLeftTrigger)
             {
                 TryLeftShot();
             }
-            
-            if (_gameInputUsecase.IsRightTrigger)
+
+            if (_gameInputUseCase.IsRightTrigger)
             {
                 TryRightShot();
             }
@@ -40,28 +59,57 @@ namespace App.Battle.UseCase
 
         private void TryLeftShot()
         {
-            var shotType = _playerDataStore.GetShotType(true);
+            var shotType = _playerDataStore.ShotType.Value;
 
-            if (!_playerDataStore.CanShotCoolDown(true,shotType))
+            if (!_playerDataStore.CanShotCoolDown(true, shotType))
             {
                 return;
             }
 
-            _playerDataStore.SetLeftNormalShotCoolDown(_playerDataStore.NormalFireRate);
-            _playerControlPresenter.Shot(shotType, _playerDataStore.FocusLeftTargetId.Value , true);
+            switch (shotType)
+            {
+                case ShotType.Normal:
+                    _playerDataStore.SetLeftNormalShotCoolDown(_playerDataStore.NormalFireRate);
+                    break;
+                case ShotType.Waltz:
+                    _playerDataStore.SetLeftWaltzShotCoolDown(_playerDataStore.WaltzFireRate);
+                    break;
+                case ShotType.Merge:
+                    _playerDataStore.SetMergeShotCoolDown(_playerDataStore.MergeFireRate);
+                    break;
+            }
+
+            _playerControlPresenter.Shot(shotType, _playerDataStore.FocusLeftTargetId.Value, true);
         }
 
         private void TryRightShot()
         {
-            var shotType = _playerDataStore.GetShotType(false);
+            var shotType = _playerDataStore.ShotType.Value;
 
             if (!_playerDataStore.CanShotCoolDown(false, shotType))
             {
                 return;
             }
 
-            _playerDataStore.SetRightNormalShotCoolDown(_playerDataStore.NormalFireRate);
+            switch (shotType)
+            {
+                case ShotType.Normal:
+                    _playerDataStore.SetRightNormalShotCoolDown(_playerDataStore.NormalFireRate);
+                    break;
+                case ShotType.Waltz:
+                    _playerDataStore.SetRightWaltzShotCoolDown(_playerDataStore.WaltzFireRate);
+                    break;
+                case ShotType.Merge:
+                    _playerDataStore.SetMergeShotCoolDown(_playerDataStore.MergeFireRate);
+                    break;
+            }
+
             _playerControlPresenter.Shot(shotType, _playerDataStore.FocusRightTargetId.Value, false);
+        }
+
+        public void Dispose()
+        {
+            _disposable.Dispose();
         }
     }
 }
