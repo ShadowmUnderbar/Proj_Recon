@@ -27,7 +27,7 @@ namespace App.Battle.DataStore
         private float _leftWaltzShotCoolDown;
         private float _rightWaltzShotCoolDown;
 
-        private float WaltzAngleDifference => 150f;
+        private float WaltzAngleDifference => 130f;
 
         private readonly Dictionary<bool, Vector3> _aimPositions = new()
         {
@@ -43,7 +43,9 @@ namespace App.Battle.DataStore
 
         private void UpdateShotType()
         {
-            if (FocusLeftTargetId == FocusRightTargetId)
+            if (FocusLeftTargetId.Value != -1 &&
+                FocusRightTargetId.Value != -1 &&
+                FocusLeftTargetId.Value == FocusRightTargetId.Value)
             {
                 ShotType.Value = Common.Data.ShotType.Merge;
                 return;

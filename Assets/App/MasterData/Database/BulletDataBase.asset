@@ -27,17 +27,10 @@ MonoBehaviour:
     Penetration: 3
     Explosive: 0
     IsFocus: 1
-  - Id: MergeBullet
-    Type: 1
-    Damage: 10
-    Speed: 30
-    Penetration: 0
-    Explosive: 0.7
-    IsFocus: 0
   - Id: FocusMergeBullet
     Type: 1
     Damage: 10
-    Speed: 50
+    Speed: 70
     Penetration: 0
     Explosive: 1.4
     IsFocus: 1
