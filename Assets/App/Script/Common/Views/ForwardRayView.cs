@@ -1,42 +1,41 @@
 using App.Common.Interface;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(LineRenderer))]
-public class ForwardRayView : MonoBehaviour, IForwardRayView
+namespace App.Common.Views
 {
-    [SerializeField]
-    private LineRenderer _lineRenderer;
-    [SerializeField]
-    private LayerMask _layerMask;
-
-    private float _maxRayRange = 50f;
-
-
-    public void Close()
+    [RequireComponent(typeof(LineRenderer))]
+    public class ForwardRayView : MonoBehaviour, IForwardRayView
     {
-        _lineRenderer.enabled = false;
-    }
+        [SerializeField]
+        private LineRenderer _lineRenderer;
+        [SerializeField]
+        private LayerMask _layerMask;
 
-    public void View()
-    {
-        _lineRenderer.enabled = true;
-    }
+        private float _maxRayRange = 50f;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (!_lineRenderer.enabled)
+
+        public void Close()
         {
-            return;
+            _lineRenderer.enabled = false;
         }
 
-        var ray = new Ray(transform.position, transform.forward);
+        public void View()
+        {
+            _lineRenderer.enabled = true;
+        }
 
-        _lineRenderer.SetPosition(0, transform.position);
+        private void Update()
+        {
+            if (!_lineRenderer.enabled)
+            {
+                return;
+            }
 
+            var ray = new Ray(transform.position, transform.forward);
 
-        _lineRenderer.SetPosition(1, transform.position + transform.forward * _maxRayRange);
+            _lineRenderer.SetPosition(0, transform.position);
+
+            _lineRenderer.SetPosition(1, transform.position + transform.forward * _maxRayRange);
+        }
     }
 }

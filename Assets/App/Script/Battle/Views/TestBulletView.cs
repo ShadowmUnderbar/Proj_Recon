@@ -23,9 +23,8 @@ namespace App.Battle.Views
         private int _focusTargetId = 0;
         private bool _isForcedPenetration = false;
 
-        public void Spawn(Pose pose, BulletData bulletData,int focusTargetId)
+        public void Spawn(Pose pose, BulletData bulletData, int focusTargetId)
         {
-            //フォーカス対象が居なければ強制貫通を切る
             _isForcedPenetration = focusTargetId >= 0;
 
             transform.SetPositionAndRotation(pose.position, pose.rotation);
@@ -38,6 +37,11 @@ namespace App.Battle.Views
             _hitCollider.OnTriggerEnterAsObservable()
                 .Subscribe(x =>
                 {
+                    if (x.gameObject.CompareTag("Player"))
+                    {
+                        return;
+                    }
+
                     if (!x.TryGetComponent<IEnemyView>(out var enemyView))
                     {
                         Destroy(gameObject);
@@ -59,20 +63,18 @@ namespace App.Battle.Views
                     };
                     _onHit.OnNext(hitData);
 
-                    //フォーカス対象に命中した場合強制貫通を切る
-                    if(_focusTargetId == enemyView.Id)
+                    if (_focusTargetId == enemyView.Id)
                     {
                         _isForcedPenetration = false;
                     }
 
-                    //強制貫通が有効な間は、ヒット数カウントは行わず全敵を貫通する
                     if (_isForcedPenetration)
                     {
                         return;
                     }
 
                     _hitCount++;
-                    
+
                     if (_isForcedPenetration && _hitCount >= _bulletData.Penetration)
                     {
                         Destroy(gameObject);

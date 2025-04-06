@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6780046458411199459}
   - component: {fileID: 168147134050017325}
   - component: {fileID: 540542089555494320}
-  - component: {fileID: 2954324037252818514}
+  - component: {fileID: 2809102946315922726}
   m_Layer: 0
   m_Name: PlayerAimMuzzleView
   m_TagString: Untagged
@@ -150,7 +150,7 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &2954324037252818514
+--- !u!114 &2809102946315922726
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -159,7 +159,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1274296167502602611}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34b7d449bd256f84da087455ff10a19b, type: 3}
+  m_Script: {fileID: 11500000, guid: 38b0c10cd5df161449ac78fdc137afb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _lineRenderer: {fileID: 540542089555494320}

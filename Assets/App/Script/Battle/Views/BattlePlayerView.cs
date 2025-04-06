@@ -1,6 +1,7 @@
 using App.Battle.Interface;
 using App.Framework.Utilities;
 using System.Collections.Generic;
+using System.Linq;
 using App.Battle.Data;
 using UnityEngine;
 using VContainer;
@@ -38,14 +39,10 @@ namespace App.Battle.Views
             _aimFactory = aimFactory;
             _shotFactory = shotFactory;
 
-            var topdownViews = new List<IPlayerTopDownAimView>();
             var aimViews = new List<IPlayerAimMuzzleView>();
             var shotViews = new List<IPlayerShotView>();
 
-            foreach (var view in _controllers)
-            {
-                topdownViews.Add(_topDownFactory.Instantiate(view));
-            }
+            var topdownViews = _controllers.Select(view => _topDownFactory.Instantiate(view)).ToList();
 
             foreach (var view in _muzzles)
             {
@@ -69,9 +66,9 @@ namespace App.Battle.Views
             _playerTopDownAimStoreView.OnFocusRight.Subscribe(x=> _onFocusRight.OnNext(x)).AddTo(this);
         }
 
-        public void Move(Vector2 _inputV2, float speed)
+        public void Move(Vector2 inputV2, float speed)
         {
-            _playerMoveView.Move(_inputV2, speed);
+            _playerMoveView.Move(inputV2, speed);
         }
 
         public void Aim()

@@ -1,6 +1,7 @@
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Common.Data;
+using App.Common.Views;
 using R3;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace App.Battle.Views
 {
     public class PlayerTopDownAimView : MonoBehaviour, IPlayerTopDownAimView
     {
+        private PlatformHandRotation _platformHandRotation;
         private const float Radius = 0.2f;
         private const float Distance = 50f;
         private RaycastHit[] raycastHits = new RaycastHit[5];
@@ -16,10 +18,22 @@ namespace App.Battle.Views
         public Observable<int> OnFocus => _onFocus;
         private Subject<int> _onFocus = new();
 
+        private void Start()
+        {
+            _platformHandRotation = transform.parent.GetComponent<PlatformHandRotation>();
+        }
 
         public Vector3 GetAimPosition()
         {
-            var count = Physics.SphereCastNonAlloc(transform.position, Radius, transform.forward, raycastHits, Distance, TargetLayers);
+            if (_platformHandRotation == null)
+            {
+                return transform.forward * Distance;
+            }
+
+            var count = Physics.SphereCastNonAlloc(transform.position, Radius,
+                _platformHandRotation.Rotation * Vector3.forward,
+                raycastHits, Distance,
+                TargetLayers);
 
             if (count <= 0)
             {
@@ -27,7 +41,7 @@ namespace App.Battle.Views
                 return transform.forward * Distance;
             }
 
-            for(var i = 0; i < count;i++)
+            for (var i = 0; i < count; i++)
             {
                 var hit = raycastHits[i];
 
