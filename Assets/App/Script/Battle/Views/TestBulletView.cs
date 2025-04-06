@@ -85,7 +85,7 @@ namespace App.Battle.Views
 
         private void Update()
         {
-            transform.position += transform.forward * _bulletData.Speed * Time.deltaTime;
+            transform.position += transform.forward * (_bulletData.Speed * Time.deltaTime);
         }
 
         private void OnDestroy()

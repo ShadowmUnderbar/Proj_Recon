@@ -435,6 +435,7 @@ GameObject:
   - component: {fileID: 163701937228938667}
   - component: {fileID: 4767389255853938113}
   - component: {fileID: 6046981497291469265}
+  - component: {fileID: 4045614964483260624}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -578,3 +579,16 @@ MonoBehaviour:
   m_TrackingType: 0
   m_UpdateType: 0
   m_UseRelativeTransform: 0
+--- !u!114 &4045614964483260624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8645692520077191574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9436e4bee7cc18045ae40327a6849efd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackedPoseDriver: {fileID: 6046981497291469265}
