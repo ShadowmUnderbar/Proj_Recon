@@ -15,14 +15,32 @@ namespace App.Battle.Data
         public static Color TraceLine { get; } = new(1, 1, 0);
         public static Color Conditional { get; } = new(0.9f, 0.8f, 0.9f);
 
-        public static Color GetRayColor(ShotType shotType)
+        public static Color GetRayColor(ShotType shotType, AimFocusType focusType)
         {
-            return shotType switch
+            if (shotType == ShotType.Normal)
             {
-                ShotType.Normal => Normal,
+                return focusType switch
+                {
+                    AimFocusType.NotFocus => Normal,
+                    AimFocusType.Focus => Focus,
+                    AimFocusType.LongFocus => LongFocus,
+                    _ => Normal,
+                };
+            }
+
+            var color = shotType switch
+            {
                 ShotType.Merge => Merge,
                 ShotType.Waltz => Waltz,
                 _ => Normal,
+            };
+
+            return focusType switch
+            {
+                AimFocusType.NotFocus => color,
+                AimFocusType.Focus => AddFocusColor(color),
+                AimFocusType.LongFocus => AddLongFocusColor(color),
+                _ => color,
             };
         }
 

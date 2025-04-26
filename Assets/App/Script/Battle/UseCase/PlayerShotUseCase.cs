@@ -34,13 +34,19 @@ namespace App.Battle.UseCase
         {
             _playerDataStore.ShotType
                 .DistinctUntilChanged()
-                .Subscribe(OnUpdateShotType)
+                .Subscribe(_ => OnUpdateShotType())
+                .AddTo(_disposable);
+            _playerDataStore.FocusType
+                .DistinctUntilChanged()
+                .Subscribe(_ => OnUpdateShotType())
                 .AddTo(_disposable);
         }
 
-        private void OnUpdateShotType(ShotType shotType)
+        private void OnUpdateShotType()
         {
-            _playerControlPresenter.SetRayColor(ThemeColors.GetRayColor(shotType));
+            var shotType = _playerDataStore.ShotType.Value;
+            var focusType = _playerDataStore.FocusType.Value;
+            _playerControlPresenter.SetRayColor(ThemeColors.GetRayColor(shotType, focusType));
         }
 
         public void Tick()
