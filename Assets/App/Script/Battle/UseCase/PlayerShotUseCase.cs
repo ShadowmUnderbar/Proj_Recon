@@ -71,28 +71,28 @@ namespace App.Battle.UseCase
 
         private void TryLeftShot()
         {
-            var shotType = _playerDataStore.ShotType.Value;
-
             if (!_playerDataStore.CanLeftShot)
             {
                 return;
             }
 
-            var focusType = AimFocusType.NotFocus;
+            var shotType = _playerDataStore.ShotType.Value;
+            var focusType = _playerDataStore.LeftFocusType.Value;
+
             _playerDataStore.SetCoolDownTime(HandType.Left, shotType, focusType);
             _playerControlPresenter.Shot(HandType.Left, shotType, focusType, _playerDataStore.FocusLeftTargetId.Value);
         }
 
         private void TryRightShot()
         {
-            var shotType = _playerDataStore.ShotType.Value;
-
             if (!_playerDataStore.CanRightShot)
             {
                 return;
             }
 
-            var focusType = AimFocusType.NotFocus;
+            var shotType = _playerDataStore.ShotType.Value;
+            var focusType = _playerDataStore.RightFocusType.Value;
+
             _playerDataStore.SetCoolDownTime(HandType.Right, shotType, focusType);
             _playerControlPresenter.Shot(HandType.Right, shotType, focusType,
                 _playerDataStore.FocusRightTargetId.Value);

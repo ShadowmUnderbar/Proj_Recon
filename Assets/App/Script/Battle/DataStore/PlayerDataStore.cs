@@ -30,13 +30,12 @@ namespace App.Battle.DataStore
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
 
-        private float MergePositionDistance => 0.5f;
-        private float WaltzAngleDifference => 130f;
-
         public bool CanLeftShot => _leftShotCoolDown <= 0;
         public bool CanRightShot => _rightShotCoolDown <= 0;
 
-        private float LongFocusDistance => 8f;
+        private static float MergePositionDistance => 0.1f;
+        private static float WaltzAngleDifference => 130f;
+        private static float LongFocusDistance => 15f;
 
         private readonly Dictionary<HandType, Vector3> _aimPositions = new()
         {
@@ -73,12 +72,14 @@ namespace App.Battle.DataStore
             UpdateShotType();
             UpdateLeftFocusType();
             UpdateRightFocusType();
+            UpdateCoolDownTime();
         }
 
         public void SetCoolDownTime(HandType handType, ShotType shotType, AimFocusType focusType)
         {
-            if (_bulletDataBase.TryGetBulletData(shotType, focusType, out var bulletData))
+            if (!_bulletDataBase.TryGetBulletData(shotType, focusType, out var bulletData))
             {
+                Debug.Log("NotFound");
                 return;
             }
 
@@ -123,7 +124,8 @@ namespace App.Battle.DataStore
                 return;
             }
 
-            if ((enemy.Pose.position - Position.Value).sqrMagnitude > LongFocusDistance)
+            var distance = (enemy.Pose.position - Position.Value).sqrMagnitude;
+            if (Mathf.Abs(distance) >= LongFocusDistance * LongFocusDistance)
             {
                 LeftFocusType.Value = AimFocusType.LongFocus;
                 return;
@@ -146,7 +148,9 @@ namespace App.Battle.DataStore
                 return;
             }
 
-            if ((enemy.Pose.position - Position.Value).sqrMagnitude > LongFocusDistance)
+            Debug.Log("Distance =" + (enemy.Pose.position - Position.Value).sqrMagnitude);
+            var distance = (enemy.Pose.position - Position.Value).sqrMagnitude;
+            if (Mathf.Abs(distance) >= LongFocusDistance * LongFocusDistance)
             {
                 RightFocusType.Value = AimFocusType.LongFocus;
                 return;
