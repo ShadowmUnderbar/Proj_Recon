@@ -73,6 +73,17 @@ namespace App.Battle.Views
             _rightAimView.SetRayColor(color);
         }
 
+        public void SetEnableRay(HandType handType, bool enable)
+        {
+            if (handType == HandType.Left)
+            {
+                _leftAimView.SetEnableRay(enable);
+                return;
+            }
+
+            _rightAimView.SetEnableRay(enable);
+        }
+
         public void Aim()
         {
             var leftAimPosition = GetAimPosition(true);

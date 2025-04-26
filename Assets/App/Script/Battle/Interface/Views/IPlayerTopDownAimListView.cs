@@ -20,6 +20,7 @@ namespace App.Battle.Interface
         Observable<Vector3> OnRightAimPosition { get; }
         Observable<Vector3> OnLeftAimPosition { get; }
         void SetRayColor(HandType handType, Color color);
+        void SetEnableRay(HandType handType, bool enable);
         void Aim();
         void Shot(HandType handType, ShotType shotType, AimFocusType focusType, int focusTargetId);
     }

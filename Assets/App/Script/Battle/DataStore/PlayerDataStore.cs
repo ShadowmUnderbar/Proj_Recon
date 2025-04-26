@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
 using App.Common.Data.Database;
+using App.Common.Interface;
 using R3;
 using UnityEngine;
 using VContainer;
@@ -13,6 +14,7 @@ namespace App.Battle.DataStore
     {
         private readonly BulletDataBase _bulletDataBase;
         private readonly IEnemyDataStore _enemyDataStore;
+        private readonly IPlayerSettingDataStore _playerSettingDataStore;
 
         public ReactiveProperty<Vector3> Position { get; } = new();
         public ReactiveProperty<float> Health { get; } = new();
@@ -30,10 +32,7 @@ namespace App.Battle.DataStore
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
 
-        public bool CanLeftShot => _leftShotCoolDown <= 0;
-        public bool CanRightShot => _rightShotCoolDown <= 0;
-
-        private static float MergePositionDistance => 0.1f;
+        private static float MergePositionDistance => 0.15f;
         private static float WaltzAngleDifference => 130f;
         private static float LongFocusDistance => 15f;
 
@@ -46,11 +45,13 @@ namespace App.Battle.DataStore
         [Inject]
         public PlayerDataStore(
             BulletDataBase bulletDataBase,
-            IEnemyDataStore enemyDataStore
+            IEnemyDataStore enemyDataStore,
+            IPlayerSettingDataStore playerSettingDataStore
         )
         {
             _bulletDataBase = bulletDataBase;
             _enemyDataStore = enemyDataStore;
+            _playerSettingDataStore = playerSettingDataStore;
         }
 
         public void Initialize()
@@ -79,7 +80,6 @@ namespace App.Battle.DataStore
         {
             if (!_bulletDataBase.TryGetBulletData(shotType, focusType, out var bulletData))
             {
-                Debug.Log("NotFound");
                 return;
             }
 
@@ -148,7 +148,6 @@ namespace App.Battle.DataStore
                 return;
             }
 
-            Debug.Log("Distance =" + (enemy.Pose.position - Position.Value).sqrMagnitude);
             var distance = (enemy.Pose.position - Position.Value).sqrMagnitude;
             if (Mathf.Abs(distance) >= LongFocusDistance * LongFocusDistance)
             {
@@ -190,6 +189,32 @@ namespace App.Battle.DataStore
         public void SetAimPosition(HandType handType, Vector3 position)
         {
             _aimPositions[handType] = position;
+        }
+
+        public bool CanShot(HandType handType)
+        {
+            if (_playerSettingDataStore.NonDominantHand.Value == handType &&
+                ShotType.Value == Common.Data.ShotType.Merge)
+            {
+                return false;
+            }
+
+            if (handType == HandType.Left)
+            {
+                if (_leftShotCoolDown <= 0)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            if (_rightShotCoolDown <= 0)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

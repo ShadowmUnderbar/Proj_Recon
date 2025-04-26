@@ -8,27 +8,28 @@ namespace App.Common.Views
         [SerializeField] private LineRenderer _lineRenderer;
         [SerializeField] private LayerMask _layerMask;
         private PlatformHandRotation _platformHandRotation;
+        private readonly string _emissiveColor = "_EmissionColor";
+        private readonly float _maxRayRange = 50f;
 
-        private float _maxRayRange = 50f;
+        private Material _material;
 
         private void Start()
         {
             _platformHandRotation = GetComponent<PlatformHandRotation>();
+            _material = _lineRenderer.material;
         }
 
-        public void Close()
+        public void SetEnable(bool enable)
         {
-            _lineRenderer.enabled = false;
+            _lineRenderer.enabled = enable;
         }
 
         public void SetRayColor(Color color)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void View()
-        {
-            _lineRenderer.enabled = true;
+            color *= 1.5f;
+            color.a = 0.75f;
+            _material.color = color;
+            _material.SetColor(_emissiveColor, color);
         }
 
         private void Update()

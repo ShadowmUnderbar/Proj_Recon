@@ -7,6 +7,7 @@ using UnityEngine;
 using VContainer;
 using R3;
 using App.Common.Data;
+using App.Common.Views;
 using App.Framework.Utilities.Extensions;
 
 namespace App.Battle.Views
@@ -17,6 +18,8 @@ namespace App.Battle.Views
         [SerializeField] private PlayerTopDownAimListView _playerTopDownAimListView;
         [SerializeField] private Transform[] _controllers;
         [SerializeField] private Transform[] _muzzles;
+
+        private HandForwardRayView[] _handForwardRayViews;
 
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
@@ -63,6 +66,12 @@ namespace App.Battle.Views
                 aimViews[0], aimViews[1],
                 shotViews[0], shotViews[1]
             );
+
+            _handForwardRayViews = new[]
+            {
+                _controllers[0].GetComponent<HandForwardRayView>(),
+                _controllers[1].GetComponent<HandForwardRayView>()
+            };
         }
 
         private void Awake()
@@ -87,9 +96,26 @@ namespace App.Battle.Views
             _playerTopDownAimListView.Aim();
         }
 
-        public void SetRayColor(HandType handType, Color color)
+        public void SetAimRayColor(HandType handType, Color color)
         {
             _playerTopDownAimListView.SetRayColor(handType, color);
+        }
+
+
+        public void SetAimEnableRay(HandType handType, bool enable)
+        {
+            _playerTopDownAimListView.SetEnableRay(handType, enable);
+        }
+
+        public void SetHandRayColor(HandType handType, Color color)
+        {
+            _handForwardRayViews[handType == HandType.Left ? 0 : 1].SetRayColor(color);
+        }
+
+
+        public void SetHandEnableRay(HandType handType, bool enable)
+        {
+            _handForwardRayViews[handType == HandType.Left ? 0 : 1].SetEnable(enable);
         }
 
         public void MouseAim(Vector2 mousePos)

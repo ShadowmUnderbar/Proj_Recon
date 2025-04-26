@@ -48,9 +48,24 @@ namespace App.Battle.Presenters
             _playerView.Aim();
         }
 
-        public void SetRayColor(HandType handType, Color color)
+        public void SetAimRayColor(HandType handType, Color color)
         {
-            _playerView.SetRayColor(handType, color);
+            _playerView.SetAimRayColor(handType, color);
+        }
+
+        public void SetHandRayColor(HandType handType, Color color)
+        {
+            _playerView.SetHandRayColor(handType, color);
+        }
+
+        public void SetAimEnableRay(HandType handType, bool enable)
+        {
+            _playerView.SetAimEnableRay(handType, enable);
+        }
+
+        public void SetHandEnableRay(HandType handType, bool enable)
+        {
+            _playerView.SetHandEnableRay(handType, enable);
         }
     }
 }

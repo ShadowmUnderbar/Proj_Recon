@@ -23,8 +23,12 @@ namespace App.Battle.Views
 
         public void SetRayColor(Color color)
         {
-            Debug.Log("SetRayColor" + color);
             _forwardRayView.SetRayColor(color);
+        }
+
+        public void SetEnableRay(bool enable)
+        {
+            _forwardRayView.SetEnable(enable);
         }
     }
 }

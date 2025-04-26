@@ -19,8 +19,11 @@ namespace App.Battle.Interface
 
         void Move(Vector2 inputV2, float speed);
         void Aim();
-        void SetRayColor(HandType handType, Color color);
         void MouseAim(Vector2 mousePos);
+        void SetAimRayColor(HandType handType, Color color);
+        void SetAimEnableRay(HandType handType, bool enable);
+        void SetHandRayColor(HandType handType, Color color);
+        void SetHandEnableRay(HandType handType, bool enable);
         void Shot(HandType handType, ShotType shotType, AimFocusType focusType, int focusTargetId);
     }
 }

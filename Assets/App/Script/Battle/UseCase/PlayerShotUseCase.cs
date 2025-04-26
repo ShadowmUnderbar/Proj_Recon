@@ -12,6 +12,7 @@ namespace App.Battle.UseCase
 {
     public class PlayerShotUseCase : IInitializable, ITickable, IDisposable
     {
+        private readonly IPlayerSettingDataStore _playerSettingDataStore;
         private readonly IPlayerDataStore _playerDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputUsecase _gameInputUseCase;
@@ -20,11 +21,13 @@ namespace App.Battle.UseCase
 
         [Inject]
         public PlayerShotUseCase(
+            IPlayerSettingDataStore playerSettingDataStore,
             IPlayerDataStore playerDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputUsecase gameInputUseCase
         )
         {
+            _playerSettingDataStore = playerSettingDataStore;
             _playerDataStore = playerDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputUseCase = gameInputUseCase;
@@ -52,8 +55,15 @@ namespace App.Battle.UseCase
             var leftFocusType = _playerDataStore.LeftFocusType.Value;
             var rightFocusType = _playerDataStore.RightFocusType.Value;
 
-            _playerControlPresenter.SetRayColor(HandType.Left, ThemeColors.GetRayColor(shotType, leftFocusType));
-            _playerControlPresenter.SetRayColor(HandType.Right, ThemeColors.GetRayColor(shotType, rightFocusType));
+            _playerControlPresenter.SetHandRayColor(HandType.Left, ThemeColors.GetRayColor(shotType, leftFocusType));
+            _playerControlPresenter.SetHandRayColor(HandType.Right, ThemeColors.GetRayColor(shotType, rightFocusType));
+
+            _playerControlPresenter.SetAimRayColor(HandType.Left, ThemeColors.GetRayColor(shotType, leftFocusType));
+            _playerControlPresenter.SetAimRayColor(HandType.Right, ThemeColors.GetRayColor(shotType, rightFocusType));
+
+            var nonDominantHand = _playerSettingDataStore.NonDominantHand.Value;
+            _playerControlPresenter.SetAimEnableRay(nonDominantHand, shotType != ShotType.Merge);
+            _playerControlPresenter.SetHandEnableRay(nonDominantHand, shotType != ShotType.Merge);
         }
 
         public void Tick()
@@ -71,7 +81,7 @@ namespace App.Battle.UseCase
 
         private void TryLeftShot()
         {
-            if (!_playerDataStore.CanLeftShot)
+            if (!_playerDataStore.CanShot(HandType.Left))
             {
                 return;
             }
@@ -85,7 +95,7 @@ namespace App.Battle.UseCase
 
         private void TryRightShot()
         {
-            if (!_playerDataStore.CanRightShot)
+            if (!_playerDataStore.CanShot(HandType.Right))
             {
                 return;
             }

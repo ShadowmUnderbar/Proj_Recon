@@ -7,5 +7,6 @@ namespace App.Battle.Interface
         Transform Transform { get; }
         void LookAimPosition(Vector3 position);
         void SetRayColor(Color color);
+        void SetEnableRay(bool enable);
     }
 }

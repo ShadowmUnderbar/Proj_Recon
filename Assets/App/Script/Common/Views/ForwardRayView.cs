@@ -1,4 +1,3 @@
-using System;
 using App.Common.Interface.Views;
 using UnityEngine;
 
@@ -51,6 +50,11 @@ namespace App.Common.Views
             }
 
             _material.color = color;
+        }
+        
+        public void SetEnable(bool enable)
+        {
+            _lineRenderer.enabled = enable;
         }
     }
 }
