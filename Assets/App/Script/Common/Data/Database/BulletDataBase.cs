@@ -7,16 +7,16 @@ namespace App.Common.Data.Database
     {
         [SerializeField] private BulletData[] _bulletDataBaseList;
 
-        public bool TryGetBulletData(ShotType shotType,bool isFocus, out BulletData bulletData)
+        public bool TryGetBulletData(ShotType shotType, AimFocusType focusType, out BulletData bulletData)
         {
-            foreach(var bullet in _bulletDataBaseList)
+            foreach (var bullet in _bulletDataBaseList)
             {
-                if(bullet.Type != shotType) 
-                { 
-                    continue; 
+                if (bullet.Shotype != shotType)
+                {
+                    continue;
                 }
 
-                if(bullet.IsFocus != isFocus)
+                if (bullet.FocusType != focusType)
                 {
                     continue;
                 }

@@ -105,10 +105,9 @@ namespace App.Battle.Views
             }
         }
 
-
-        public void Shot(ShotType shotType, int focusTargetIdint, bool isLeft)
+        public void Shot(HandType handType, ShotType shotType, AimFocusType focusType, int focusTargetId)
         {
-            _playerTopDownAimStoreView.Shot(shotType, focusTargetIdint, isLeft);
+            _playerTopDownAimStoreView.Shot(handType, shotType, focusType, focusTargetId);
         }
 
         private void OnHitBullet(HitData hit)

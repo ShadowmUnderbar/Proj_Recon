@@ -90,15 +90,15 @@ namespace App.Battle.Views
             return _rightTopDown.GetAimPosition();
         }
 
-        public void Shot(ShotType shotType, int focusTargetId, bool isLeft)
+        public void Shot(HandType handType, ShotType shotType, AimFocusType focusType, int focusTargetId)
         {
-            if (isLeft)
+            if (handType == HandType.Left)
             {
-                _leftShotView.SpawnBullet(shotType, focusTargetId);
+                _leftShotView.SpawnBullet(shotType, focusType, focusTargetId);
                 return;
             }
 
-            _rightShotView.SpawnBullet(shotType, focusTargetId);
+            _rightShotView.SpawnBullet(shotType, focusType, focusTargetId);
         }
 
         private void OnDestroy()

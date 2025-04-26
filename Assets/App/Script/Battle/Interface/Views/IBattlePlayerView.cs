@@ -19,6 +19,6 @@ namespace App.Battle.Interface
         void Aim();
         void SetRayColor(Color color);
         void MouseAim(Vector2 mousePos);
-        void Shot(ShotType shotType, int focusTargetIdint, bool isLeft);
+        void Shot(HandType handType, ShotType shotType, AimFocusType focusType, int focusTargetId);
     }
 }

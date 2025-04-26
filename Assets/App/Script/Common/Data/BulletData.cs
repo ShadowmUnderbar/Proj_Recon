@@ -6,11 +6,11 @@ namespace App.Common.Data
     public class BulletData
     {
         public string Id;
-        public ShotType Type;
+        public ShotType Shotype;
         public int Damage = 1;
         public float Speed = 20f;
         public int Penetration = 1;
         public float Explosive = 0;
-        public bool IsFocus = false;
+        public AimFocusType FocusType = AimFocusType.NotFocus;
     }
 }

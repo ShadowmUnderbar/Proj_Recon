@@ -11,20 +11,16 @@ namespace App.Battle.Interface.DataStore
         ReactiveProperty<float> MaxHealth { get; }
 
         ReactiveProperty<ShotType> ShotType { get; }
-        bool CanShotCoolDown(bool isLeft, ShotType shotType);
-
-        float NormalFireRate { get; }
-        float MergeFireRate { get; }
-        float WaltzFireRate { get; }
+        ReactiveProperty<AimFocusType> FocusType { get; }
 
         ReactiveProperty<int> FocusLeftTargetId { get; }
         ReactiveProperty<int> FocusRightTargetId { get; }
 
-        void SetLeftNormalShotCoolDown(float time);
-        void SetRightNormalShotCoolDown(float time);
-        void SetMergeShotCoolDown(float time);
-        void SetLeftWaltzShotCoolDown(float time);
-        void SetRightWaltzShotCoolDown(float time);
-        void SetAimPosition(bool isLeft, Vector3 position);
+        bool CanLeftShot { get; }
+        bool CanRightShot { get; }
+
+        void SetCoolDownTime(HandType handType, ShotType shotType, AimFocusType focusType);
+
+        void SetAimPosition(HandType handType, Vector3 position);
     }
 }

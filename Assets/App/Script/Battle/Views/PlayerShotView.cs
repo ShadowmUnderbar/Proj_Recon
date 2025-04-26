@@ -30,9 +30,9 @@ namespace App.Battle.Views
             _bulletDataBase = bulletDataBase;
         }
 
-        public void SpawnBullet(ShotType shotType, int focusTargetId)
+        public void SpawnBullet(ShotType shotType, AimFocusType focusType, int focusTargetId)
         {
-            if(!_bulletDataBase.TryGetBulletData(shotType, focusTargetId != -1, out  var bulletData))
+            if (!_bulletDataBase.TryGetBulletData(shotType, focusType, out var bulletData))
             {
                 return;
             }

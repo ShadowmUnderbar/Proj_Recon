@@ -7,7 +7,6 @@ using VContainer;
 using VContainer.Unity;
 using App.Common.Interface;
 using R3;
-using UnityEngine;
 
 namespace App.Battle.UseCase
 {
@@ -41,7 +40,7 @@ namespace App.Battle.UseCase
 
         private void OnUpdateShotType(ShotType shotType)
         {
-            _playerControlPresenter.SetRayColor(ShotTypeRayColors.GetRayColor(shotType));
+            _playerControlPresenter.SetRayColor(ThemeColors.GetRayColor(shotType));
         }
 
         public void Tick()
@@ -61,50 +60,29 @@ namespace App.Battle.UseCase
         {
             var shotType = _playerDataStore.ShotType.Value;
 
-            if (!_playerDataStore.CanShotCoolDown(true, shotType))
+            if (!_playerDataStore.CanLeftShot)
             {
                 return;
             }
 
-            switch (shotType)
-            {
-                case ShotType.Normal:
-                    _playerDataStore.SetLeftNormalShotCoolDown(_playerDataStore.NormalFireRate);
-                    break;
-                case ShotType.Waltz:
-                    _playerDataStore.SetLeftWaltzShotCoolDown(_playerDataStore.WaltzFireRate);
-                    break;
-                case ShotType.Merge:
-                    _playerDataStore.SetMergeShotCoolDown(_playerDataStore.MergeFireRate);
-                    break;
-            }
-
-            _playerControlPresenter.Shot(shotType, _playerDataStore.FocusLeftTargetId.Value, true);
+            var focusType = AimFocusType.NotFocus;
+            _playerDataStore.SetCoolDownTime(HandType.Left, shotType, focusType);
+            _playerControlPresenter.Shot(HandType.Left, shotType, focusType, _playerDataStore.FocusLeftTargetId.Value);
         }
 
         private void TryRightShot()
         {
             var shotType = _playerDataStore.ShotType.Value;
 
-            if (!_playerDataStore.CanShotCoolDown(false, shotType))
+            if (!_playerDataStore.CanRightShot)
             {
                 return;
             }
 
-            switch (shotType)
-            {
-                case ShotType.Normal:
-                    _playerDataStore.SetRightNormalShotCoolDown(_playerDataStore.NormalFireRate);
-                    break;
-                case ShotType.Waltz:
-                    _playerDataStore.SetRightWaltzShotCoolDown(_playerDataStore.WaltzFireRate);
-                    break;
-                case ShotType.Merge:
-                    _playerDataStore.SetMergeShotCoolDown(_playerDataStore.MergeFireRate);
-                    break;
-            }
-
-            _playerControlPresenter.Shot(shotType, _playerDataStore.FocusRightTargetId.Value, false);
+            var focusType = AimFocusType.NotFocus;
+            _playerDataStore.SetCoolDownTime(HandType.Right, shotType, focusType);
+            _playerControlPresenter.Shot(HandType.Right, shotType, focusType,
+                _playerDataStore.FocusRightTargetId.Value);
         }
 
         public void Dispose()

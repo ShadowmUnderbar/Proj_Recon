@@ -21,6 +21,6 @@ namespace App.Battle.Interface
         Observable<Vector3> OnLeftAimPosition { get; }
         void SetRayColor(Color color);
         void Aim();
-        void Shot(ShotType shotType, int focusTargetId, bool isLeft);
+        void Shot(HandType handType, ShotType shotType, AimFocusType focusType, int focusTargetId);
     }
 }

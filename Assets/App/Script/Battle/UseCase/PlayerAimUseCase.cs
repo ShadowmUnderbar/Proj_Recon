@@ -5,6 +5,7 @@ using App.Common.Interface;
 using R3;
 using System;
 using App.Battle.Interface.DataStore;
+using App.Common.Data;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -43,11 +44,11 @@ namespace App.Battle.UseCase
                 .AddTo(_disposables);
 
             _playerControlPresenter.OnLeftAimPosition
-                .Subscribe(x => _playerDataStore.SetAimPosition(true, x))
+                .Subscribe(x => _playerDataStore.SetAimPosition(HandType.Left, x))
                 .AddTo(_disposables);
 
             _playerControlPresenter.OnRightAimPosition
-                .Subscribe(x => _playerDataStore.SetAimPosition(false, x))
+                .Subscribe(x => _playerDataStore.SetAimPosition(HandType.Right, x))
                 .AddTo(_disposables);
         }
 

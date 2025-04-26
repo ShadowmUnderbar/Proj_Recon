@@ -14,37 +14,65 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bulletDataBaseList:
   - Id: NormalBullet
-    Type: 0
+    Shotype: 0
     Damage: 4
     Speed: 20
     Penetration: 1
     Explosive: 0
-    IsFocus: 0
+    FocusType: 0
   - Id: FocusNormalBullet
-    Type: 0
+    Shotype: 0
     Damage: 5
     Speed: 40
     Penetration: 3
     Explosive: 0
-    IsFocus: 1
+    FocusType: 1
+  - Id: LongFocusNormalBullet
+    Shotype: 0
+    Damage: 10
+    Speed: 100
+    Penetration: 5
+    Explosive: 0
+    FocusType: 2
+  - Id: MergeBullet
+    Shotype: 1
+    Damage: 7
+    Speed: 50
+    Penetration: 0
+    Explosive: 1.3
+    FocusType: 0
   - Id: FocusMergeBullet
-    Type: 1
+    Shotype: 1
     Damage: 10
     Speed: 70
     Penetration: 0
     Explosive: 1.4
-    IsFocus: 1
+    FocusType: 1
+  - Id: LongFocusMergeBullet
+    Shotype: 1
+    Damage: 25
+    Speed: 30
+    Penetration: 0
+    Explosive: 4
+    FocusType: 2
   - Id: WaltzBullet
-    Type: 2
+    Shotype: 2
     Damage: 1
     Speed: 10
     Penetration: 0
     Explosive: 0
-    IsFocus: 0
+    FocusType: 0
   - Id: FocusWaltzBullet
-    Type: 2
+    Shotype: 2
     Damage: 2
     Speed: 30
+    Penetration: 0
+    Explosive: 0
+    FocusType: 1
+  - Id: LongFocusWaltzBullet
+    Shotype: 2
+    Damage: 5
+    Speed: -1
     Penetration: 1
     Explosive: 0
-    IsFocus: 1
+    FocusType: 2
