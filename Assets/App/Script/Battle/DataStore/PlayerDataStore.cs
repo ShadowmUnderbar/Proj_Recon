@@ -34,7 +34,7 @@ namespace App.Battle.DataStore
 
         private static float MergePositionDistance => 0.15f;
         private static float WaltzAngleDifference => 130f;
-        private static float LongFocusDistance => 15f;
+        private static float LongFocusDistance => 17f;
 
         private readonly Dictionary<HandType, Vector3> _aimPositions = new()
         {

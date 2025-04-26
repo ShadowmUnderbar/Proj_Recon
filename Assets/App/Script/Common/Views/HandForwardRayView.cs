@@ -26,6 +26,11 @@ namespace App.Common.Views
 
         public void SetRayColor(Color color)
         {
+            if (_material == null)
+            {
+                return;
+            }
+
             color *= 1.5f;
             color.a = 0.75f;
             _material.color = color;

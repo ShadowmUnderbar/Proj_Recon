@@ -11,8 +11,7 @@ namespace App.Battle.Views
     {
         private PlatformHandRotation _platformHandRotation;
         private const float Radius = 0.2f;
-        private const float Distance = 50f;
-        private readonly RaycastHit[] raycastHits = new RaycastHit[5];
+        private readonly RaycastHit[] _raycastHits = new RaycastHit[5];
         private readonly int _targetLayers = LayerConstants.Default | LayerConstants.Hitbox;
 
         public Observable<int> OnFocus => _onFocus;
@@ -27,23 +26,25 @@ namespace App.Battle.Views
         {
             if (_platformHandRotation == null)
             {
-                return transform.forward * Distance;
+                return transform.forward * GameParamData.RayMaxDistance;
             }
 
             var count = Physics.SphereCastNonAlloc(transform.position, Radius,
                 _platformHandRotation.Rotation * Vector3.forward,
-                raycastHits, Distance,
+                _raycastHits, GameParamData.RayMaxDistance,
                 _targetLayers);
 
             if (count <= 0)
             {
                 _onFocus.OnNext(-1);
-                return transform.forward * Distance;
+                var pos = _platformHandRotation.Rotation * Vector3.forward * GameParamData.RayMaxDistance;
+                pos.y = 0;
+                return pos;
             }
 
             for (var i = 0; i < count; i++)
             {
-                var hit = raycastHits[i];
+                var hit = _raycastHits[i];
 
                 if (hit.collider == null)
                 {
@@ -59,7 +60,7 @@ namespace App.Battle.Views
 
                 if (view.HitBoxType == HitBoxType.Enemy)
                 {
-                    _onFocus.OnNext((int)view.Id);
+                    _onFocus.OnNext(view.Id);
                     return hit.collider.transform.position;
                 }
 
@@ -68,7 +69,7 @@ namespace App.Battle.Views
             }
 
             _onFocus.OnNext(-1);
-            return raycastHits[0].point;
+            return _raycastHits[0].point;
         }
     }
 }

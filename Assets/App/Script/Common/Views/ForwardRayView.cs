@@ -1,3 +1,4 @@
+using App.Common.Data;
 using App.Common.Interface.Views;
 using UnityEngine;
 
@@ -10,8 +11,6 @@ namespace App.Common.Views
         [SerializeField] private LayerMask _layerMask;
 
         private Material _material;
-
-        private static float MaxRayRange => 50f;
 
         private void Awake()
         {
@@ -39,7 +38,7 @@ namespace App.Common.Views
 
             _lineRenderer.SetPosition(0, transform.position);
 
-            _lineRenderer.SetPosition(1, transform.position + transform.forward * MaxRayRange);
+            _lineRenderer.SetPosition(1, transform.position + transform.forward * GameParamData.RayMaxDistance);
         }
 
         public void SetRayColor(Color color)
@@ -51,7 +50,7 @@ namespace App.Common.Views
 
             _material.color = color;
         }
-        
+
         public void SetEnable(bool enable)
         {
             _lineRenderer.enabled = enable;
