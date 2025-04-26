@@ -11,7 +11,7 @@ namespace App.Common.Views
 
         private Material _material;
 
-        private float _maxRayRange = 50f;
+        private static float MaxRayRange => 50f;
 
         private void Awake()
         {
@@ -39,7 +39,7 @@ namespace App.Common.Views
 
             _lineRenderer.SetPosition(0, transform.position);
 
-            _lineRenderer.SetPosition(1, transform.position + transform.forward * _maxRayRange);
+            _lineRenderer.SetPosition(1, transform.position + transform.forward * MaxRayRange);
         }
 
         public void SetRayColor(Color color)
