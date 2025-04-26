@@ -1,14 +1,18 @@
 using System.Collections.Generic;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
+using App.Common.Data.Database;
 using R3;
 using UnityEngine;
+using VContainer;
 using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
-    public abstract class PlayerDataStore : IPlayerDataStore, ITickable
+    public class PlayerDataStore : IPlayerDataStore, ITickable
     {
+        private readonly BulletDataBase _bulletDataBase;
+
         public ReactiveProperty<Vector3> Position { get; } = new();
         public ReactiveProperty<float> Health { get; } = new();
         public ReactiveProperty<float> MaxHealth { get; } = new();
@@ -17,13 +21,6 @@ namespace App.Battle.DataStore
         public ReactiveProperty<AimFocusType> FocusType { get; } = new();
         public ReactiveProperty<int> FocusLeftTargetId { get; } = new();
         public ReactiveProperty<int> FocusRightTargetId { get; } = new();
-
-        private static float NormalFireRate => 0.6f;
-        private static float MergeFireRate => 1.2f;
-        private static float WaltzFireRate => 0.3f;
-
-        private static float FocusFireRateMagnification => 0.9f;
-        private static float LongFocusFireRateMagnification => 1.7f;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -40,6 +37,12 @@ namespace App.Battle.DataStore
             { HandType.Right, Vector3.zero }
         };
 
+        [Inject]
+        public PlayerDataStore(BulletDataBase bulletDataBase)
+        {
+            _bulletDataBase = bulletDataBase;
+        }
+
         public void Tick()
         {
             UpdateShotType();
@@ -48,29 +51,18 @@ namespace App.Battle.DataStore
 
         public void SetCoolDownTime(HandType handType, ShotType shotType, AimFocusType focusType)
         {
-            var cooldownTime = shotType switch
+            if (_bulletDataBase.TryGetBulletData(shotType, focusType, out var bulletData))
             {
-                Common.Data.ShotType.Normal => NormalFireRate,
-                Common.Data.ShotType.Merge => MergeFireRate,
-                Common.Data.ShotType.Waltz => WaltzFireRate,
-                _ => NormalFireRate
-            };
-
-            cooldownTime *= focusType switch
-            {
-                AimFocusType.NotFocus => 1,
-                AimFocusType.Focus => FocusFireRateMagnification,
-                AimFocusType.LongFocus => LongFocusFireRateMagnification,
-                _ => 1
-            };
+                return;
+            }
 
             if (handType == HandType.Left)
             {
-                _leftShotCoolDown = cooldownTime;
+                _leftShotCoolDown = bulletData.CoolDownSecound;
             }
             else
             {
-                _rightShotCoolDown = cooldownTime;
+                _rightShotCoolDown = bulletData.CoolDownSecound;
             }
         }
 
