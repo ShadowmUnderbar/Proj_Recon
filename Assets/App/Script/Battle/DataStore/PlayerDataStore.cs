@@ -24,6 +24,8 @@ namespace App.Battle.DataStore
 
         public ReactiveProperty<int> FocusLeftTargetId { get; } = new(-1);
         public ReactiveProperty<int> FocusRightTargetId { get; } = new(-1);
+        public ReactiveProperty<Pose> LeftHandPose { get; } = new();
+        public ReactiveProperty<Pose> RightHandPose { get; } = new();
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -155,8 +157,8 @@ namespace App.Battle.DataStore
 
         private bool IsMerge()
         {
-            var distance = (_aimPositions[HandType.Left] - _aimPositions[HandType.Right]).sqrMagnitude;
-            return distance < MergePositionDistance * MergePositionDistance;
+            var distance = (LeftHandPose.Value.position - RightHandPose.Value.position).sqrMagnitude;
+            return Mathf.Abs(distance) < MergePositionDistance * MergePositionDistance;
         }
 
         private bool IsWaltz()

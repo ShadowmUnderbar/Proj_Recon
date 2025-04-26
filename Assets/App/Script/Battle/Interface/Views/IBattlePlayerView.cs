@@ -14,6 +14,8 @@ namespace App.Battle.Interface
         Observable<Vector3> OnRightAimPosition { get; }
         Observable<Vector3> OnLeftAimPosition { get; }
         ReactiveProperty<Vector3> OnUpdatePosition { get; }
+        ReactiveProperty<Pose> LeftHandPose { get; }
+        ReactiveProperty<Pose> RightHandPose { get; }
 
         void Move(Vector2 inputV2, float speed);
         void Aim();

@@ -7,6 +7,7 @@ using UnityEngine;
 using VContainer;
 using R3;
 using App.Common.Data;
+using App.Framework.Utilities.Extensions;
 
 namespace App.Battle.Views
 {
@@ -30,6 +31,9 @@ namespace App.Battle.Views
         private ISimpleObjectFactory<IPlayerTopDownAimView> _topDownFactory;
         private ISimpleObjectFactory<IPlayerAimMuzzleView> _aimFactory;
         private ISimpleObjectFactory<IPlayerShotView> _shotFactory;
+
+        public ReactiveProperty<Pose> LeftHandPose { get; } = new();
+        public ReactiveProperty<Pose> RightHandPose { get; } = new();
 
         [Inject]
         public void Construct(
@@ -65,6 +69,12 @@ namespace App.Battle.Views
         {
             _onHit.AddTo(this);
             _playerTopDownAimListView.OnHit.Subscribe(OnHitBullet).AddTo(this);
+        }
+
+        private void Update()
+        {
+            LeftHandPose.Value = _controllers[0].ToPose();
+            RightHandPose.Value = _controllers[1].ToPose();
         }
 
         public void Move(Vector2 inputV2, float speed)

@@ -17,6 +17,9 @@ namespace App.Battle.Presenters
 
         public ReactiveProperty<Vector3> OnUpdatePosition => _playerView.OnUpdatePosition;
 
+        public ReactiveProperty<Pose> LeftHandPose => _playerView.LeftHandPose;
+        public ReactiveProperty<Pose> RightHandPose => _playerView.RightHandPose;
+
         [Inject]
         public PlayerControlPresenter(
             IBattlePlayerView playerView

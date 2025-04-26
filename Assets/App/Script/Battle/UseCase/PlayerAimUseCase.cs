@@ -38,7 +38,6 @@ namespace App.Battle.UseCase
             _playerControlPresenter.OnFocusLeft
                 .Subscribe(x => UpdateOnFocus(x, true))
                 .AddTo(_disposables);
-
             _playerControlPresenter.OnFocusRight
                 .Subscribe(x => UpdateOnFocus(x, false))
                 .AddTo(_disposables);
@@ -46,9 +45,15 @@ namespace App.Battle.UseCase
             _playerControlPresenter.OnLeftAimPosition
                 .Subscribe(x => _playerDataStore.SetAimPosition(HandType.Left, x))
                 .AddTo(_disposables);
-
             _playerControlPresenter.OnRightAimPosition
                 .Subscribe(x => _playerDataStore.SetAimPosition(HandType.Right, x))
+                .AddTo(_disposables);
+
+            _playerControlPresenter.LeftHandPose
+                .Subscribe(x => _playerDataStore.LeftHandPose.Value = x)
+                .AddTo(_disposables);
+            _playerControlPresenter.RightHandPose
+                .Subscribe(x => _playerDataStore.RightHandPose.Value = x)
                 .AddTo(_disposables);
         }
 

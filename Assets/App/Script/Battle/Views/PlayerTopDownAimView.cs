@@ -12,11 +12,11 @@ namespace App.Battle.Views
         private PlatformHandRotation _platformHandRotation;
         private const float Radius = 0.2f;
         private const float Distance = 50f;
-        private RaycastHit[] raycastHits = new RaycastHit[5];
-        private readonly int TargetLayers = LayerConstants.Default | LayerConstants.Hitbox;
+        private readonly RaycastHit[] raycastHits = new RaycastHit[5];
+        private readonly int _targetLayers = LayerConstants.Default | LayerConstants.Hitbox;
 
         public Observable<int> OnFocus => _onFocus;
-        private Subject<int> _onFocus = new();
+        private readonly Subject<int> _onFocus = new();
 
         private void Start()
         {
@@ -33,7 +33,7 @@ namespace App.Battle.Views
             var count = Physics.SphereCastNonAlloc(transform.position, Radius,
                 _platformHandRotation.Rotation * Vector3.forward,
                 raycastHits, Distance,
-                TargetLayers);
+                _targetLayers);
 
             if (count <= 0)
             {

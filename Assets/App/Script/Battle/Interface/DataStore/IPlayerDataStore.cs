@@ -16,6 +16,9 @@ namespace App.Battle.Interface.DataStore
 
         ReactiveProperty<int> FocusLeftTargetId { get; }
         ReactiveProperty<int> FocusRightTargetId { get; }
+        
+        ReactiveProperty<Pose> LeftHandPose { get; }
+        ReactiveProperty<Pose> RightHandPose { get; }
 
         bool CanLeftShot { get; }
         bool CanRightShot { get; }
