@@ -6,7 +6,7 @@ using App.Common.Data;
 
 namespace App.Battle.Views
 {
-    public class PlayerTopDownAimStoreView : MonoBehaviour, IPlayerTopDownAimStoreView
+    public class PlayerTopDownAimListView : MonoBehaviour, IPlayerTopDownAimListView
     {
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
@@ -62,9 +62,14 @@ namespace App.Battle.Views
                 .AddTo(this);
         }
 
-        public void SetRayColor(Color color)
+        public void SetRayColor(HandType handType, Color color)
         {
-            _leftAimView.SetRayColor(color);
+            if (handType == HandType.Left)
+            {
+                _leftAimView.SetRayColor(color);
+                return;
+            }
+
             _rightAimView.SetRayColor(color);
         }
 

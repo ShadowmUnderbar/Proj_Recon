@@ -13,17 +13,17 @@ namespace App.Battle.Views
     public class BattlePlayerView : MonoBehaviour, IBattlePlayerView
     {
         [SerializeField] private PlayerMoveView _playerMoveView;
-        [SerializeField] private PlayerTopDownAimStoreView _playerTopDownAimStoreView;
+        [SerializeField] private PlayerTopDownAimListView _playerTopDownAimListView;
         [SerializeField] private Transform[] _controllers;
         [SerializeField] private Transform[] _muzzles;
 
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
-        public Observable<int> OnFocusLeft => _playerTopDownAimStoreView.OnFocusLeft;
-        public Observable<int> OnFocusRight => _playerTopDownAimStoreView.OnFocusRight;
+        public Observable<int> OnFocusLeft => _playerTopDownAimListView.OnFocusLeft;
+        public Observable<int> OnFocusRight => _playerTopDownAimListView.OnFocusRight;
 
-        public Observable<Vector3> OnLeftAimPosition => _playerTopDownAimStoreView.OnLeftAimPosition;
-        public Observable<Vector3> OnRightAimPosition => _playerTopDownAimStoreView.OnRightAimPosition;
+        public Observable<Vector3> OnLeftAimPosition => _playerTopDownAimListView.OnLeftAimPosition;
+        public Observable<Vector3> OnRightAimPosition => _playerTopDownAimListView.OnRightAimPosition;
 
         public ReactiveProperty<Vector3> OnUpdatePosition => _playerMoveView.OnUpdatePosition;
 
@@ -54,7 +54,7 @@ namespace App.Battle.Views
                 shotViews.Add(_shotFactory.Instantiate(aimView.Transform));
             }
 
-            _playerTopDownAimStoreView.InitStoreView(
+            _playerTopDownAimListView.InitStoreView(
                 topdownViews[0], topdownViews[1],
                 aimViews[0], aimViews[1],
                 shotViews[0], shotViews[1]
@@ -64,7 +64,7 @@ namespace App.Battle.Views
         private void Awake()
         {
             _onHit.AddTo(this);
-            _playerTopDownAimStoreView.OnHit.Subscribe(OnHitBullet).AddTo(this);
+            _playerTopDownAimListView.OnHit.Subscribe(OnHitBullet).AddTo(this);
         }
 
         public void Move(Vector2 inputV2, float speed)
@@ -72,15 +72,14 @@ namespace App.Battle.Views
             _playerMoveView.Move(inputV2, speed);
         }
 
-        public void
-            Aim()
+        public void Aim()
         {
-            _playerTopDownAimStoreView.Aim();
+            _playerTopDownAimListView.Aim();
         }
 
-        public void SetRayColor(Color color)
+        public void SetRayColor(HandType handType, Color color)
         {
-            _playerTopDownAimStoreView.SetRayColor(color);
+            _playerTopDownAimListView.SetRayColor(handType, color);
         }
 
         public void MouseAim(Vector2 mousePos)
@@ -107,7 +106,7 @@ namespace App.Battle.Views
 
         public void Shot(HandType handType, ShotType shotType, AimFocusType focusType, int focusTargetId)
         {
-            _playerTopDownAimStoreView.Shot(handType, shotType, focusType, focusTargetId);
+            _playerTopDownAimListView.Shot(handType, shotType, focusType, focusTargetId);
         }
 
         private void OnHitBullet(HitData hit)

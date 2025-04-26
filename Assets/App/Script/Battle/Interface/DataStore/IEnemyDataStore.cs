@@ -5,8 +5,8 @@ namespace App.Battle.Interface.DataStore
 {
     public interface IEnemyDataStore
     {
-        bool TryGetEnemyData(uint enemyId, out EnemyData enemyData);
+        bool TryGetEnemyData(int enemyId, out EnemyData enemyData);
         EnemyData AddEnemyData(EnemyMasterData enemyMasterData);
-        bool RemoveEnemyData(uint enemyId);
+        bool RemoveEnemyData(int enemyId);
     }
 }

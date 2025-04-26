@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace App.Battle.Interface
 {
-    public interface IPlayerTopDownAimStoreView
+    public interface IPlayerTopDownAimListView
     {
         void InitStoreView(
             IPlayerTopDownAimView leftTopDown, IPlayerTopDownAimView rightTopDown,
@@ -19,7 +19,7 @@ namespace App.Battle.Interface
 
         Observable<Vector3> OnRightAimPosition { get; }
         Observable<Vector3> OnLeftAimPosition { get; }
-        void SetRayColor(Color color);
+        void SetRayColor(HandType handType, Color color);
         void Aim();
         void Shot(HandType handType, ShotType shotType, AimFocusType focusType, int focusTargetId);
     }

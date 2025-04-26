@@ -7,5 +7,7 @@ namespace App.Battle.Interface
     public interface IEnemyStoreView
     {
         UniTask Spawn(EnemyData enemyData, Pose spawnPose);
+        UniTask Dead(int id);
+        void AllDeadEnemies();
     }
 }

@@ -1,13 +1,17 @@
 using App.Battle.Interface;
+using Cysharp.Threading.Tasks;
+using R3;
 using UnityEngine;
 
-namespace App.Script.Battle.Views
+namespace App.Battle.Views
 {
     public class EnemyView : MonoBehaviour, IEnemyView
     {
-        public uint Id { get; private set; }
+        public int Id { get; private set; }
 
-        public void Init(uint id)
+        public ReactiveProperty<Pose> Pose { get; } = new();
+
+        public void Init(int id)
         {
             Id = id;
 
@@ -17,6 +21,17 @@ namespace App.Script.Battle.Views
             {
                 hitbox.Id = Id;
             }
+        }
+
+        private void Update()
+        {
+            Pose.Value = new Pose(transform.position, transform.rotation);
+        }
+
+
+        public async UniTask Dead()
+        {
+            Destroy(gameObject);
         }
     }
 }

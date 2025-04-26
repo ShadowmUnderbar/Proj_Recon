@@ -1,8 +1,14 @@
+using Cysharp.Threading.Tasks;
+using R3;
+using UnityEngine;
+
 namespace App.Battle.Interface
 {
     public interface IEnemyView
     {
-        uint Id { get; }
-        void Init(uint id);
+        ReactiveProperty<Pose> Pose { get; }
+        int Id { get; }
+        void Init(int id);
+        UniTask Dead();
     }
 }

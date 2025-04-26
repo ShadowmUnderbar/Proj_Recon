@@ -36,7 +36,11 @@ namespace App.Battle.UseCase
                 .DistinctUntilChanged()
                 .Subscribe(_ => OnUpdateShotType())
                 .AddTo(_disposable);
-            _playerDataStore.FocusType
+            _playerDataStore.RightFocusType
+                .DistinctUntilChanged()
+                .Subscribe(_ => OnUpdateShotType())
+                .AddTo(_disposable);
+            _playerDataStore.LeftFocusType
                 .DistinctUntilChanged()
                 .Subscribe(_ => OnUpdateShotType())
                 .AddTo(_disposable);
@@ -45,8 +49,11 @@ namespace App.Battle.UseCase
         private void OnUpdateShotType()
         {
             var shotType = _playerDataStore.ShotType.Value;
-            var focusType = _playerDataStore.FocusType.Value;
-            _playerControlPresenter.SetRayColor(ThemeColors.GetRayColor(shotType, focusType));
+            var leftFocusType = _playerDataStore.LeftFocusType.Value;
+            var rightFocusType = _playerDataStore.RightFocusType.Value;
+
+            _playerControlPresenter.SetRayColor(HandType.Left, ThemeColors.GetRayColor(shotType, leftFocusType));
+            _playerControlPresenter.SetRayColor(HandType.Right, ThemeColors.GetRayColor(shotType, rightFocusType));
         }
 
         public void Tick()

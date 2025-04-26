@@ -8,9 +8,9 @@ namespace App.Battle.DataStore
 {
     public class EnemyDataStore : IEnemyDataStore
     {
-        private readonly Dictionary<uint, EnemyData> _spawnEnemyDataList = new();
+        private readonly Dictionary<int, EnemyData> _spawnEnemyDataList = new();
 
-        public bool TryGetEnemyData(uint enemyId, out EnemyData enemyData)
+        public bool TryGetEnemyData(int enemyId, out EnemyData enemyData)
         {
             enemyData = null;
             if (!_spawnEnemyDataList.TryGetValue(enemyId, out var data))
@@ -24,10 +24,10 @@ namespace App.Battle.DataStore
 
         public EnemyData AddEnemyData(EnemyMasterData enemyMasterData)
         {
-            uint enemyId;
+            int enemyId;
             do
             {
-                enemyId = (uint)Random.Range(0, int.MaxValue);
+                enemyId = Random.Range(0, int.MaxValue);
             } while (_spawnEnemyDataList.ContainsKey(enemyId));
 
             var enemy = new EnemyData
@@ -43,7 +43,7 @@ namespace App.Battle.DataStore
             return enemy;
         }
 
-        public bool RemoveEnemyData(uint enemyId)
+        public bool RemoveEnemyData(int enemyId)
         {
             return _spawnEnemyDataList.Remove(enemyId);
         }

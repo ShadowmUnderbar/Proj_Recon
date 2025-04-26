@@ -11,7 +11,8 @@ namespace App.Battle.Interface.DataStore
         ReactiveProperty<float> MaxHealth { get; }
 
         ReactiveProperty<ShotType> ShotType { get; }
-        ReactiveProperty<AimFocusType> FocusType { get; }
+        ReactiveProperty<AimFocusType> LeftFocusType { get; }
+        ReactiveProperty<AimFocusType> RightFocusType { get; }
 
         ReactiveProperty<int> FocusLeftTargetId { get; }
         ReactiveProperty<int> FocusRightTargetId { get; }

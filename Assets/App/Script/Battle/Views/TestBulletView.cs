@@ -16,7 +16,7 @@ namespace App.Battle.Views
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
 
-        private readonly List<uint> _hitTargetIds = new();
+        private readonly List<int> _hitTargetIds = new();
 
         private BulletData _bulletData;
         private int _hitCount = 0;
@@ -41,6 +41,7 @@ namespace App.Battle.Views
                     {
                         return;
                     }
+
                     if (x.gameObject.CompareTag($"Bullet"))
                     {
                         return;

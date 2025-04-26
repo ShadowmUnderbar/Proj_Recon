@@ -9,5 +9,5 @@ public class HitBoxView : MonoBehaviour, IHitBoxView
 
     public HitBoxType HitBoxType => hitBoxType;
 
-    public uint Id { get; set; }
+    public int Id { get; set; }
 }

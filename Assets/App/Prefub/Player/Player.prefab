@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerMoveView: {fileID: 2787126200944847852}
-  _playerTopDownAimStoreView: {fileID: 3776856170843482917}
+  _playerTopDownAimListView: {fileID: 3776856170843482917}
   _controllers:
   - {fileID: 7008251059468729650}
   - {fileID: 6655870407744209294}
