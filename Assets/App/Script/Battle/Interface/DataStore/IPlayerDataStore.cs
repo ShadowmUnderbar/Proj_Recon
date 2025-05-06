@@ -19,11 +19,7 @@ namespace App.Battle.Interface.DataStore
 
         ReactiveProperty<Pose> LeftHandPose { get; }
         ReactiveProperty<Pose> RightHandPose { get; }
-        BulletData GetBulletData(ShotType shotType, AimFocusType focusType);
-
-        void SetCoolDownTime(HandType handType, ShotType shotType, AimFocusType focusType);
 
         void SetAimPosition(HandType handType, Vector3 position);
-        bool CanShot(HandType handType);
     }
 }

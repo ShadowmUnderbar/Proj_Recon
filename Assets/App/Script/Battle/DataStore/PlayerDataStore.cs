@@ -14,7 +14,6 @@ namespace App.Battle.DataStore
     public class PlayerDataStore : IPlayerDataStore, IInitializable, ITickable
     {
         private readonly IEnemyDataStore _enemyDataStore;
-        private readonly IPlayerSettingDataStore _playerSettingDataStore;
 
         public ReactiveProperty<Vector3> Position { get; } = new();
         public ReactiveProperty<float> Health { get; } = new();
@@ -29,9 +28,6 @@ namespace App.Battle.DataStore
         public ReactiveProperty<Pose> LeftHandPose { get; } = new();
         public ReactiveProperty<Pose> RightHandPose { get; } = new();
 
-        private float _leftShotCoolDown;
-        private float _rightShotCoolDown;
-
         private static float MergePositionDistance => 0.15f;
         private static float WaltzAngleDifference => 130f;
         private static float LongFocusDistance => 17f;
@@ -44,12 +40,10 @@ namespace App.Battle.DataStore
 
         [Inject]
         public PlayerDataStore(
-            IEnemyDataStore enemyDataStore,
-            IPlayerSettingDataStore playerSettingDataStore
+            IEnemyDataStore enemyDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
-            _playerSettingDataStore = playerSettingDataStore;
         }
 
         public void Initialize()
@@ -71,35 +65,6 @@ namespace App.Battle.DataStore
             UpdateShotType();
             UpdateLeftFocusType();
             UpdateRightFocusType();
-            UpdateCoolDownTime();
-        }
-
-        public void SetCoolDownTime(HandType handType, ShotType shotType, AimFocusType focusType)
-        {
-            var baseCoolDown = BasePlayerParameter.BaseFireRate;
-
-            baseCoolDown *= focusType switch
-            {
-                AimFocusType.Focus => BasePlayerParameter.FocusFireRateMagnification,
-                AimFocusType.LongFocus => BasePlayerParameter.LongFocusFireRateMagnification,
-                _ => 1f
-            };
-
-            baseCoolDown *= shotType switch
-            {
-                Common.Data.ShotType.Merge => BasePlayerParameter.MergeFireRateMagnification,
-                Common.Data.ShotType.Waltz => BasePlayerParameter.WaltzFireRateMagnification,
-                _ => 1f
-            };
-
-            if (handType == HandType.Left)
-            {
-                _leftShotCoolDown = baseCoolDown;
-            }
-            else
-            {
-                _rightShotCoolDown = baseCoolDown;
-            }
         }
 
         private void UpdateShotType()
@@ -182,132 +147,10 @@ namespace App.Battle.DataStore
             return Mathf.Abs(angleDifference) >= WaltzAngleDifference;
         }
 
-        private void UpdateCoolDownTime()
-        {
-            if (_leftShotCoolDown > 0)
-            {
-                _leftShotCoolDown -= Time.deltaTime;
-            }
-
-            if (_rightShotCoolDown > 0)
-            {
-                _rightShotCoolDown -= Time.deltaTime;
-            }
-        }
 
         public void SetAimPosition(HandType handType, Vector3 position)
         {
             _aimPositions[handType] = position;
-        }
-
-        public bool CanShot(HandType handType)
-        {
-            if (_playerSettingDataStore.NonDominantHand.Value == handType &&
-                ShotType.Value == Common.Data.ShotType.Merge)
-            {
-                return false;
-            }
-
-            if (handType == HandType.Left)
-            {
-                if (_leftShotCoolDown <= 0)
-                {
-                    return true;
-                }
-
-                return false;
-            }
-
-            if (_rightShotCoolDown <= 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public BulletData GetBulletData(ShotType shotType, AimFocusType focusType)
-        {
-            var bullet = new BulletData
-            {
-                ShotType = shotType,
-                FocusType = focusType,
-                Damage = GetBulletDamage(shotType, focusType),
-                Speed = GetBulletSpeed(shotType, focusType),
-                Penetration = GetBulletPenetration(shotType, focusType),
-                Explosive = GetBulletExplosive(shotType, focusType)
-            };
-
-            return bullet;
-        }
-
-        private float GetBulletDamage(ShotType shotType, AimFocusType focusType)
-        {
-            var damage = BasePlayerParameter.BaseDamage;
-            damage *= shotType switch
-            {
-                Common.Data.ShotType.Merge => BasePlayerParameter.MergeDamageMagnification,
-                Common.Data.ShotType.Waltz => BasePlayerParameter.WaltzDamageMagnification,
-                _ => 1f
-            };
-
-            damage *= focusType switch
-            {
-                AimFocusType.Focus => BasePlayerParameter.FocusDamageMagnification,
-                AimFocusType.LongFocus => BasePlayerParameter.LongFocusDamageMagnification,
-                _ => 1f
-            };
-            return damage;
-        }
-
-        private float GetBulletSpeed(ShotType shotType, AimFocusType focusType)
-        {
-            var damage = BasePlayerParameter.BaseBulletSpeed;
-            damage *= shotType switch
-            {
-                Common.Data.ShotType.Merge => BasePlayerParameter.MergeBulletSpeedMagnification,
-                Common.Data.ShotType.Waltz => BasePlayerParameter.WaltzBulletSpeedMagnification,
-                _ => 1f
-            };
-
-            damage *= focusType switch
-            {
-                AimFocusType.Focus => BasePlayerParameter.FocusBulletSpeedMagnification,
-                AimFocusType.LongFocus => BasePlayerParameter.LongFocusBulletSpeedMagnification,
-                _ => 1f
-            };
-            return damage;
-        }
-
-        private int GetBulletPenetration(ShotType shotType, AimFocusType focusType)
-        {
-            var penetration = (float)BasePlayerParameter.BasePenetration;
-
-            penetration *= focusType switch
-            {
-                AimFocusType.Focus => BasePlayerParameter.FocusPenetration,
-                AimFocusType.LongFocus => BasePlayerParameter.LongFocusPenetrationMagnification,
-                _ => 1
-            };
-            return Mathf.CeilToInt(penetration);
-        }
-
-        private float GetBulletExplosive(ShotType shotType, AimFocusType focusType)
-        {
-            var explosive = 0f;
-
-            if (shotType == Common.Data.ShotType.Merge)
-            {
-                explosive += BasePlayerParameter.MergeExplosiveScale;
-            }
-
-            explosive *= focusType switch
-            {
-                AimFocusType.Focus => BasePlayerParameter.FocusExplosiveMagnification,
-                AimFocusType.LongFocus => BasePlayerParameter.LongFocusExplosiveMagnification,
-                _ => 0
-            };
-            return explosive;
         }
     }
 }

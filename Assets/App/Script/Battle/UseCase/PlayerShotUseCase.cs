@@ -7,7 +7,6 @@ using VContainer;
 using VContainer.Unity;
 using App.Common.Interface;
 using R3;
-using UnityEngine;
 
 namespace App.Battle.UseCase
 {
@@ -15,6 +14,7 @@ namespace App.Battle.UseCase
     {
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
         private readonly IPlayerDataStore _playerDataStore;
+        private readonly IPlayerBulletParameterDataStore _playerBulletParameterDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputUsecase _gameInputUseCase;
 
@@ -24,12 +24,14 @@ namespace App.Battle.UseCase
         public PlayerShotUseCase(
             IPlayerSettingDataStore playerSettingDataStore,
             IPlayerDataStore playerDataStore,
+            IPlayerBulletParameterDataStore playerBulletParameterDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputUsecase gameInputUseCase
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
             _playerDataStore = playerDataStore;
+            _playerBulletParameterDataStore = playerBulletParameterDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputUseCase = gameInputUseCase;
         }
@@ -82,33 +84,33 @@ namespace App.Battle.UseCase
 
         private void TryLeftShot()
         {
-            if (!_playerDataStore.CanShot(HandType.Left))
+            var shotType = _playerDataStore.ShotType.Value;
+
+            if (!_playerBulletParameterDataStore.CanShot(HandType.Left, shotType))
             {
                 return;
             }
 
-            var shotType = _playerDataStore.ShotType.Value;
             var focusType = _playerDataStore.LeftFocusType.Value;
+            var bulletData = _playerBulletParameterDataStore.GetBulletData(shotType, focusType);
 
-            var bulletData = _playerDataStore.GetBulletData(shotType, focusType);
-
-            _playerDataStore.SetCoolDownTime(HandType.Left, shotType, focusType);
+            _playerBulletParameterDataStore.SetCoolDownTime(HandType.Left, shotType, focusType);
             _playerControlPresenter.Shot(HandType.Left, bulletData, _playerDataStore.FocusLeftTargetId.Value);
         }
 
         private void TryRightShot()
         {
-            if (!_playerDataStore.CanShot(HandType.Right))
+            var shotType = _playerDataStore.ShotType.Value;
+
+            if (!_playerBulletParameterDataStore.CanShot(HandType.Right, shotType))
             {
                 return;
             }
 
-            var shotType = _playerDataStore.ShotType.Value;
             var focusType = _playerDataStore.RightFocusType.Value;
+            var bulletData = _playerBulletParameterDataStore.GetBulletData(shotType, focusType);
 
-            var bulletData = _playerDataStore.GetBulletData(shotType, focusType);
-
-            _playerDataStore.SetCoolDownTime(HandType.Right, shotType, focusType);
+            _playerBulletParameterDataStore.SetCoolDownTime(HandType.Right, shotType, focusType);
             _playerControlPresenter.Shot(HandType.Right, bulletData,
                 _playerDataStore.FocusRightTargetId.Value);
         }
