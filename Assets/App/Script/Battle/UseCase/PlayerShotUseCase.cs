@@ -68,12 +68,12 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            if (_gameInputUseCase.IsLeftTrigger)
+            if (_gameInputUseCase.IsLeftTrigger.Value)
             {
                 TryLeftShot();
             }
 
-            if (_gameInputUseCase.IsRightTrigger)
+            if (_gameInputUseCase.IsRightTrigger.Value)
             {
                 TryRightShot();
             }
