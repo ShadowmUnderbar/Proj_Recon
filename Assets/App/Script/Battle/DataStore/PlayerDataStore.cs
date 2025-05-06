@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
 using App.Common.Data.Database;
@@ -12,7 +13,6 @@ namespace App.Battle.DataStore
 {
     public class PlayerDataStore : IPlayerDataStore, IInitializable, ITickable
     {
-        private readonly BulletDataBase _bulletDataBase;
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
 
@@ -44,12 +44,10 @@ namespace App.Battle.DataStore
 
         [Inject]
         public PlayerDataStore(
-            BulletDataBase bulletDataBase,
             IEnemyDataStore enemyDataStore,
             IPlayerSettingDataStore playerSettingDataStore
         )
         {
-            _bulletDataBase = bulletDataBase;
             _enemyDataStore = enemyDataStore;
             _playerSettingDataStore = playerSettingDataStore;
         }
@@ -57,8 +55,8 @@ namespace App.Battle.DataStore
         public void Initialize()
         {
             Position.Value = Vector3.zero;
-            Health.Value = 100f;
-            MaxHealth.Value = 100f;
+            Health.Value = BasePlayerParameter.Health;
+            MaxHealth.Value = BasePlayerParameter.Health;
 
             ShotType.Value = Common.Data.ShotType.Normal;
             LeftFocusType.Value = AimFocusType.NotFocus;
@@ -78,18 +76,29 @@ namespace App.Battle.DataStore
 
         public void SetCoolDownTime(HandType handType, ShotType shotType, AimFocusType focusType)
         {
-            if (!_bulletDataBase.TryGetBulletData(shotType, focusType, out var bulletData))
+            var baseCoolDown = BasePlayerParameter.BaseFireRate;
+
+            baseCoolDown *= focusType switch
             {
-                return;
-            }
+                AimFocusType.Focus => BasePlayerParameter.FocusFireRateMagnification,
+                AimFocusType.LongFocus => BasePlayerParameter.LongFocusFireRateMagnification,
+                _ => 1f
+            };
+
+            baseCoolDown *= shotType switch
+            {
+                Common.Data.ShotType.Merge => BasePlayerParameter.MergeFireRateMagnification,
+                Common.Data.ShotType.Waltz => BasePlayerParameter.WaltzFireRateMagnification,
+                _ => 1f
+            };
 
             if (handType == HandType.Left)
             {
-                _leftShotCoolDown = bulletData.CoolDownSecound;
+                _leftShotCoolDown = baseCoolDown;
             }
             else
             {
-                _rightShotCoolDown = bulletData.CoolDownSecound;
+                _rightShotCoolDown = baseCoolDown;
             }
         }
 
@@ -215,6 +224,90 @@ namespace App.Battle.DataStore
             }
 
             return false;
+        }
+
+        public BulletData GetBulletData(ShotType shotType, AimFocusType focusType)
+        {
+            var bullet = new BulletData
+            {
+                ShotType = shotType,
+                FocusType = focusType,
+                Damage = GetBulletDamage(shotType, focusType),
+                Speed = GetBulletSpeed(shotType, focusType),
+                Penetration = GetBulletPenetration(shotType, focusType),
+                Explosive = GetBulletExplosive(shotType, focusType)
+            };
+
+            return bullet;
+        }
+
+        private float GetBulletDamage(ShotType shotType, AimFocusType focusType)
+        {
+            var damage = BasePlayerParameter.BaseDamage;
+            damage *= shotType switch
+            {
+                Common.Data.ShotType.Merge => BasePlayerParameter.MergeDamageMagnification,
+                Common.Data.ShotType.Waltz => BasePlayerParameter.WaltzDamageMagnification,
+                _ => 1f
+            };
+
+            damage *= focusType switch
+            {
+                AimFocusType.Focus => BasePlayerParameter.FocusDamageMagnification,
+                AimFocusType.LongFocus => BasePlayerParameter.LongFocusDamageMagnification,
+                _ => 1f
+            };
+            return damage;
+        }
+
+        private float GetBulletSpeed(ShotType shotType, AimFocusType focusType)
+        {
+            var damage = BasePlayerParameter.BaseBulletSpeed;
+            damage *= shotType switch
+            {
+                Common.Data.ShotType.Merge => BasePlayerParameter.MergeBulletSpeedMagnification,
+                Common.Data.ShotType.Waltz => BasePlayerParameter.WaltzBulletSpeedMagnification,
+                _ => 1f
+            };
+
+            damage *= focusType switch
+            {
+                AimFocusType.Focus => BasePlayerParameter.FocusBulletSpeedMagnification,
+                AimFocusType.LongFocus => BasePlayerParameter.LongFocusBulletSpeedMagnification,
+                _ => 1f
+            };
+            return damage;
+        }
+
+        private int GetBulletPenetration(ShotType shotType, AimFocusType focusType)
+        {
+            var penetration = (float)BasePlayerParameter.BasePenetration;
+
+            penetration *= focusType switch
+            {
+                AimFocusType.Focus => BasePlayerParameter.FocusPenetration,
+                AimFocusType.LongFocus => BasePlayerParameter.LongFocusPenetrationMagnification,
+                _ => 1
+            };
+            return Mathf.CeilToInt(penetration);
+        }
+
+        private float GetBulletExplosive(ShotType shotType, AimFocusType focusType)
+        {
+            var explosive = 0f;
+
+            if (shotType == Common.Data.ShotType.Merge)
+            {
+                explosive += BasePlayerParameter.MergeExplosiveScale;
+            }
+
+            explosive *= focusType switch
+            {
+                AimFocusType.Focus => BasePlayerParameter.FocusExplosiveMagnification,
+                AimFocusType.LongFocus => BasePlayerParameter.LongFocusExplosiveMagnification,
+                _ => 0
+            };
+            return explosive;
         }
     }
 }

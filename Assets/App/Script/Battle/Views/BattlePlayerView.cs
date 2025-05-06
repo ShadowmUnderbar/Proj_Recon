@@ -140,9 +140,9 @@ namespace App.Battle.Views
             }
         }
 
-        public void Shot(HandType handType, ShotType shotType, AimFocusType focusType, int focusTargetId)
+        public void Shot(HandType handType, BulletData bulletData, int focusTargetId)
         {
-            _playerTopDownAimListView.Shot(handType, shotType, focusType, focusTargetId);
+            _playerTopDownAimListView.Shot(handType, bulletData, focusTargetId);
         }
 
         private void OnHitBullet(HitData hit)

@@ -7,6 +7,7 @@ using VContainer;
 using VContainer.Unity;
 using App.Common.Interface;
 using R3;
+using UnityEngine;
 
 namespace App.Battle.UseCase
 {
@@ -89,8 +90,10 @@ namespace App.Battle.UseCase
             var shotType = _playerDataStore.ShotType.Value;
             var focusType = _playerDataStore.LeftFocusType.Value;
 
+            var bulletData = _playerDataStore.GetBulletData(shotType, focusType);
+
             _playerDataStore.SetCoolDownTime(HandType.Left, shotType, focusType);
-            _playerControlPresenter.Shot(HandType.Left, shotType, focusType, _playerDataStore.FocusLeftTargetId.Value);
+            _playerControlPresenter.Shot(HandType.Left, bulletData, _playerDataStore.FocusLeftTargetId.Value);
         }
 
         private void TryRightShot()
@@ -103,8 +106,10 @@ namespace App.Battle.UseCase
             var shotType = _playerDataStore.ShotType.Value;
             var focusType = _playerDataStore.RightFocusType.Value;
 
+            var bulletData = _playerDataStore.GetBulletData(shotType, focusType);
+
             _playerDataStore.SetCoolDownTime(HandType.Right, shotType, focusType);
-            _playerControlPresenter.Shot(HandType.Right, shotType, focusType,
+            _playerControlPresenter.Shot(HandType.Right, bulletData,
                 _playerDataStore.FocusRightTargetId.Value);
         }
 

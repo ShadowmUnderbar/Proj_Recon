@@ -38,9 +38,9 @@ namespace App.Battle.Presenters
             _playerView.MouseAim(mousePos);
         }
 
-        public void Shot(HandType handType, ShotType shotType, AimFocusType focusType, int focusTargetId)
+        public void Shot(HandType handType, BulletData bulletData, int focusTargetId)
         {
-            _playerView.Shot(handType, shotType, focusType, focusTargetId);
+            _playerView.Shot(handType, bulletData, focusTargetId);
         }
 
         public void Aim()

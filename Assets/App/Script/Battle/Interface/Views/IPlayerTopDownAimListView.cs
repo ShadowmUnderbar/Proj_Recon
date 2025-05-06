@@ -22,6 +22,6 @@ namespace App.Battle.Interface
         void SetRayColor(HandType handType, Color color);
         void SetEnableRay(HandType handType, bool enable);
         void Aim();
-        void Shot(HandType handType, ShotType shotType, AimFocusType focusType, int focusTargetId);
+        void Shot(HandType handType, BulletData bulletData, int focusTargetId);
     }
 }

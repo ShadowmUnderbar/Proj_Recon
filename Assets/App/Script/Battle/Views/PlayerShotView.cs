@@ -13,7 +13,6 @@ namespace App.Battle.Views
 {
     public class PlayerShotView : MonoBehaviour, IPlayerShotView
     {
-        private BulletDataBase _bulletDataBase;
         private ISimpleObjectFactory<IBulletView> _bulletFactory;
         private readonly Dictionary<float, IBulletView> _bulletViews = new();
 
@@ -22,21 +21,14 @@ namespace App.Battle.Views
 
         [Inject]
         public void Construct(
-            ISimpleObjectFactory<IBulletView> bulletFactory,
-            BulletDataBase bulletDataBase
+            ISimpleObjectFactory<IBulletView> bulletFactory
         )
         {
             _bulletFactory = bulletFactory;
-            _bulletDataBase = bulletDataBase;
         }
 
-        public void SpawnBullet(ShotType shotType, AimFocusType focusType, int focusTargetId)
+        public void SpawnBullet(BulletData bulletData, int focusTargetId)
         {
-            if (!_bulletDataBase.TryGetBulletData(shotType, focusType, out var bulletData))
-            {
-                return;
-            }
-
             var bullet = _bulletFactory.Instantiate(null);
 
             _bulletViews.Add(Time.time, bullet);
