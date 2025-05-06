@@ -59,13 +59,11 @@ namespace App.Battle.UseCase
         {
             if (_gameInputUseCase.V2LeftAxis == Vector2.zero)
             {
-                Debug.Log("Dodge : No Direction");
                 return;
             }
 
             if (!_playerDodgeParameterDataStore.CanDodge)
             {
-                Debug.Log("Dodge : Cant Dodge_" + _playerDodgeParameterDataStore.DodgeCount.Value);
                 return;
             }
 
@@ -97,8 +95,6 @@ namespace App.Battle.UseCase
                 }
             }
 
-            Debug.Log("Dodge : " + _playerDataStore.Position.Value + " -> " + moveTarget + " " +
-                      moveDistance);
             _playerDataStore.Position.Value = moveTarget;
         }
 
