@@ -86,9 +86,9 @@ namespace App.Battle.Views
             RightHandPose.Value = _controllers[1].ToPose();
         }
 
-        public void Move(Vector2 inputV2, float speed)
+        public void Move(Vector2 inputV2)
         {
-            _playerMoveView.Move(inputV2, speed);
+            _playerMoveView.Move(inputV2);
         }
 
         public void Aim()

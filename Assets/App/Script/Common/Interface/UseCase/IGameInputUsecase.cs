@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace App.Common.Interface
 {
-    public interface IGameInputUsecase
+    public interface IGameInputUseCase
     {
         ReactiveProperty<bool> IsRightTrigger { get; }
         ReactiveProperty<bool> IsLeftTrigger { get; }
@@ -17,6 +17,7 @@ namespace App.Common.Interface
         ReactiveProperty<bool> IsYButton { get; }
         ReactiveProperty<bool> IsRightStick { get; }
         ReactiveProperty<bool> IsLeftStick { get; }
+        ReactiveProperty<bool> IsDodge { get; }
         public Vector2 MouseInputPosition { get; }
     }
 }

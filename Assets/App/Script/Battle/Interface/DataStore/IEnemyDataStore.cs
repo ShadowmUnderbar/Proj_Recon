@@ -8,5 +8,6 @@ namespace App.Battle.Interface.DataStore
         bool TryGetEnemyData(int enemyId, out EnemyData enemyData);
         EnemyData AddEnemyData(EnemyMasterData enemyMasterData);
         bool RemoveEnemyData(int enemyId);
+        void Damage(int enemyId, float damage);
     }
 }

@@ -25,7 +25,15 @@ namespace App.Battle.DataStore
 
         public void Tick()
         {
-            UpdateCoolDownTime();
+            if (_leftShotCoolDown > 0)
+            {
+                _leftShotCoolDown -= Time.deltaTime;
+            }
+
+            if (_rightShotCoolDown > 0)
+            {
+                _rightShotCoolDown -= Time.deltaTime;
+            }
         }
 
         public void SetCoolDownTime(HandType handType, ShotType shotType, AimFocusType focusType)
@@ -164,19 +172,6 @@ namespace App.Battle.DataStore
                 _ => 0
             };
             return explosive;
-        }
-
-        private void UpdateCoolDownTime()
-        {
-            if (_leftShotCoolDown > 0)
-            {
-                _leftShotCoolDown -= Time.deltaTime;
-            }
-
-            if (_rightShotCoolDown > 0)
-            {
-                _rightShotCoolDown -= Time.deltaTime;
-            }
         }
     }
 }

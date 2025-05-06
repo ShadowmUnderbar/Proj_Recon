@@ -16,6 +16,9 @@ namespace App.Battle.Views
         private readonly Subject<(int id, Pose pose)> _onEnemyPoseUpdate = new();
         public Observable<(int id, Pose pose)> OnEnemyPoseUpdate => _onEnemyPoseUpdate;
 
+        private readonly RaycastHit[] _hits = new RaycastHit[10];
+        private readonly List<int> _rayCastEnemyIds = new();
+
         public async UniTask Spawn(EnemyData enemyData, Pose spawnPose)
         {
             var enemyObj = Addressables.LoadAssetAsync<GameObject>(enemyData.MasterData.PrefabPath);
@@ -56,6 +59,32 @@ namespace App.Battle.Views
             }
 
             _enemies.Clear();
+        }
+
+        public int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
+        {
+            var count = Physics.SphereCastNonAlloc(playerPosition, 0.5f, direction.normalized, _hits, distance,
+                LayerMasks.EnemyLayer);
+
+            if (count <= 0)
+            {
+                return null;
+            }
+
+            _rayCastEnemyIds.Clear();
+
+            for (var i = 0; i < count; i++)
+            {
+                var enemy = _hits[i].collider.GetComponent<HitBoxView>();
+                if (enemy == null)
+                {
+                    continue;
+                }
+
+                _rayCastEnemyIds.Add(enemy.Id);
+            }
+
+            return _rayCastEnemyIds.ToArray();
         }
     }
 }

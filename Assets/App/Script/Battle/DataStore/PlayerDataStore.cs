@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
-using App.Common.Data.Database;
-using App.Common.Interface;
 using R3;
 using UnityEngine;
 using VContainer;
@@ -27,6 +25,9 @@ namespace App.Battle.DataStore
         public ReactiveProperty<int> FocusRightTargetId { get; } = new(-1);
         public ReactiveProperty<Pose> LeftHandPose { get; } = new();
         public ReactiveProperty<Pose> RightHandPose { get; } = new();
+        public float MoveSpeed => BaseSpeed * BasePlayerParameter.MoveSpeed;
+
+        private const float BaseSpeed = 0.05f;
 
         private static float MergePositionDistance => 0.15f;
         private static float WaltzAngleDifference => 130f;
@@ -147,10 +148,14 @@ namespace App.Battle.DataStore
             return Mathf.Abs(angleDifference) >= WaltzAngleDifference;
         }
 
-
         public void SetAimPosition(HandType handType, Vector3 position)
         {
             _aimPositions[handType] = position;
+        }
+
+        public void Move(Vector2 moveV2, float speed)
+        {
+            Position.Value += new Vector3(moveV2.x, 0, moveV2.y) * speed;
         }
     }
 }

@@ -6,14 +6,9 @@ using R3;
 
 namespace App.Common.UseCase
 {
-    public class GameInputUsecase : IGameInputUsecase, IInitializable, ITickable
+    public class GameInputUseCase : IGameInputUseCase, IInitializable, ITickable
     {
-        public GameMaininput Input { get; }
-
-        public GameInputUsecase()
-        {
-            Input = new();
-        }
+        public GameMaininput Input { get; } = new();
 
         public void Initialize()
         {
@@ -32,6 +27,7 @@ namespace App.Common.UseCase
         public ReactiveProperty<bool> IsYButton { get; } = new();
         public ReactiveProperty<bool> IsRightStick { get; } = new();
         public ReactiveProperty<bool> IsLeftStick { get; } = new();
+        public ReactiveProperty<bool> IsDodge { get; } = new();
         public Vector2 MouseInputPosition { get; private set; }
 
         public void Tick()
@@ -54,6 +50,7 @@ namespace App.Common.UseCase
 
 #if UNITY_EDITOR
             MouseInputPosition = Mouse.current.position.ReadValue();
+            IsDodge.Value = Input.Debug.Dodge.inProgress;
 #endif
         }
     }

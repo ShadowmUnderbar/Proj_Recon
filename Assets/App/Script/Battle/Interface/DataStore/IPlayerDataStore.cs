@@ -20,6 +20,9 @@ namespace App.Battle.Interface.DataStore
         ReactiveProperty<Pose> LeftHandPose { get; }
         ReactiveProperty<Pose> RightHandPose { get; }
 
+        float MoveSpeed { get; }
+
         void SetAimPosition(HandType handType, Vector3 position);
+        void Move(Vector2 moveV2, float speed);
     }
 }

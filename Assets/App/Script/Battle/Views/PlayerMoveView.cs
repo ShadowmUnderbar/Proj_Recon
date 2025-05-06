@@ -14,9 +14,9 @@ namespace App.Battle.Views
             OnUpdatePosition.Value = transform.position;
         }
 
-        public void Move(Vector2 move, float speed)
+        public void Move(Vector2 move)
         {
-            transform.position += new Vector3(move.x, 0, move.y) * speed;
+            transform.position = new Vector3(move.x, 0, move.y);
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System;
+using App.Battle.Data;
 using VContainer;
 using VContainer.Unity;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using App.Common.Interface;
 using R3;
+using UnityEngine;
 
 namespace App.Battle.UseCase
 {
@@ -12,17 +14,15 @@ namespace App.Battle.UseCase
     {
         private readonly IPlayerDataStore _playerDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
-        private readonly IGameInputUsecase _gameInputUseCase;
+        private readonly IGameInputUseCase _gameInputUseCase;
 
         private readonly CompositeDisposable _disposable = new();
-
-        private const float Speed = 0.05f;
 
         [Inject]
         public PlayerMoveUseCase(
             IPlayerDataStore playerDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputUsecase gameInputUseCase
+            IGameInputUseCase gameInputUseCase
         )
         {
             _playerDataStore = playerDataStore;
@@ -32,14 +32,16 @@ namespace App.Battle.UseCase
 
         public void Initialize()
         {
-            _playerControlPresenter.OnUpdatePosition
-                .Subscribe(x => _playerDataStore.Position.Value = x)
+            _playerDataStore.Position
+                .DistinctUntilChanged()
+                .Subscribe(pos => _playerControlPresenter.Move(new Vector2(pos.x, pos.z)))
                 .AddTo(_disposable);
         }
 
         public void Tick()
         {
-            _playerControlPresenter.Move(_gameInputUseCase.V2LeftAxis, Speed);
+            _playerDataStore.Move(_gameInputUseCase.V2LeftAxis,
+                _playerDataStore.MoveSpeed * BasePlayerParameter.MoveSpeed);
         }
 
         public void Dispose()

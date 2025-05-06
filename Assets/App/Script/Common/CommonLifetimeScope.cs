@@ -23,10 +23,7 @@ namespace App.Common
 
             #region UseCase
 
-            builder.RegisterEntryPoint<GameInputUsecase>().As<IGameInputUsecase>();
-#if OCULUS
-            builder.RegisterEntryPoint<OVRInputUseCase>().As<IOVRInputUseCase>();
-#endif
+            builder.RegisterEntryPoint<GameInputUseCase>().As<IGameInputUseCase>();
 
             #endregion
 

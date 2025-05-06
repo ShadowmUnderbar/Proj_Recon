@@ -15,7 +15,7 @@ namespace App.Battle.Interface
         ReactiveProperty<Pose> LeftHandPose { get; }
         ReactiveProperty<Pose> RightHandPose { get; }
 
-        void Move(Vector2 moveV2, float speed);
+        void Move(Vector2 moveV2);
         void Aim();
         void SetHandRayColor(HandType handType, Color color);
         void SetAimRayColor(HandType handType, Color color);

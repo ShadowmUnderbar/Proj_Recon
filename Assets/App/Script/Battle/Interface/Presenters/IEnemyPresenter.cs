@@ -3,8 +3,10 @@ using UnityEngine;
 
 namespace App.Battle.Interface
 {
-    public interface IEnemySpawnPresenter
+    public interface IEnemyPresenter
     {
         void Spawn(EnemyData enemyData, Pose spawnPose);
+
+        int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance);
     }
 }

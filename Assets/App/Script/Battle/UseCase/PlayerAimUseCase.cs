@@ -17,7 +17,7 @@ namespace App.Battle.UseCase
     {
         private readonly IPlayerDataStore _playerDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
-        private readonly IGameInputUsecase _gameInputUseCase;
+        private readonly IGameInputUseCase _gameInputUseCase;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -25,7 +25,7 @@ namespace App.Battle.UseCase
         public PlayerAimUseCase(
             IPlayerDataStore playerDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputUsecase gameInputUseCase
+            IGameInputUseCase gameInputUseCase
         )
         {
             _playerDataStore = playerDataStore;

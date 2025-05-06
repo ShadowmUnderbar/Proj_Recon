@@ -47,5 +47,21 @@ namespace App.Battle.DataStore
         {
             return _spawnEnemyDataList.Remove(enemyId);
         }
+
+        public void Damage(int enemyId, float damage)
+        {
+            if (!_spawnEnemyDataList.TryGetValue(enemyId, out var enemyData))
+            {
+                return;
+            }
+
+            Debug.Log("ヒット：" + enemyId + " " + damage);
+
+            enemyData.Hp -= damage;
+            if (enemyData.Hp <= 0)
+            {
+                RemoveEnemyData(enemyId);
+            }
+        }
     }
 }

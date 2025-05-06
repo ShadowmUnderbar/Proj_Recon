@@ -1,6 +1,7 @@
 using System;
 using App.Battle.Data;
 using App.Battle.Interface;
+using App.Battle.Interface.DataStore;
 using R3;
 using UnityEngine;
 using VContainer;
@@ -10,6 +11,7 @@ namespace App.Battle.UseCase
 {
     public class BattleHitUseCase : IBattleHitUseCase, IInitializable, IDisposable
     {
+        private readonly IEnemyDataStore _enemyDataStore;
         private readonly IBattleHitPresenter _battleHitPresenter;
 
         private readonly CompositeDisposable _disposable = new();
@@ -17,9 +19,11 @@ namespace App.Battle.UseCase
         [Inject]
         public BattleHitUseCase
         (
+            IEnemyDataStore enemyDataStore,
             IBattleHitPresenter battleHitPresenter
         )
         {
+            _enemyDataStore = enemyDataStore;
             _battleHitPresenter = battleHitPresenter;
         }
 
@@ -30,7 +34,7 @@ namespace App.Battle.UseCase
 
         private void OnHit(HitData hitData)
         {
-            Debug.Log("ヒットァ！！！！");
+            _enemyDataStore.Damage(hitData.DamagedId, hitData.Damage);
         }
 
         public void Dispose()

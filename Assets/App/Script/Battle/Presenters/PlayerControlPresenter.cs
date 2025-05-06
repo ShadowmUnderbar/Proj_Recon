@@ -28,9 +28,9 @@ namespace App.Battle.Presenters
             _playerView = playerView;
         }
 
-        public void Move(Vector2 moveV2, float speed)
+        public void Move(Vector2 moveV2)
         {
-            _playerView.Move(moveV2, speed);
+            _playerView.Move(moveV2);
         }
 
         public void MouseAim(Vector2 mousePos)

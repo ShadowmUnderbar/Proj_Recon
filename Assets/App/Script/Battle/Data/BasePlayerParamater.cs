@@ -54,7 +54,7 @@ namespace App.Battle.Data
 
         #region Dodge
 
-        public static float DodgeRange => 1f;
+        public static float DodgeRange => 10f;
         public static float DodgeDamage => 10f;
         public static int DodgeCount => 2;
         public static float DodgeCooldown => 3f;
