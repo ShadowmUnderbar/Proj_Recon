@@ -44,7 +44,7 @@ namespace App.Battle.UseCase
                 .Subscribe(_ => OnDodge())
                 .AddTo(_disposables);
 
-            _gameInputUseCase.IsRightTrigger
+            _gameInputUseCase.IsRightGrip
                 .Where(x => x)
                 .Subscribe(_ => OnDodge())
                 .AddTo(_disposables);
