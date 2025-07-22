@@ -16,9 +16,6 @@ namespace App.Battle.Views
         private ISimpleObjectFactory<IBulletView> _bulletFactory;
         private readonly Dictionary<float, IBulletView> _bulletViews = new();
 
-        public Observable<HitData> OnHit => _onHit;
-        private readonly Subject<HitData> _onHit = new();
-
         [Inject]
         public void Construct(
             ISimpleObjectFactory<IBulletView> bulletFactory
@@ -32,8 +29,7 @@ namespace App.Battle.Views
             var bullet = _bulletFactory.Instantiate(null);
 
             _bulletViews.Add(Time.time, bullet);
-            bullet.Spawn(transform.ToPose(), bulletData, focusTargetId);
-            bullet.OnHit.Subscribe(x => _onHit.OnNext(x)).AddTo(this);
+            bullet.Spawn(BasePlayerParameter.PlayerId, transform.ToPose(), bulletData, focusTargetId);
         }
     }
 }

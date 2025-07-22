@@ -2,6 +2,8 @@ namespace App.Battle.Data
 {
     public static class BasePlayerParameter
     {
+        public static int PlayerId = 1;
+
         #region BasePlayerParameter
 
         public static float Health => 100f;

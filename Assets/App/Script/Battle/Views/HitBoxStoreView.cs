@@ -17,21 +17,17 @@ namespace App.Battle.Views
 
         public void AddHitBoxView(IHitBoxView hitBoxView)
         {
-            if (hitBoxView == null)
-            {
-                return;
-            }
-
-            if (!_hitBoxViews.ContainsKey(hitBoxView.Id))
-            {
-                return;
-            }
-
             _hitBoxViews.Add(hitBoxView.Id, hitBoxView);
 
             hitBoxView.OnHitObservable
-                .Subscribe(x => _onHitObservable.OnNext(x))
+                .Subscribe(OnHit)
                 .AddTo(_disposables);
+        }
+
+        private void OnHit(HitData hitData)
+        {
+            Debug.Log("HitBoxStoreView.OnHit: " + hitData);
+            _onHitObservable.OnNext(hitData);
         }
 
         public void RemoveHitBoxView(int id)

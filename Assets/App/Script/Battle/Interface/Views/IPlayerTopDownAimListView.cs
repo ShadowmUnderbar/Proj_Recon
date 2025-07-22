@@ -12,8 +12,6 @@ namespace App.Battle.Interface
             IPlayerAimMuzzleView leftAim, IPlayerAimMuzzleView rightAim,
             IPlayerShotView leftShot, IPlayerShotView rightShot);
 
-        Observable<HitData> OnHit { get; }
-
         Observable<int> OnFocusLeft { get; }
         Observable<int> OnFocusRight { get; }
 

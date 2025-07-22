@@ -52,14 +52,6 @@ namespace App.Battle.Views
 
             _leftShotView = leftShot;
             _rightShotView = rightShot;
-
-            _leftShotView.OnHit
-                .Subscribe(x => _onHit.OnNext(x))
-                .AddTo(this);
-
-            _rightShotView.OnHit
-                .Subscribe(x => _onHit.OnNext(x))
-                .AddTo(this);
         }
 
         public void SetRayColor(HandType handType, Color color)

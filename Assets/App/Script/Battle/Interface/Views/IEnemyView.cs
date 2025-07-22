@@ -7,6 +7,7 @@ namespace App.Battle.Interface
 {
     public interface IEnemyView
     {
+        public IHitBoxView[] HitBoxes { get; }
         ReactiveProperty<Pose> Pose { get; }
         int Id { get; }
         void Init(int id, EnemyData enemyData);

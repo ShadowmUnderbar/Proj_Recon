@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using App.Battle.Interface;
-using App.Battle.Data;
-using App.Framework.Utilities.Extensions;
 using UnityEngine;
 using R3;
 using R3.Triggers;
@@ -13,17 +11,15 @@ namespace App.Battle.Views
     {
         [SerializeField] private Collider _hitCollider;
 
-        public Observable<HitData> OnHit => _onHit;
-        private readonly Subject<HitData> _onHit = new();
-
         private readonly List<int> _hitTargetIds = new();
 
         private BulletData _bulletData;
         private int _hitCount = 0;
         private int _focusTargetId = 0;
         private bool _isForcedPenetration = false;
+        private int _attackerId = 0;
 
-        public void Spawn(Pose pose, BulletData bulletData, int focusTargetId)
+        public void Spawn(int attackerId, Pose pose, BulletData bulletData, int focusTargetId)
         {
             _isForcedPenetration = focusTargetId >= 0;
 
@@ -47,27 +43,27 @@ namespace App.Battle.Views
                         return;
                     }
 
-                    if (!x.TryGetComponent<IEnemyView>(out var enemyView))
+                    if (!x.TryGetComponent<IHitBoxView>(out var hitBox))
                     {
                         Destroy(gameObject);
                         return;
                     }
 
-                    if (_hitTargetIds.Contains(enemyView.Id))
+                    if (hitBox.Id == _attackerId)
                     {
                         return;
                     }
 
-                    _hitTargetIds.Add(enemyView.Id);
+                    if (_hitTargetIds.Contains(hitBox.Id))
+                    {
+                        return;
+                    }
 
-                    var hitData = new HitData(
-                        enemyView.Id,
-                        _bulletData.Damage,
-                        (x.transform.position - transform.position).normalized.ToTopdown()
-                    );
-                    _onHit.OnNext(hitData);
+                    _hitTargetIds.Add(hitBox.Id);
 
-                    if (_focusTargetId == enemyView.Id)
+                    hitBox.OnHit(_bulletData.Damage, _attackerId, transform.position);
+
+                    if (_focusTargetId == hitBox.Id)
                     {
                         _isForcedPenetration = false;
                     }
@@ -90,11 +86,6 @@ namespace App.Battle.Views
         private void Update()
         {
             transform.position += transform.forward * (_bulletData.Speed * Time.deltaTime);
-        }
-
-        private void OnDestroy()
-        {
-            _onHit.Dispose();
         }
     }
 }

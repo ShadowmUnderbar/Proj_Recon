@@ -6,18 +6,29 @@ using R3;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using VContainer;
 
 namespace App.Battle.Views
 {
     public class EnemyStoreView : MonoBehaviour, IEnemyStoreView
     {
-        private Dictionary<int, IEnemyView> _enemies = new();
+        private IHitBoxStoreView _hitBoxStoreView;
+
+        private readonly Dictionary<int, IEnemyView> _enemies = new();
 
         private readonly Subject<(int id, Pose pose)> _onEnemyPoseUpdate = new();
         public Observable<(int id, Pose pose)> OnEnemyPoseUpdate => _onEnemyPoseUpdate;
 
         private readonly RaycastHit[] _hits = new RaycastHit[10];
         private readonly List<int> _rayCastEnemyIds = new();
+
+        [Inject]
+        public void Construct(
+            IHitBoxStoreView hitBoxStoreView
+        )
+        {
+            _hitBoxStoreView = hitBoxStoreView;
+        }
 
         public async UniTask Spawn(EnemyData enemyData, Pose spawnPose)
         {
@@ -38,6 +49,11 @@ namespace App.Battle.Views
                 .AddTo(this);
 
             _enemies.Add(enemyData.Id, view);
+
+            foreach (var hitBox in view.HitBoxes)
+            {
+                _hitBoxStoreView.AddHitBoxView(hitBox);
+            }
         }
 
         public async UniTask Dead(int id)
