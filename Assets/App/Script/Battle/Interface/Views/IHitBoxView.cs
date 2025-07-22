@@ -1,10 +1,13 @@
 using App.Battle.Data;
+using R3;
 
 namespace App.Battle.Interface
 {
     public interface IHitBoxView
     {
-        public int Id { get; set; }
-        public HitBoxType HitBoxType { get; }
+        Observable<(float damage, int enemyId)> OnHitObservable { get; }
+        int Id { get; set; }
+        HitBoxType HitBoxType { get; }
+        void OnHit(float damage, int enemyId);
     }
 }

@@ -17,10 +17,16 @@ namespace App.Common.Data.MasterData
         [SerializeField] private float _damage = 1;
         public float Damage => _damage;
 
+        [SerializeField] private float _attackInterval = 0.5f;
+        public float AttackInterval => _attackInterval;
+
         [SerializeField] private float _hp = 10;
         public float Hp => _hp;
 
-        [SerializeField] private float _speed = 1;
-        public float Speed => _speed;
+        [SerializeField] private float _idleSpeed = 1;
+        public float IdleSpeed => _idleSpeed;
+
+        [SerializeField] private float _battleSpeed = 1;
+        public float BattleSpeed => _battleSpeed;
     }
 }

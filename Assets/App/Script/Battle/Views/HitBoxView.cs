@@ -1,13 +1,24 @@
 using App.Battle.Data;
 using App.Battle.Interface;
+using R3;
 using UnityEngine;
 
-public class HitBoxView : MonoBehaviour, IHitBoxView
+namespace App.Battle.Views
 {
-    [SerializeField]
-    private HitBoxType hitBoxType;
+    public class HitBoxView : MonoBehaviour, IHitBoxView
+    {
+        private readonly Subject<(float damage, int enemyId)> _onHitObservable = new();
+        public Observable<(float damage, int enemyId)> OnHitObservable => _onHitObservable;
 
-    public HitBoxType HitBoxType => hitBoxType;
+        [SerializeField] private HitBoxType hitBoxType;
 
-    public int Id { get; set; }
+        public HitBoxType HitBoxType => hitBoxType;
+
+        public int Id { get; set; }
+
+        public void OnHit(float damage, int enemyId)
+        {
+            _onHitObservable.OnNext((damage, enemyId));
+        }
+    }
 }

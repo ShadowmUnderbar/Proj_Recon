@@ -36,7 +36,9 @@ namespace App.Battle.DataStore
                 MasterData = enemyMasterData,
                 Hp = enemyMasterData.Hp,
                 Damage = enemyMasterData.Damage,
-                Speed = enemyMasterData.Speed,
+                AttackInterval = enemyMasterData.AttackInterval,
+                IdleSpeed = enemyMasterData.IdleSpeed,
+                BattleSpeed = enemyMasterData.BattleSpeed,
             };
 
             _spawnEnemyDataList.Add(enemyId, enemy);
