@@ -1,4 +1,6 @@
+using App.Battle.Data;
 using App.Battle.Interface;
+using App.Battle.Interface.EnemyAI;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
@@ -11,23 +13,25 @@ namespace App.Battle.Views
 
         public ReactiveProperty<Pose> Pose { get; } = new();
 
-        public void Init(int id)
+        public void Init(int id, EnemyData enemyData)
         {
             Id = id;
 
-            var hitboxes = GetComponentsInChildren<HitBoxView>();
+            var hitBoxes = GetComponentsInChildren<HitBoxView>();
 
-            foreach (var hitbox in hitboxes)
+            foreach (var hitBox in hitBoxes)
             {
-                hitbox.Id = Id;
+                hitBox.Id = Id;
             }
+
+            var aiBase = GetComponent<EnemyAIBase>();
+            aiBase.Init(enemyData);
         }
 
         private void Update()
         {
             Pose.Value = new Pose(transform.position, transform.rotation);
         }
-
 
         public async UniTask Dead()
         {

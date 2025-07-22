@@ -33,7 +33,7 @@ namespace App.Battle.Views
             var view = Instantiate(enemyObj.Result, spawnPose.position, spawnPose.rotation)
                 .GetComponent<IEnemyView>();
 
-            view.Init(enemyData.Id);
+            view.Init(enemyData.Id, enemyData);
             view.Pose.Subscribe(pose => _onEnemyPoseUpdate.OnNext((view.Id, pose)))
                 .AddTo(this);
 
