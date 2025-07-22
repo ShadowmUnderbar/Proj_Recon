@@ -35,7 +35,7 @@ namespace App.Battle.Views.EnemyAI
                     return;
                 }
 
-                hitBox.OnHit(EnemyData.Damage, EnemyData.Id);
+                hitBox.OnHit(EnemyData.Damage, EnemyData.Id, transform.position);
             }
         }
     }

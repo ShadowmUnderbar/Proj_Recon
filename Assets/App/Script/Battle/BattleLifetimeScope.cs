@@ -19,6 +19,7 @@ namespace App.Battle
         [SerializeField] private PlayerAimMuzzleView _playerAimMuzzleView;
         [SerializeField] private PlayerTopDownAimView _playerTopDownAimView;
         [SerializeField] private EnemyStoreView _enemyStoreView;
+        [SerializeField] private HitBoxStoreView _hitBoxStoreView;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -84,6 +85,10 @@ namespace App.Battle
             builder.Register<EnemyStoreView>(Lifetime.Singleton)
                 .As<IEnemyStoreView>()
                 .WithParameter("prefab", _enemyStoreView);
+
+            builder.Register<HitBoxStoreView>(Lifetime.Singleton)
+                .As<IHitBoxStoreView>()
+                .WithParameter("prefab", _hitBoxStoreView);
 
             #endregion
         }

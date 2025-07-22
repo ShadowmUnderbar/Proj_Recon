@@ -10,18 +10,17 @@ namespace App.Battle.Presenters
 {
     public class BattleHitPresenter : IBattleHitPresenter
     {
-        private readonly IBattlePlayerView _playerView;
-
-        public Observable<HitData> OnHit => _playerView.OnHit;
-
+        private readonly IHitBoxStoreView _hitBoxStoreView;
 
         [Inject]
         public BattleHitPresenter
         (
-            IBattlePlayerView playerView
+            IHitBoxStoreView hitBoxStoreView
         )
         {
-            _playerView = playerView;
+            _hitBoxStoreView = hitBoxStoreView;
         }
+
+        public Observable<HitData> OnHit => _hitBoxStoreView.OnHitObservable;
     }
 }

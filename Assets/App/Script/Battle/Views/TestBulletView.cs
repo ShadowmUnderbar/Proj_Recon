@@ -60,12 +60,11 @@ namespace App.Battle.Views
 
                     _hitTargetIds.Add(enemyView.Id);
 
-                    var hitData = new HitData
-                    {
-                        DamagedId = enemyView.Id,
-                        Damage = _bulletData.Damage,
-                        NormalizedHitDirection = (x.transform.position - transform.position).normalized.ToTopdown(),
-                    };
+                    var hitData = new HitData(
+                        enemyView.Id,
+                        _bulletData.Damage,
+                        (x.transform.position - transform.position).normalized.ToTopdown()
+                    );
                     _onHit.OnNext(hitData);
 
                     if (_focusTargetId == enemyView.Id)

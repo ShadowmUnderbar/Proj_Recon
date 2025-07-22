@@ -1,5 +1,6 @@
 using App.Battle.Data;
 using App.Battle.Interface;
+using App.Framework.Utilities.Extensions;
 using R3;
 using UnityEngine;
 
@@ -7,8 +8,8 @@ namespace App.Battle.Views
 {
     public class HitBoxView : MonoBehaviour, IHitBoxView
     {
-        private readonly Subject<(float damage, int enemyId)> _onHitObservable = new();
-        public Observable<(float damage, int enemyId)> OnHitObservable => _onHitObservable;
+        private readonly Subject<HitData> _onHitObservable = new();
+        public Observable<HitData> OnHitObservable => _onHitObservable;
 
         [SerializeField] private HitBoxType hitBoxType;
 
@@ -16,9 +17,16 @@ namespace App.Battle.Views
 
         public int Id { get; set; }
 
-        public void OnHit(float damage, int enemyId)
+        public void OnHit(float damage, int attackerId, Vector3 attackCenter)
         {
-            _onHitObservable.OnNext((damage, enemyId));
+            var normalizedHitDirection = (transform.position - attackCenter).normalized.ToTopdown();
+
+            var hitData = new HitData(
+                attackerId,
+                damage,
+                normalizedHitDirection
+            );
+            _onHitObservable.OnNext(hitData);
         }
     }
 }
