@@ -10,5 +10,6 @@ namespace App.Battle.Interface
         UniTask Dead(int id);
         void AllDeadEnemies();
         int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance);
+        void SetPlayerPose(Pose playerPose);
     }
 }

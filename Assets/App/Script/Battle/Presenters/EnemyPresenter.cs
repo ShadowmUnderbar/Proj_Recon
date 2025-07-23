@@ -27,5 +27,10 @@ namespace App.Battle.Presenters
         {
             return _enemyStoreView.GetDodgeHitEnemies(playerPosition, direction, distance);
         }
+
+        public void SetPlayerPose(Pose playerPose)
+        {
+            _enemyStoreView.SetPlayerPose(playerPose);
+        }
     }
 }

@@ -25,6 +25,10 @@ namespace App.Common.Data.MasterData
 
         [SerializeField] private float _idleSpeed = 1;
         public float IdleSpeed => _idleSpeed;
+        
+        
+        [SerializeField] private float _findDistance = 1;
+        public float FindDistance => _findDistance;
 
         [SerializeField] private float _battleSpeed = 1;
         public float BattleSpeed => _battleSpeed;

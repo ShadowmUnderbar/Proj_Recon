@@ -102,5 +102,13 @@ namespace App.Battle.Views
 
             return _rayCastEnemyIds.ToArray();
         }
+
+        public void SetPlayerPose(Pose playerPose)
+        {
+            foreach (var enemy in _enemies.Values)
+            {
+                enemy.SetPlayerPose(playerPose);
+            }
+        }
     }
 }

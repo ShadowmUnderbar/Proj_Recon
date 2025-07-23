@@ -16,6 +16,7 @@ namespace App.Battle.Views
         public ReactiveProperty<Pose> Pose { get; } = new();
 
         public IHitBoxView[] HitBoxes { get; private set; }
+        public EnemyAIBase EnemyAI { get; private set; }
 
         public void Init(int id, EnemyData enemyData)
         {
@@ -28,14 +29,14 @@ namespace App.Battle.Views
                 hitBox.Id = Id;
             }
 
-            var aiBase = GetComponent<EnemyAIBase>();
+            EnemyAI = GetComponent<EnemyAIBase>();
 
-            if (aiBase == null)
+            if (EnemyAI == null)
             {
                 return;
             }
 
-            aiBase.Init(enemyData);
+            EnemyAI.Init(enemyData);
         }
 
         private void Update()
@@ -46,6 +47,16 @@ namespace App.Battle.Views
         public async UniTask Dead()
         {
             Destroy(gameObject);
+        }
+
+        public void SetPlayerPose(Pose playerPose)
+        {
+            if (EnemyAI == null)
+            {
+                return;
+            }
+
+            EnemyAI.SetPlayerPose(playerPose);
         }
     }
 }

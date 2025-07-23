@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 namespace App.Battle.Interface.EnemyAI
 {
+    [RequireComponent(typeof(NavMeshAgent))]
     public abstract class EnemyAIBase : MonoBehaviour
     {
         protected EnemyData EnemyData;
@@ -147,7 +148,7 @@ namespace App.Battle.Interface.EnemyAI
             LastAttackTime = 0f;
         }
 
-        public void SetPlayerPosition(Pose playerPose)
+        public void SetPlayerPose(Pose playerPose)
         {
             PlayerPose = playerPose;
         }

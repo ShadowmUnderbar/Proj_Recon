@@ -14,6 +14,9 @@ namespace App.Battle.DataStore
         private readonly IEnemyDataStore _enemyDataStore;
 
         public ReactiveProperty<Vector3> Position { get; } = new();
+
+        public ReactiveProperty<Quaternion> Rotate { get; } = new();
+        public Pose Pose => new Pose(Position.Value, Rotate.Value);
         public ReactiveProperty<float> Health { get; } = new();
         public ReactiveProperty<float> MaxHealth { get; } = new();
 

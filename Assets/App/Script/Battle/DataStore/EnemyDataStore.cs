@@ -38,6 +38,7 @@ namespace App.Battle.DataStore
                 Damage = enemyMasterData.Damage,
                 AttackInterval = enemyMasterData.AttackInterval,
                 IdleSpeed = enemyMasterData.IdleSpeed,
+                FindDistanceRange = enemyMasterData.FindDistance,
                 BattleSpeed = enemyMasterData.BattleSpeed,
             };
 

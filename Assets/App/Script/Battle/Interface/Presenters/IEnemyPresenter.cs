@@ -8,5 +8,6 @@ namespace App.Battle.Interface
         void Spawn(EnemyData enemyData, Pose spawnPose);
 
         int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance);
+        void SetPlayerPose(Pose playerPose);
     }
 }
