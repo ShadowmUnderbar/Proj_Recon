@@ -34,6 +34,14 @@ namespace App.Battle.UseCase
 
         public void Initialize()
         {
+            _enemyDataStore.OnEnemyAdded
+                .Subscribe(OnEnemyAdded)
+                .AddTo(_disposables);
+
+            _enemyDataStore.OnEnemyRemoved
+                .Subscribe(OnEnemyRemoved)
+                .AddTo(_disposables);
+
             Spawn("TestEnemy", new Pose(Vector3.right, Quaternion.identity));
         }
 
@@ -50,8 +58,22 @@ namespace App.Battle.UseCase
             }
 
             var enemy = _enemyDataStore.AddEnemyData(enemyMasterData);
+        }
 
-            _enemyPresenter.Spawn(enemy, spawnPose);
+        private void OnEnemyAdded(int enemyId)
+        {
+            if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData))
+            {
+                Debug.LogError($"Enemy data not found for ID: {enemyId}");
+                return;
+            }
+
+            _enemyPresenter.Spawn(enemyData);
+        }
+
+        private void OnEnemyRemoved(int enemyId)
+        {
+            _enemyPresenter.UnSpawn(enemyId);
         }
 
         public void SetPlayerPose(Pose playerPose)

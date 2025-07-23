@@ -12,6 +12,7 @@ namespace App.Battle.Interface
         ReactiveProperty<Pose> Pose { get; }
         int Id { get; }
         void Init(int id, EnemyData enemyData);
+        void Destroy();
         UniTask Dead();
         void SetPlayerPose(Pose playerPose);
     }

@@ -22,7 +22,7 @@ namespace App.Battle.Views
             var normalizedHitDirection = (transform.position - attackCenter).normalized.ToTopdown();
 
             var hitData = new HitData(
-                attackerId,
+                Id,
                 damage,
                 normalizedHitDirection
             );

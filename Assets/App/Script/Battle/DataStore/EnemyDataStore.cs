@@ -2,6 +2,7 @@ using App.Battle.Data;
 using App.Common.Data.MasterData;
 using System.Collections.Generic;
 using App.Battle.Interface.DataStore;
+using R3;
 using UnityEngine;
 
 namespace App.Battle.DataStore
@@ -9,6 +10,15 @@ namespace App.Battle.DataStore
     public class EnemyDataStore : IEnemyDataStore
     {
         private readonly Dictionary<int, EnemyData> _spawnEnemyDataList = new();
+
+        private readonly Subject<int> _onEnemyAdded = new();
+        public Observable<int> OnEnemyAdded => _onEnemyAdded;
+
+        private readonly Subject<int> _onEnemyRemoved = new();
+        public Observable<int> OnEnemyRemoved => _onEnemyRemoved;
+
+        private readonly Subject<int> _onEnemyDead = new();
+        public Observable<int> OnEnemyDead => _onEnemyDead;
 
         public bool TryGetEnemyData(int enemyId, out EnemyData enemyData)
         {
@@ -43,11 +53,13 @@ namespace App.Battle.DataStore
             };
 
             _spawnEnemyDataList.Add(enemyId, enemy);
+            _onEnemyAdded.OnNext(enemyId);
             return enemy;
         }
 
         public bool RemoveEnemyData(int enemyId)
         {
+            _onEnemyRemoved.OnNext(enemyId);
             return _spawnEnemyDataList.Remove(enemyId);
         }
 
@@ -58,13 +70,13 @@ namespace App.Battle.DataStore
                 return;
             }
 
-            Debug.Log("ヒット：" + enemyId + " " + damage);
-
             enemyData.Hp -= damage;
-            if (enemyData.Hp <= 0)
+            if (enemyData.Hp > 0)
             {
-                RemoveEnemyData(enemyId);
+                return;
             }
+
+            _onEnemyDead.OnNext(enemyId);
         }
     }
 }

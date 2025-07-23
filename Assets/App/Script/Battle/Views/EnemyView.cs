@@ -39,6 +39,11 @@ namespace App.Battle.Views
             EnemyAI.Init(enemyData);
         }
 
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
+
         private void Update()
         {
             Pose.Value = new Pose(transform.position, transform.rotation);
@@ -46,7 +51,7 @@ namespace App.Battle.Views
 
         public async UniTask Dead()
         {
-            Destroy(gameObject);
+            EnemyAI.SetState(EnemyAIState.Dead);
         }
 
         public void SetPlayerPose(Pose playerPose)

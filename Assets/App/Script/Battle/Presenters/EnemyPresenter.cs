@@ -18,9 +18,14 @@ namespace App.Battle.Presenters
             _enemyStoreView = enemyStoreView;
         }
 
-        public void Spawn(EnemyData enemyData, Pose spawnPose)
+        public void Spawn(EnemyData enemyData)
         {
-            _enemyStoreView.Spawn(enemyData, spawnPose).Forget();
+            _enemyStoreView.Spawn(enemyData).Forget();
+        }
+
+        public void UnSpawn(int enemyId)
+        {
+            _enemyStoreView.UnSpawn(enemyId);
         }
 
         public int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
@@ -31,6 +36,11 @@ namespace App.Battle.Presenters
         public void SetPlayerPose(Pose playerPose)
         {
             _enemyStoreView.SetPlayerPose(playerPose);
+        }
+
+        public UniTask Dead(int id)
+        {
+            return _enemyStoreView.Dead(id);
         }
     }
 }

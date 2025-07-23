@@ -30,7 +30,7 @@ namespace App.Battle.Views
             _hitBoxStoreView = hitBoxStoreView;
         }
 
-        public async UniTask Spawn(EnemyData enemyData, Pose spawnPose)
+        public async UniTask Spawn(EnemyData enemyData)
         {
             var enemyObj = Addressables.LoadAssetAsync<GameObject>(enemyData.MasterData.PrefabPath);
 
@@ -41,7 +41,7 @@ namespace App.Battle.Views
                 return;
             }
 
-            var view = Instantiate(enemyObj.Result, spawnPose.position, spawnPose.rotation)
+            var view = Instantiate(enemyObj.Result, enemyData.Pose.position, enemyData.Pose.rotation)
                 .GetComponent<IEnemyView>();
 
             view.Init(enemyData.Id, enemyData);
@@ -56,6 +56,19 @@ namespace App.Battle.Views
             }
         }
 
+        public void UnSpawn(int enemyId)
+        {
+            if (!_enemies.TryGetValue(enemyId, out var enemyView))
+            {
+                return;
+            }
+
+            _hitBoxStoreView.RemoveHitBoxView(enemyId);
+
+            enemyView.Destroy();
+            _enemies.Remove(enemyId);
+        }
+
         public async UniTask Dead(int id)
         {
             if (!_enemies.TryGetValue(id, out var enemyView))
@@ -64,7 +77,6 @@ namespace App.Battle.Views
             }
 
             await enemyView.Dead();
-            _enemies.Remove(id);
         }
 
         public void AllDeadEnemies()

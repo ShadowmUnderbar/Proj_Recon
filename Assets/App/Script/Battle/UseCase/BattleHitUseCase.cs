@@ -2,6 +2,7 @@ using System;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
+using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
 using VContainer;
@@ -13,6 +14,7 @@ namespace App.Battle.UseCase
     {
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IBattleHitPresenter _battleHitPresenter;
+        private readonly IEnemyPresenter _enemyPresenter;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -20,21 +22,38 @@ namespace App.Battle.UseCase
         public BattleHitUseCase
         (
             IEnemyDataStore enemyDataStore,
-            IBattleHitPresenter battleHitPresenter
+            IBattleHitPresenter battleHitPresenter,
+            IEnemyPresenter enemyPresenter
         )
         {
             _enemyDataStore = enemyDataStore;
             _battleHitPresenter = battleHitPresenter;
+            _enemyPresenter = enemyPresenter;
         }
 
         public void Initialize()
         {
-            _battleHitPresenter.OnHit.Subscribe(x => OnHit(x)).AddTo(_disposable);
+            _battleHitPresenter.OnHit.Subscribe(OnHit).AddTo(_disposable);
+            _enemyDataStore.OnEnemyDead
+                .Subscribe(x => OnEnemyDead(x).Forget())
+                .AddTo(_disposable);
         }
 
         private void OnHit(HitData hitData)
         {
             _enemyDataStore.Damage(hitData.DamagedId, hitData.Damage);
+        }
+
+        private async UniTask OnEnemyDead(int enemyId)
+        {
+            if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData))
+            {
+                return;
+            }
+
+            await _enemyPresenter.Dead(enemyId);
+
+            _enemyDataStore.RemoveEnemyData(enemyId);
         }
 
         public void Dispose()
