@@ -12,8 +12,9 @@ namespace App.Battle.Views.Enemy.AI
 
         private bool _isRotateRight;
 
-        private bool IsChaseRange =>
-            DistanceSqr > EnemyData.AttackDistanceRange * 0.75f * EnemyData.AttackDistanceRange * 0.75f;
+        private float ChaseDistance => EnemyData.AttackDistanceRange * 0.75f;
+
+        private bool IsChaseRange => DistanceSqr > ChaseDistance * ChaseDistance;
 
         protected override void Awake()
         {
@@ -50,7 +51,7 @@ namespace App.Battle.Views.Enemy.AI
             transform.LookAt(PlayerPose.position, Vector3.up);
             transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
 
-            var targetPos = transform.right * EnemyData.BattleSpeed * 0.5f * (_isRotateRight ? 1 : -1) * 10f;
+            var targetPos = transform.right * EnemyData.BattleSpeed * (_isRotateRight ? 1 : -1) * 10f;
             targetPos += transform.forward * EnemyData.BattleSpeed * (IsChaseRange ? 1 : -1) * 10f;
 
             Agent.SetDestination(targetPos);
