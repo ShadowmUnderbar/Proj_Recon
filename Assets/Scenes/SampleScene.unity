@@ -467,6 +467,7 @@ MonoBehaviour:
     TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
+  _xrGeneralSettings: {fileID: 4689193833838193931, guid: ed2e43c74a9837246b06b550491df24c, type: 2}
   _enemyDatabase: {fileID: 11400000, guid: 25a18e38d2d2dd749b250325309d63e7, type: 2}
 --- !u!4 &1576992900
 Transform:
