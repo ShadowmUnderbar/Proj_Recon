@@ -18,12 +18,17 @@ MonoBehaviour:
   m_GUID: 47f7ecce9ff9a404e99fb864095c5b5f
   m_SerializeEntries:
   - m_GUID: ebf75d688d33aef449390c28640d49c6
-    m_Address: Assets/App/Prefub/Enemy/Ememy.prefab
+    m_Address: Assets/App/Prefub/Enemy/RushEmemy.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: edc5d2d6c47bb704d84df1ae34f185aa
     m_Address: Assets/App/Prefub/Enemy/OrbitEmemy.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e15908ba6cf0e604bb97eaad71bec157
+    m_Address: Assets/App/Prefub/Enemy/ScoutEmemy.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

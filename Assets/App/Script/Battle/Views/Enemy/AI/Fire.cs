@@ -9,6 +9,8 @@ namespace App.Battle.Views.Enemy.AI
     {
         [SerializeField] private StraightBullet _bulletPrefab;
         [SerializeField] private Transform _muzzleTransform;
+        
+        protected Transform MuzzleTransform => _muzzleTransform;
 
         protected override void Attack()
         {

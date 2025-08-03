@@ -25,7 +25,7 @@ namespace App.Battle.Interface.EnemyAI
             }
         }
 
-        public void Init(EnemyData enemyData, int enemyId)
+        public virtual void Init(EnemyData enemyData, int enemyId)
         {
             EnemyId = enemyId;
             EnemyData = enemyData;

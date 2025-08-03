@@ -79,7 +79,6 @@ namespace App.Battle.Views
 
                     if (_isForcedPenetration && _hitCount >= _bulletData.Penetration)
                     {
-                        Debug.Log("Destroy bullet");
                         Destroy(gameObject);
                     }
                 })
