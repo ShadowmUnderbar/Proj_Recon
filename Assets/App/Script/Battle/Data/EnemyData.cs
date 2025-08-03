@@ -1,3 +1,4 @@
+using App.Common.Data;
 using App.Common.Data.MasterData;
 using UnityEngine;
 
@@ -15,5 +16,16 @@ namespace App.Battle.Data
         public float AttackDistanceRange { get; set; }
         public float FindDistanceRange { get; set; }
         public float AttackInterval { get; set; }
+        public float BulletSpeed { get; set; }
+
+        public BulletData BulletData => new()
+        {
+            ShotType = ShotType.Normal,
+            FocusType = AimFocusType.NotFocus,
+            Damage = Damage,
+            Speed = BulletSpeed,
+            Penetration = 0,
+            Explosive = 0
+        };
     }
 }

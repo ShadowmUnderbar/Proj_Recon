@@ -42,7 +42,7 @@ namespace App.Battle.UseCase
                 .Subscribe(OnEnemyRemoved)
                 .AddTo(_disposables);
 
-            Spawn("TestEnemy", new Pose(Vector3.right, Quaternion.identity));
+            Spawn("O-001", new Pose(Vector3.right, Quaternion.identity));
         }
 
         public void Tick()

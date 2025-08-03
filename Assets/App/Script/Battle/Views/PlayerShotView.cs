@@ -5,9 +5,7 @@ using App.Battle.Data;
 using App.Framework.Utilities.Extensions;
 using UnityEngine;
 using VContainer;
-using R3;
 using App.Common.Data;
-using App.Common.Data.Database;
 
 namespace App.Battle.Views
 {

@@ -50,6 +50,8 @@ namespace App.Battle.DataStore
                 IdleSpeed = enemyMasterData.IdleSpeed,
                 FindDistanceRange = enemyMasterData.FindDistance,
                 BattleSpeed = enemyMasterData.BattleSpeed,
+                BulletSpeed = enemyMasterData.BulletSpeed,
+                AttackDistanceRange = enemyMasterData.AttackDistanceRange,
             };
 
             _spawnEnemyDataList.Add(enemyId, enemy);

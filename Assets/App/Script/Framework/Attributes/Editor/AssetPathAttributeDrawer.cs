@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using App.Framework.Attributes;
+using App.Script.Framework.Attributes;
 using UnityEditor;
 using UnityEngine;
 

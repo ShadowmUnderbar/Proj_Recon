@@ -4,11 +4,13 @@ using UnityEngine;
 using R3;
 using R3.Triggers;
 using App.Common.Data;
+using App.Framework;
 
 namespace App.Battle.Views
 {
-    public class TestBulletView : MonoBehaviour, IBulletView
+    public class PlayerBulletView : MonoBehaviour, IBulletView
     {
+        [SerializeField] private Layer _shooterLayer;
         [SerializeField] private Collider _hitCollider;
 
         private readonly List<int> _hitTargetIds = new();
@@ -33,12 +35,12 @@ namespace App.Battle.Views
             _hitCollider.OnTriggerEnterAsObservable()
                 .Subscribe(x =>
                 {
-                    if (x.gameObject.CompareTag("Player"))
+                    if (x.gameObject.layer == _shooterLayer)
                     {
                         return;
                     }
 
-                    if (x.gameObject.CompareTag($"Bullet"))
+                    if (x.gameObject.CompareTag("Bullet"))
                     {
                         return;
                     }

@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: -1422674814317833365}
   - component: {fileID: 1582486052492150040}
   - component: {fileID: -6858876365750654524}
-  m_Layer: 0
-  m_Name: TestBullet
+  m_Layer: 7
+  m_Name: PlayerBullet
   m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -120,6 +120,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2fefa4638e8bdc43911ed54326325c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _shooterLayer:
+    _value: 3
   _hitCollider: {fileID: 1099906825193775121}
 --- !u!96 &1582486052492150040
 TrailRenderer:

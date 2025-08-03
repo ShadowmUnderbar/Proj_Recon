@@ -9,9 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7010e5ad17854031a9e1610265aa70bf, type: 3}
-  m_Name: EnemyDatabase
+  m_Script: {fileID: 11500000, guid: 89bac84d05ac4b1d8e66f5110edd7fb0, type: 3}
+  m_Name: R-001
   m_EditorClassIdentifier: 
-  _enemyMasterDataList:
-  - {fileID: 11400000, guid: 654c1396c7e0a1440b713a96c040bec2, type: 2}
-  - {fileID: 11400000, guid: f9b521660846495489e928871ab056e1, type: 2}
+  _prefabPath: Assets/App/Prefub/Enemy/RushEmemy.prefab
+  _enemyCode: R-001
+  _damage: 5
+  _attackInterval: 0.5
+  _hp: 20
+  _idleSpeed: 1
+  _findDistance: 1
+  _battleSpeed: 2
+  _bulletSpeed: 17

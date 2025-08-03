@@ -1,5 +1,5 @@
+using App.Script.Framework.Attributes;
 using UnityEngine;
-using App.Framework.Attributes;
 
 namespace App.Common.Data.MasterData
 {
@@ -25,12 +25,18 @@ namespace App.Common.Data.MasterData
 
         [SerializeField] private float _idleSpeed = 1;
         public float IdleSpeed => _idleSpeed;
-        
-        
-        [SerializeField] private float _findDistance = 1;
+
+
+        [SerializeField] private float _findDistance = 1f;
         public float FindDistance => _findDistance;
 
-        [SerializeField] private float _battleSpeed = 1;
+        [SerializeField] private float _battleSpeed = 1f;
         public float BattleSpeed => _battleSpeed;
+
+        [SerializeField] private float _bulletSpeed = 17f;
+        public float BulletSpeed => _bulletSpeed;
+
+        [SerializeField] private float _attackDistanceRange = 1f;
+        public float AttackDistanceRange => _attackDistanceRange;
     }
 }

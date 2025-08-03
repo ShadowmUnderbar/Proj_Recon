@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89bac84d05ac4b1d8e66f5110edd7fb0, type: 3}
-  m_Name: TestEnemy
+  m_Name: O-001
   m_EditorClassIdentifier: 
-  _prefabPath: Assets/App/Prefub/Enemy/Ememy.prefab
-  _enemyCode: TestEnemy
-  _damage: 0
+  _prefabPath: Assets/App/Prefub/Enemy/OrbitEmemy.prefab
+  _enemyCode: O-001
+  _damage: 1
+  _attackInterval: 1.5
   _hp: 10
-  _speed: 1
+  _idleSpeed: 1
+  _findDistance: 1
+  _battleSpeed: 1.5
+  _bulletSpeed: 17
