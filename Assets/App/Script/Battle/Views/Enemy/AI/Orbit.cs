@@ -1,15 +1,9 @@
-using App.Battle.Interface.EnemyAI;
-using App.Battle.Views.Enemy.Bullet;
-using App.Framework.Utilities.Extensions;
 using UnityEngine;
 
 namespace App.Battle.Views.Enemy.AI
 {
-    public class Orbit : EnemyAIBase
+    public class Orbit : Fire
     {
-        [SerializeField] private StraightBullet _bulletPrefab;
-        [SerializeField] private Transform _muzzleTransform;
-
         private bool _isRotateRight;
 
         private float ChaseDistance => EnemyData.AttackDistanceRange * 0.75f;
@@ -55,14 +49,6 @@ namespace App.Battle.Views.Enemy.AI
             targetPos += transform.forward * EnemyData.BattleSpeed * (IsChaseRange ? 1 : -1) * 10f;
 
             Agent.SetDestination(targetPos);
-        }
-
-        protected override void Attack()
-        {
-            base.Attack();
-
-            var bullet = Instantiate(_bulletPrefab);
-            bullet.Spawn(EnemyId, _muzzleTransform.ToPose(), EnemyData.BulletData, -1);
         }
     }
 }
