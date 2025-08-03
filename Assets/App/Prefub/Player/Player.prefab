@@ -257,21 +257,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 378238409096205584}
     m_Modifications:
-    - target: {fileID: 2779438074393860925, guid: a47bf12896e82c64c8019991b1cc189f, type: 3}
-      propertyPath: m_Layer
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3802593902385364652, guid: a47bf12896e82c64c8019991b1cc189f, type: 3}
-      propertyPath: m_Layer
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 5038119496929196824, guid: a47bf12896e82c64c8019991b1cc189f, type: 3}
       propertyPath: m_Name
       value: Camera
-      objectReference: {fileID: 0}
-    - target: {fileID: 5038119496929196824, guid: a47bf12896e82c64c8019991b1cc189f, type: 3}
-      propertyPath: m_Layer
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7625860022264966367, guid: a47bf12896e82c64c8019991b1cc189f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -312,10 +300,6 @@ PrefabInstance:
     - target: {fileID: 7625860022264966367, guid: a47bf12896e82c64c8019991b1cc189f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8645692520077191574, guid: a47bf12896e82c64c8019991b1cc189f, type: 3}
-      propertyPath: m_Layer
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
