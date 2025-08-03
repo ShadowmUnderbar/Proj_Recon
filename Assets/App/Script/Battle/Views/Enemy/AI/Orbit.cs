@@ -1,4 +1,3 @@
-using App.Battle.Data;
 using App.Battle.Interface.EnemyAI;
 using App.Battle.Views.Enemy.Bullet;
 using App.Framework.Utilities.Extensions;
@@ -9,8 +8,12 @@ namespace App.Battle.Views.Enemy.AI
     public class Orbit : EnemyAIBase
     {
         [SerializeField] private StraightBullet _bulletPrefab;
+        [SerializeField] private Transform _muzzleTransform;
 
         private bool _isRotateRight;
+
+        private bool IsChaseRange =>
+            DistanceSqr > EnemyData.AttackDistanceRange * 0.75f * EnemyData.AttackDistanceRange * 0.75f;
 
         protected override void Awake()
         {
@@ -45,19 +48,12 @@ namespace App.Battle.Views.Enemy.AI
             base.BattleState();
 
             transform.LookAt(PlayerPose.position, Vector3.up);
-            var targetPos = transform.right * EnemyData.BattleSpeed * (_isRotateRight ? 1 : -1);
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
 
-            if (IsChaseRange())
-            {
-                targetPos += transform.forward * EnemyData.BattleSpeed * 0.5f;
-            }
+            var targetPos = transform.right * EnemyData.BattleSpeed * 0.5f * (_isRotateRight ? 1 : -1) * 10f;
+            targetPos += transform.forward * EnemyData.BattleSpeed * (IsChaseRange ? 1 : -1) * 10f;
 
             Agent.SetDestination(targetPos);
-        }
-
-        private bool IsChaseRange()
-        {
-            return DistanceSqr <= EnemyData.AttackDistanceRange * EnemyData.AttackDistanceRange * 0.5f;
         }
 
         protected override void Attack()
@@ -65,7 +61,7 @@ namespace App.Battle.Views.Enemy.AI
             base.Attack();
 
             var bullet = Instantiate(_bulletPrefab);
-            bullet.Spawn(BasePlayerParameter.PlayerId, transform.ToPose(), EnemyData.BulletData, -1);
+            bullet.Spawn(EnemyId, _muzzleTransform.ToPose(), EnemyData.BulletData, -1);
         }
     }
 }

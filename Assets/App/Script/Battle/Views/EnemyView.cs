@@ -1,11 +1,9 @@
-using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.EnemyAI;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
-using VContainer;
 
 namespace App.Battle.Views
 {
@@ -36,7 +34,7 @@ namespace App.Battle.Views
                 return;
             }
 
-            EnemyAI.Init(enemyData);
+            EnemyAI.Init(enemyData, Id);
         }
 
         public void Destroy()

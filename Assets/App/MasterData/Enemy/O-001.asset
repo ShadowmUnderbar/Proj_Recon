@@ -18,6 +18,7 @@ MonoBehaviour:
   _attackInterval: 1.5
   _hp: 10
   _idleSpeed: 1
-  _findDistance: 1
+  _findDistance: 50
   _battleSpeed: 1.5
-  _bulletSpeed: 17
+  _bulletSpeed: 10
+  _attackDistanceRange: 20

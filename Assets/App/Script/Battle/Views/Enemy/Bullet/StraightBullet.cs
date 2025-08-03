@@ -17,6 +17,8 @@ namespace App.Battle.Views.Enemy.Bullet
 
         public void Spawn(int attackerId, Pose pose, BulletData bulletData, int focusTargetId)
         {
+            Debug.Log("StraightBullet:Spawn");
+
             _attackerId = attackerId;
 
             transform.SetPositionAndRotation(pose.position, pose.rotation);
@@ -42,6 +44,7 @@ namespace App.Battle.Views.Enemy.Bullet
 
                     if (!x.TryGetComponent<IHitBoxView>(out var hitBox))
                     {
+                        Debug.Log($"Destroy:x {x.gameObject}");
                         Destroy(gameObject);
                         return;
                     }
@@ -50,7 +53,7 @@ namespace App.Battle.Views.Enemy.Bullet
                     {
                         return;
                     }
-
+                    
                     hitBox.OnHit(_damage, _attackerId, transform.position);
                     Destroy(gameObject);
                 })

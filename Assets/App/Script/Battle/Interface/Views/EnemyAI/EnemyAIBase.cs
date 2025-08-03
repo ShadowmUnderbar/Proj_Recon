@@ -8,6 +8,7 @@ namespace App.Battle.Interface.EnemyAI
     [RequireComponent(typeof(NavMeshAgent))]
     public abstract class EnemyAIBase : MonoBehaviour
     {
+        public int EnemyId { get; private set; }
         protected EnemyData EnemyData;
         protected NavMeshAgent Agent;
         protected Pose PlayerPose;
@@ -24,8 +25,9 @@ namespace App.Battle.Interface.EnemyAI
             }
         }
 
-        public void Init(EnemyData enemyData)
+        public void Init(EnemyData enemyData, int enemyId)
         {
+            EnemyId = enemyId;
             EnemyData = enemyData;
             Agent.speed = enemyData.IdleSpeed;
             Agent.acceleration = enemyData.IdleSpeed * 2f;
