@@ -23,9 +23,20 @@ namespace App.Common.Data.MasterData
         [SerializeField] private float _hp = 10;
         public float Hp => _hp;
 
+        [SerializeField] HitDirectionType _resistanceDirectionType;
+        public HitDirectionType ResistanceDirectionType => _resistanceDirectionType;
+
+        [SerializeField] private float _resistanceMultiplier = 1f;
+        public float ResistanceMultiplier => _resistanceMultiplier;
+
+        [SerializeField] HitDirectionType _weakDirectionType;
+        public HitDirectionType WeakDirectionType => _weakDirectionType;
+
+        [SerializeField] private float _weaknessMultiplier = 1f;
+        public float WeaknessMultiplier => _weaknessMultiplier;
+
         [SerializeField] private float _idleSpeed = 1;
         public float IdleSpeed => _idleSpeed;
-
 
         [SerializeField] private float _findDistance = 1f;
         public float FindDistance => _findDistance;

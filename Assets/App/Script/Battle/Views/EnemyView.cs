@@ -1,6 +1,7 @@
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.EnemyAI;
+using App.Common.Data;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace App.Battle.Views
         public IHitBoxView[] HitBoxes { get; private set; }
         public EnemyAIBase EnemyAI { get; private set; }
 
-        public void Init(int id, EnemyData enemyData)
+        public void Init(int id, EnemyData enemyData, HitDirectionType resistanceDirectionType)
         {
             Id = id;
 
@@ -24,7 +25,7 @@ namespace App.Battle.Views
 
             foreach (var hitBox in HitBoxes)
             {
-                hitBox.Id = Id;
+                hitBox.Init(Id, HitBoxType.Enemy, resistanceDirectionType);
             }
 
             EnemyAI = GetComponent<EnemyAIBase>();
@@ -60,6 +61,16 @@ namespace App.Battle.Views
             }
 
             EnemyAI.SetPlayerPose(playerPose);
+        }
+
+        public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)
+        {
+            if (EnemyAI == null)
+            {
+                return;
+            }
+
+            EnemyAI.SetPlayerAimDirection(aimDir1, aimDir2);
         }
     }
 }

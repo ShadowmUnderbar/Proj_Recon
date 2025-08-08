@@ -10,7 +10,7 @@ using VContainer.Unity;
 
 namespace App.Battle.UseCase
 {
-    public class BattleHitUseCase : IBattleHitUseCase, IInitializable, IDisposable
+    public class BattleHitUseCase : IInitializable, IDisposable
     {
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IBattleHitPresenter _battleHitPresenter;
@@ -41,7 +41,7 @@ namespace App.Battle.UseCase
 
         private void OnHit(HitData hitData)
         {
-            _enemyDataStore.Damage(hitData.DamagedId, hitData.Damage);
+            _enemyDataStore.Damage(hitData);
         }
 
         private async UniTask OnEnemyDead(int enemyId)

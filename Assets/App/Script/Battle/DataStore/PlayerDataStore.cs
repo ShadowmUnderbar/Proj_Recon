@@ -28,6 +28,10 @@ namespace App.Battle.DataStore
         public ReactiveProperty<int> FocusRightTargetId { get; } = new(-1);
         public ReactiveProperty<Pose> LeftHandPose { get; } = new();
         public ReactiveProperty<Pose> RightHandPose { get; } = new();
+        
+        public Vector3 LeftAimDirection => (Position.Value - _aimPositions[HandType.Left]).normalized;
+        public Vector3 RightAimDirection => (Position.Value - _aimPositions[HandType.Right]).normalized;
+
         public float MoveSpeed => BaseSpeed * BasePlayerParameter.MoveSpeed;
 
         private const float BaseSpeed = 0.05f;

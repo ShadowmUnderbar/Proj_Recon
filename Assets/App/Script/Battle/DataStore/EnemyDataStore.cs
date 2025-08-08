@@ -2,13 +2,18 @@ using App.Battle.Data;
 using App.Common.Data.MasterData;
 using System.Collections.Generic;
 using App.Battle.Interface.DataStore;
+using App.Common.Data;
+using App.Common.Data.Database;
 using R3;
 using UnityEngine;
+using VContainer;
 
 namespace App.Battle.DataStore
 {
     public class EnemyDataStore : IEnemyDataStore
     {
+        private readonly EnemyDatabase _enemyDatabase;
+
         private readonly Dictionary<int, EnemyData> _spawnEnemyDataList = new();
 
         private readonly Subject<int> _onEnemyAdded = new();
@@ -19,6 +24,26 @@ namespace App.Battle.DataStore
 
         private readonly Subject<int> _onEnemyDead = new();
         public Observable<int> OnEnemyDead => _onEnemyDead;
+
+        [Inject]
+        public EnemyDataStore(
+            EnemyDatabase enemyDatabase
+        )
+        {
+            _enemyDatabase = enemyDatabase;
+        }
+
+        public bool TryGetEnemyMasterData(string enemyCode, out EnemyMasterData enemyMasterData)
+        {
+            enemyMasterData = null;
+            if (!_enemyDatabase.TryGetEnemyMasterData(enemyCode, out var data))
+            {
+                return false;
+            }
+
+            enemyMasterData = data;
+            return true;
+        }
 
         public bool TryGetEnemyData(int enemyId, out EnemyData enemyData)
         {
@@ -40,19 +65,7 @@ namespace App.Battle.DataStore
                 enemyId = Random.Range(0, int.MaxValue);
             } while (_spawnEnemyDataList.ContainsKey(enemyId));
 
-            var enemy = new EnemyData
-            {
-                Id = enemyId,
-                MasterData = enemyMasterData,
-                Hp = enemyMasterData.Hp,
-                Damage = enemyMasterData.Damage,
-                AttackInterval = enemyMasterData.AttackInterval,
-                IdleSpeed = enemyMasterData.IdleSpeed,
-                FindDistanceRange = enemyMasterData.FindDistance,
-                BattleSpeed = enemyMasterData.BattleSpeed,
-                BulletSpeed = enemyMasterData.BulletSpeed,
-                AttackDistanceRange = enemyMasterData.AttackDistanceRange,
-            };
+            var enemy = new EnemyData(enemyId, enemyMasterData);
 
             _spawnEnemyDataList.Add(enemyId, enemy);
             _onEnemyAdded.OnNext(enemyId);
@@ -65,11 +78,27 @@ namespace App.Battle.DataStore
             return _spawnEnemyDataList.Remove(enemyId);
         }
 
-        public void Damage(int enemyId, float damage)
+        public void Damage(HitData hitData)
         {
-            if (!_spawnEnemyDataList.TryGetValue(enemyId, out var enemyData))
+            if (!_spawnEnemyDataList.TryGetValue(hitData.DamagedId, out var enemyData))
             {
                 return;
+            }
+
+            if (!TryGetEnemyMasterData(enemyData.EnemyCode, out var masterData))
+            {
+                return;
+            }
+
+            var damage = hitData.Damage;
+
+            if (masterData.WeakDirectionType == hitData.HitDirectionType)
+            {
+                damage *= masterData.WeaknessMultiplier;
+            }
+            else if (masterData.ResistanceDirectionType == hitData.HitDirectionType)
+            {
+                damage *= masterData.ResistanceMultiplier;
             }
 
             enemyData.Hp -= damage;
@@ -78,7 +107,17 @@ namespace App.Battle.DataStore
                 return;
             }
 
-            _onEnemyDead.OnNext(enemyId);
+            _onEnemyDead.OnNext(hitData.DamagedId);
+        }
+
+        public void UpdateEnemyPose(int id, Pose pose)
+        {
+            if (!_spawnEnemyDataList.TryGetValue(id, out var enemyData))
+            {
+                return;
+            }
+
+            enemyData.Pose = pose;
         }
     }
 }

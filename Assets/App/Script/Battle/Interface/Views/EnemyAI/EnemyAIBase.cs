@@ -9,9 +9,12 @@ namespace App.Battle.Interface.EnemyAI
     public abstract class EnemyAIBase : MonoBehaviour
     {
         public int EnemyId { get; private set; }
+        protected bool CanAttack { get; set; } = true;
         protected EnemyData EnemyData;
         protected NavMeshAgent Agent;
         protected Pose PlayerPose;
+        protected Vector3 PlayerAimDirection1;
+        protected Vector3 PlayerAimDirection2;
         protected ReactiveProperty<EnemyAIState> State { get; } = new(EnemyAIState.None);
         protected float DistanceSqr => Vector3.SqrMagnitude(transform.position - PlayerPose.position);
         protected float LastAttackTime;
@@ -32,7 +35,6 @@ namespace App.Battle.Interface.EnemyAI
             Agent.speed = enemyData.IdleSpeed;
             Agent.acceleration = enemyData.IdleSpeed * 2f;
             Agent.angularSpeed = 360f;
-            Agent.stoppingDistance = enemyData.AttackDistanceRange * 0.5f;
             Agent.updateRotation = false;
 
             SetState(EnemyAIState.Idle);
@@ -82,7 +84,10 @@ namespace App.Battle.Interface.EnemyAI
                 return;
             }
 
-            LastAttackTime += Time.deltaTime;
+            if (CanAttack)
+            {
+                LastAttackTime += Time.deltaTime;
+            }
 
             switch (State.Value)
             {
@@ -147,12 +152,23 @@ namespace App.Battle.Interface.EnemyAI
 
         protected virtual void Attack()
         {
+            if (!CanAttack)
+            {
+                return;
+            }
+
             LastAttackTime = 0f;
         }
 
         public void SetPlayerPose(Pose playerPose)
         {
             PlayerPose = playerPose;
+        }
+
+        public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)
+        {
+            PlayerAimDirection1 = aimDir1;
+            PlayerAimDirection2 = aimDir2;
         }
 
         public void SetState(EnemyAIState state)

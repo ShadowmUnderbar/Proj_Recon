@@ -9,12 +9,11 @@ using VContainer.Unity;
 
 namespace App.Battle.UseCase
 {
-    public class EnemySpawnUseCase : IEnemySpawnUseCase, IInitializable, ITickable, IDisposable
+    public class EnemySpawnUseCase : IInitializable, IDisposable
     {
         private readonly EnemyDatabase _enemyDatabase;
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IEnemyDataStore _enemyDataStore;
-        private readonly IPlayerDataStore _playerDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -22,14 +21,12 @@ namespace App.Battle.UseCase
         public EnemySpawnUseCase(
             EnemyDatabase enemyDatabase,
             IEnemyPresenter enemyPresenter,
-            IEnemyDataStore enemyDataStore,
-            IPlayerDataStore playerDataStore
+            IEnemyDataStore enemyDataStore
         )
         {
             _enemyDatabase = enemyDatabase;
             _enemyPresenter = enemyPresenter;
             _enemyDataStore = enemyDataStore;
-            _playerDataStore = playerDataStore;
         }
 
         public void Initialize()
@@ -42,12 +39,21 @@ namespace App.Battle.UseCase
                 .Subscribe(OnEnemyRemoved)
                 .AddTo(_disposables);
 
-            Spawn("O-001", new Pose(Vector3.right, Quaternion.identity));
+            Spawn("SH-001", new Pose(Vector3.right, Quaternion.identity));
+
+            _enemyPresenter.OnEnemyPoseUpdate
+                .Subscribe(OnEnemyPoseUpdate)
+                .AddTo(_disposables);
         }
 
-        public void Tick()
+        private void OnEnemyPoseUpdate((int id, Pose pose) enemyPose)
         {
-            SetPlayerPose(_playerDataStore.Pose);
+            if (!_enemyDataStore.TryGetEnemyData(enemyPose.id, out _))
+            {
+                return;
+            }
+
+            _enemyDataStore.UpdateEnemyPose(enemyPose.id, enemyPose.pose);
         }
 
         public void Spawn(string enemyCode, Pose spawnPose)
@@ -68,17 +74,17 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            _enemyPresenter.Spawn(enemyData);
+            if (!_enemyDatabase.TryGetEnemyMasterData(enemyData.EnemyCode, out var enemyMasterData))
+            {
+                return;
+            }
+
+            _enemyPresenter.Spawn(enemyData, enemyMasterData.PrefabPath, enemyMasterData.ResistanceDirectionType);
         }
 
         private void OnEnemyRemoved(int enemyId)
         {
             _enemyPresenter.UnSpawn(enemyId);
-        }
-
-        public void SetPlayerPose(Pose playerPose)
-        {
-            _enemyPresenter.SetPlayerPose(playerPose);
         }
 
         public void Dispose()

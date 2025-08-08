@@ -1,4 +1,3 @@
-using App.Common.Data;
 using App.Common.Data.MasterData;
 using UnityEngine;
 
@@ -6,26 +5,30 @@ namespace App.Battle.Data
 {
     public class EnemyData
     {
-        public int Id { get; set; }
-        public EnemyMasterData MasterData { get; set; }
-        public float Hp { get; set; }
-        public float Damage { get; set; }
-        public float IdleSpeed { get; set; }
-        public float BattleSpeed { get; set; }
-        public Pose Pose { get; set; }
-        public float AttackDistanceRange { get; set; }
-        public float FindDistanceRange { get; set; }
-        public float AttackInterval { get; set; }
-        public float BulletSpeed { get; set; }
-
-        public BulletData BulletData => new()
+        public EnemyData(int id, EnemyMasterData enemyMasterData)
         {
-            ShotType = ShotType.Normal,
-            FocusType = AimFocusType.NotFocus,
-            Damage = Damage,
-            Speed = BulletSpeed,
-            Penetration = 0,
-            Explosive = 0
-        };
+            Id = id;
+            EnemyCode = enemyMasterData.EnemyCode;
+            Hp = enemyMasterData.Hp;
+            BaseDamage = enemyMasterData.Damage;
+            BaseBulletSpeed = enemyMasterData.BulletSpeed;
+            IdleSpeed = enemyMasterData.IdleSpeed;
+            AttackDistanceRange = enemyMasterData.AttackDistanceRange;
+            BattleSpeed = enemyMasterData.BattleSpeed;
+            AttackInterval = enemyMasterData.AttackInterval;
+            FindDistanceRange = enemyMasterData.FindDistance;
+        }
+
+        public int Id { get; set; }
+        public string EnemyCode { get; set; }
+        public Pose Pose { get; set; }
+        public float Hp { get; set; }
+        public float BaseDamage { get; set; }
+        public float BaseBulletSpeed { get; set; }
+        public float IdleSpeed { get; set; }
+        public float AttackDistanceRange { get; set; }
+        public float BattleSpeed { get; set; }
+        public float AttackInterval { get; set; }
+        public float FindDistanceRange { get; set; }
     }
 }

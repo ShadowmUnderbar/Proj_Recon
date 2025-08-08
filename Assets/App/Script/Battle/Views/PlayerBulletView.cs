@@ -63,7 +63,7 @@ namespace App.Battle.Views
 
                     _hitTargetIds.Add(hitBox.Id);
 
-                    hitBox.OnHit(_bulletData.Damage, _attackerId, transform.position);
+                    hitBox.OnHit(_bulletData.Damage, _attackerId, transform.position, out var canPenetrable);
 
                     if (_focusTargetId == hitBox.Id)
                     {
@@ -73,6 +73,11 @@ namespace App.Battle.Views
                     if (_isForcedPenetration)
                     {
                         return;
+                    }
+
+                    if (!canPenetrable)
+                    {
+                        Destroy(gameObject);
                     }
 
                     _hitCount++;

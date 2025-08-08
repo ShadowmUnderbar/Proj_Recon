@@ -3,6 +3,7 @@ using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using App.Common.Interface;
+using App.Framework.Utilities.Extensions;
 using R3;
 using UnityEngine;
 using VContainer;
@@ -82,6 +83,7 @@ namespace App.Battle.UseCase
                 moveTarget = hit.point;
             }
 
+            var beforePosition = _playerDataStore.Position.Value;
             var moveDistance = Vector3.Distance(moveTarget, playerPosition);
             var enemyHits = _enemyPresenter.GetDodgeHitEnemies(playerPosition, dodgeDirection.normalized, moveDistance);
 
@@ -91,7 +93,15 @@ namespace App.Battle.UseCase
 
                 foreach (var enemyId in enemyHits)
                 {
-                    _enemyDataStore.Damage(enemyId, damage);
+                    if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData))
+                    {
+                        continue;
+                    }
+
+                    var directionType = RelativeYawExtension.GetActorRelative(enemyData.Pose, beforePosition);
+                    var hitData = new HitData(enemyId, damage, directionType);
+
+                    _enemyDataStore.Damage(hitData);
                 }
             }
 

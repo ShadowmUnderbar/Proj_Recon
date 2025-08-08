@@ -1,6 +1,7 @@
 using App.Common.Data.MasterData;
 using App.Battle.Data;
 using R3;
+using UnityEngine;
 
 namespace App.Battle.Interface.DataStore
 {
@@ -9,9 +10,11 @@ namespace App.Battle.Interface.DataStore
         Observable<int> OnEnemyAdded { get; }
         Observable<int> OnEnemyRemoved { get; }
         Observable<int> OnEnemyDead { get; }
+        bool TryGetEnemyMasterData(string enemyCode, out EnemyMasterData enemyMasterData);
         bool TryGetEnemyData(int enemyId, out EnemyData enemyData);
         EnemyData AddEnemyData(EnemyMasterData enemyMasterData);
         bool RemoveEnemyData(int enemyId);
-        void Damage(int enemyId, float damage);
+        void Damage(HitData hitData);
+        void UpdateEnemyPose(int id, Pose pose);
     }
 }

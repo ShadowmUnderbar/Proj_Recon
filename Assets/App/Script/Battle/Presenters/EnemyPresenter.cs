@@ -1,6 +1,8 @@
 using App.Battle.Interface;
 using App.Battle.Data;
+using App.Common.Data;
 using Cysharp.Threading.Tasks;
+using R3;
 using UnityEngine;
 using VContainer;
 
@@ -10,6 +12,8 @@ namespace App.Battle.Presenters
     {
         private readonly IEnemyStoreView _enemyStoreView;
 
+        public Observable<(int id, Pose pose)> OnEnemyPoseUpdate => _enemyStoreView.OnEnemyPoseUpdate;
+
         [Inject]
         public EnemyPresenter(
             IEnemyStoreView enemyStoreView
@@ -18,9 +22,9 @@ namespace App.Battle.Presenters
             _enemyStoreView = enemyStoreView;
         }
 
-        public void Spawn(EnemyData enemyData)
+        public void Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType)
         {
-            _enemyStoreView.Spawn(enemyData).Forget();
+            _enemyStoreView.Spawn(enemyData, prefabPath, resistanceDirectionType).Forget();
         }
 
         public void UnSpawn(int enemyId)
@@ -36,6 +40,11 @@ namespace App.Battle.Presenters
         public void SetPlayerPose(Pose playerPose)
         {
             _enemyStoreView.SetPlayerPose(playerPose);
+        }
+
+        public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)
+        {
+            _enemyStoreView.SetPlayerAimDirection(aimDir1, aimDir2);
         }
 
         public UniTask Dead(int id)

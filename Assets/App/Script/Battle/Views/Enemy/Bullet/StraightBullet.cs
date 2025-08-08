@@ -54,7 +54,7 @@ namespace App.Battle.Views.Enemy.Bullet
                         return;
                     }
                     
-                    hitBox.OnHit(_damage, _attackerId, transform.position);
+                    hitBox.OnHit(_damage, _attackerId, transform.position, out _);
                     Destroy(gameObject);
                 })
                 .AddTo(this);

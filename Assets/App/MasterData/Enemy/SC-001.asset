@@ -10,15 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89bac84d05ac4b1d8e66f5110edd7fb0, type: 3}
-  m_Name: S-001
+  m_Name: SC-001
   m_EditorClassIdentifier: 
   _prefabPath: Assets/App/Prefub/Enemy/ScoutEmemy.prefab
-  _enemyCode: S-001
-  _damage: 5
-  _attackInterval: 3
-  _hp: 20
+  _enemyCode: SC-001
+  _damage: 20
+  _attackInterval: 5
+  _hp: 15
+  _resistanceDirectionType: 0
+  _resistanceMultiplier: 1
+  _weakDirectionType: 0
+  _weaknessMultiplier: 1
   _idleSpeed: 2.5
   _findDistance: 50
-  _battleSpeed: 4
-  _bulletSpeed: 20
+  _battleSpeed: 100
+  _bulletSpeed: 25
   _attackDistanceRange: 30

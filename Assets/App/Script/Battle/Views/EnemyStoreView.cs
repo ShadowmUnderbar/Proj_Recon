@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface;
+using App.Common.Data;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
@@ -30,9 +31,9 @@ namespace App.Battle.Views
             _hitBoxStoreView = hitBoxStoreView;
         }
 
-        public async UniTask Spawn(EnemyData enemyData)
+        public async UniTask Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType)
         {
-            var enemyObj = Addressables.LoadAssetAsync<GameObject>(enemyData.MasterData.PrefabPath);
+            var enemyObj = Addressables.LoadAssetAsync<GameObject>(prefabPath);
 
             await enemyObj.Task;
 
@@ -44,7 +45,7 @@ namespace App.Battle.Views
             var view = Instantiate(enemyObj.Result, enemyData.Pose.position, enemyData.Pose.rotation)
                 .GetComponent<IEnemyView>();
 
-            view.Init(enemyData.Id, enemyData);
+            view.Init(enemyData.Id, enemyData, resistanceDirectionType);
             view.Pose.Subscribe(pose => _onEnemyPoseUpdate.OnNext((view.Id, pose)))
                 .AddTo(this);
 
@@ -120,6 +121,14 @@ namespace App.Battle.Views
             foreach (var enemy in _enemies.Values)
             {
                 enemy.SetPlayerPose(playerPose);
+            }
+        }
+
+        public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)
+        {
+            foreach (var enemy in _enemies.Values)
+            {
+                enemy.SetPlayerAimDirection(aimDir1, aimDir2);
             }
         }
     }

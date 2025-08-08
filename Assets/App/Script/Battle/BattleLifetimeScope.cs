@@ -39,8 +39,9 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerMoveUseCase>();
             builder.RegisterEntryPoint<PlayerAimUseCase>();
             builder.RegisterEntryPoint<PlayerShotUseCase>();
-            builder.RegisterEntryPoint<EnemySpawnUseCase>().As<IEnemySpawnUseCase>();
-            builder.RegisterEntryPoint<BattleHitUseCase>().As<IBattleHitUseCase>();
+            builder.RegisterEntryPoint<EnemySpawnUseCase>();
+            builder.RegisterEntryPoint<EnemyControlUseCase>();
+            builder.RegisterEntryPoint<BattleHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
 
             #endregion
