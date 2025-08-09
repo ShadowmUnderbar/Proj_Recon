@@ -2,7 +2,7 @@ using App.Common.Data;
 using App.Common.Interface;
 using R3;
 
-namespace App.Script.Common.DataStore
+namespace App.Common.DataStore
 {
     public class PlayerSettingDataStore : IPlayerSettingDataStore
     {

@@ -1,7 +1,8 @@
 using App.Common.Interface;
 using App.Common.UseCase;
 using App.Common.Data.Database;
-using App.Script.Common.DataStore;
+using App.Common.DataStore;
+using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR.Management;
@@ -12,7 +13,6 @@ namespace App.Common
 {
     public class CommonLifetimeScope : LifetimeScope
     {
-        [SerializeField] private XRManagerSettings _xrGeneralSettings;
         [SerializeField] private EnemyDatabase _enemyDatabase;
 
         protected override void Configure(IContainerBuilder builder)
@@ -42,7 +42,19 @@ namespace App.Common
                 return;
             }
 #endif
-            var initializeLoader = _xrGeneralSettings.InitializeLoader();
+
+            InitXR().Forget();
+        }
+
+        private static async UniTask InitXR()
+        {
+            await XRGeneralSettings.Instance.Manager.InitializeLoader();
+            while (!XRGeneralSettings.Instance.Manager.isInitializationComplete)
+            {
+                await UniTask.Yield();
+            }
+
+            XRGeneralSettings.Instance.Manager.StartSubsystems();
         }
     }
 }
