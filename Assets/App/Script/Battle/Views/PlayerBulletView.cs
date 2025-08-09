@@ -21,7 +21,8 @@ namespace App.Battle.Views
         private bool _isForcedPenetration = false;
         private int _attackerId = 0;
 
-        public void Spawn(int attackerId, Pose pose, BulletData bulletData, int focusTargetId)
+        public void Spawn(int attackerId, Pose pose, BulletData bulletData, int focusTargetId,
+            Transform targetTransform = null)
         {
             _isForcedPenetration = focusTargetId >= 0;
 

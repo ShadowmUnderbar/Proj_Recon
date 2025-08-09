@@ -1,7 +1,6 @@
 using App.Common.Data;
 using R3;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace App.Battle.Interface.DataStore
 {
@@ -10,6 +9,7 @@ namespace App.Battle.Interface.DataStore
         ReactiveProperty<Vector3> Position { get; }
         ReactiveProperty<Quaternion> Rotate { get; }
         Pose Pose { get; }
+        Transform PlayerTransform { get; }
 
         ReactiveProperty<float> Health { get; }
         ReactiveProperty<float> MaxHealth { get; }

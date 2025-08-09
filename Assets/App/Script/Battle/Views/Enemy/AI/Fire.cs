@@ -8,7 +8,7 @@ namespace App.Battle.Views.Enemy.AI
 {
     public class Fire : EnemyAIBase
     {
-        [SerializeField] private StraightBullet _bulletPrefab;
+        [SerializeField] private BaseBulletView _bulletPrefab;
         [SerializeField] private Transform _muzzleTransform;
 
         protected Transform MuzzleTransform => _muzzleTransform;
@@ -29,7 +29,7 @@ namespace App.Battle.Views.Enemy.AI
                 Explosive = 0
             };
 
-            bullet.Spawn(EnemyId, _muzzleTransform.ToPose(), bulletData, -1);
+            bullet.Spawn(EnemyId, _muzzleTransform.ToPose(), bulletData, -1, PlayerTransform);
         }
     }
 }

@@ -39,21 +39,7 @@ namespace App.Battle.UseCase
                 .Subscribe(OnEnemyRemoved)
                 .AddTo(_disposables);
 
-            Spawn("SH-001", new Pose(Vector3.right, Quaternion.identity));
-
-            _enemyPresenter.OnEnemyPoseUpdate
-                .Subscribe(OnEnemyPoseUpdate)
-                .AddTo(_disposables);
-        }
-
-        private void OnEnemyPoseUpdate((int id, Pose pose) enemyPose)
-        {
-            if (!_enemyDataStore.TryGetEnemyData(enemyPose.id, out _))
-            {
-                return;
-            }
-
-            _enemyDataStore.UpdateEnemyPose(enemyPose.id, enemyPose.pose);
+            Spawn("SA-001", new Pose(Vector3.right, Quaternion.identity));
         }
 
         public void Spawn(string enemyCode, Pose spawnPose)

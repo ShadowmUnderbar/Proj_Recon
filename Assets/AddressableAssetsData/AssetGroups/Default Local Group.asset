@@ -37,6 +37,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d4fa166246106449b74ece8adb3fc43
+    m_Address: Assets/App/Prefub/Enemy/SatelliteEmemy.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 4149639a9e3e3b04197cb5ffb3670edb, type: 2}
   m_SchemaSet:

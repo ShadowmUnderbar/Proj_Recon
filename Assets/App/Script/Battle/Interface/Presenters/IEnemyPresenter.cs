@@ -13,7 +13,6 @@ namespace App.Battle.Interface
         void UnSpawn(int enemyId);
 
         int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance);
-        void SetPlayerPose(Pose playerPose);
         void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2);
         UniTask Dead(int id);
     }

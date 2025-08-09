@@ -1,5 +1,7 @@
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
+using R3;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -9,20 +11,37 @@ namespace App.Battle.UseCase
     {
         private readonly IPlayerDataStore _playerDataStore;
         private readonly IEnemyPresenter _enemyPresenter;
+        private readonly IEnemyDataStore _enemyDataStore;
+
+        private readonly CompositeDisposable _disposables = new();
 
         [Inject]
         public EnemyControlUseCase(
             IPlayerDataStore playerDataStore,
-            IEnemyPresenter enemyPresenter
+            IEnemyPresenter enemyPresenter,
+            IEnemyDataStore enemyDataStore
         )
         {
             _playerDataStore = playerDataStore;
             _enemyPresenter = enemyPresenter;
+            _enemyDataStore = enemyDataStore;
+
+            _enemyPresenter.OnEnemyPoseUpdate.Subscribe(OnEnemyPoseUpdate)
+                .AddTo(_disposables);
+        }
+
+        private void OnEnemyPoseUpdate((int id, Pose pose) enemyPose)
+        {
+            if (!_enemyDataStore.TryGetEnemyData(enemyPose.id, out _))
+            {
+                return;
+            }
+
+            _enemyDataStore.UpdateEnemyPose(enemyPose.id, enemyPose.pose);
         }
 
         public void Tick()
         {
-            _enemyPresenter.SetPlayerPose(_playerDataStore.Pose);
             _enemyPresenter.SetPlayerAimDirection(
                 _playerDataStore.LeftAimDirection,
                 _playerDataStore.RightAimDirection

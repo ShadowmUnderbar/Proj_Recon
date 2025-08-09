@@ -38,15 +38,15 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.IdleState();
 
-            Agent.SetDestination(PlayerPose.position);
+            Agent.SetDestination(PlayerTransform.position);
         }
 
         protected override void BattleState()
         {
             base.BattleState();
 
-            _aimTargetPosition1 = PlayerPose.position + -PlayerAimDirection1 * JammingDistance;
-            _aimTargetPosition2 = PlayerPose.position + -PlayerAimDirection2 * JammingDistance;
+            _aimTargetPosition1 = PlayerTransform.position + -PlayerAimDirection1 * JammingDistance;
+            _aimTargetPosition2 = PlayerTransform.position + -PlayerAimDirection2 * JammingDistance;
 
             if (_isMovingToTargetPosition1)
             {
@@ -57,14 +57,11 @@ namespace App.Battle.Views.Enemy.AI
                 Agent.SetDestination(_aimTargetPosition2 + _positionOffset);
             }
 
-            // ターゲットへの方向（Y成分は無視）
-            var direction = PlayerPose.position - transform.position;
-            direction.y = 0f; // Y軸の上下は無視する
+            var direction = PlayerTransform.position - transform.position;
+            direction.y = 0f;
 
-            // 目標の回転（Y軸のみ）
             var targetRotation = Quaternion.LookRotation(direction);
 
-            // 徐々に回転
             transform.rotation = Quaternion.RotateTowards(
                 transform.rotation,
                 targetRotation,

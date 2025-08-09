@@ -7,6 +7,7 @@ namespace App.Battle.Interface
 {
     public interface IBattlePlayerView
     {
+        Transform PlayerTransform { get; }
         Observable<HitData> OnHit { get; }
 
         Observable<int> OnFocusLeft { get; }

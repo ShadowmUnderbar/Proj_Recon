@@ -16,7 +16,8 @@ namespace App.Battle.DataStore
         public ReactiveProperty<Vector3> Position { get; } = new();
 
         public ReactiveProperty<Quaternion> Rotate { get; } = new();
-        public Pose Pose => new Pose(Position.Value, Rotate.Value);
+        public Pose Pose => new(Position.Value, Rotate.Value);
+        public Transform PlayerTransform { get; private set; }
         public ReactiveProperty<float> Health { get; } = new();
         public ReactiveProperty<float> MaxHealth { get; } = new();
 
@@ -28,7 +29,7 @@ namespace App.Battle.DataStore
         public ReactiveProperty<int> FocusRightTargetId { get; } = new(-1);
         public ReactiveProperty<Pose> LeftHandPose { get; } = new();
         public ReactiveProperty<Pose> RightHandPose { get; } = new();
-        
+
         public Vector3 LeftAimDirection => (Position.Value - _aimPositions[HandType.Left]).normalized;
         public Vector3 RightAimDirection => (Position.Value - _aimPositions[HandType.Right]).normalized;
 

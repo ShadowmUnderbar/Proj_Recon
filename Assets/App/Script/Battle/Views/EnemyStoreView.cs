@@ -13,6 +13,7 @@ namespace App.Battle.Views
 {
     public class EnemyStoreView : MonoBehaviour, IEnemyStoreView
     {
+        private IBattlePlayerView _playerView;
         private IHitBoxStoreView _hitBoxStoreView;
 
         private readonly Dictionary<int, IEnemyView> _enemies = new();
@@ -25,10 +26,12 @@ namespace App.Battle.Views
 
         [Inject]
         public void Construct(
-            IHitBoxStoreView hitBoxStoreView
+            IHitBoxStoreView hitBoxStoreView,
+            IBattlePlayerView playerView
         )
         {
             _hitBoxStoreView = hitBoxStoreView;
+            _playerView = playerView;
         }
 
         public async UniTask Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType)
@@ -48,6 +51,7 @@ namespace App.Battle.Views
             view.Init(enemyData.Id, enemyData, resistanceDirectionType);
             view.Pose.Subscribe(pose => _onEnemyPoseUpdate.OnNext((view.Id, pose)))
                 .AddTo(this);
+            view.SetPlayerTransform(_playerView.PlayerTransform);
 
             _enemies.Add(enemyData.Id, view);
 
@@ -114,14 +118,6 @@ namespace App.Battle.Views
             }
 
             return _rayCastEnemyIds.ToArray();
-        }
-
-        public void SetPlayerPose(Pose playerPose)
-        {
-            foreach (var enemy in _enemies.Values)
-            {
-                enemy.SetPlayerPose(playerPose);
-            }
         }
 
         public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)

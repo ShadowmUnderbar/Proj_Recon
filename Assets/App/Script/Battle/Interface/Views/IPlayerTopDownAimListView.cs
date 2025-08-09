@@ -1,5 +1,4 @@
-﻿using App.Battle.Data;
-using App.Common.Data;
+﻿using App.Common.Data;
 using R3;
 using UnityEngine;
 

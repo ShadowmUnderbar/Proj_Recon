@@ -15,7 +15,7 @@ namespace App.Battle.Interface
         void Init(int id, EnemyData enemyData, HitDirectionType resistanceDirectionType);
         void Destroy();
         UniTask Dead();
-        void SetPlayerPose(Pose playerPose);
+        void SetPlayerTransform(Transform playerTransform);
         void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2);
     }
 }

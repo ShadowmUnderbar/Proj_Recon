@@ -21,6 +21,7 @@ namespace App.Battle.Views
 
         private HandForwardRayView[] _handForwardRayViews;
 
+        public Transform PlayerTransform => transform;
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
         public Observable<int> OnFocusLeft => _playerTopDownAimListView.OnFocusLeft;

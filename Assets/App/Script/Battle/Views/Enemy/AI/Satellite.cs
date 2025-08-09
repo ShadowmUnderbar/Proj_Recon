@@ -2,19 +2,19 @@ using UnityEngine;
 
 namespace App.Battle.Views.Enemy.AI
 {
-    public class Orbit : Fire
+    public class Satellite : Fire
     {
-        private bool _isRotateRight;
+        [SerializeField] private Transform _body;
 
+        private float RandomHeightMin => 5f;
+        private float RandomHeightMax => 12f;
         private float ChaseDistance => EnemyData.AttackDistanceRange * 0.75f;
-
         private bool IsChaseRange => DistanceSqr > ChaseDistance * ChaseDistance;
 
         protected override void Awake()
         {
             base.Awake();
-
-            _isRotateRight = Random.Range(0, 2) == 0;
+            _body.transform.localPosition = new Vector3(0, Random.Range(RandomHeightMin, RandomHeightMax), 0);
         }
 
         protected override void OnUpdateIdleState()
@@ -45,10 +45,10 @@ namespace App.Battle.Views.Enemy.AI
             transform.LookAt(PlayerTransform.position, Vector3.up);
             transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
 
-            var targetPos = transform.right * EnemyData.BattleSpeed * (_isRotateRight ? 1 : -1) * 10f;
-            targetPos += transform.forward * EnemyData.BattleSpeed * (IsChaseRange ? 1 : -1) * 10f;
-
+            var targetPos = transform.forward * EnemyData.BattleSpeed * (IsChaseRange ? 1 : -1) * 10f;
             Agent.SetDestination(targetPos);
+
+            MuzzleTransform.LookAt(PlayerTransform.position);
         }
     }
 }

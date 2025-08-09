@@ -12,14 +12,14 @@ namespace App.Battle.Views.EnemyAI
         {
             base.IdleState();
 
-            Agent.SetDestination(PlayerPose.position);
+            Agent.SetDestination(PlayerTransform.position);
         }
 
         protected override void BattleState()
         {
             base.BattleState();
 
-            Agent.SetDestination(PlayerPose.position);
+            Agent.SetDestination(PlayerTransform.position);
         }
 
         protected override void Attack()

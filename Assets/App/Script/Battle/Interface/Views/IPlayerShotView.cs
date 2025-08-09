@@ -1,6 +1,4 @@
-﻿using App.Battle.Data;
-using App.Common.Data;
-using R3;
+﻿using App.Common.Data;
 
 namespace App.Battle.Interface
 {

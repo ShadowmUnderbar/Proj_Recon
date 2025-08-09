@@ -37,11 +37,6 @@ namespace App.Battle.Presenters
             return _enemyStoreView.GetDodgeHitEnemies(playerPosition, direction, distance);
         }
 
-        public void SetPlayerPose(Pose playerPose)
-        {
-            _enemyStoreView.SetPlayerPose(playerPose);
-        }
-
         public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)
         {
             _enemyStoreView.SetPlayerAimDirection(aimDir1, aimDir2);

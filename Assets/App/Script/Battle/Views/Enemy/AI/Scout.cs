@@ -7,7 +7,6 @@ namespace App.Battle.Views.Enemy.AI
         [SerializeField] private LineRenderer lineRenderer;
 
         private float RandomMoveRange => 0.5f;
-        private float RandomDistance => Random.Range(-RandomMoveRange, RandomMoveRange);
 
         private static float EscapeDistance => 30f;
 
@@ -30,14 +29,14 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.IdleState();
 
-            Agent.SetDestination(PlayerPose.position);
+            Agent.SetDestination(PlayerTransform.position);
         }
 
         protected override void BattleState()
         {
             base.BattleState();
 
-            transform.LookAt(PlayerPose.position, Vector3.up);
+            transform.LookAt(PlayerTransform.position, Vector3.up);
             transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
         }
 
@@ -45,8 +44,9 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.Attack();
 
-            var dirAway = (transform.position - PlayerPose.position).normalized + transform.right * RandomDistance;
-            var candidate = PlayerPose.position + dirAway * EscapeDistance;
+            var dirAway = (transform.position - PlayerTransform.position).normalized +
+                          transform.right * Random.Range(-RandomMoveRange, RandomMoveRange);
+            var candidate = PlayerTransform.position + dirAway * EscapeDistance;
 
             Agent.SetDestination(candidate);
         }

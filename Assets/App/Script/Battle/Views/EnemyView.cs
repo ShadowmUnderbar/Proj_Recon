@@ -53,14 +53,14 @@ namespace App.Battle.Views
             EnemyAI.SetState(EnemyAIState.Dead);
         }
 
-        public void SetPlayerPose(Pose playerPose)
+        public void SetPlayerTransform(Transform playerTransform)
         {
             if (EnemyAI == null)
             {
                 return;
             }
 
-            EnemyAI.SetPlayerPose(playerPose);
+            EnemyAI.SetPlayerTransform(playerTransform);
         }
 
         public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)

@@ -12,11 +12,11 @@ namespace App.Battle.Interface.EnemyAI
         protected bool CanAttack { get; set; } = true;
         protected EnemyData EnemyData;
         protected NavMeshAgent Agent;
-        protected Pose PlayerPose;
+        protected Transform PlayerTransform;
         protected Vector3 PlayerAimDirection1;
         protected Vector3 PlayerAimDirection2;
         protected ReactiveProperty<EnemyAIState> State { get; } = new(EnemyAIState.None);
-        protected float DistanceSqr => Vector3.SqrMagnitude(transform.position - PlayerPose.position);
+        protected float DistanceSqr => Vector3.SqrMagnitude(transform.position - PlayerTransform.position);
         protected float LastAttackTime;
 
         protected virtual void Awake()
@@ -160,9 +160,9 @@ namespace App.Battle.Interface.EnemyAI
             LastAttackTime = 0f;
         }
 
-        public void SetPlayerPose(Pose playerPose)
+        public void SetPlayerTransform(Transform playerTransform)
         {
-            PlayerPose = playerPose;
+            PlayerTransform = playerTransform;
         }
 
         public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)
