@@ -13,7 +13,6 @@ namespace App.Battle.Views
         public int Id { get; private set; }
 
         public ReactiveProperty<Pose> Pose { get; } = new();
-
         public IHitBoxView[] HitBoxes { get; private set; }
         public EnemyAIBase EnemyAI { get; private set; }
 

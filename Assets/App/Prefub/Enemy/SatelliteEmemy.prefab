@@ -97,7 +97,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 2
-  m_BaseOffset: 0
+  m_BaseOffset: 10
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &9011892144538251905
@@ -114,7 +114,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bulletPrefab: {fileID: 4630742690371114123, guid: 1b136c6a16bf8c2468627de2a5f04f39, type: 3}
   _muzzleTransform: {fileID: 187265999119470471}
-  _body: {fileID: 2007616191625351977}
 --- !u!1 &8554459682166942809
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,8 +13,8 @@ namespace App.Battle.Views.Enemy.AI
 
         protected override void Awake()
         {
-            base.Awake();
-            _body.transform.localPosition = new Vector3(0, Random.Range(RandomHeightMin, RandomHeightMax), 0);
+            base.Awake(); 
+            Agent.baseOffset = Random.Range(RandomHeightMin, RandomHeightMax);
         }
 
         protected override void OnUpdateIdleState()
