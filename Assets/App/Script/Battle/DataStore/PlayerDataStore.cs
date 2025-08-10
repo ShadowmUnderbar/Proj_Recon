@@ -158,6 +158,23 @@ namespace App.Battle.DataStore
 
         public void SetAimPosition(HandType handType, Vector3 position)
         {
+            if (handType == HandType.Left && FocusLeftTargetId.Value != -1)
+            {
+                if (_enemyDataStore.TryGetEnemyData(FocusLeftTargetId.Value, out var enemy))
+                {
+                    _aimPositions[handType] = enemy.Pose.position;
+                    return;
+                }
+            }
+            else if (handType == HandType.Right && FocusRightTargetId.Value != -1)
+            {
+                if (_enemyDataStore.TryGetEnemyData(FocusRightTargetId.Value, out var enemy))
+                {
+                    _aimPositions[handType] = enemy.Pose.position;
+                    return;
+                }
+            }
+
             _aimPositions[handType] = position;
         }
 

@@ -38,7 +38,6 @@ namespace App.Battle.Views
             {
                 _onFocus.OnNext(-1);
                 var pos = _platformHandRotation.Rotation * Vector3.forward * GameParamData.RayMaxDistance;
-                pos.y = 0;
                 return pos;
             }
 

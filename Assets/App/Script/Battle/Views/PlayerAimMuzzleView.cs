@@ -16,7 +16,10 @@ namespace App.Battle.Views
                 return;
             }
 
-            position.y = transform.position.y;
+            if (position.y <= transform.position.y)
+            {
+                position.y = transform.position.y;
+            }
 
             transform.LookAt(position);
         }
