@@ -45,6 +45,30 @@ namespace App.Battle.DataStore
             return true;
         }
 
+        public EnemyMasterData GetRandomEnemyMasterData(EnemyRankType rankType)
+        {
+            var list = _enemyDatabase.EnemyMasterData;
+            var targetList = new List<EnemyMasterData>();
+
+            foreach (var enemy in list)
+            {
+                if (enemy.EnemyRankType != rankType)
+                {
+                    continue;
+                }
+
+                targetList.Add(enemy);
+            }
+
+            if (targetList.Count == 0)
+            {
+                return null;
+            }
+
+            var randomIndex = Random.Range(0, targetList.Count);
+            return targetList[randomIndex];
+        }
+
         public bool TryGetEnemyData(int enemyId, out EnemyData enemyData)
         {
             enemyData = null;
@@ -57,7 +81,7 @@ namespace App.Battle.DataStore
             return true;
         }
 
-        public EnemyData AddEnemyData(EnemyMasterData enemyMasterData)
+        public EnemyData AddEnemyData(EnemyMasterData enemyMasterData, Pose spawnPose)
         {
             int enemyId;
             do
@@ -65,7 +89,7 @@ namespace App.Battle.DataStore
                 enemyId = Random.Range(0, int.MaxValue);
             } while (_spawnEnemyDataList.ContainsKey(enemyId));
 
-            var enemy = new EnemyData(enemyId, enemyMasterData);
+            var enemy = new EnemyData(enemyId, enemyMasterData, spawnPose);
 
             _spawnEnemyDataList.Add(enemyId, enemy);
             _onEnemyAdded.OnNext(enemyId);
@@ -99,6 +123,12 @@ namespace App.Battle.DataStore
             else if (masterData.ResistanceDirectionType == hitData.HitDirectionType)
             {
                 damage *= masterData.ResistanceMultiplier;
+            }
+
+            //ダメージの最低保証は1
+            if (damage <= 1f)
+            {
+                damage = 1;
             }
 
             enemyData.Hp -= damage;

@@ -5,10 +5,11 @@ namespace App.Battle.Data
 {
     public class EnemyData
     {
-        public EnemyData(int id, EnemyMasterData enemyMasterData)
+        public EnemyData(int id, EnemyMasterData enemyMasterData, Pose pose)
         {
             Id = id;
             EnemyCode = enemyMasterData.EnemyCode;
+            Pose = pose;
             Hp = enemyMasterData.Hp;
             BaseDamage = enemyMasterData.Damage;
             BaseBulletSpeed = enemyMasterData.BulletSpeed;

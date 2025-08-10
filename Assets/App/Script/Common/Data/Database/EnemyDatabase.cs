@@ -9,9 +9,12 @@ namespace App.Common.Data.Database
     {
         [SerializeField] private EnemyMasterData[] _enemyMasterDataList;
 
-        public bool TryGetEnemyMasterData(string enemyCode ,out EnemyMasterData enemyMasterData)
+        public EnemyMasterData[] EnemyMasterData => _enemyMasterDataList;
+
+        public bool TryGetEnemyMasterData(string enemyCode, out EnemyMasterData enemyMasterData)
         {
-            enemyMasterData = _enemyMasterDataList.FirstOrDefault(enemyMasterData => enemyMasterData.EnemyCode == enemyCode);
+            enemyMasterData =
+                _enemyMasterDataList.FirstOrDefault(enemyMasterData => enemyMasterData.EnemyCode == enemyCode);
             return enemyMasterData != null;
         }
     }

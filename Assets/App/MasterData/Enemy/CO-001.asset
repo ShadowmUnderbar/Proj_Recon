@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89bac84d05ac4b1d8e66f5110edd7fb0, type: 3}
-  m_Name: O-001
+  m_Name: CO-001
   m_EditorClassIdentifier: 
   _prefabPath: Assets/App/Prefub/Enemy/OrbitEmemy.prefab
-  _enemyCode: O-001
-  _enemyRankType: 2
+  _enemyCode: CO-001
+  _enemyRankType: 1
   _damage: 1
-  _attackInterval: 1.5
-  _hp: 10
+  _attackInterval: 4.5
+  _hp: 1
   _resistanceDirectionType: 0
   _resistanceMultiplier: 1
   _weakDirectionType: 0
   _weaknessMultiplier: 1
-  _idleSpeed: 1
+  _idleSpeed: 0.8
   _findDistance: 50
-  _battleSpeed: 1.5
+  _battleSpeed: 1
   _bulletSpeed: 20
   _attackDistanceRange: 15

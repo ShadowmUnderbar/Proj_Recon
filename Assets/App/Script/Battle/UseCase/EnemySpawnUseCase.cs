@@ -1,7 +1,6 @@
 using System;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
-using App.Common.Data.Database;
 using R3;
 using UnityEngine;
 using VContainer;
@@ -11,7 +10,6 @@ namespace App.Battle.UseCase
 {
     public class EnemySpawnUseCase : IInitializable, IDisposable
     {
-        private readonly EnemyDatabase _enemyDatabase;
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IEnemyDataStore _enemyDataStore;
 
@@ -19,12 +17,10 @@ namespace App.Battle.UseCase
 
         [Inject]
         public EnemySpawnUseCase(
-            EnemyDatabase enemyDatabase,
             IEnemyPresenter enemyPresenter,
             IEnemyDataStore enemyDataStore
         )
         {
-            _enemyDatabase = enemyDatabase;
             _enemyPresenter = enemyPresenter;
             _enemyDataStore = enemyDataStore;
         }
@@ -38,18 +34,6 @@ namespace App.Battle.UseCase
             _enemyDataStore.OnEnemyRemoved
                 .Subscribe(OnEnemyRemoved)
                 .AddTo(_disposables);
-
-            Spawn("SA-001", new Pose(Vector3.right, Quaternion.identity));
-        }
-
-        public void Spawn(string enemyCode, Pose spawnPose)
-        {
-            if (!_enemyDatabase.TryGetEnemyMasterData(enemyCode, out var enemyMasterData))
-            {
-                return;
-            }
-
-            var enemy = _enemyDataStore.AddEnemyData(enemyMasterData);
         }
 
         private void OnEnemyAdded(int enemyId)
@@ -60,7 +44,7 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            if (!_enemyDatabase.TryGetEnemyMasterData(enemyData.EnemyCode, out var enemyMasterData))
+            if (!_enemyDataStore.TryGetEnemyMasterData(enemyData.EnemyCode, out var enemyMasterData))
             {
                 return;
             }

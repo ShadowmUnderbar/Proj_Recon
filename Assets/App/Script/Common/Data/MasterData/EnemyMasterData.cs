@@ -13,6 +13,9 @@ namespace App.Common.Data.MasterData
 
         [SerializeField] private string _enemyCode;
         public string EnemyCode => _enemyCode;
+        
+        [SerializeField] private EnemyRankType _enemyRankType;
+        public EnemyRankType EnemyRankType => _enemyRankType;
 
         [SerializeField] private float _damage = 1;
         public float Damage => _damage;

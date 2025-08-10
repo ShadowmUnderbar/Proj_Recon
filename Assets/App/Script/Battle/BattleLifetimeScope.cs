@@ -27,6 +27,8 @@ namespace App.Battle
 
             builder.Register<PlayerDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IPlayerDataStore>();
             builder.Register<EnemyDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IEnemyDataStore>();
+            builder.Register<EnemyRandomSpawnCycleDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IEnemyRandomSpawnCycleDataStore>();
             builder.Register<PlayerBulletParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBulletParameterDataStore>();
             builder.Register<PlayerDodgeParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -43,6 +45,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<EnemyControlUseCase>();
             builder.RegisterEntryPoint<BattleHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
+            builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
 
             #endregion
 

@@ -42,6 +42,16 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7170d3fb773391545bc6a7666f8034a6
+    m_Address: Assets/App/Prefub/Enemy/CommonRushEmemy.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee2a8dab154ba3749b85d2e80b0a6a2c
+    m_Address: Assets/App/Prefub/Enemy/CommonOrbitEmemy.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 4149639a9e3e3b04197cb5ffb3670edb, type: 2}
   m_SchemaSet:

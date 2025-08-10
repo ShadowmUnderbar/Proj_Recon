@@ -142,7 +142,7 @@ namespace App.Battle.Interface.EnemyAI
 
         protected virtual bool IsAttackInterval()
         {
-            if (LastAttackTime <= EnemyData.AttackInterval)
+            if (LastAttackTime <= EnemyData.AttackInterval + Random.Range(-0.2f, 0.2f))
             {
                 return false;
             }
