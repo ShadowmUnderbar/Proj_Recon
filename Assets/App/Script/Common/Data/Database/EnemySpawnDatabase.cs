@@ -21,10 +21,10 @@ namespace App.Common.Data.Database
             public UnlockCoreSkillType UnlockCoreSkillType;
             public SpawnGroup[] SpawnGroupList;
 
-            public EnemyMasterData GetRandomSpawnEnemy(EnemyRankType rankType)
+            public SpawnGroup GetRandomSpawnEnemy(EnemyRankType rankType)
             {
                 var filteredList = SpawnGroupList
-                    .Where(x => x.SpawnTableList.EnemyRankType == rankType)
+                    .Where(x => x.SpawnEnemy.EnemyRankType == rankType)
                     .ToArray();
 
                 if (filteredList.Length == 0)
@@ -41,18 +41,18 @@ namespace App.Common.Data.Database
                     cumulativeProbability += group.Probability;
                     if (randomValue < cumulativeProbability)
                     {
-                        return group.SpawnTableList;
+                        return group;
                     }
                 }
 
-                return filteredList.Last().SpawnTableList;
+                return filteredList.Last();
             }
         }
 
         [System.Serializable]
         public class SpawnGroup
         {
-            public EnemyMasterData SpawnTableList;
+            public EnemyMasterData SpawnEnemy;
             public int Probability = 100;
             public bool IsOnlyOnce = false;
         }

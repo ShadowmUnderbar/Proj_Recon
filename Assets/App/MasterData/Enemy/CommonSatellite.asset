@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89bac84d05ac4b1d8e66f5110edd7fb0, type: 3}
-  m_Name: CR-001
+  m_Name: CommonSatellite
   m_EditorClassIdentifier: 
-  _prefabPath: Assets/App/Prefub/Enemy/CommonRushEmemy.prefab
-  _enemyCode: CR-001
+  _prefabPath: Assets/App/Prefub/Enemy/SatelliteEmemy.prefab
+  _enemyCode: CommonSatellite
   _enemyRankType: 1
-  _damage: 2
-  _attackInterval: 0.5
-  _hp: 5
+  _damage: 1
+  _attackInterval: 5
+  _hp: 1
   _resistanceDirectionType: 0
   _resistanceMultiplier: 1
   _weakDirectionType: 0
   _weaknessMultiplier: 1
   _idleSpeed: 2.5
   _findDistance: 50
-  _battleSpeed: 2
-  _bulletSpeed: 0
-  _attackDistanceRange: 1.5
+  _battleSpeed: 1.5
+  _bulletSpeed: 10
+  _attackDistanceRange: 20

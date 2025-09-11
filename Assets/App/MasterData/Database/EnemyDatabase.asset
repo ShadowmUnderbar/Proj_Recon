@@ -15,7 +15,9 @@ MonoBehaviour:
   _enemyMasterDataList:
   - {fileID: 11400000, guid: 9aeb4654fa072e84e9a9c45c521bede9, type: 2}
   - {fileID: 11400000, guid: f9b521660846495489e928871ab056e1, type: 2}
+  - {fileID: 11400000, guid: eb5ef78ea7ea5bf449d1debb4324cb89, type: 2}
   - {fileID: 11400000, guid: 654c1396c7e0a1440b713a96c040bec2, type: 2}
+  - {fileID: 11400000, guid: 4b6261abbcd5d9a45ae2a814710a4d32, type: 2}
+  - {fileID: 11400000, guid: ee92e241bb6c24d41b23188e03e7c279, type: 2}
   - {fileID: 11400000, guid: a0f96f5fc77541e42b9fad2f55cb2c22, type: 2}
   - {fileID: 11400000, guid: 0b2208065ed1c904fa1c402fca0e3526, type: 2}
-  - {fileID: 11400000, guid: ee92e241bb6c24d41b23188e03e7c279, type: 2}

@@ -12,3 +12,177 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47ebb9a563081f640a0217f11de696b1, type: 3}
   m_Name: EnemySpawnDatabase
   m_EditorClassIdentifier: 
+  SpawnTableList:
+  - UnlockCoreSkillType: 0
+    SpawnGroupList:
+    - SpawnEnemy: {fileID: 11400000, guid: 9aeb4654fa072e84e9a9c45c521bede9, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: f9b521660846495489e928871ab056e1, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 654c1396c7e0a1440b713a96c040bec2, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 4b6261abbcd5d9a45ae2a814710a4d32, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 0b2208065ed1c904fa1c402fca0e3526, type: 2}
+      Probability: 10
+      IsOnlyOnce: 1
+    - SpawnEnemy: {fileID: 11400000, guid: a0f96f5fc77541e42b9fad2f55cb2c22, type: 2}
+      Probability: 10
+      IsOnlyOnce: 1
+  - UnlockCoreSkillType: 1
+    SpawnGroupList:
+    - SpawnEnemy: {fileID: 11400000, guid: 9aeb4654fa072e84e9a9c45c521bede9, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: f9b521660846495489e928871ab056e1, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 654c1396c7e0a1440b713a96c040bec2, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 4b6261abbcd5d9a45ae2a814710a4d32, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 0b2208065ed1c904fa1c402fca0e3526, type: 2}
+      Probability: 20
+      IsOnlyOnce: 1
+    - SpawnEnemy: {fileID: 11400000, guid: a0f96f5fc77541e42b9fad2f55cb2c22, type: 2}
+      Probability: 10
+      IsOnlyOnce: 1
+    - SpawnEnemy: {fileID: 11400000, guid: ee92e241bb6c24d41b23188e03e7c279, type: 2}
+      Probability: 40
+      IsOnlyOnce: 1
+  - UnlockCoreSkillType: 2
+    SpawnGroupList:
+    - SpawnEnemy: {fileID: 11400000, guid: 9aeb4654fa072e84e9a9c45c521bede9, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: f9b521660846495489e928871ab056e1, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 654c1396c7e0a1440b713a96c040bec2, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 4b6261abbcd5d9a45ae2a814710a4d32, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 0b2208065ed1c904fa1c402fca0e3526, type: 2}
+      Probability: 10
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: a0f96f5fc77541e42b9fad2f55cb2c22, type: 2}
+      Probability: 15
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: eb5ef78ea7ea5bf449d1debb4324cb89, type: 2}
+      Probability: 20
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: ee92e241bb6c24d41b23188e03e7c279, type: 2}
+      Probability: 30
+      IsOnlyOnce: 0
+  - UnlockCoreSkillType: 3
+    SpawnGroupList:
+    - SpawnEnemy: {fileID: 11400000, guid: 9aeb4654fa072e84e9a9c45c521bede9, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: f9b521660846495489e928871ab056e1, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 654c1396c7e0a1440b713a96c040bec2, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 4b6261abbcd5d9a45ae2a814710a4d32, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 0b2208065ed1c904fa1c402fca0e3526, type: 2}
+      Probability: 10
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: a0f96f5fc77541e42b9fad2f55cb2c22, type: 2}
+      Probability: 15
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: eb5ef78ea7ea5bf449d1debb4324cb89, type: 2}
+      Probability: 20
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: ee92e241bb6c24d41b23188e03e7c279, type: 2}
+      Probability: 30
+      IsOnlyOnce: 0
+  - UnlockCoreSkillType: 4
+    SpawnGroupList:
+    - SpawnEnemy: {fileID: 11400000, guid: 9aeb4654fa072e84e9a9c45c521bede9, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: f9b521660846495489e928871ab056e1, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 654c1396c7e0a1440b713a96c040bec2, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 4b6261abbcd5d9a45ae2a814710a4d32, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 0b2208065ed1c904fa1c402fca0e3526, type: 2}
+      Probability: 10
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: a0f96f5fc77541e42b9fad2f55cb2c22, type: 2}
+      Probability: 15
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: eb5ef78ea7ea5bf449d1debb4324cb89, type: 2}
+      Probability: 20
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: ee92e241bb6c24d41b23188e03e7c279, type: 2}
+      Probability: 30
+      IsOnlyOnce: 0
+  - UnlockCoreSkillType: 5
+    SpawnGroupList:
+    - SpawnEnemy: {fileID: 11400000, guid: 9aeb4654fa072e84e9a9c45c521bede9, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: f9b521660846495489e928871ab056e1, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 654c1396c7e0a1440b713a96c040bec2, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 4b6261abbcd5d9a45ae2a814710a4d32, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 0b2208065ed1c904fa1c402fca0e3526, type: 2}
+      Probability: 10
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: a0f96f5fc77541e42b9fad2f55cb2c22, type: 2}
+      Probability: 15
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: eb5ef78ea7ea5bf449d1debb4324cb89, type: 2}
+      Probability: 20
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: ee92e241bb6c24d41b23188e03e7c279, type: 2}
+      Probability: 30
+      IsOnlyOnce: 0
+  - UnlockCoreSkillType: 6
+    SpawnGroupList:
+    - SpawnEnemy: {fileID: 11400000, guid: 9aeb4654fa072e84e9a9c45c521bede9, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: f9b521660846495489e928871ab056e1, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 654c1396c7e0a1440b713a96c040bec2, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 4b6261abbcd5d9a45ae2a814710a4d32, type: 2}
+      Probability: 40
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: 0b2208065ed1c904fa1c402fca0e3526, type: 2}
+      Probability: 10
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: a0f96f5fc77541e42b9fad2f55cb2c22, type: 2}
+      Probability: 15
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: eb5ef78ea7ea5bf449d1debb4324cb89, type: 2}
+      Probability: 20
+      IsOnlyOnce: 0
+    - SpawnEnemy: {fileID: 11400000, guid: ee92e241bb6c24d41b23188e03e7c279, type: 2}
+      Probability: 30
+      IsOnlyOnce: 0

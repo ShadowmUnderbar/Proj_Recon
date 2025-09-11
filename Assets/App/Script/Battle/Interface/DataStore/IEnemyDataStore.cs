@@ -11,8 +11,12 @@ namespace App.Battle.Interface.DataStore
         Observable<int> OnEnemyAdded { get; }
         Observable<int> OnEnemyRemoved { get; }
         Observable<int> OnEnemyDead { get; }
+
         bool TryGetEnemyMasterData(string enemyCode, out EnemyMasterData enemyMasterData);
-        EnemyMasterData GetRandomEnemyMasterData(EnemyRankType rankType);
+
+        bool TryGetRandomEnemyMasterData(EnemyRankType rankType, UnlockCoreSkillType unlockCoreSkillType,
+            out EnemyMasterData enemyMasterData);
+
         bool TryGetEnemyData(int enemyId, out EnemyData enemyData);
         EnemyData AddEnemyData(EnemyMasterData enemyMasterData, Pose spawnPose);
         bool RemoveEnemyData(int enemyId);

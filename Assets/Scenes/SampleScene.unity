@@ -500,6 +500,7 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _enemyDatabase: {fileID: 11400000, guid: 25a18e38d2d2dd749b250325309d63e7, type: 2}
+  _enemySpawnDatabase: {fileID: 11400000, guid: f9b5961c17d333a438c79cb9285f564b, type: 2}
 --- !u!4 &1576992900
 Transform:
   m_ObjectHideFlags: 0

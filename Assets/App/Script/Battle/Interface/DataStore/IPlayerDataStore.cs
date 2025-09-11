@@ -6,6 +6,7 @@ namespace App.Battle.Interface.DataStore
 {
     public interface IPlayerDataStore
     {
+        UnlockCoreSkillType UnlockCoreSkillType { get; }
         ReactiveProperty<Vector3> Position { get; }
         ReactiveProperty<Quaternion> Rotate { get; }
         Pose Pose { get; }
@@ -30,5 +31,6 @@ namespace App.Battle.Interface.DataStore
 
         void SetAimPosition(HandType handType, Vector3 position);
         void Move(Vector2 moveV2, float speed);
+        void SetUnlockCoreSkillType(UnlockCoreSkillType unlockCoreSkillType);
     }
 }

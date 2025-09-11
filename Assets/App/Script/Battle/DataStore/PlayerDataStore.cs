@@ -13,6 +13,7 @@ namespace App.Battle.DataStore
     {
         private readonly IEnemyDataStore _enemyDataStore;
 
+        public UnlockCoreSkillType UnlockCoreSkillType { get; private set; } = UnlockCoreSkillType.First;
         public ReactiveProperty<Vector3> Position { get; } = new();
 
         public ReactiveProperty<Quaternion> Rotate { get; } = new();
@@ -181,6 +182,16 @@ namespace App.Battle.DataStore
         public void Move(Vector2 moveV2, float speed)
         {
             Position.Value += new Vector3(moveV2.x, 0, moveV2.y) * speed;
+        }
+
+        public void SetUnlockCoreSkillType(UnlockCoreSkillType unlockCoreSkillType)
+        {
+            if (UnlockCoreSkillType >= unlockCoreSkillType)
+            {
+                return;
+            }
+
+            UnlockCoreSkillType = unlockCoreSkillType;
         }
     }
 }

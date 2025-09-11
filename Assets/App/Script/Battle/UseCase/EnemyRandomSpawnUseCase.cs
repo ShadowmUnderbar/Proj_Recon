@@ -46,14 +46,12 @@ namespace App.Battle.UseCase
             {
                 var targetPos = _enemyRandomSpawnCycleDataStore.GetRandomSpawnPositionFast(playerPos);
 
-                var enemy = _enemyDataStore.GetRandomEnemyMasterData(rankType);
-
-                if (!_enemyDataStore.TryGetEnemyMasterData(enemy.EnemyCode, out var enemyMasterData))
+                if (!_enemyDataStore.TryGetRandomEnemyMasterData(rankType, _playerDataStore.UnlockCoreSkillType, out var enemy))
                 {
                     return;
                 }
 
-                _enemyDataStore.AddEnemyData(enemyMasterData, new Pose(targetPos, Quaternion.identity));
+                _enemyDataStore.AddEnemyData(enemy, new Pose(targetPos, Quaternion.identity));
             }
         }
 
