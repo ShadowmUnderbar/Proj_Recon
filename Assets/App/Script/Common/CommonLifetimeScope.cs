@@ -14,6 +14,7 @@ namespace App.Common
     public class CommonLifetimeScope : LifetimeScope
     {
         [SerializeField] private EnemyDatabase _enemyDatabase;
+        [SerializeField] private EnemySpawnDatabase _enemySpawnDatabase;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -33,6 +34,7 @@ namespace App.Common
             #region Database
 
             builder.RegisterInstance(_enemyDatabase);
+            builder.RegisterInstance(_enemySpawnDatabase);
 
             #endregion
 
