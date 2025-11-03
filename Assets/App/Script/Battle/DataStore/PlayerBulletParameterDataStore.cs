@@ -11,16 +11,19 @@ namespace App.Battle.DataStore
     public class PlayerBulletParameterDataStore : IPlayerBulletParameterDataStore, ITickable
     {
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
+        private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
 
         [Inject]
         public PlayerBulletParameterDataStore(
-            IPlayerSettingDataStore playerSettingDataStore
+            IPlayerSettingDataStore playerSettingDataStore,
+            ICoreSkillUnlockDataStore coreSkillUnlockDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
+            _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
         }
 
         public void Tick()
@@ -66,6 +69,24 @@ namespace App.Battle.DataStore
 
         public bool CanShot(HandType handType, ShotType shotType)
         {
+            if (!_coreSkillUnlockDataStore.IsUnLockAkimbo &&
+                _playerSettingDataStore.NonDominantHand.Value == handType)
+            {
+                return false;
+            }
+
+            if (!_coreSkillUnlockDataStore.IsUnLockWaltz &&
+                shotType == ShotType.Waltz)
+            {
+                return false;
+            }
+
+            if (!_coreSkillUnlockDataStore.IsUnLockMerge &&
+                shotType == ShotType.Merge)
+            {
+                return false;
+            }
+
             if (_playerSettingDataStore.NonDominantHand.Value == handType &&
                 shotType == ShotType.Merge)
             {
@@ -74,20 +95,10 @@ namespace App.Battle.DataStore
 
             if (handType == HandType.Left)
             {
-                if (_leftShotCoolDown <= 0)
-                {
-                    return true;
-                }
-
-                return false;
+                return _leftShotCoolDown <= 0;
             }
 
-            if (_rightShotCoolDown <= 0)
-            {
-                return true;
-            }
-
-            return false;
+            return _rightShotCoolDown <= 0;
         }
 
         public BulletData GetBulletData(ShotType shotType, AimFocusType focusType)

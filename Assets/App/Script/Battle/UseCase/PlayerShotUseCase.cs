@@ -14,6 +14,7 @@ namespace App.Battle.UseCase
     {
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
         private readonly IPlayerDataStore _playerDataStore;
+        private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
         private readonly IPlayerBulletParameterDataStore _playerBulletParameterDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputUseCase _gameInputUseCase;
@@ -24,6 +25,7 @@ namespace App.Battle.UseCase
         public PlayerShotUseCase(
             IPlayerSettingDataStore playerSettingDataStore,
             IPlayerDataStore playerDataStore,
+            ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
             IPlayerBulletParameterDataStore playerBulletParameterDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputUseCase gameInputUseCase
@@ -31,6 +33,7 @@ namespace App.Battle.UseCase
         {
             _playerSettingDataStore = playerSettingDataStore;
             _playerDataStore = playerDataStore;
+            _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
             _playerBulletParameterDataStore = playerBulletParameterDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputUseCase = gameInputUseCase;
@@ -58,13 +61,23 @@ namespace App.Battle.UseCase
             var leftFocusType = _playerDataStore.LeftFocusType.Value;
             var rightFocusType = _playerDataStore.RightFocusType.Value;
 
-            _playerControlPresenter.SetHandRayColor(HandType.Left, ThemeColors.GetRayColor(shotType, leftFocusType));
-            _playerControlPresenter.SetHandRayColor(HandType.Right, ThemeColors.GetRayColor(shotType, rightFocusType));
-
-            _playerControlPresenter.SetAimRayColor(HandType.Left, ThemeColors.GetRayColor(shotType, leftFocusType));
-            _playerControlPresenter.SetAimRayColor(HandType.Right, ThemeColors.GetRayColor(shotType, rightFocusType));
-
+            var dominantHand = _playerSettingDataStore.DominantHand.Value;
             var nonDominantHand = _playerSettingDataStore.NonDominantHand.Value;
+
+            _playerControlPresenter.SetHandRayColor(dominantHand, ThemeColors.GetRayColor(shotType, rightFocusType));
+            _playerControlPresenter.SetAimRayColor(dominantHand, ThemeColors.GetRayColor(shotType, rightFocusType));
+
+            if (!_coreSkillUnlockDataStore.IsUnLockAkimbo)
+            {
+                _playerControlPresenter.SetAimEnableRay(nonDominantHand, false);
+                _playerControlPresenter.SetHandEnableRay(nonDominantHand, false);
+                return;
+            }
+
+            _playerControlPresenter.SetHandRayColor(nonDominantHand,
+                ThemeColors.GetRayColor(shotType, leftFocusType));
+            _playerControlPresenter.SetAimRayColor(nonDominantHand, ThemeColors.GetRayColor(shotType, leftFocusType));
+
             _playerControlPresenter.SetAimEnableRay(nonDominantHand, shotType != ShotType.Merge);
             _playerControlPresenter.SetHandEnableRay(nonDominantHand, shotType != ShotType.Merge);
         }

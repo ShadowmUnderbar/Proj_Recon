@@ -18,6 +18,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
         private readonly IGameInputUseCase _gameInputUseCase;
         private readonly IEnemyPresenter _enemyPresenter;
+        private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -27,7 +28,8 @@ namespace App.Battle.UseCase
             IEnemyDataStore enemyDataStore,
             IPlayerDodgeParameterDataStore playerDodgeParameterDataStore,
             IGameInputUseCase gameInputUseCase,
-            IEnemyPresenter enemyPresenter
+            IEnemyPresenter enemyPresenter,
+            ICoreSkillUnlockDataStore coreSkillUnlockDataStore
         )
         {
             _playerDataStore = playerDataStore;
@@ -35,6 +37,7 @@ namespace App.Battle.UseCase
             _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
             _gameInputUseCase = gameInputUseCase;
             _enemyPresenter = enemyPresenter;
+            _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
         }
 
 
@@ -83,29 +86,41 @@ namespace App.Battle.UseCase
                 moveTarget = hit.point;
             }
 
+            Catalyst(playerPosition, dodgeDirection, moveTarget);
+
+            _playerDataStore.Position.Value = moveTarget;
+        }
+
+        private void Catalyst(Vector3 playerPosition, Vector3 dodgeDirection, Vector3 moveTarget)
+        {
+            if (!_coreSkillUnlockDataStore.IsUnLockCatalyst)
+            {
+                return;
+            }
+
             var beforePosition = _playerDataStore.Position.Value;
             var moveDistance = Vector3.Distance(moveTarget, playerPosition);
             var enemyHits = _enemyPresenter.GetDodgeHitEnemies(playerPosition, dodgeDirection.normalized, moveDistance);
 
-            if (enemyHits is { Length: > 0 })
+            if (enemyHits is { Length: <= 0 })
             {
-                var damage = _playerDodgeParameterDataStore.DodgeDamage;
-
-                foreach (var enemyId in enemyHits)
-                {
-                    if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData))
-                    {
-                        continue;
-                    }
-
-                    var directionType = RelativeYawExtension.GetActorRelative(enemyData.Pose, beforePosition);
-                    var hitData = new HitData(enemyId, damage, directionType);
-
-                    _enemyDataStore.Damage(hitData);
-                }
+                return;
             }
 
-            _playerDataStore.Position.Value = moveTarget;
+            var damage = _playerDodgeParameterDataStore.DodgeDamage;
+
+            foreach (var enemyId in enemyHits)
+            {
+                if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData))
+                {
+                    continue;
+                }
+
+                var directionType = RelativeYawExtension.GetActorRelative(enemyData.Pose, beforePosition);
+                var hitData = new HitData(enemyId, damage, directionType);
+
+                _enemyDataStore.Damage(hitData);
+            }
         }
 
         public void Dispose()
