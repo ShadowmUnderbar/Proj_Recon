@@ -7,5 +7,6 @@ namespace App.Common.Interface
         SaveData SaveData { get; }
         void Save();
         SaveData Load();
+        void ResetSaveData();
     }
 }

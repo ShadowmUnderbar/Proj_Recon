@@ -46,5 +46,11 @@ namespace App.Common.DataStore
             SaveData = JsonUtility.FromJson<SaveData>(json);
             return SaveData;
         }
+
+        public void ResetSaveData()
+        {
+            SaveData = new SaveData();
+            Save();
+        }
     }
 }
