@@ -131,7 +131,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""name"": ""UseRight"",
                     ""type"": ""Button"",
                     ""id"": ""e80f48df-fb8d-4e5d-bfaf-340beecadb69"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -140,7 +140,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""name"": ""UseLeft"",
                     ""type"": ""Button"",
                     ""id"": ""38d80a65-8675-4f34-bb90-21638e626c13"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -167,7 +167,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""name"": ""LeftPrimary"",
                     ""type"": ""Button"",
                     ""id"": ""e1c6e9e4-9bc2-4963-bf61-a46234416e4c"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -176,7 +176,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""name"": ""LeftSecondary"",
                     ""type"": ""Button"",
                     ""id"": ""e5f5796c-c05c-4567-b9bc-8a7c6401a305"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -194,7 +194,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""name"": ""PushLeftStick"",
                     ""type"": ""Button"",
                     ""id"": ""9ecaa068-1128-48e9-8c43-d3b8d266a3c7"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -203,9 +203,45 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""name"": ""Mouse"",
                     ""type"": ""Button"",
                     ""id"": ""fc921513-1ae6-4a14-bf57-2a3482cfd089"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FocusLeftSwitch"",
+                    ""type"": ""Button"",
+                    ""id"": ""67086733-cfd8-45bc-b7c8-12b4e316c5f1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FocusRightSwitch"",
+                    ""type"": ""Button"",
+                    ""id"": ""805b61f9-56e2-4511-83a0-4ab04640e751"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FocusLeftHold"",
+                    ""type"": ""Button"",
+                    ""id"": ""4e821823-2d0c-43cd-9af7-0818ce919159"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Hold"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""FocusRightHold"",
+                    ""type"": ""Button"",
+                    ""id"": ""ec49d8fc-a398-4e20-8547-d5f552c44ce7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Hold"",
                     ""initialStateCheck"": false
                 }
             ],
@@ -572,6 +608,94 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""action"": ""Mouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5a66d77b-8c5c-4b18-aed7-f7ecb7be108e"",
+                    ""path"": ""<XRSimulatedController>{LeftHand}/gripButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FocusLeftSwitch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cf4684d3-aeba-46f1-a3a8-5e1e3a2a77d6"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FocusLeftSwitch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fc7c4414-c0d8-42f4-b36b-287a4c8625b4"",
+                    ""path"": ""<XRSimulatedController>{RightHand}/gripButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FocusRightSwitch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4c4353b7-f9d4-4e04-8bae-0b3f97c8ba72"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FocusRightSwitch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3f33070d-e04f-4d35-95ff-b6ecfe418676"",
+                    ""path"": ""<XRSimulatedController>{LeftHand}/gripButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FocusLeftHold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4b8f9563-ca42-4cc5-b732-3e66e2dc60bd"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FocusLeftHold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f64c8224-5489-40a4-a4e2-091d6ab09e7b"",
+                    ""path"": ""<XRSimulatedController>{RightHand}/gripButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FocusRightHold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2a2db633-df64-4cf4-9a80-e90343a2dca5"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FocusRightHold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -583,7 +707,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""name"": ""Dodge"",
                     ""type"": ""Button"",
                     ""id"": ""a6f32b52-9c42-4f91-b0db-a1c45f819d21"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -621,6 +745,10 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         m_Main_PushRightStick = m_Main.FindAction("PushRightStick", throwIfNotFound: true);
         m_Main_PushLeftStick = m_Main.FindAction("PushLeftStick", throwIfNotFound: true);
         m_Main_Mouse = m_Main.FindAction("Mouse", throwIfNotFound: true);
+        m_Main_FocusLeftSwitch = m_Main.FindAction("FocusLeftSwitch", throwIfNotFound: true);
+        m_Main_FocusRightSwitch = m_Main.FindAction("FocusRightSwitch", throwIfNotFound: true);
+        m_Main_FocusLeftHold = m_Main.FindAction("FocusLeftHold", throwIfNotFound: true);
+        m_Main_FocusRightHold = m_Main.FindAction("FocusRightHold", throwIfNotFound: true);
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
         m_Debug_Dodge = m_Debug.FindAction("Dodge", throwIfNotFound: true);
@@ -718,6 +846,10 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_PushRightStick;
     private readonly InputAction m_Main_PushLeftStick;
     private readonly InputAction m_Main_Mouse;
+    private readonly InputAction m_Main_FocusLeftSwitch;
+    private readonly InputAction m_Main_FocusRightSwitch;
+    private readonly InputAction m_Main_FocusLeftHold;
+    private readonly InputAction m_Main_FocusRightHold;
     /// <summary>
     /// Provides access to input actions defined in input action map "Main".
     /// </summary>
@@ -781,6 +913,22 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Main/Mouse".
         /// </summary>
         public InputAction @Mouse => m_Wrapper.m_Main_Mouse;
+        /// <summary>
+        /// Provides access to the underlying input action "Main/FocusLeftSwitch".
+        /// </summary>
+        public InputAction @FocusLeftSwitch => m_Wrapper.m_Main_FocusLeftSwitch;
+        /// <summary>
+        /// Provides access to the underlying input action "Main/FocusRightSwitch".
+        /// </summary>
+        public InputAction @FocusRightSwitch => m_Wrapper.m_Main_FocusRightSwitch;
+        /// <summary>
+        /// Provides access to the underlying input action "Main/FocusLeftHold".
+        /// </summary>
+        public InputAction @FocusLeftHold => m_Wrapper.m_Main_FocusLeftHold;
+        /// <summary>
+        /// Provides access to the underlying input action "Main/FocusRightHold".
+        /// </summary>
+        public InputAction @FocusRightHold => m_Wrapper.m_Main_FocusRightHold;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -846,6 +994,18 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
             @Mouse.started += instance.OnMouse;
             @Mouse.performed += instance.OnMouse;
             @Mouse.canceled += instance.OnMouse;
+            @FocusLeftSwitch.started += instance.OnFocusLeftSwitch;
+            @FocusLeftSwitch.performed += instance.OnFocusLeftSwitch;
+            @FocusLeftSwitch.canceled += instance.OnFocusLeftSwitch;
+            @FocusRightSwitch.started += instance.OnFocusRightSwitch;
+            @FocusRightSwitch.performed += instance.OnFocusRightSwitch;
+            @FocusRightSwitch.canceled += instance.OnFocusRightSwitch;
+            @FocusLeftHold.started += instance.OnFocusLeftHold;
+            @FocusLeftHold.performed += instance.OnFocusLeftHold;
+            @FocusLeftHold.canceled += instance.OnFocusLeftHold;
+            @FocusRightHold.started += instance.OnFocusRightHold;
+            @FocusRightHold.performed += instance.OnFocusRightHold;
+            @FocusRightHold.canceled += instance.OnFocusRightHold;
         }
 
         /// <summary>
@@ -896,6 +1056,18 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
             @Mouse.started -= instance.OnMouse;
             @Mouse.performed -= instance.OnMouse;
             @Mouse.canceled -= instance.OnMouse;
+            @FocusLeftSwitch.started -= instance.OnFocusLeftSwitch;
+            @FocusLeftSwitch.performed -= instance.OnFocusLeftSwitch;
+            @FocusLeftSwitch.canceled -= instance.OnFocusLeftSwitch;
+            @FocusRightSwitch.started -= instance.OnFocusRightSwitch;
+            @FocusRightSwitch.performed -= instance.OnFocusRightSwitch;
+            @FocusRightSwitch.canceled -= instance.OnFocusRightSwitch;
+            @FocusLeftHold.started -= instance.OnFocusLeftHold;
+            @FocusLeftHold.performed -= instance.OnFocusLeftHold;
+            @FocusLeftHold.canceled -= instance.OnFocusLeftHold;
+            @FocusRightHold.started -= instance.OnFocusRightHold;
+            @FocusRightHold.performed -= instance.OnFocusRightHold;
+            @FocusRightHold.canceled -= instance.OnFocusRightHold;
         }
 
         /// <summary>
@@ -1123,6 +1295,34 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMouse(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "FocusLeftSwitch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFocusLeftSwitch(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "FocusRightSwitch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFocusRightSwitch(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "FocusLeftHold" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFocusLeftHold(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "FocusRightHold" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFocusRightHold(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Debug" which allows adding and removing callbacks.

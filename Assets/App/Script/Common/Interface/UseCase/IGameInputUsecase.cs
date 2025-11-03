@@ -7,12 +7,10 @@ namespace App.Common.Interface
     {
         ReactiveProperty<bool> IsRightTrigger { get; }
         ReactiveProperty<bool> IsLeftTrigger { get; }
-        ReactiveProperty<bool> IsRightGrip { get; }
-        ReactiveProperty<bool> IsLeftGrip { get; }
         Vector2 V2RightAxis { get; set; }
         Vector2 V2LeftAxis { get; set; }
-        ReactiveProperty<bool> IsAButton { get; }
-        ReactiveProperty<bool> IsBButton { get; }
+        ReactiveProperty<bool> IsFocusRight { get; }
+        ReactiveProperty<bool> IsFocusLeft { get; }
         ReactiveProperty<bool> IsXButton { get; }
         ReactiveProperty<bool> IsYButton { get; }
         ReactiveProperty<bool> IsRightStick { get; }

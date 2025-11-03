@@ -151,6 +151,17 @@ namespace App.Battle.Views
             _onHit.OnNext(hit);
         }
 
+        public void IsFocusLeft(bool isFocus)
+        {
+            _playerTopDownAimListView.IsFocusLeft(isFocus);
+        }
+
+        public void IsFocusRight(bool isFocus)
+        {
+            _playerTopDownAimListView.IsFocusRight(isFocus);
+        }
+
+
         private void OnDestroy()
         {
             _onHit.Dispose();

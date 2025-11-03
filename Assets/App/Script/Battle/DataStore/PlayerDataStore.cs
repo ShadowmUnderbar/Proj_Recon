@@ -13,6 +13,7 @@ namespace App.Battle.DataStore
     {
         private readonly IEnemyDataStore _enemyDataStore;
 
+        public bool IsFocusInput { get; set; }
         public UnlockCoreSkillType UnlockCoreSkillType { get; private set; } = UnlockCoreSkillType.First;
         public ReactiveProperty<Vector3> Position { get; } = new();
 
@@ -33,6 +34,8 @@ namespace App.Battle.DataStore
 
         public Vector3 LeftAimDirection => (Position.Value - _aimPositions[HandType.Left]).normalized;
         public Vector3 RightAimDirection => (Position.Value - _aimPositions[HandType.Right]).normalized;
+        public ReactiveProperty<bool> IsLeftFocusInput { get; } = new();
+        public ReactiveProperty<bool> IsRightFocusInput { get; } = new();
 
         public float MoveSpeed => BaseSpeed * BasePlayerParameter.MoveSpeed;
 

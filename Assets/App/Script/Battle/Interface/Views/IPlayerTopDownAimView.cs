@@ -7,5 +7,6 @@ namespace App.Battle.Interface
     {
         Vector3 GetAimPosition();
         Observable<int> OnFocus { get; }
+        bool IsFocus { get; set; }
     }
 }

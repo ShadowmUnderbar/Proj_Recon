@@ -18,6 +18,9 @@ namespace App.Battle.Interface
         ReactiveProperty<Pose> LeftHandPose { get; }
         ReactiveProperty<Pose> RightHandPose { get; }
 
+        void IsFocusLeft(bool isFocus);
+        void IsFocusRight(bool isFocus);
+
         void Move(Vector2 inputV2);
         void Aim();
         void MouseAim(Vector2 mousePos);

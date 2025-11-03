@@ -45,7 +45,7 @@
                     "name": "UseRight",
                     "type": "Button",
                     "id": "e80f48df-fb8d-4e5d-bfaf-340beecadb69",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -54,7 +54,7 @@
                     "name": "UseLeft",
                     "type": "Button",
                     "id": "38d80a65-8675-4f34-bb90-21638e626c13",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -81,7 +81,7 @@
                     "name": "LeftPrimary",
                     "type": "Button",
                     "id": "e1c6e9e4-9bc2-4963-bf61-a46234416e4c",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -90,7 +90,7 @@
                     "name": "LeftSecondary",
                     "type": "Button",
                     "id": "e5f5796c-c05c-4567-b9bc-8a7c6401a305",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -108,7 +108,7 @@
                     "name": "PushLeftStick",
                     "type": "Button",
                     "id": "9ecaa068-1128-48e9-8c43-d3b8d266a3c7",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -117,9 +117,45 @@
                     "name": "Mouse",
                     "type": "Button",
                     "id": "fc921513-1ae6-4a14-bf57-2a3482cfd089",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "FocusLeftSwitch",
+                    "type": "Button",
+                    "id": "67086733-cfd8-45bc-b7c8-12b4e316c5f1",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "FocusRightSwitch",
+                    "type": "Button",
+                    "id": "805b61f9-56e2-4511-83a0-4ab04640e751",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "FocusLeftHold",
+                    "type": "Button",
+                    "id": "4e821823-2d0c-43cd-9af7-0818ce919159",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Hold",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "FocusRightHold",
+                    "type": "Button",
+                    "id": "ec49d8fc-a398-4e20-8547-d5f552c44ce7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Hold",
                     "initialStateCheck": false
                 }
             ],
@@ -486,6 +522,94 @@
                     "action": "Mouse",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5a66d77b-8c5c-4b18-aed7-f7ecb7be108e",
+                    "path": "<XRSimulatedController>{LeftHand}/gripButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FocusLeftSwitch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cf4684d3-aeba-46f1-a3a8-5e1e3a2a77d6",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FocusLeftSwitch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fc7c4414-c0d8-42f4-b36b-287a4c8625b4",
+                    "path": "<XRSimulatedController>{RightHand}/gripButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FocusRightSwitch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4c4353b7-f9d4-4e04-8bae-0b3f97c8ba72",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FocusRightSwitch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3f33070d-e04f-4d35-95ff-b6ecfe418676",
+                    "path": "<XRSimulatedController>{LeftHand}/gripButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FocusLeftHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4b8f9563-ca42-4cc5-b732-3e66e2dc60bd",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FocusLeftHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f64c8224-5489-40a4-a4e2-091d6ab09e7b",
+                    "path": "<XRSimulatedController>{RightHand}/gripButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FocusRightHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2a2db633-df64-4cf4-9a80-e90343a2dca5",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FocusRightHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -497,7 +621,7 @@
                     "name": "Dodge",
                     "type": "Button",
                     "id": "a6f32b52-9c42-4f91-b0db-a1c45f819d21",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false

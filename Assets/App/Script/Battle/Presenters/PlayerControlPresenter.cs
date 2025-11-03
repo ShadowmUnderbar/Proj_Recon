@@ -67,5 +67,15 @@ namespace App.Battle.Presenters
         {
             _playerView.SetHandEnableRay(handType, enable);
         }
+
+        public void IsFocusRight(bool isFocus)
+        {
+            _playerView.IsFocusLeft(isFocus);
+        }
+
+        public void IsFocusLeft(bool isFocus)
+        {
+            _playerView.IsFocusRight(isFocus);
+        }
     }
 }

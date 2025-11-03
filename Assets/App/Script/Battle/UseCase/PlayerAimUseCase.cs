@@ -55,6 +55,14 @@ namespace App.Battle.UseCase
             _playerControlPresenter.RightHandPose
                 .Subscribe(x => _playerDataStore.RightHandPose.Value = x)
                 .AddTo(_disposables);
+
+            _gameInputUseCase.IsFocusLeft
+                .Subscribe(x => _playerControlPresenter.IsFocusLeft(x))
+                .AddTo(_disposables);
+
+            _gameInputUseCase.IsFocusRight
+                .Subscribe(x => _playerControlPresenter.IsFocusRight(x))
+                .AddTo(_disposables);
         }
 
         private void UpdateOnFocus(int id, bool isLeft)

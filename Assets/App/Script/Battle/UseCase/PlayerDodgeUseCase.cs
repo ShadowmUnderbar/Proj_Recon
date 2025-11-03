@@ -43,16 +43,6 @@ namespace App.Battle.UseCase
 
         public void Initialize()
         {
-            _gameInputUseCase.IsLeftGrip
-                .Where(x => x)
-                .Subscribe(_ => OnDodge())
-                .AddTo(_disposables);
-
-            _gameInputUseCase.IsRightGrip
-                .Where(x => x)
-                .Subscribe(_ => OnDodge())
-                .AddTo(_disposables);
-
             _gameInputUseCase.IsDodge
                 .Where(x => x)
                 .Subscribe(_ => OnDodge())

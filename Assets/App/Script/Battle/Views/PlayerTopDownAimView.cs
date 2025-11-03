@@ -17,6 +17,8 @@ namespace App.Battle.Views
         public Observable<int> OnFocus => _onFocus;
         private readonly Subject<int> _onFocus = new();
 
+        public bool IsFocus { get; set; }
+
         private void Start()
         {
             _platformHandRotation = transform.parent.GetComponent<PlatformHandRotation>();
@@ -33,6 +35,13 @@ namespace App.Battle.Views
                 _platformHandRotation.Rotation * Vector3.forward,
                 _raycastHits, GameParamData.RayMaxDistance,
                 _targetLayers);
+
+            if (!IsFocus)
+            {
+                _onFocus.OnNext(-1);
+                var pos = _platformHandRotation.Rotation * Vector3.forward * GameParamData.RayMaxDistance;
+                return pos;
+            }
 
             if (count <= 0)
             {

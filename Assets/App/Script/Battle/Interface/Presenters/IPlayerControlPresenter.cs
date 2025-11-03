@@ -11,7 +11,6 @@ namespace App.Battle.Interface
         Observable<Vector3> OnLeftAimPosition { get; }
         Observable<Vector3> OnRightAimPosition { get; }
         ReactiveProperty<Vector3> OnUpdatePosition { get; }
-
         ReactiveProperty<Pose> LeftHandPose { get; }
         ReactiveProperty<Pose> RightHandPose { get; }
 
@@ -23,5 +22,7 @@ namespace App.Battle.Interface
         void SetAimEnableRay(HandType handType, bool enable);
         void Shot(HandType handType, BulletData bulletData, int focusTargetId);
         void MouseAim(Vector2 mousePos);
+        void IsFocusRight(bool isFocus);
+        void IsFocusLeft(bool isFocus);
     }
 }

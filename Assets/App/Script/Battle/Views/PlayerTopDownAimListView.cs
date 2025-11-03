@@ -109,6 +109,16 @@ namespace App.Battle.Views
             _rightShotView.SpawnBullet(bulletData, focusTargetId);
         }
 
+        public void IsFocusLeft(bool isFocus)
+        {
+            _leftTopDown.IsFocus = isFocus;
+        }
+
+        public void IsFocusRight(bool isFocus)
+        {
+            _rightTopDown.IsFocus = isFocus;
+        }
+
         private void OnDestroy()
         {
             _onHit.Dispose();

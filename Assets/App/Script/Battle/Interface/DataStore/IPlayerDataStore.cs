@@ -6,6 +6,7 @@ namespace App.Battle.Interface.DataStore
 {
     public interface IPlayerDataStore
     {
+        bool IsFocusInput { get; set; }
         UnlockCoreSkillType UnlockCoreSkillType { get; }
         ReactiveProperty<Vector3> Position { get; }
         ReactiveProperty<Quaternion> Rotate { get; }
@@ -26,6 +27,9 @@ namespace App.Battle.Interface.DataStore
         ReactiveProperty<Pose> RightHandPose { get; }
         Vector3 LeftAimDirection { get; }
         Vector3 RightAimDirection { get; }
+        
+        ReactiveProperty<bool> IsLeftFocusInput { get; }
+        ReactiveProperty<bool> IsRightFocusInput { get; }
 
         float MoveSpeed { get; }
 
