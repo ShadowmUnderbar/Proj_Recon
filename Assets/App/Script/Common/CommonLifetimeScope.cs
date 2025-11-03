@@ -22,6 +22,8 @@ namespace App.Common
 
             builder.Register<PlayerSettingDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerSettingDataStore>();
+            builder.Register<SaveDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ISaveDataStore>();
 
             #endregion
 

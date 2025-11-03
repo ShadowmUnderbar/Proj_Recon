@@ -1,7 +1,7 @@
 namespace App.Common.Data
 {
-    public static class PlayerData
+    public class PlayerData
     {
-        public static PlatformType PlatformType { get; private set; }
+        public PlatformType PlatformType { get; private set; }
     }
 }
