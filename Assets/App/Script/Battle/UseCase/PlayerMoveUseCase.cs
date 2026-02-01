@@ -14,7 +14,7 @@ namespace App.Battle.UseCase
     {
         private readonly IPlayerDataStore _playerDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
-        private readonly IGameInputUseCase _gameInputUseCase;
+        private readonly IGameInputDataStore _gameInputDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -22,12 +22,12 @@ namespace App.Battle.UseCase
         public PlayerMoveUseCase(
             IPlayerDataStore playerDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputUseCase gameInputUseCase
+            IGameInputDataStore gameInputDataStore
         )
         {
             _playerDataStore = playerDataStore;
             _playerControlPresenter = playerControlPresenter;
-            _gameInputUseCase = gameInputUseCase;
+            _gameInputDataStore = gameInputDataStore;
         }
 
         public void Initialize()
@@ -40,7 +40,7 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            _playerDataStore.Move(_gameInputUseCase.V2LeftAxis,
+            _playerDataStore.Move(_gameInputDataStore.V2LeftAxis,
                 _playerDataStore.MoveSpeed * BasePlayerParameter.MoveSpeed);
         }
 

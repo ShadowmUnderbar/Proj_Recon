@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace App.Common.Interface
 {
-    public interface IGameInputUseCase
+    public interface IGameInputDataStore
     {
         ReactiveProperty<bool> IsRightTrigger { get; }
         ReactiveProperty<bool> IsLeftTrigger { get; }
@@ -16,6 +16,9 @@ namespace App.Common.Interface
         ReactiveProperty<bool> IsRightStick { get; }
         ReactiveProperty<bool> IsLeftStick { get; }
         ReactiveProperty<bool> IsDodge { get; }
+        ReactiveProperty<bool> DebugNormal { get; }
+        ReactiveProperty<bool> DebugWaltz { get; }
+        ReactiveProperty<bool> DebugMerge { get; }
         public Vector2 MouseInputPosition { get; }
     }
 }

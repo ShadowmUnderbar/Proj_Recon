@@ -1,5 +1,4 @@
 using App.Common.Interface;
-using App.Common.UseCase;
 using App.Common.Data.Database;
 using App.Common.DataStore;
 using Cysharp.Threading.Tasks;
@@ -31,7 +30,7 @@ namespace App.Common
 
             #region UseCase
 
-            builder.RegisterEntryPoint<GameInputUseCase>().As<IGameInputUseCase>();
+            builder.RegisterEntryPoint<GameInputDataStore>().As<IGameInputDataStore>();
 
             #endregion
 

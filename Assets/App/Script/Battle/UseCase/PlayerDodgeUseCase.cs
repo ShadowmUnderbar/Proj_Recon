@@ -16,7 +16,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerDataStore _playerDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
-        private readonly IGameInputUseCase _gameInputUseCase;
+        private readonly IGameInputDataStore _gameInputUseCase;
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
 
@@ -27,7 +27,7 @@ namespace App.Battle.UseCase
             IPlayerDataStore playerDataStore,
             IEnemyDataStore enemyDataStore,
             IPlayerDodgeParameterDataStore playerDodgeParameterDataStore,
-            IGameInputUseCase gameInputUseCase,
+            IGameInputDataStore gameInputUseCase,
             IEnemyPresenter enemyPresenter,
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore
         )

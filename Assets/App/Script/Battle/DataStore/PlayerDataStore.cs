@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
+using App.Common.Interface;
 using R3;
+using UnityEditor;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -12,6 +14,7 @@ namespace App.Battle.DataStore
     public class PlayerDataStore : IPlayerDataStore, IInitializable, ITickable
     {
         private readonly IEnemyDataStore _enemyDataStore;
+        private readonly IGameInputDataStore _gameInputDataStore;
 
         public bool IsFocusInput { get; set; }
         public UnlockCoreSkillType UnlockCoreSkillType { get; private set; } = UnlockCoreSkillType.First;
@@ -44,6 +47,7 @@ namespace App.Battle.DataStore
         private static float MergePositionDistance => 0.15f;
         private static float WaltzAngleDifference => 130f;
         private static float LongFocusDistance => 17f;
+        private int _debugShotMode = 0;
 
         private readonly Dictionary<HandType, Vector3> _aimPositions = new()
         {
@@ -53,10 +57,12 @@ namespace App.Battle.DataStore
 
         [Inject]
         public PlayerDataStore(
-            IEnemyDataStore enemyDataStore
+            IEnemyDataStore enemyDataStore,
+            IGameInputDataStore gameInputDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
+            _gameInputDataStore = gameInputDataStore;
         }
 
         public void Initialize()
@@ -75,7 +81,15 @@ namespace App.Battle.DataStore
 
         public void Tick()
         {
-            UpdateShotType();
+            if (!EditorPrefs.GetBool("VRMode", false))
+            {
+                UpdateShotType_PC();
+            }
+            else
+            {
+                UpdateShotType();
+            }
+
             UpdateLeftFocusType();
             UpdateRightFocusType();
         }
@@ -95,6 +109,26 @@ namespace App.Battle.DataStore
             }
 
             ShotType.Value = Common.Data.ShotType.Normal;
+        }
+
+        private void UpdateShotType_PC()
+        {
+            if (_gameInputDataStore.DebugMerge.Value)
+            {
+                ShotType.Value = Common.Data.ShotType.Merge;
+                return;
+            }
+
+            if (_gameInputDataStore.DebugWaltz.Value)
+            {
+                ShotType.Value = Common.Data.ShotType.Waltz;
+                return;
+            }
+
+            if (_gameInputDataStore.DebugNormal.Value)
+            {
+                ShotType.Value = Common.Data.ShotType.Normal;
+            }
         }
 
         private void UpdateLeftFocusType()

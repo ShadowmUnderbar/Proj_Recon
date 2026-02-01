@@ -7,6 +7,7 @@ using VContainer;
 using VContainer.Unity;
 using App.Common.Interface;
 using R3;
+using UnityEngine;
 
 namespace App.Battle.UseCase
 {
@@ -17,7 +18,7 @@ namespace App.Battle.UseCase
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
         private readonly IPlayerBulletParameterDataStore _playerBulletParameterDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
-        private readonly IGameInputUseCase _gameInputUseCase;
+        private readonly IGameInputDataStore _gameInputDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -28,7 +29,7 @@ namespace App.Battle.UseCase
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
             IPlayerBulletParameterDataStore playerBulletParameterDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputUseCase gameInputUseCase
+            IGameInputDataStore gameInputDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -36,7 +37,7 @@ namespace App.Battle.UseCase
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
             _playerBulletParameterDataStore = playerBulletParameterDataStore;
             _playerControlPresenter = playerControlPresenter;
-            _gameInputUseCase = gameInputUseCase;
+            _gameInputDataStore = gameInputDataStore;
         }
 
         public void Initialize()
@@ -84,12 +85,12 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            if (_gameInputUseCase.IsLeftTrigger.Value)
+            if (_gameInputDataStore.IsLeftTrigger.Value)
             {
                 TryLeftShot();
             }
 
-            if (_gameInputUseCase.IsRightTrigger.Value)
+            if (_gameInputDataStore.IsRightTrigger.Value)
             {
                 TryRightShot();
             }

@@ -1,20 +1,20 @@
-using UnityEngine;
-using VContainer.Unity;
-using UnityEngine.InputSystem;
 using App.Common.Interface;
 using R3;
+using UnityEngine;
+using UnityEngine.InputSystem;
 using VContainer;
+using VContainer.Unity;
 
-namespace App.Common.UseCase
+namespace App.Common.DataStore
 {
-    public class GameInputUseCase : IGameInputUseCase, IInitializable, ITickable
+    public class GameInputDataStore : IGameInputDataStore, IInitializable, ITickable
     {
         public GameMaininput Input { get; } = new();
 
         private readonly ISaveDataStore _saveDataStore;
 
         [Inject]
-        public GameInputUseCase(
+        public GameInputDataStore(
             ISaveDataStore saveDataStore
         )
         {
@@ -39,6 +39,9 @@ namespace App.Common.UseCase
         public ReactiveProperty<bool> IsRightStick { get; } = new();
         public ReactiveProperty<bool> IsLeftStick { get; } = new();
         public ReactiveProperty<bool> IsDodge { get; } = new();
+        public ReactiveProperty<bool> DebugNormal { get; } = new();
+        public ReactiveProperty<bool> DebugWaltz { get; } = new();
+        public ReactiveProperty<bool> DebugMerge { get; } = new();
         public Vector2 MouseInputPosition { get; private set; }
 
         public void Tick()
@@ -69,6 +72,9 @@ namespace App.Common.UseCase
 #if UNITY_EDITOR
             MouseInputPosition = Mouse.current.position.ReadValue();
             IsDodge.Value = Input.Debug.Dodge.inProgress;
+            DebugNormal.Value = Input.Debug.ShotModeNormal.inProgress;
+            DebugWaltz.Value = Input.Debug.ShotModeWaltz.inProgress;
+            DebugMerge.Value = Input.Debug.ShotModeMerge.inProgress;
 #endif
         }
 

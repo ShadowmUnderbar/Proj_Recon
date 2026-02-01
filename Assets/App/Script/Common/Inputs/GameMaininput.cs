@@ -369,8 +369,8 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""52254d96-a454-452b-a45e-ef63d04d02b2"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""id"": ""3786684d-7bce-44cf-bad9-a68da0febd99"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -391,8 +391,8 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3fbae58d-ca4e-4ce4-a963-c2a655e254b4"",
-                    ""path"": ""<Mouse>/forwardButton"",
+                    ""id"": ""52254d96-a454-452b-a45e-ef63d04d02b2"",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -711,6 +711,33 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShotModeNormal"",
+                    ""type"": ""Button"",
+                    ""id"": ""0bb98e8d-f5f3-4f0a-bd4a-0434988d5be5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShotModeWaltz"",
+                    ""type"": ""Button"",
+                    ""id"": ""f823978c-f983-43a0-a9a6-5a54f0f129ae"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShotModeMerge"",
+                    ""type"": ""Button"",
+                    ""id"": ""a8ee643b-6d89-4bcd-83f7-a2664a22b003"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -722,6 +749,39 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""286353dc-a301-42d9-865e-48feb8c6517f"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShotModeNormal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d7837609-31d8-4c49-bea3-b7b382c1aa43"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShotModeWaltz"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ff100718-9919-47fb-b8bb-de930df7b4cd"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShotModeMerge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -752,6 +812,9 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
         m_Debug_Dodge = m_Debug.FindAction("Dodge", throwIfNotFound: true);
+        m_Debug_ShotModeNormal = m_Debug.FindAction("ShotModeNormal", throwIfNotFound: true);
+        m_Debug_ShotModeWaltz = m_Debug.FindAction("ShotModeWaltz", throwIfNotFound: true);
+        m_Debug_ShotModeMerge = m_Debug.FindAction("ShotModeMerge", throwIfNotFound: true);
     }
 
     ~@GameMaininput()
@@ -1106,6 +1169,9 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Debug;
     private List<IDebugActions> m_DebugActionsCallbackInterfaces = new List<IDebugActions>();
     private readonly InputAction m_Debug_Dodge;
+    private readonly InputAction m_Debug_ShotModeNormal;
+    private readonly InputAction m_Debug_ShotModeWaltz;
+    private readonly InputAction m_Debug_ShotModeMerge;
     /// <summary>
     /// Provides access to input actions defined in input action map "Debug".
     /// </summary>
@@ -1121,6 +1187,18 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Debug/Dodge".
         /// </summary>
         public InputAction @Dodge => m_Wrapper.m_Debug_Dodge;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/ShotModeNormal".
+        /// </summary>
+        public InputAction @ShotModeNormal => m_Wrapper.m_Debug_ShotModeNormal;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/ShotModeWaltz".
+        /// </summary>
+        public InputAction @ShotModeWaltz => m_Wrapper.m_Debug_ShotModeWaltz;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/ShotModeMerge".
+        /// </summary>
+        public InputAction @ShotModeMerge => m_Wrapper.m_Debug_ShotModeMerge;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1150,6 +1228,15 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
             @Dodge.started += instance.OnDodge;
             @Dodge.performed += instance.OnDodge;
             @Dodge.canceled += instance.OnDodge;
+            @ShotModeNormal.started += instance.OnShotModeNormal;
+            @ShotModeNormal.performed += instance.OnShotModeNormal;
+            @ShotModeNormal.canceled += instance.OnShotModeNormal;
+            @ShotModeWaltz.started += instance.OnShotModeWaltz;
+            @ShotModeWaltz.performed += instance.OnShotModeWaltz;
+            @ShotModeWaltz.canceled += instance.OnShotModeWaltz;
+            @ShotModeMerge.started += instance.OnShotModeMerge;
+            @ShotModeMerge.performed += instance.OnShotModeMerge;
+            @ShotModeMerge.canceled += instance.OnShotModeMerge;
         }
 
         /// <summary>
@@ -1164,6 +1251,15 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
             @Dodge.started -= instance.OnDodge;
             @Dodge.performed -= instance.OnDodge;
             @Dodge.canceled -= instance.OnDodge;
+            @ShotModeNormal.started -= instance.OnShotModeNormal;
+            @ShotModeNormal.performed -= instance.OnShotModeNormal;
+            @ShotModeNormal.canceled -= instance.OnShotModeNormal;
+            @ShotModeWaltz.started -= instance.OnShotModeWaltz;
+            @ShotModeWaltz.performed -= instance.OnShotModeWaltz;
+            @ShotModeWaltz.canceled -= instance.OnShotModeWaltz;
+            @ShotModeMerge.started -= instance.OnShotModeMerge;
+            @ShotModeMerge.performed -= instance.OnShotModeMerge;
+            @ShotModeMerge.canceled -= instance.OnShotModeMerge;
         }
 
         /// <summary>
@@ -1338,5 +1434,26 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDodge(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShotModeNormal" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShotModeNormal(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShotModeWaltz" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShotModeWaltz(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ShotModeMerge" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShotModeMerge(InputAction.CallbackContext context);
     }
 }

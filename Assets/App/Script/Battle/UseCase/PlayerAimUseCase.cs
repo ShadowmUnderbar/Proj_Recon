@@ -17,7 +17,7 @@ namespace App.Battle.UseCase
     {
         private readonly IPlayerDataStore _playerDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
-        private readonly IGameInputUseCase _gameInputUseCase;
+        private readonly IGameInputDataStore _gameInputDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -25,12 +25,12 @@ namespace App.Battle.UseCase
         public PlayerAimUseCase(
             IPlayerDataStore playerDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputUseCase gameInputUseCase
+            IGameInputDataStore gameInputDataStore
         )
         {
             _playerDataStore = playerDataStore;
             _playerControlPresenter = playerControlPresenter;
-            _gameInputUseCase = gameInputUseCase;
+            _gameInputDataStore = gameInputDataStore;
         }
 
         public void Initialize()
@@ -56,11 +56,11 @@ namespace App.Battle.UseCase
                 .Subscribe(x => _playerDataStore.RightHandPose.Value = x)
                 .AddTo(_disposables);
 
-            _gameInputUseCase.IsFocusLeft
+            _gameInputDataStore.IsFocusLeft
                 .Subscribe(x => _playerControlPresenter.IsFocusLeft(x))
                 .AddTo(_disposables);
 
-            _gameInputUseCase.IsFocusRight
+            _gameInputDataStore.IsFocusRight
                 .Subscribe(x => _playerControlPresenter.IsFocusRight(x))
                 .AddTo(_disposables);
         }
@@ -81,7 +81,7 @@ namespace App.Battle.UseCase
 #if UNITY_EDITOR
             if (!EditorPrefs.GetBool("VRMode", false))
             {
-                _playerControlPresenter.MouseAim(_gameInputUseCase.MouseInputPosition);
+                _playerControlPresenter.MouseAim(_gameInputDataStore.MouseInputPosition);
             }
 #endif
             _playerControlPresenter.Aim();
