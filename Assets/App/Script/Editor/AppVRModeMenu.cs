@@ -16,8 +16,8 @@ namespace App.Editor
 
         static AppVRModeMenu()
         {
-            _isEnabled = EditorPrefs.GetBool("VRMode", false);
-            _isAllUnLockEnabled = EditorPrefs.GetBool("AllUnLock", false);
+            _isEnabled = EditorPrefs.GetBool(VRModeKey, false);
+            _isAllUnLockEnabled = EditorPrefs.GetBool(AllUnLockKey, false);
         }
 
         [MenuItem(MenuName)]
