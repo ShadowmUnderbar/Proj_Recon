@@ -15,6 +15,7 @@ namespace App.Battle.DataStore
     {
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IGameInputDataStore _gameInputDataStore;
+        private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
 
         public bool IsFocusInput { get; set; }
         public UnlockCoreSkillType UnlockCoreSkillType { get; private set; } = UnlockCoreSkillType.First;
@@ -58,11 +59,13 @@ namespace App.Battle.DataStore
         [Inject]
         public PlayerDataStore(
             IEnemyDataStore enemyDataStore,
-            IGameInputDataStore gameInputDataStore
+            IGameInputDataStore gameInputDataStore,
+            ICoreSkillUnlockDataStore coreSkillUnlockDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
             _gameInputDataStore = gameInputDataStore;
+            _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
         }
 
         public void Initialize()
@@ -81,7 +84,7 @@ namespace App.Battle.DataStore
 
         public void Tick()
         {
-            if (!EditorPrefs.GetBool("VRMode", false))
+            if (!DebugConfig.IsVRMode)
             {
                 UpdateShotType_PC();
             }
@@ -96,13 +99,15 @@ namespace App.Battle.DataStore
 
         private void UpdateShotType()
         {
-            if (IsMerge())
+            if (IsMerge() &&
+                _coreSkillUnlockDataStore.IsUnLockMerge)
             {
                 ShotType.Value = Common.Data.ShotType.Merge;
                 return;
             }
 
-            if (IsWaltz())
+            if (IsWaltz() &&
+                _coreSkillUnlockDataStore.IsUnLockWaltz)
             {
                 ShotType.Value = Common.Data.ShotType.Waltz;
                 return;
@@ -113,13 +118,15 @@ namespace App.Battle.DataStore
 
         private void UpdateShotType_PC()
         {
-            if (_gameInputDataStore.DebugMerge.Value)
+            if (_gameInputDataStore.DebugMerge.Value &&
+                _coreSkillUnlockDataStore.IsUnLockMerge)
             {
                 ShotType.Value = Common.Data.ShotType.Merge;
                 return;
             }
 
-            if (_gameInputDataStore.DebugWaltz.Value)
+            if (_gameInputDataStore.DebugWaltz.Value &&
+                _coreSkillUnlockDataStore.IsUnLockWaltz)
             {
                 ShotType.Value = Common.Data.ShotType.Waltz;
                 return;

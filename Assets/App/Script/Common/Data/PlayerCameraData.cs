@@ -11,7 +11,7 @@ namespace App.Common.Data
         private void Awake()
         {
 #if UNITY_EDITOR
-            if (EditorPrefs.GetBool("VRMode", false))
+            if (DebugConfig.IsVRMode)
             {
                 return;
             }

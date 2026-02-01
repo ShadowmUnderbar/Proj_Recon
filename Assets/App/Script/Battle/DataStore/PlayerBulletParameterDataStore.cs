@@ -2,7 +2,6 @@ using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
 using App.Common.Interface;
-using UnityEditor;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -70,9 +69,9 @@ namespace App.Battle.DataStore
 
         public bool CanShot(HandType handType, ShotType shotType)
         {
-            if (EditorPrefs.GetBool("VRMode", false) &&
+            if (DebugConfig.IsVRMode &&
                 !_coreSkillUnlockDataStore.IsUnLockAkimbo &&
-                _playerSettingDataStore.NonDominantHand.Value == handType)
+                _playerSettingDataStore.NonDominantHand == handType)
             {
                 return false;
             }
@@ -89,7 +88,7 @@ namespace App.Battle.DataStore
                 return false;
             }
 
-            if (_playerSettingDataStore.NonDominantHand.Value == handType &&
+            if (_playerSettingDataStore.NonDominantHand != handType &&
                 shotType == ShotType.Merge)
             {
                 return false;

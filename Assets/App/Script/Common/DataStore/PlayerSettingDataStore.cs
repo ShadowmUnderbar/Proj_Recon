@@ -8,8 +8,6 @@ namespace App.Common.DataStore
     {
         public ReactiveProperty<HandType> DominantHand { get; } = new(HandType.Right);
 
-        public ReactiveProperty<HandType> NonDominantHand => DominantHand.Value == HandType.Right
-            ? new ReactiveProperty<HandType>(HandType.Left)
-            : new ReactiveProperty<HandType>(HandType.Right);
+        public HandType NonDominantHand => DominantHand.Value == HandType.Right ? HandType.Left : HandType.Right;
     }
 }

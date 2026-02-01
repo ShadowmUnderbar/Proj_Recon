@@ -62,8 +62,8 @@ namespace App.Battle.UseCase
             var leftFocusType = _playerDataStore.LeftFocusType.Value;
             var rightFocusType = _playerDataStore.RightFocusType.Value;
 
-            var dominantHand = _playerSettingDataStore.DominantHand.Value;
-            var nonDominantHand = _playerSettingDataStore.NonDominantHand.Value;
+            var dominantHand = DebugConfig.IsVRMode ? _playerSettingDataStore.DominantHand.Value : HandType.Left;
+            var nonDominantHand = dominantHand == HandType.Right ? HandType.Left : HandType.Right;
 
             _playerControlPresenter.SetHandRayColor(dominantHand, ThemeColors.GetRayColor(shotType, rightFocusType));
             _playerControlPresenter.SetAimRayColor(dominantHand, ThemeColors.GetRayColor(shotType, rightFocusType));

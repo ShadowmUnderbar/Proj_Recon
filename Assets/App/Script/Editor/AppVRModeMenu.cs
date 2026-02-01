@@ -7,12 +7,15 @@ namespace App.Editor
     public static class AppVRModeMenu
     {
         private const string MenuName = "App/VR Mode";
+        private const string AllUnlockName = "App/AllUnlock";
  
         private static bool _isEnabled;
+        private static bool _isAllUnLockEnabled;
  
         static AppVRModeMenu()
         {
             _isEnabled = EditorPrefs.GetBool("VRMode", false);
+            _isAllUnLockEnabled = EditorPrefs.GetBool("AllUnLock", false);
         }
  
         [MenuItem(MenuName)]
@@ -26,6 +29,20 @@ namespace App.Editor
         private static bool ToggleActionValidate()
         {
             Menu.SetChecked(MenuName, _isEnabled);
+            return !Application.isPlaying;
+        }
+ 
+        [MenuItem(AllUnlockName)]
+        private static void ToggleAllUnlockNameAction()
+        {
+            _isAllUnLockEnabled = !_isAllUnLockEnabled;
+            EditorPrefs.SetBool("AllUnLock", _isAllUnLockEnabled);
+        }
+ 
+        [MenuItem(AllUnlockName, true)]
+        private static bool ToggleAllUnlockNameActionValidate()
+        {
+            Menu.SetChecked(AllUnlockName, _isAllUnLockEnabled);
             return !Application.isPlaying;
         }
     }

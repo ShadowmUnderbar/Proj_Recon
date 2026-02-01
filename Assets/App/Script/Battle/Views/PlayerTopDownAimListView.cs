@@ -80,7 +80,7 @@ namespace App.Battle.Views
 
         public void Aim()
         {
-            var isVR = EditorPrefs.GetBool("VRMode", false);
+            var isVR = DebugConfig.IsVRMode;
 
             var leftAimPosition = isVR ? _leftTopDown.GetAimPosition() : MousePosition;
             var rightAimPosition = isVR ? _rightTopDown.GetAimPosition() : MousePosition;

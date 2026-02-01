@@ -1,3 +1,4 @@
+using App.Common.Data;
 using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
@@ -48,12 +49,11 @@ namespace App.Script.Common.UseCase
 
         public void Initialize()
         {
-#if UNITY_EDITOR
-            if (!EditorPrefs.GetBool("VRMode", false))
+            if (!DebugConfig.IsVRMode)
             {
                 return;
             }
-#endif
+
             Application.quitting += EnterDesktop;
             EnterVR();
         }

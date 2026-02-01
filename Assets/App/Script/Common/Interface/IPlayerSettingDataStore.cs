@@ -6,6 +6,6 @@ namespace App.Common.Interface
     public interface IPlayerSettingDataStore
     {
         ReactiveProperty<HandType> DominantHand { get; }
-        ReactiveProperty<HandType> NonDominantHand { get; }
+        HandType NonDominantHand { get; }
     }
 }

@@ -78,12 +78,10 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-#if UNITY_EDITOR
-            if (!EditorPrefs.GetBool("VRMode", false))
+            if (!DebugConfig.IsVRMode)
             {
                 _playerControlPresenter.MouseAim(_gameInputDataStore.MouseInputPosition);
             }
-#endif
             _playerControlPresenter.Aim();
         }
 

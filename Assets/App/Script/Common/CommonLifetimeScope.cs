@@ -1,3 +1,4 @@
+using App.Common.Data;
 using App.Common.Interface;
 using App.Common.Data.Database;
 using App.Common.DataStore;
@@ -42,7 +43,7 @@ namespace App.Common
             #endregion
 
 #if UNITY_EDITOR
-            if (!EditorPrefs.GetBool("VRMode", false))
+            if (!DebugConfig.IsVRMode)
             {
                 return;
             }
