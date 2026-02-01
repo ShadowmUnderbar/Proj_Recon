@@ -63,7 +63,7 @@
                     "name": "RightPrimary",
                     "type": "Button",
                     "id": "998735b2-44a0-4165-b927-bb98ef127463",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false

@@ -19,6 +19,7 @@ namespace App.Battle.Views
         private readonly Subject<Vector3> _onRightAimPosition = new();
 
         public Observable<Vector3> OnLeftAimPosition => _onLeftAimPosition;
+        public Vector3 MousePosition { get; set; }
         private readonly Subject<Vector3> _onLeftAimPosition = new();
 
         private IPlayerTopDownAimView _leftTopDown;
@@ -78,24 +79,16 @@ namespace App.Battle.Views
 
         public void Aim()
         {
-            var leftAimPosition = GetAimPosition(true);
-            var rightAimPosition = GetAimPosition(false);
+            var isVR = EditorPrefs.GetBool("VRMode", false);
+
+            var leftAimPosition = isVR ? _leftTopDown.GetAimPosition() : MousePosition;
+            var rightAimPosition = isVR ? _rightTopDown.GetAimPosition() : MousePosition;
 
             _onLeftAimPosition.OnNext(leftAimPosition);
             _onRightAimPosition.OnNext(rightAimPosition);
 
             _leftAimView?.LookAimPosition(leftAimPosition);
             _rightAimView?.LookAimPosition(rightAimPosition);
-        }
-
-        private Vector3 GetAimPosition(bool isLeft)
-        {
-            if (isLeft)
-            {
-                return _leftTopDown.GetAimPosition();
-            }
-
-            return _rightTopDown.GetAimPosition();
         }
 
         public void Shot(HandType handType, BulletData bulletData, int focusTargetId)

@@ -102,7 +102,6 @@ namespace App.Battle.Views
             _playerTopDownAimListView.SetRayColor(handType, color);
         }
 
-
         public void SetAimEnableRay(HandType handType, bool enable)
         {
             _playerTopDownAimListView.SetEnableRay(handType, enable);
@@ -112,7 +111,6 @@ namespace App.Battle.Views
         {
             _handForwardRayViews[handType == HandType.Left ? 0 : 1].SetRayColor(color);
         }
-
 
         public void SetHandEnableRay(HandType handType, bool enable)
         {
@@ -135,10 +133,7 @@ namespace App.Battle.Views
                 targetPos = hit.point;
             }
 
-            foreach (var controller in _controllers)
-            {
-                controller.LookAt(targetPos);
-            }
+            _playerTopDownAimListView.MousePosition = targetPos;
         }
 
         public void Shot(HandType handType, BulletData bulletData, int focusTargetId)
