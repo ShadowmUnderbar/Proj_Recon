@@ -1,33 +1,27 @@
-using System.Collections.Generic;
+using System;
 using System.IO;
 using App.Common.Data;
 using App.Common.Interface;
+using R3;
 using UnityEngine;
-using VContainer;
 using VContainer.Unity;
 
 namespace App.Common.DataStore
 {
-    public class SaveDataStore : ISaveDataStore, IInitializable
+    public class SaveDataStore : ISaveDataStore, IInitializable, IDisposable
     {
+        public Observable<Unit> OnLoad => _onLoad;
+        private readonly Subject<Unit> _onLoad = new();
+
+        public Observable<Unit> OnSave => _onSave;
+        private readonly Subject<Unit> _onSave = new();
         public SaveData SaveData { get; private set; } = new();
 
         private string SaveDataPath => Application.dataPath + "/DLHN/SaveData.json";
 
-        private readonly IPlayerSettingDataStore _playerSettingDataStore;
-
-        [Inject]
-        public SaveDataStore(
-            IPlayerSettingDataStore playerSettingDataStore
-        )
-        {
-            _playerSettingDataStore = playerSettingDataStore;
-        }
-
         public void Initialize()
         {
             Load();
-            _playerSettingDataStore.DominantHand.Value = SaveData.DominantHand;
         }
 
         public void Save()
@@ -43,12 +37,14 @@ namespace App.Common.DataStore
             var wr = new StreamWriter(SaveDataPath, false);
             wr.WriteLine(json);
             wr.Close();
+            _onSave.OnNext(Unit.Default);
         }
 
         public SaveData Load()
         {
             if (!Directory.Exists(SaveDataPath))
             {
+                _onLoad.OnNext(Unit.Default);
                 return new SaveData();
             }
 
@@ -57,6 +53,7 @@ namespace App.Common.DataStore
             rd.Close();
 
             SaveData = JsonUtility.FromJson<SaveData>(json);
+            _onLoad.OnNext(Unit.Default);
             return SaveData;
         }
 
@@ -64,6 +61,12 @@ namespace App.Common.DataStore
         {
             SaveData = new SaveData();
             Save();
+        }
+
+        public void Dispose()
+        {
+            _onLoad?.Dispose();
+            _onSave?.Dispose();
         }
     }
 }

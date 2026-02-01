@@ -83,6 +83,11 @@ namespace App.Battle.Views
 
         private void Update()
         {
+            if (!DebugConfig.IsVRMode)
+            {
+                return;
+            }
+
             LeftHandPose.Value = _controllers[0].ToPose();
             RightHandPose.Value = _controllers[1].ToPose();
         }

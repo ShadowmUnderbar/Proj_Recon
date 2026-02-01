@@ -76,20 +76,14 @@ namespace App.Battle.DataStore
                 return false;
             }
 
-            if (!_coreSkillUnlockDataStore.IsUnLockWaltz &&
-                shotType == ShotType.Waltz)
+            if (shotType == ShotType.Waltz &&
+                !_coreSkillUnlockDataStore.IsUnLockWaltz)
             {
                 return false;
             }
 
-            if (!_coreSkillUnlockDataStore.IsUnLockMerge &&
-                shotType == ShotType.Merge)
-            {
-                return false;
-            }
-
-            if (_playerSettingDataStore.NonDominantHand != handType &&
-                shotType == ShotType.Merge)
+            if (shotType == ShotType.Merge&&
+                !CanMergeShot(handType))
             {
                 return false;
             }
@@ -100,6 +94,21 @@ namespace App.Battle.DataStore
             }
 
             return _rightShotCoolDown <= 0;
+        }
+
+        private bool CanMergeShot(HandType handType)
+        {
+            if (!_coreSkillUnlockDataStore.IsUnLockMerge)
+            {
+                return false;
+            }
+
+            if (_playerSettingDataStore.DominantHand.Value != handType)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public BulletData GetBulletData(ShotType shotType, AimFocusType focusType)
