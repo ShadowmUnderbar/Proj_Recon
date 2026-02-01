@@ -48,7 +48,6 @@ namespace App.Battle.DataStore
         private static float MergePositionDistance => 0.15f;
         private static float WaltzAngleDifference => 130f;
         private static float LongFocusDistance => 17f;
-        private int _debugShotMode = 0;
 
         private readonly Dictionary<HandType, Vector3> _aimPositions = new()
         {
@@ -197,6 +196,8 @@ namespace App.Battle.DataStore
             var leftAimDirection = (Position.Value - _aimPositions[HandType.Left]).normalized;
             var rightAimDirection = (Position.Value - _aimPositions[HandType.Right]).normalized;
 
+            leftAimDirection = Vector3.ProjectOnPlane(leftAimDirection, Vector3.up);
+            rightAimDirection = Vector3.ProjectOnPlane(rightAimDirection, Vector3.up);
             var angleDifference = Vector3.SignedAngle(leftAimDirection, rightAimDirection, Vector3.up);
             return Mathf.Abs(angleDifference) >= WaltzAngleDifference;
         }

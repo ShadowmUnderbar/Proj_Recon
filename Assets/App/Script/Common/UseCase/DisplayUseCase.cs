@@ -1,11 +1,10 @@
 using App.Common.Data;
 using Cysharp.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.XR.Management;
 using VContainer.Unity;
 
-namespace App.Script.Common.UseCase
+namespace App.Common.UseCase
 {
     public class DisplayUseCase : IInitializable
     {

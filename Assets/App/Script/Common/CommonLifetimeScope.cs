@@ -2,6 +2,7 @@ using App.Common.Data;
 using App.Common.Interface;
 using App.Common.Data.Database;
 using App.Common.DataStore;
+using App.Common.UseCase;
 using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
@@ -26,12 +27,14 @@ namespace App.Common
                 .As<ISaveDataStore>();
             builder.Register<CoreSkillUnlockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ICoreSkillUnlockDataStore>();
+            builder.RegisterEntryPoint<GameInputDataStore>()
+                .As<IGameInputDataStore>();
 
             #endregion
 
             #region UseCase
 
-            builder.RegisterEntryPoint<GameInputDataStore>().As<IGameInputDataStore>();
+            builder.RegisterEntryPoint<XRInitUseCase>();
 
             #endregion
 
@@ -41,26 +44,6 @@ namespace App.Common
             builder.RegisterInstance(_enemySpawnDatabase);
 
             #endregion
-
-#if UNITY_EDITOR
-            if (!DebugConfig.IsVRMode)
-            {
-                return;
-            }
-#endif
-
-            InitXR().Forget();
-        }
-
-        private static async UniTask InitXR()
-        {
-            await XRGeneralSettings.Instance.Manager.InitializeLoader();
-            while (!XRGeneralSettings.Instance.Manager.isInitializationComplete)
-            {
-                await UniTask.Yield();
-            }
-
-            XRGeneralSettings.Instance.Manager.StartSubsystems();
         }
     }
 }

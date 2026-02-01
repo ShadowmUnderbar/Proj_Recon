@@ -81,7 +81,9 @@ namespace App.Battle.UseCase
             if (!DebugConfig.IsVRMode)
             {
                 _playerControlPresenter.MouseAim(_gameInputDataStore.MouseInputPosition);
+                return;
             }
+
             _playerControlPresenter.Aim();
         }
 
