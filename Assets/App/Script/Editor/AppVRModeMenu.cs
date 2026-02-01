@@ -1,3 +1,4 @@
+using App.Common.Data;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,23 +9,21 @@ namespace App.Editor
     {
         private const string MenuName = "App/VR Mode";
         private const string AllUnlockName = "App/AllUnlock";
-        private const string VRModeKey = "VRMode";
-        private const string AllUnLockKey = "AllUnLock";
 
         private static bool _isEnabled;
         private static bool _isAllUnLockEnabled;
 
         static AppVRModeMenu()
         {
-            _isEnabled = EditorPrefs.GetBool(VRModeKey, false);
-            _isAllUnLockEnabled = EditorPrefs.GetBool(AllUnLockKey, false);
+            _isEnabled = EditorPrefs.GetBool(DebugConfig.VRModeKey, false);
+            _isAllUnLockEnabled = EditorPrefs.GetBool(DebugConfig.AllUnLockKey, false);
         }
 
         [MenuItem(MenuName)]
         private static void ToggleAction()
         {
             _isEnabled = !_isEnabled;
-            EditorPrefs.SetBool(VRModeKey, _isEnabled);
+            EditorPrefs.SetBool(DebugConfig.VRModeKey, _isEnabled);
         }
 
         [MenuItem(MenuName, true)]
@@ -38,7 +37,7 @@ namespace App.Editor
         private static void ToggleAllUnlockNameAction()
         {
             _isAllUnLockEnabled = !_isAllUnLockEnabled;
-            EditorPrefs.SetBool(AllUnLockKey, _isAllUnLockEnabled);
+            EditorPrefs.SetBool(DebugConfig.AllUnLockKey, _isAllUnLockEnabled);
         }
 
         [MenuItem(AllUnlockName, true)]
