@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using App.Common.Data;
 using App.Common.Interface;
@@ -11,7 +12,7 @@ namespace App.Common.DataStore
     {
         public SaveData SaveData { get; private set; } = new();
 
-        private string SaveDataPath => Application.dataPath + "/DLHN/SaveData/";
+        private string SaveDataPath => Application.dataPath + "/DLHN/SaveData.json";
 
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
 
@@ -31,6 +32,13 @@ namespace App.Common.DataStore
 
         public void Save()
         {
+            //ディレクトリがあるか
+            if (!Directory.Exists(SaveDataPath))
+            {
+                //ディレクトリ作成
+                Directory.CreateDirectory(SaveDataPath);
+            }
+
             var json = JsonUtility.ToJson(SaveData);
             var wr = new StreamWriter(SaveDataPath, false);
             wr.WriteLine(json);
@@ -39,6 +47,11 @@ namespace App.Common.DataStore
 
         public SaveData Load()
         {
+            if (!Directory.Exists(SaveDataPath))
+            {
+                return new SaveData();
+            }
+
             var rd = new StreamReader(SaveDataPath);
             var json = rd.ReadToEnd();
             rd.Close();

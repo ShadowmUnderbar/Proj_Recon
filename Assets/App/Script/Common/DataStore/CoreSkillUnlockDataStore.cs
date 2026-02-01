@@ -6,11 +6,11 @@ namespace App.Common.DataStore
 {
     public class CoreSkillUnlockDataStore : ICoreSkillUnlockDataStore
     {
-        private readonly SaveDataStore _saveDataStore;
+        private readonly ISaveDataStore _saveDataStore;
 
         [Inject]
         public CoreSkillUnlockDataStore(
-            SaveDataStore saveDataStore
+            ISaveDataStore saveDataStore
         )
         {
             _saveDataStore = saveDataStore;
