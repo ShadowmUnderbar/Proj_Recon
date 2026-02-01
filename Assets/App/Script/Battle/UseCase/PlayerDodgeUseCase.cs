@@ -92,7 +92,7 @@ namespace App.Battle.UseCase
             var moveDistance = Vector3.Distance(moveTarget, playerPosition);
             var enemyHits = _enemyPresenter.GetDodgeHitEnemies(playerPosition, dodgeDirection.normalized, moveDistance);
 
-            if (enemyHits is { Length: <= 0 })
+            if (enemyHits is null or { Length: <= 0 })
             {
                 return;
             }

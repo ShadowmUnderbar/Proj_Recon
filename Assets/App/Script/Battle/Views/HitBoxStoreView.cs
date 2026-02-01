@@ -13,6 +13,8 @@ namespace App.Battle.Views
         private readonly Subject<HitData> _onHitObservable = new();
         public Observable<HitData> OnHitObservable => _onHitObservable;
 
+        public IEnumerator<IHitBoxView> HitBoxViews => _hitBoxViews.Values.GetEnumerator();
+
         private readonly CompositeDisposable _disposables = new();
 
         public void AddHitBoxView(IHitBoxView hitBoxView)
@@ -26,7 +28,6 @@ namespace App.Battle.Views
 
         private void OnHit(HitData hitData)
         {
-            Debug.Log("HitBoxStoreView.OnHit: " + hitData);
             _onHitObservable.OnNext(hitData);
         }
 
