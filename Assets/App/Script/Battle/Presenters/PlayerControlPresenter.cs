@@ -70,12 +70,12 @@ namespace App.Battle.Presenters
 
         public void IsFocusRight(bool isFocus)
         {
-            _playerView.IsFocusLeft(isFocus);
+            _playerView.IsFocusRight(isFocus);
         }
 
         public void IsFocusLeft(bool isFocus)
         {
-            _playerView.IsFocusRight(isFocus);
+            _playerView.IsFocusLeft(isFocus);
         }
     }
 }

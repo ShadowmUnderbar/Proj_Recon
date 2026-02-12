@@ -58,8 +58,13 @@ namespace App.Battle.DataStore
         public bool TryGetRandomEnemyMasterData(EnemyRankType rankType, UnlockCoreSkillType unlockCoreSkillType,
             out EnemyMasterData enemyMasterData)
         {
-            while (true)
+            const int MaxRetryCount = 100;  // 最大試行回数
+            int retryCount = 0;
+
+            while (retryCount < MaxRetryCount)
             {
+                retryCount++;
+
                 enemyMasterData = null;
                 if (!_enemySpawnDatabase.TryGetSpawnTable(unlockCoreSkillType, out var spawnTable))
                 {
@@ -92,6 +97,13 @@ namespace App.Battle.DataStore
                 enemyMasterData = enemyData;
                 return true;
             }
+
+            // 最大試行回数を超えた場合（設定ミスの可能性）
+            Debug.LogError($"敵のスポーンに失敗しました（最大試行回数超過）。スポーンテーブルの設定を確認してください。" +
+                           $"UnlockType: {unlockCoreSkillType}, RankType: {rankType}。" +
+                           $"IsOnlyOnce=falseの敵が最低1体は必要です。");
+            enemyMasterData = null;
+            return false;
         }
 
         public bool TryGetEnemyData(int enemyId, out EnemyData enemyData)
