@@ -6,7 +6,9 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nSaveDataStoreのファイル保存バグを修正\n\n- Save\\(\\): ファイルパスをディレクトリとして扱っていた問題を修正\n- Save\\(\\): StreamWriterをusing文で管理し、リソースリークを防止\n- Save\\(\\): 例外処理を追加してエラー時のログ出力を実装\n- Load\\(\\): Directory.ExistsをFile.Existsに修正\n- Load\\(\\): StreamReaderをusing文で管理し、リソースリークを防止\n- Load\\(\\): 例外処理を追加してファイル破損時もクラッシュしないように改善\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git push:*)",
-      "Bash(gh pr create:*)"
+      "Bash(gh pr create:*)",
+      "Bash(git checkout:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

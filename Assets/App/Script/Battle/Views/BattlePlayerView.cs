@@ -161,7 +161,6 @@ namespace App.Battle.Views
             _playerTopDownAimListView.IsFocusRight(isFocus);
         }
 
-
         private void OnDestroy()
         {
             _onHit.Dispose();
