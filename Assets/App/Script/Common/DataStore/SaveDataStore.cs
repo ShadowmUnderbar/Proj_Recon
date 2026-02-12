@@ -26,35 +26,67 @@ namespace App.Common.DataStore
 
         public void Save()
         {
-            //ディレクトリがあるか
-            if (!Directory.Exists(SaveDataPath))
+            try
             {
-                //ディレクトリ作成
-                Directory.CreateDirectory(SaveDataPath);
-            }
+                // ディレクトリパスを取得
+                var directoryPath = Path.GetDirectoryName(SaveDataPath);
 
-            var json = JsonUtility.ToJson(SaveData);
-            var wr = new StreamWriter(SaveDataPath, false);
-            wr.WriteLine(json);
-            wr.Close();
-            _onSave.OnNext(Unit.Default);
+                // ディレクトリが存在しない場合は作成
+                if (!string.IsNullOrEmpty(directoryPath) && !Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                // JSONシリアライズ
+                var json = JsonUtility.ToJson(SaveData);
+
+                // usingでStreamWriterを管理
+                using (var writer = new StreamWriter(SaveDataPath, false))
+                {
+                    writer.WriteLine(json);
+                }
+
+                _onSave.OnNext(Unit.Default);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"SaveDataの保存に失敗しました: {e.Message}");
+                throw;
+            }
         }
 
         public SaveData Load()
         {
-            if (!Directory.Exists(SaveDataPath))
+            try
             {
+                // ファイルが存在しない場合は新規データを返す
+                if (!File.Exists(SaveDataPath))
+                {
+                    _onLoad.OnNext(Unit.Default);
+                    return new SaveData();
+                }
+
+                // usingでStreamReaderを管理
+                string json;
+                using (var reader = new StreamReader(SaveDataPath))
+                {
+                    json = reader.ReadToEnd();
+                }
+
+                // JSONデシリアライズ
+                SaveData = JsonUtility.FromJson<SaveData>(json);
                 _onLoad.OnNext(Unit.Default);
-                return new SaveData();
+                return SaveData;
             }
+            catch (Exception e)
+            {
+                Debug.LogError($"SaveDataの読み込みに失敗しました: {e.Message}");
 
-            var rd = new StreamReader(SaveDataPath);
-            var json = rd.ReadToEnd();
-            rd.Close();
-
-            SaveData = JsonUtility.FromJson<SaveData>(json);
-            _onLoad.OnNext(Unit.Default);
-            return SaveData;
+                // 失敗時は新規データを返す
+                SaveData = new SaveData();
+                _onLoad.OnNext(Unit.Default);
+                return SaveData;
+            }
         }
 
         public void ResetSaveData()
