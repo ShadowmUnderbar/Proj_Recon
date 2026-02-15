@@ -15,7 +15,8 @@ namespace App.Battle.UseCase
 {
     public class PlayerAimUseCase : IInitializable, ITickable, IDisposable
     {
-        private readonly IPlayerDataStore _playerDataStore;
+        private readonly IPlayerAimDataStore _playerAimDataStore;
+        private readonly IPlayerFocusDataStore _playerFocusDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
 
@@ -23,12 +24,14 @@ namespace App.Battle.UseCase
 
         [Inject]
         public PlayerAimUseCase(
-            IPlayerDataStore playerDataStore,
+            IPlayerAimDataStore playerAimDataStore,
+            IPlayerFocusDataStore playerFocusDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputDataStore gameInputDataStore
         )
         {
-            _playerDataStore = playerDataStore;
+            _playerAimDataStore = playerAimDataStore;
+            _playerFocusDataStore = playerFocusDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
         }
@@ -43,17 +46,17 @@ namespace App.Battle.UseCase
                 .AddTo(_disposables);
 
             _playerControlPresenter.OnLeftAimPosition
-                .Subscribe(x => _playerDataStore.SetAimPosition(HandType.Left, x))
+                .Subscribe(x => _playerAimDataStore.SetAimPosition(HandType.Left, x))
                 .AddTo(_disposables);
             _playerControlPresenter.OnRightAimPosition
-                .Subscribe(x => _playerDataStore.SetAimPosition(HandType.Right, x))
+                .Subscribe(x => _playerAimDataStore.SetAimPosition(HandType.Right, x))
                 .AddTo(_disposables);
 
             _playerControlPresenter.LeftHandPose
-                .Subscribe(x => _playerDataStore.LeftHandPose.Value = x)
+                .Subscribe(x => _playerAimDataStore.LeftHandPose.Value = x)
                 .AddTo(_disposables);
             _playerControlPresenter.RightHandPose
-                .Subscribe(x => _playerDataStore.RightHandPose.Value = x)
+                .Subscribe(x => _playerAimDataStore.RightHandPose.Value = x)
                 .AddTo(_disposables);
 
             _gameInputDataStore.IsFocusLeft
@@ -69,11 +72,11 @@ namespace App.Battle.UseCase
         {
             if (isLeft)
             {
-                _playerDataStore.FocusLeftTargetId.Value = id;
+                _playerFocusDataStore.FocusLeftTargetId.Value = id;
                 return;
             }
 
-            _playerDataStore.FocusRightTargetId.Value = id;
+            _playerFocusDataStore.FocusRightTargetId.Value = id;
         }
 
         public void Tick()

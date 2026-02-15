@@ -11,7 +11,7 @@ namespace App.Battle.UseCase
     public class EnemyRandomSpawnUseCase : IInitializable, IDisposable
     {
         private readonly IEnemyRandomSpawnCycleDataStore _enemyRandomSpawnCycleDataStore;
-        private readonly IPlayerDataStore _playerDataStore;
+        private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
 
         private readonly CompositeDisposable _disposables = new();
@@ -19,12 +19,12 @@ namespace App.Battle.UseCase
         [Inject]
         public EnemyRandomSpawnUseCase(
             IEnemyRandomSpawnCycleDataStore enemyRandomSpawnCycleDataStore,
-            IPlayerDataStore playerDataStore,
+            IPlayerStateDataStore playerStateDataStore,
             IEnemyDataStore enemyDataStore
         )
         {
             _enemyRandomSpawnCycleDataStore = enemyRandomSpawnCycleDataStore;
-            _playerDataStore = playerDataStore;
+            _playerStateDataStore = playerStateDataStore;
             _enemyDataStore = enemyDataStore;
         }
 
@@ -41,12 +41,12 @@ namespace App.Battle.UseCase
 
         private void SpawnRandomEnemy(int enemyCount, EnemyRankType rankType)
         {
-            var playerPos = _playerDataStore.Position.Value;
+            var playerPos = _playerStateDataStore.Position.Value;
             for (var i = 0; i < enemyCount; i++)
             {
                 var targetPos = _enemyRandomSpawnCycleDataStore.GetRandomSpawnPositionFast(playerPos);
 
-                if (!_enemyDataStore.TryGetRandomEnemyMasterData(rankType, _playerDataStore.UnlockCoreSkillType, out var enemy))
+                if (!_enemyDataStore.TryGetRandomEnemyMasterData(rankType, _playerStateDataStore.UnlockCoreSkillType, out var enemy))
                 {
                     return;
                 }

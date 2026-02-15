@@ -9,7 +9,7 @@ namespace App.Battle.UseCase
 {
     public class EnemyControlUseCase : ITickable
     {
-        private readonly IPlayerDataStore _playerDataStore;
+        private readonly IPlayerAimDataStore _playerAimDataStore;
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IEnemyDataStore _enemyDataStore;
 
@@ -17,12 +17,12 @@ namespace App.Battle.UseCase
 
         [Inject]
         public EnemyControlUseCase(
-            IPlayerDataStore playerDataStore,
+            IPlayerAimDataStore playerAimDataStore,
             IEnemyPresenter enemyPresenter,
             IEnemyDataStore enemyDataStore
         )
         {
-            _playerDataStore = playerDataStore;
+            _playerAimDataStore = playerAimDataStore;
             _enemyPresenter = enemyPresenter;
             _enemyDataStore = enemyDataStore;
 
@@ -43,8 +43,8 @@ namespace App.Battle.UseCase
         public void Tick()
         {
             _enemyPresenter.SetPlayerAimDirection(
-                _playerDataStore.LeftAimDirection,
-                _playerDataStore.RightAimDirection
+                _playerAimDataStore.LeftAimDirection,
+                _playerAimDataStore.RightAimDirection
             );
         }
     }

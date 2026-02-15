@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using App.Battle.Data;
 using VContainer;
 using VContainer.Unity;
@@ -12,7 +12,7 @@ namespace App.Battle.UseCase
 {
     public class PlayerMoveUseCase : IInitializable, ITickable, IDisposable
     {
-        private readonly IPlayerDataStore _playerDataStore;
+        private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
 
@@ -20,19 +20,19 @@ namespace App.Battle.UseCase
 
         [Inject]
         public PlayerMoveUseCase(
-            IPlayerDataStore playerDataStore,
+            IPlayerStateDataStore playerStateDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputDataStore gameInputDataStore
         )
         {
-            _playerDataStore = playerDataStore;
+            _playerStateDataStore = playerStateDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
         }
 
         public void Initialize()
         {
-            _playerDataStore.Position
+            _playerStateDataStore.Position
                 .DistinctUntilChanged()
                 .Subscribe(pos => _playerControlPresenter.Move(new Vector2(pos.x, pos.z)))
                 .AddTo(_disposable);
@@ -40,8 +40,9 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            _playerDataStore.Move(_gameInputDataStore.V2LeftAxis,
-                _playerDataStore.MoveSpeed * BasePlayerParameter.MoveSpeed);
+            // MoveSpeedは既にBaseSpeed * BasePlayerParameter.MoveSpeedを含むため、そのまま使用
+            _playerStateDataStore.Move(_gameInputDataStore.V2LeftAxis,
+                _playerStateDataStore.MoveSpeed);
         }
 
         public void Dispose()

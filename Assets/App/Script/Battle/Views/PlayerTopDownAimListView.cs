@@ -105,6 +105,7 @@ namespace App.Battle.Views
 
         public void IsFocusLeft(bool isFocus)
         {
+            Debug.Log($"IsFocusLeft: {isFocus}");
             _leftTopDown.IsFocus = isFocus;
         }
 

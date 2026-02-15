@@ -122,7 +122,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""name"": ""GrabLeft"",
                     ""type"": ""Button"",
                     ""id"": ""88b80192-d84b-4d3c-aa03-e05aa51837c7"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -326,7 +326,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""fcbad545-1124-4f20-81c0-2176041a92e4"",
-                    ""path"": ""<Mouse>/rightButton"",
+                    ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -347,8 +347,8 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""d9423ff5-36f3-4faf-abd0-cf34cc10b85d"",
-                    ""path"": ""<Mouse>/backButton"",
+                    ""id"": ""d4d4da07-80cb-4734-89b4-aa78cb3e97dd"",
+                    ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -744,7 +744,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""970ee9f9-866c-437b-ac10-2a33af03b0ff"",
-                    ""path"": ""<Keyboard>/leftShift"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

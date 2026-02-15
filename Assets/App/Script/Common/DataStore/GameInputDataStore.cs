@@ -82,7 +82,7 @@ namespace App.Common.DataStore
         {
             if (Input.Main.GrabRight.inProgress)
             {
-                IsFocusRight.Value = !IsFocusRight.Value;
+                IsFocusRight.Value = Input.Main.GrabRight.inProgress;
             }
 
             if (Input.Main.GrabLeft.inProgress)

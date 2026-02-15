@@ -25,7 +25,15 @@ namespace App.Battle
         {
             #region DataStore
 
-            builder.Register<PlayerDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IPlayerDataStore>();
+            // 登録順序がTick順序に影響するため、依存順に登録
+            builder.Register<PlayerStateDataStore>(Lifetime.Singleton)
+                .AsImplementedInterfaces().As<IPlayerStateDataStore>();
+            builder.Register<PlayerFocusDataStore>(Lifetime.Singleton)
+                .AsImplementedInterfaces().As<IPlayerFocusDataStore>();
+            builder.Register<PlayerAimDataStore>(Lifetime.Singleton)
+                .AsImplementedInterfaces().As<IPlayerAimDataStore>();
+            builder.Register<PlayerShotTypeDataStore>(Lifetime.Singleton)
+                .AsImplementedInterfaces().As<IPlayerShotTypeDataStore>();
             builder.Register<EnemyDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IEnemyDataStore>();
             builder.Register<EnemyRandomSpawnCycleDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IEnemyRandomSpawnCycleDataStore>();

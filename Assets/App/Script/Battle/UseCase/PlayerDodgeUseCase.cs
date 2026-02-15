@@ -13,7 +13,7 @@ namespace App.Battle.UseCase
 {
     public class PlayerDodgeUseCase : IInitializable, IDisposable
     {
-        private readonly IPlayerDataStore _playerDataStore;
+        private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
         private readonly IGameInputDataStore _gameInputUseCase;
@@ -24,7 +24,7 @@ namespace App.Battle.UseCase
 
         [Inject]
         public PlayerDodgeUseCase(
-            IPlayerDataStore playerDataStore,
+            IPlayerStateDataStore playerStateDataStore,
             IEnemyDataStore enemyDataStore,
             IPlayerDodgeParameterDataStore playerDodgeParameterDataStore,
             IGameInputDataStore gameInputUseCase,
@@ -32,7 +32,7 @@ namespace App.Battle.UseCase
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore
         )
         {
-            _playerDataStore = playerDataStore;
+            _playerStateDataStore = playerStateDataStore;
             _enemyDataStore = enemyDataStore;
             _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
             _gameInputUseCase = gameInputUseCase;
@@ -63,7 +63,7 @@ namespace App.Battle.UseCase
 
             _playerDodgeParameterDataStore.SetCoolDownTime();
 
-            var playerPosition = _playerDataStore.Position.Value;
+            var playerPosition = _playerStateDataStore.Position.Value;
             var dodgeDirection = new Vector3(_gameInputUseCase.V2LeftAxis.x, 0, _gameInputUseCase.V2LeftAxis.y);
             var moveTarget = playerPosition +
                              dodgeDirection * _playerDodgeParameterDataStore.DodgeRange;
@@ -78,7 +78,7 @@ namespace App.Battle.UseCase
 
             Catalyst(playerPosition, dodgeDirection, moveTarget);
 
-            _playerDataStore.Position.Value = moveTarget;
+            _playerStateDataStore.Position.Value = moveTarget;
         }
 
         private void Catalyst(Vector3 playerPosition, Vector3 dodgeDirection, Vector3 moveTarget)
@@ -88,7 +88,7 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            var beforePosition = _playerDataStore.Position.Value;
+            var beforePosition = _playerStateDataStore.Position.Value;
             var moveDistance = Vector3.Distance(moveTarget, playerPosition);
             var enemyHits = _enemyPresenter.GetDodgeHitEnemies(playerPosition, dodgeDirection.normalized, moveDistance);
 
