@@ -68,10 +68,10 @@ namespace App.Common.DataStore
 
             IsRightStick.Value = Input.Main.PushRightStick.inProgress;
             IsLeftStick.Value = Input.Main.PushLeftStick.inProgress;
+            IsDodge.Value = Input.Main.Dodge.inProgress;
 
 #if UNITY_EDITOR
             MouseInputPosition = Mouse.current.position.ReadValue();
-            IsDodge.Value = Input.Debug.Dodge.inProgress;
             DebugNormal.Value = Input.Debug.ShotModeNormal.inProgress;
             DebugWaltz.Value = Input.Debug.ShotModeWaltz.inProgress;
             DebugMerge.Value = Input.Debug.ShotModeMerge.inProgress;

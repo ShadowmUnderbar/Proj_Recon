@@ -113,7 +113,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""name"": ""GrabRight"",
                     ""type"": ""Button"",
                     ""id"": ""f40b17ce-4522-4256-ac78-11c969a482bb"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -185,7 +185,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""name"": ""PushRightStick"",
                     ""type"": ""Button"",
                     ""id"": ""593cae1b-cb4b-4bd4-b2dc-79e7685e9f5a"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -242,6 +242,15 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": ""Hold"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Dodge"",
+                    ""type"": ""Button"",
+                    ""id"": ""01f65260-408f-4f93-a097-88577778a6e2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
                     ""initialStateCheck"": false
                 }
             ],
@@ -600,8 +609,8 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""5a66d77b-8c5c-4b18-aed7-f7ecb7be108e"",
-                    ""path"": ""<XRSimulatedController>{LeftHand}/gripButton"",
+                    ""id"": ""f1e65263-096f-4dd9-9787-98bc5aa86f36"",
+                    ""path"": ""<XRController>{LeftHand}/gripPressed"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -622,17 +631,6 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""fc7c4414-c0d8-42f4-b36b-287a4c8625b4"",
-                    ""path"": ""<XRSimulatedController>{RightHand}/gripButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""FocusRightSwitch"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""4c4353b7-f9d4-4e04-8bae-0b3f97c8ba72"",
                     ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
@@ -644,12 +642,12 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3f33070d-e04f-4d35-95ff-b6ecfe418676"",
-                    ""path"": ""<XRSimulatedController>{LeftHand}/gripButton"",
+                    ""id"": ""42a27024-49fa-4dd1-86f5-d6c6494fa65f"",
+                    ""path"": ""<XRController>{RightHand}/gripPressed"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""FocusLeftHold"",
+                    ""action"": ""FocusRightSwitch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -666,12 +664,12 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""f64c8224-5489-40a4-a4e2-091d6ab09e7b"",
-                    ""path"": ""<XRSimulatedController>{RightHand}/gripButton"",
+                    ""id"": ""cd812fc0-9349-40a1-9976-37fa61f9faa7"",
+                    ""path"": ""<XRController>{LeftHand}/gripPressed"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""FocusRightHold"",
+                    ""action"": ""FocusLeftHold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -685,6 +683,39 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""action"": ""FocusRightHold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2f0fb887-7b56-4415-8deb-378d7bff7506"",
+                    ""path"": ""<XRController>{RightHand}/gripPressed"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FocusRightHold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""efc1146e-1abe-4fbf-918f-001127cbff9a"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9f1f3628-09da-4ce8-9144-945ff0b3ed3c"",
+                    ""path"": ""<XRController>{RightHand}/primaryButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -692,15 +723,6 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
             ""name"": ""Debug"",
             ""id"": ""161f24ed-c71f-400a-936d-2de2e4c360e0"",
             ""actions"": [
-                {
-                    ""name"": ""Dodge"",
-                    ""type"": ""Button"",
-                    ""id"": ""a6f32b52-9c42-4f91-b0db-a1c45f819d21"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
                 {
                     ""name"": ""ShotModeNormal"",
                     ""type"": ""Button"",
@@ -730,17 +752,6 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""970ee9f9-866c-437b-ac10-2a33af03b0ff"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Dodge"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""286353dc-a301-42d9-865e-48feb8c6517f"",
@@ -798,9 +809,9 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         m_Main_FocusRightSwitch = m_Main.FindAction("FocusRightSwitch", throwIfNotFound: true);
         m_Main_FocusLeftHold = m_Main.FindAction("FocusLeftHold", throwIfNotFound: true);
         m_Main_FocusRightHold = m_Main.FindAction("FocusRightHold", throwIfNotFound: true);
+        m_Main_Dodge = m_Main.FindAction("Dodge", throwIfNotFound: true);
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
-        m_Debug_Dodge = m_Debug.FindAction("Dodge", throwIfNotFound: true);
         m_Debug_ShotModeNormal = m_Debug.FindAction("ShotModeNormal", throwIfNotFound: true);
         m_Debug_ShotModeWaltz = m_Debug.FindAction("ShotModeWaltz", throwIfNotFound: true);
         m_Debug_ShotModeMerge = m_Debug.FindAction("ShotModeMerge", throwIfNotFound: true);
@@ -902,6 +913,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Main_FocusRightSwitch;
     private readonly InputAction m_Main_FocusLeftHold;
     private readonly InputAction m_Main_FocusRightHold;
+    private readonly InputAction m_Main_Dodge;
     /// <summary>
     /// Provides access to input actions defined in input action map "Main".
     /// </summary>
@@ -982,6 +994,10 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @FocusRightHold => m_Wrapper.m_Main_FocusRightHold;
         /// <summary>
+        /// Provides access to the underlying input action "Main/Dodge".
+        /// </summary>
+        public InputAction @Dodge => m_Wrapper.m_Main_Dodge;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Main; }
@@ -1058,6 +1074,9 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
             @FocusRightHold.started += instance.OnFocusRightHold;
             @FocusRightHold.performed += instance.OnFocusRightHold;
             @FocusRightHold.canceled += instance.OnFocusRightHold;
+            @Dodge.started += instance.OnDodge;
+            @Dodge.performed += instance.OnDodge;
+            @Dodge.canceled += instance.OnDodge;
         }
 
         /// <summary>
@@ -1120,6 +1139,9 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
             @FocusRightHold.started -= instance.OnFocusRightHold;
             @FocusRightHold.performed -= instance.OnFocusRightHold;
             @FocusRightHold.canceled -= instance.OnFocusRightHold;
+            @Dodge.started -= instance.OnDodge;
+            @Dodge.performed -= instance.OnDodge;
+            @Dodge.canceled -= instance.OnDodge;
         }
 
         /// <summary>
@@ -1157,7 +1179,6 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
     // Debug
     private readonly InputActionMap m_Debug;
     private List<IDebugActions> m_DebugActionsCallbackInterfaces = new List<IDebugActions>();
-    private readonly InputAction m_Debug_Dodge;
     private readonly InputAction m_Debug_ShotModeNormal;
     private readonly InputAction m_Debug_ShotModeWaltz;
     private readonly InputAction m_Debug_ShotModeMerge;
@@ -1172,10 +1193,6 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
         public DebugActions(@GameMaininput wrapper) { m_Wrapper = wrapper; }
-        /// <summary>
-        /// Provides access to the underlying input action "Debug/Dodge".
-        /// </summary>
-        public InputAction @Dodge => m_Wrapper.m_Debug_Dodge;
         /// <summary>
         /// Provides access to the underlying input action "Debug/ShotModeNormal".
         /// </summary>
@@ -1214,9 +1231,6 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_DebugActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_DebugActionsCallbackInterfaces.Add(instance);
-            @Dodge.started += instance.OnDodge;
-            @Dodge.performed += instance.OnDodge;
-            @Dodge.canceled += instance.OnDodge;
             @ShotModeNormal.started += instance.OnShotModeNormal;
             @ShotModeNormal.performed += instance.OnShotModeNormal;
             @ShotModeNormal.canceled += instance.OnShotModeNormal;
@@ -1237,9 +1251,6 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         /// <seealso cref="DebugActions" />
         private void UnregisterCallbacks(IDebugActions instance)
         {
-            @Dodge.started -= instance.OnDodge;
-            @Dodge.performed -= instance.OnDodge;
-            @Dodge.canceled -= instance.OnDodge;
             @ShotModeNormal.started -= instance.OnShotModeNormal;
             @ShotModeNormal.performed -= instance.OnShotModeNormal;
             @ShotModeNormal.canceled -= instance.OnShotModeNormal;
@@ -1408,6 +1419,13 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnFocusRightHold(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Dodge" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDodge(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Debug" which allows adding and removing callbacks.
@@ -1416,13 +1434,6 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
     /// <seealso cref="DebugActions.RemoveCallbacks(IDebugActions)" />
     public interface IDebugActions
     {
-        /// <summary>
-        /// Method invoked when associated input action "Dodge" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDodge(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "ShotModeNormal" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

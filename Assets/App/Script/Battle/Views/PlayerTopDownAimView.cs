@@ -31,6 +31,7 @@ namespace App.Battle.Views
         {
             if (_platformHandRotation == null)
             {
+                _onFocus.OnNext(-1);
                 return DefaultAimPosition;
             }
 
@@ -39,11 +40,13 @@ namespace App.Battle.Views
                     out var hitGround,
                     GameParamData.RayMaxDistance, LayerConstants.Default))
             {
+                _onFocus.OnNext(-1);
                 return DefaultAimPosition;
             }
 
             if (!IsFocus)
             {
+                _onFocus.OnNext(-1);
                 return hitGround.point;
             }
 
@@ -76,18 +79,22 @@ namespace App.Battle.Views
                     continue;
                 }
 
-                if (view.HitBoxType == HitBoxType.Enemy)
+                if (view.HitBoxType != HitBoxType.Enemy)
                 {
-                    _onFocus.OnNext(view.Id);
-                    return hit.collider.transform.position;
+                    continue;
                 }
 
-                _onFocus.OnNext(-1);
-                return hit.point;
+                _onFocus.OnNext(view.Id);
+                return hit.collider.transform.position;
             }
 
             _onFocus.OnNext(-1);
-            return _raycastHits[0].point;
+            return hitGround.point;
+        }
+
+        private void OnDestroy()
+        {
+            _onFocus.Dispose();
         }
     }
 }
