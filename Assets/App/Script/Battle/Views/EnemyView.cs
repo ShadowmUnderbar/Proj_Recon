@@ -45,7 +45,13 @@ namespace App.Battle.Views
 
         private void Update()
         {
+            if (!transform.hasChanged)
+            {
+                return;
+            }
+
             Pose.Value = transform.ToPose();
+            transform.hasChanged = false;
         }
 
         public async UniTask Dead()
