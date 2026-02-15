@@ -1,3 +1,4 @@
+using System;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using R3;
@@ -7,7 +8,7 @@ using VContainer.Unity;
 
 namespace App.Battle.UseCase
 {
-    public class EnemyControlUseCase : ITickable
+    public class EnemyControlUseCase : ITickable, IDisposable
     {
         private readonly IPlayerAimDataStore _playerAimDataStore;
         private readonly IEnemyPresenter _enemyPresenter;
@@ -47,6 +48,11 @@ namespace App.Battle.UseCase
                 _playerAimDataStore.LeftAimDirection,
                 _playerAimDataStore.RightAimDirection
             );
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
     }
 }
