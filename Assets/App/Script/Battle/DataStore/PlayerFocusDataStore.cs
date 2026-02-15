@@ -43,56 +43,32 @@ namespace App.Battle.DataStore
 
         public void Tick()
         {
-            UpdateLeftFocusType();
-            UpdateRightFocusType();
+            UpdateFocusType(FocusLeftTargetId, LeftFocusType);
+            UpdateFocusType(FocusRightTargetId, RightFocusType);
         }
 
-        private void UpdateLeftFocusType()
+        private void UpdateFocusType(ReactiveProperty<int> focusTargetId, ReactiveProperty<AimFocusType> focusType)
         {
-            if (FocusLeftTargetId.Value == -1)
+            if (focusTargetId.Value == -1)
             {
-                LeftFocusType.Value = AimFocusType.NotFocus;
+                focusType.Value = AimFocusType.NotFocus;
                 return;
             }
 
-            if (!_enemyDataStore.TryGetEnemyData(FocusLeftTargetId.Value, out var enemy))
+            if (!_enemyDataStore.TryGetEnemyData(focusTargetId.Value, out var enemy))
             {
-                LeftFocusType.Value = AimFocusType.NotFocus;
+                focusType.Value = AimFocusType.NotFocus;
                 return;
             }
 
             var distance = (enemy.Pose.position - _playerStateDataStore.Position.Value).sqrMagnitude;
             if (Mathf.Abs(distance) >= LongFocusDistance * LongFocusDistance)
             {
-                LeftFocusType.Value = AimFocusType.LongFocus;
+                focusType.Value = AimFocusType.LongFocus;
                 return;
             }
 
-            LeftFocusType.Value = AimFocusType.Focus;
-        }
-
-        private void UpdateRightFocusType()
-        {
-            if (FocusRightTargetId.Value == -1)
-            {
-                RightFocusType.Value = AimFocusType.NotFocus;
-                return;
-            }
-
-            if (!_enemyDataStore.TryGetEnemyData(FocusRightTargetId.Value, out var enemy))
-            {
-                RightFocusType.Value = AimFocusType.NotFocus;
-                return;
-            }
-
-            var distance = (enemy.Pose.position - _playerStateDataStore.Position.Value).sqrMagnitude;
-            if (Mathf.Abs(distance) >= LongFocusDistance * LongFocusDistance)
-            {
-                RightFocusType.Value = AimFocusType.LongFocus;
-                return;
-            }
-
-            RightFocusType.Value = AimFocusType.Focus;
+            focusType.Value = AimFocusType.Focus;
         }
     }
 }
