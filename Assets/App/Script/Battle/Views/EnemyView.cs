@@ -2,6 +2,7 @@ using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.EnemyAI;
 using App.Common.Data;
+using App.Framework.Utilities.Extensions;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
@@ -44,7 +45,7 @@ namespace App.Battle.Views
 
         private void Update()
         {
-            Pose.Value = new Pose(transform.position, transform.rotation);
+            Pose.Value = transform.ToPose();
         }
 
         public async UniTask Dead()
@@ -70,6 +71,11 @@ namespace App.Battle.Views
             }
 
             EnemyAI.SetPlayerAimDirection(aimDir1, aimDir2);
+        }
+
+        private void OnDestroy()
+        {
+            Pose.Dispose();
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Common.Data;

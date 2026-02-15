@@ -49,8 +49,9 @@ namespace App.Battle.Views
                 .GetComponent<IEnemyView>();
 
             view.Init(enemyData.Id, enemyData, resistanceDirectionType);
-            view.Pose.Subscribe(pose => _onEnemyPoseUpdate.OnNext((view.Id, pose)))
-                .AddTo(this);
+            view.Pose
+                .Subscribe(x => _onEnemyPoseUpdate.OnNext((view.Id, x)))
+                .AddTo(view as MonoBehaviour);
             view.SetPlayerTransform(_playerView.PlayerTransform);
 
             _enemies.Add(enemyData.Id, view);
@@ -126,6 +127,17 @@ namespace App.Battle.Views
             {
                 enemy.SetPlayerAimDirection(aimDir1, aimDir2);
             }
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var enemy in _enemies.Values)
+            {
+                enemy.Destroy();
+            }
+
+            _enemies.Clear();
+            _onEnemyPoseUpdate.Dispose();
         }
     }
 }

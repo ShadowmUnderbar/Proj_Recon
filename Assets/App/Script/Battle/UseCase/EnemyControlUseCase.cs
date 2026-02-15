@@ -26,7 +26,8 @@ namespace App.Battle.UseCase
             _enemyPresenter = enemyPresenter;
             _enemyDataStore = enemyDataStore;
 
-            _enemyPresenter.OnEnemyPoseUpdate.Subscribe(OnEnemyPoseUpdate)
+            _enemyPresenter.OnEnemyPoseUpdate
+                .Subscribe(OnEnemyPoseUpdate)
                 .AddTo(_disposables);
         }
 
