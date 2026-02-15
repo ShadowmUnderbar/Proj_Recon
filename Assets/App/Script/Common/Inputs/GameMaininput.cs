@@ -369,17 +369,6 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""3786684d-7bce-44cf-bad9-a68da0febd99"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""UseRight"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""e0ff3102-13fe-425d-8f29-3cf50c424294"",
                     ""path"": ""<XRController>{LeftHand}/triggerPressed"",
                     ""interactions"": """",

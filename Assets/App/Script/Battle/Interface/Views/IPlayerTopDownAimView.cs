@@ -5,6 +5,7 @@ namespace App.Battle.Interface
 {
     public interface IPlayerTopDownAimView
     {
+        Transform Transform { get; }
         Vector3 GetAimPosition();
         Observable<int> OnFocus { get; }
         bool IsFocus { get; set; }

@@ -80,10 +80,19 @@ namespace App.Battle.Views
 
         public void Aim()
         {
-            var isVR = DebugConfig.IsVRMode;
+            if (_leftTopDown == null || _rightTopDown == null)
+            {
+                return;
+            }
 
-            var leftAimPosition = isVR ? _leftTopDown.GetAimPosition() : MousePosition;
-            var rightAimPosition = isVR ? _rightTopDown.GetAimPosition() : MousePosition;
+            if (!DebugConfig.IsVRMode)
+            {
+                _leftTopDown.Transform.parent.LookAt(MousePosition);
+                _rightTopDown.Transform.parent.LookAt(MousePosition);
+            }
+
+            var leftAimPosition = _leftTopDown.GetAimPosition();
+            var rightAimPosition = _rightTopDown.GetAimPosition();
 
             _onLeftAimPosition.OnNext(leftAimPosition);
             _onRightAimPosition.OnNext(rightAimPosition);
@@ -105,7 +114,6 @@ namespace App.Battle.Views
 
         public void IsFocusLeft(bool isFocus)
         {
-            Debug.Log($"IsFocusLeft: {isFocus}");
             _leftTopDown.IsFocus = isFocus;
         }
 

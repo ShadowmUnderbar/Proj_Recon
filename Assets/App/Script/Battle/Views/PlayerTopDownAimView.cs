@@ -1,3 +1,4 @@
+using System;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Common.Data;
@@ -18,6 +19,7 @@ namespace App.Battle.Views
         private readonly Subject<int> _onFocus = new();
 
         public bool IsFocus { get; set; }
+        public Transform Transform => transform;
 
         private void Start()
         {
@@ -31,17 +33,19 @@ namespace App.Battle.Views
                 return transform.forward * GameParamData.RayMaxDistance;
             }
 
-            var count = Physics.SphereCastNonAlloc(transform.position, Radius,
-                _platformHandRotation.Rotation * Vector3.forward,
-                _raycastHits, GameParamData.RayMaxDistance,
-                _targetLayers);
-
             if (!IsFocus)
             {
                 _onFocus.OnNext(-1);
                 var pos = _platformHandRotation.Rotation * Vector3.forward * GameParamData.RayMaxDistance;
                 return pos;
             }
+
+            var count = Physics.SphereCastNonAlloc(transform.position, Radius,
+                _platformHandRotation.Rotation * Vector3.forward,
+                _raycastHits, GameParamData.RayMaxDistance,
+                _targetLayers);
+
+            Debug.Log("FocusCount: " + count);
 
             if (count <= 0)
             {
