@@ -13,7 +13,6 @@ namespace App.Battle.Views
         private PlatformHandRotation _platformHandRotation;
         private const float Radius = 0.2f;
         private readonly RaycastHit[] _raycastHits = new RaycastHit[5];
-        private readonly int _targetLayers = LayerConstants.Default | LayerConstants.Hitbox;
 
         public Observable<int> OnFocus => _onFocus;
         private readonly Subject<int> _onFocus = new();
@@ -26,31 +25,38 @@ namespace App.Battle.Views
             _platformHandRotation = transform.parent.GetComponent<PlatformHandRotation>();
         }
 
+        private Vector3 DefaultAimPosition => transform.forward * GameParamData.RayMaxDistance;
+
         public Vector3 GetAimPosition()
         {
             if (_platformHandRotation == null)
             {
-                return transform.forward * GameParamData.RayMaxDistance;
+                return DefaultAimPosition;
+            }
+
+            if (!Physics.Raycast(transform.position,
+                    _platformHandRotation.Rotation * Vector3.forward,
+                    out var hitGround,
+                    GameParamData.RayMaxDistance, LayerConstants.Default))
+            {
+                return DefaultAimPosition;
             }
 
             if (!IsFocus)
             {
-                _onFocus.OnNext(-1);
-                var pos = _platformHandRotation.Rotation * Vector3.forward * GameParamData.RayMaxDistance;
-                return pos;
+                return hitGround.point;
             }
 
             var count = Physics.SphereCastNonAlloc(transform.position, Radius,
                 _platformHandRotation.Rotation * Vector3.forward,
                 _raycastHits, GameParamData.RayMaxDistance,
-                _targetLayers);
-
-            Debug.Log("FocusCount: " + count);
+                LayerConstants.Hitbox);
 
             if (count <= 0)
             {
                 _onFocus.OnNext(-1);
-                var pos = _platformHandRotation.Rotation * Vector3.forward * GameParamData.RayMaxDistance;
+                var pos = hitGround.point;
+                pos.y = 0;
                 return pos;
             }
 
