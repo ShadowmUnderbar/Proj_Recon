@@ -20,6 +20,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerBulletParameterDataStore _playerBulletParameterDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
+        private readonly IPlatformConfigDataStore _platformConfigDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -31,7 +32,8 @@ namespace App.Battle.UseCase
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
             IPlayerBulletParameterDataStore playerBulletParameterDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputDataStore gameInputDataStore
+            IGameInputDataStore gameInputDataStore,
+            IPlatformConfigDataStore platformConfigDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -41,6 +43,7 @@ namespace App.Battle.UseCase
             _playerBulletParameterDataStore = playerBulletParameterDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
+            _platformConfigDataStore = platformConfigDataStore;
         }
 
         public void Initialize()
@@ -65,7 +68,7 @@ namespace App.Battle.UseCase
             var leftFocusType = _playerFocusDataStore.LeftFocusType.Value;
             var rightFocusType = _playerFocusDataStore.RightFocusType.Value;
 
-            var dominantHand = DebugConfig.IsVRMode ? _playerSettingDataStore.DominantHand.Value : HandType.Left;
+            var dominantHand = _platformConfigDataStore.IsVRMode ? _playerSettingDataStore.DominantHand.Value : HandType.Left;
             var nonDominantHand = dominantHand == HandType.Right ? HandType.Left : HandType.Right;
 
             _playerControlPresenter.SetHandRayColor(dominantHand, ThemeColors.GetRayColor(shotType, rightFocusType));

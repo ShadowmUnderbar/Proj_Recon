@@ -14,6 +14,7 @@ namespace App.Battle.DataStore
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IGameInputDataStore _gameInputDataStore;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
+        private readonly IPlatformConfigDataStore _platformConfigDataStore;
 
         public ReactiveProperty<ShotType> ShotType { get; } = new();
 
@@ -25,13 +26,15 @@ namespace App.Battle.DataStore
             IPlayerAimDataStore playerAimDataStore,
             IPlayerStateDataStore playerStateDataStore,
             IGameInputDataStore gameInputDataStore,
-            ICoreSkillUnlockDataStore coreSkillUnlockDataStore
+            ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
+            IPlatformConfigDataStore platformConfigDataStore
         )
         {
             _playerAimDataStore = playerAimDataStore;
             _playerStateDataStore = playerStateDataStore;
             _gameInputDataStore = gameInputDataStore;
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
+            _platformConfigDataStore = platformConfigDataStore;
         }
 
         public void Initialize()
@@ -41,7 +44,7 @@ namespace App.Battle.DataStore
 
         public void Tick()
         {
-            if (!DebugConfig.IsVRMode)
+            if (!_platformConfigDataStore.IsVRMode)
             {
                 UpdateShotType_PC();
             }

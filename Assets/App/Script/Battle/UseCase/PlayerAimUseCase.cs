@@ -7,10 +7,6 @@ using System;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace App.Battle.UseCase
 {
     public class PlayerAimUseCase : IInitializable, ITickable, IDisposable
@@ -19,6 +15,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerFocusDataStore _playerFocusDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
+        private readonly IPlatformConfigDataStore _platformConfigDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -27,13 +24,15 @@ namespace App.Battle.UseCase
             IPlayerAimDataStore playerAimDataStore,
             IPlayerFocusDataStore playerFocusDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputDataStore gameInputDataStore
+            IGameInputDataStore gameInputDataStore,
+            IPlatformConfigDataStore platformConfigDataStore
         )
         {
             _playerAimDataStore = playerAimDataStore;
             _playerFocusDataStore = playerFocusDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
+            _platformConfigDataStore = platformConfigDataStore;
         }
 
         public void Initialize()
@@ -81,7 +80,7 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            if (!DebugConfig.IsVRMode)
+            if (!_platformConfigDataStore.IsVRMode)
             {
                 _playerControlPresenter.MouseAim(_gameInputDataStore.MouseInputPosition);
             }
