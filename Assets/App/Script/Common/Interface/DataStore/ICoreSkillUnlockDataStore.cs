@@ -7,6 +7,6 @@ namespace App.Common.Interface
         bool IsUnLockWaltz { get; }
         bool IsUnLockLongFocus { get; }
         bool IsUnLockMerge { get; }
-        bool IsUnLockCatalyst { get; }
+        bool IsUnLockBlitz { get; }
     }
 }

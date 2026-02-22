@@ -76,14 +76,14 @@ namespace App.Battle.UseCase
                 moveTarget = hit.point;
             }
 
-            Catalyst(playerPosition, dodgeDirection, moveTarget);
+            Blitz(playerPosition, dodgeDirection, moveTarget);
 
             _playerStateDataStore.Position.Value = moveTarget;
         }
 
-        private void Catalyst(Vector3 playerPosition, Vector3 dodgeDirection, Vector3 moveTarget)
+        private void Blitz(Vector3 playerPosition, Vector3 dodgeDirection, Vector3 moveTarget)
         {
-            if (!_coreSkillUnlockDataStore.IsUnLockCatalyst)
+            if (!_coreSkillUnlockDataStore.IsUnLockBlitz)
             {
                 return;
             }

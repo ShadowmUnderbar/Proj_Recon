@@ -8,6 +8,6 @@ namespace App.Common.Data
         Waltz,      //両手開きの連射
         LongAim,    //長距離エイム射撃
         Marge,      //両手合わせ・爆破攻撃
-        Catalyst,   //回避連鎖スキル
+        Blitz,   //回避連鎖スキル
     }
 }

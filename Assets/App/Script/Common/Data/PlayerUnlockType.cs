@@ -8,6 +8,6 @@ namespace App.Common.Data
         Waltz,
         LongFocus,
         Merge,
-        Catalyst
+        Blitz
     }
 }

@@ -36,8 +36,8 @@ namespace App.Common.DataStore
             DebugConfig.IsAllUnLock ||
             _saveDataStore.SaveData.UnlockType >= PlayerUnlockType.Merge;
 
-        public bool IsUnLockCatalyst =>
+        public bool IsUnLockBlitz =>
             DebugConfig.IsAllUnLock ||
-            _saveDataStore.SaveData.UnlockType >= PlayerUnlockType.Catalyst;
+            _saveDataStore.SaveData.UnlockType >= PlayerUnlockType.Blitz;
     }
 }
