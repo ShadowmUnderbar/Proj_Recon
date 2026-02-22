@@ -156,8 +156,8 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   _playerView: {fileID: 5135707317468556012, guid: 63eeda3b2ca9c0249aa273426f18c39a, type: 3}
-  _bulletView: {fileID: -1422674814317833365, guid: 49491bd3959e27e47be1fb1814dedffa, type: 3}
   _playerShot: {fileID: 5150771849797122162, guid: ad78e488f18e4674a84415e4cb64d562, type: 3}
+  _playerBulletView: {fileID: 6765841704491861807, guid: 49491bd3959e27e47be1fb1814dedffa, type: 3}
   _playerAimMuzzleView: {fileID: 168147134050017325, guid: cf3c0070e705849439f9f207805c5ef5, type: 3}
   _playerTopDownAimView: {fileID: 2907134111677622866, guid: 365f7d30cd8b193498bb7ca49145ec0e, type: 3}
   _enemyStoreView: {fileID: 4339147710328061394, guid: 36921a23a35ddae4aab98efe0648b985, type: 3}

@@ -15,14 +15,18 @@ namespace App.Battle.Views.Enemy.Bullet
             base.Spawn(attackerId, pose, bulletData, focusTargetId, targetTransform);
 
             _homingTarget = targetTransform;
-            Destroy(gameObject, 5.0f);
         }
 
         protected override void Update()
         {
             base.Update();
 
-            transform.position += transform.forward * (Speed * Time.deltaTime);
+            if (!CanHit)
+            {
+                return;
+            }
+
+            transform.position += transform.forward * (BulletData.Speed * Time.deltaTime);
 
             if (_homingTarget == null)
             {

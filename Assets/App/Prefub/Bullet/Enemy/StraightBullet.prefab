@@ -251,6 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87757ad0ee6ddcf4a85dea76ed635ae7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _trailRenderer: {fileID: 8164197524305030765}
   _shooterLayer:
     _value: 6
   _hitCollider: {fileID: 6774043360051185821}

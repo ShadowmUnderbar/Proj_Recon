@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 1414335571231199295}
   - component: {fileID: 1742447408268235773}
   - component: {fileID: 1099906825193775121}
-  - component: {fileID: -1422674814317833365}
   - component: {fileID: 1582486052492150040}
   - component: {fileID: -6858876365750654524}
+  - component: {fileID: 6765841704491861807}
   m_Layer: 7
   m_Name: PlayerBullet
   m_TagString: Bullet
@@ -108,22 +108,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-1422674814317833365
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3472522132640575550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2fefa4638e8bdc43911ed54326325c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _trailRenderer: {fileID: 1582486052492150040}
-  _shooterLayer:
-    _value: 3
-  _hitCollider: {fileID: 1099906825193775121}
 --- !u!96 &1582486052492150040
 TrailRenderer:
   serializedVersion: 3
@@ -255,3 +239,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &6765841704491861807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3472522132640575550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2fefa4638e8bdc43911ed54326325c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _trailRenderer: {fileID: 1582486052492150040}
+  _shooterLayer:
+    _value: 3
+  _hitCollider: {fileID: 1099906825193775121}

@@ -14,8 +14,8 @@ namespace App.Battle
     public class BattleLifetimeScope : LifetimeScope
     {
         [SerializeField] private BattlePlayerView _playerView;
-        [SerializeField] private PlayerBulletView _bulletView;
         [SerializeField] private PlayerShotView _playerShot;
+        [SerializeField] private PlayerBulletView _playerBulletView;
         [SerializeField] private PlayerAimMuzzleView _playerAimMuzzleView;
         [SerializeField] private PlayerTopDownAimView _playerTopDownAimView;
         [SerializeField] private EnemyStoreView _enemyStoreView;
@@ -81,7 +81,7 @@ namespace App.Battle
 
             builder.Register<SimpleObjectFactory<IBulletView, PlayerBulletView>>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<IBulletView>>()
-                .WithParameter("prefab", _bulletView);
+                .WithParameter("prefab", _playerBulletView);
 
             builder.Register<SimpleObjectFactory<IPlayerShotView, PlayerShotView>>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<IPlayerShotView>>()
@@ -106,6 +106,7 @@ namespace App.Battle
             builder.Register<SimpleObjectFactory<BlitzEffectView, BlitzEffectView>>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<BlitzEffectView>>()
                 .WithParameter("prefab", _blitzEffectView);
+
             #endregion
         }
     }

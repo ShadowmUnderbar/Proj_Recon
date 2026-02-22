@@ -11,20 +11,20 @@ namespace App.Battle.Views
 {
     public class PlayerShotView : MonoBehaviour, IPlayerShotView
     {
-        private ISimpleObjectFactory<IBulletView> _bulletFactory;
+        private ISimpleObjectFactory<IBulletView> _playerBulletFactory;
         private readonly Dictionary<float, IBulletView> _bulletViews = new();
 
         [Inject]
         public void Construct(
-            ISimpleObjectFactory<IBulletView> bulletFactory
+            ISimpleObjectFactory<IBulletView> playerBulletFactory
         )
         {
-            _bulletFactory = bulletFactory;
+            _playerBulletFactory = playerBulletFactory;
         }
 
         public void SpawnBullet(BulletData bulletData, int focusTargetId)
         {
-            var bullet = _bulletFactory.Instantiate(null);
+            var bullet = _playerBulletFactory.Instantiate(null);
 
             _bulletViews.Add(Time.time, bullet);
             bullet.Spawn(BasePlayerParameter.PlayerId, transform.ToPose(), bulletData, focusTargetId);
