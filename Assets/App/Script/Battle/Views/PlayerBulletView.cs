@@ -41,7 +41,7 @@ namespace App.Battle.Views
                         return;
                     }
 
-                    if (x.gameObject.CompareTag("Bullet"))
+                    if (x.gameObject.CompareTag(TagConstants.Bullet))
                     {
                         return;
                     }
