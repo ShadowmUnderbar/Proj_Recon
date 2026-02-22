@@ -9,7 +9,7 @@ namespace App.Battle.Interface.DataStore
         ReactiveProperty<Vector3> Position { get; }
         ReactiveProperty<Quaternion> Rotate { get; }
         Pose Pose { get; }
-        Transform PlayerTransform { get; }
+        Transform PlayerTransform { get; set; }
 
         ReactiveProperty<float> Health { get; }
         ReactiveProperty<float> MaxHealth { get; }

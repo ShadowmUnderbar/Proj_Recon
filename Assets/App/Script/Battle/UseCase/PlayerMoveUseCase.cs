@@ -36,6 +36,8 @@ namespace App.Battle.UseCase
                 .DistinctUntilChanged()
                 .Subscribe(pos => _playerControlPresenter.Move(new Vector2(pos.x, pos.z)))
                 .AddTo(_disposable);
+            _playerStateDataStore.PlayerTransform =
+                _playerControlPresenter.PlayerTransform;
         }
 
         public void Tick()

@@ -20,6 +20,7 @@ namespace App.Battle
         [SerializeField] private PlayerTopDownAimView _playerTopDownAimView;
         [SerializeField] private EnemyStoreView _enemyStoreView;
         [SerializeField] private HitBoxStoreView _hitBoxStoreView;
+        [SerializeField] private BlitzEffectView _blitzEffectView;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -102,6 +103,9 @@ namespace App.Battle
                 .As<IHitBoxStoreView>()
                 .WithParameter("prefab", _hitBoxStoreView);
 
+            builder.Register<SimpleObjectFactory<BlitzEffectView, BlitzEffectView>>(Lifetime.Singleton)
+                .As<ISimpleObjectFactory<BlitzEffectView>>()
+                .WithParameter("prefab", _blitzEffectView);
             #endregion
         }
     }

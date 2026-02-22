@@ -19,6 +19,7 @@ namespace App.Battle.UseCase
         private readonly IGameInputDataStore _gameInputUseCase;
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
+        private readonly IPlayerControlPresenter _playerControlPresenter;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -29,7 +30,8 @@ namespace App.Battle.UseCase
             IPlayerDodgeParameterDataStore playerDodgeParameterDataStore,
             IGameInputDataStore gameInputUseCase,
             IEnemyPresenter enemyPresenter,
-            ICoreSkillUnlockDataStore coreSkillUnlockDataStore
+            ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
+            IPlayerControlPresenter playerControlPresenter
         )
         {
             _playerStateDataStore = playerStateDataStore;
@@ -38,6 +40,7 @@ namespace App.Battle.UseCase
             _gameInputUseCase = gameInputUseCase;
             _enemyPresenter = enemyPresenter;
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
+            _playerControlPresenter = playerControlPresenter;
         }
 
 
@@ -78,6 +81,7 @@ namespace App.Battle.UseCase
 
             Blitz(playerPosition, dodgeDirection, moveTarget);
 
+            _playerControlPresenter.Blitz(_playerStateDataStore.Position.Value, _playerStateDataStore.PlayerTransform);
             _playerStateDataStore.Position.Value = moveTarget;
         }
 
