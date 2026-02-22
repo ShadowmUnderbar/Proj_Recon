@@ -7,10 +7,6 @@ using System;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
 namespace App.Battle.UseCase
 {
     public class PlayerAimUseCase : IInitializable, ITickable, IDisposable

@@ -18,13 +18,12 @@ namespace App.Battle.Views
         private BulletData _bulletData;
         private int _hitCount = 0;
         private int _focusTargetId = 0;
-        private bool _isForcedPenetration = false;
         private int _attackerId = 0;
 
         public void Spawn(int attackerId, Pose pose, BulletData bulletData, int focusTargetId,
             Transform targetTransform = null)
         {
-            _isForcedPenetration = focusTargetId >= 0;
+            _focusTargetId = focusTargetId;
 
             transform.SetPositionAndRotation(pose.position, pose.rotation);
             _bulletData = bulletData;
@@ -68,12 +67,7 @@ namespace App.Battle.Views
 
                     if (_focusTargetId == hitBox.Id)
                     {
-                        _isForcedPenetration = false;
-                    }
-
-                    if (_isForcedPenetration)
-                    {
-                        return;
+                        Destroy(gameObject);
                     }
 
                     if (!canPenetrable)
@@ -83,7 +77,7 @@ namespace App.Battle.Views
 
                     _hitCount++;
 
-                    if (_isForcedPenetration && _hitCount >= _bulletData.Penetration)
+                    if (_focusTargetId != default && _hitCount >= _bulletData.Penetration)
                     {
                         Destroy(gameObject);
                     }
