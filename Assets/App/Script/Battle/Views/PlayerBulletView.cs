@@ -23,6 +23,7 @@ namespace App.Battle.Views
         public void Spawn(int attackerId, Pose pose, BulletData bulletData, int focusTargetId,
             Transform targetTransform = null)
         {
+            _attackerId = attackerId;
             _focusTargetId = focusTargetId;
 
             transform.SetPositionAndRotation(pose.position, pose.rotation);
