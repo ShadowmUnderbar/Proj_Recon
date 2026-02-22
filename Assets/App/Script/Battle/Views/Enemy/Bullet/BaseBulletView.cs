@@ -33,7 +33,7 @@ namespace App.Battle.Views.Enemy.Bullet
                         return;
                     }
 
-                    if (x.gameObject.CompareTag("Bullet"))
+                    if (x.gameObject.CompareTag(TagConstants.Bullet))
                     {
                         Debug.Log("BaseBulletView:Hit - Bullet");
 
