@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -9,9 +8,8 @@ namespace App.Battle.Views
         [SerializeField] private LineRenderer lineRenderer;
 
         private const float StartDuration = 0.1f;
-        private const float WaitDuration = 1.5f;
-        private const float DelayDuration = 0.5f;
-        private Vector3 OffsetPosition => new Vector3(0f, 1f, 0f);
+        private const float WaitDuration = 0.2f;
+        private Vector3 OffsetPosition => new(0f, 1f, 0f);
 
         public async UniTask Play(Vector3 startPos, Transform playerTransform)
         {
@@ -30,7 +28,7 @@ namespace App.Battle.Views
             }
 
             time = 0f;
-            while (time < WaitDuration)
+            while (time < WaitDuration * 0.5f)
             {
                 time += Time.deltaTime;
                 await UniTask.Yield();
@@ -46,13 +44,16 @@ namespace App.Battle.Views
             var prevStartIndex = 0;
             time = 0f;
 
-            while (time < DelayDuration)
+            while (time < WaitDuration * 0.5f)
             {
                 time += Time.deltaTime;
-                var progress = Mathf.Clamp01(time / DelayDuration);
+                var progress = Mathf.Clamp01(time / WaitDuration * 0.5f);
                 var startIndex = Mathf.Min(Mathf.FloorToInt(progress * finalPointCount), finalPointCount - 1);
 
-                if (startIndex >= finalPointCount - 1) break;
+                if (startIndex >= finalPointCount - 1)
+                {
+                    break;
+                }
 
                 if (startIndex != prevStartIndex)
                 {
