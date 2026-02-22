@@ -12,7 +12,7 @@ namespace App.Battle.DataStore
         public ReactiveProperty<Vector3> Position { get; } = new();
         public ReactiveProperty<Quaternion> Rotate { get; } = new();
         public Pose Pose => new(Position.Value, Rotate.Value);
-        public Transform PlayerTransform { get; private set; }
+        public Transform PlayerTransform { get; set; }
 
         public ReactiveProperty<float> Health { get; } = new();
         public ReactiveProperty<float> MaxHealth { get; } = new();

@@ -19,6 +19,7 @@ namespace App.Battle.Presenters
 
         public ReactiveProperty<Pose> LeftHandPose => _playerView.LeftHandPose;
         public ReactiveProperty<Pose> RightHandPose => _playerView.RightHandPose;
+        public Transform PlayerTransform => _playerView.PlayerTransform;
 
         [Inject]
         public PlayerControlPresenter(
@@ -76,6 +77,11 @@ namespace App.Battle.Presenters
         public void IsFocusLeft(bool isFocus)
         {
             _playerView.IsFocusLeft(isFocus);
+        }
+
+        public void Blitz(Vector3 startPos, Transform playerTransform)
+        {
+            _playerView.Blitz(startPos, playerTransform);
         }
     }
 }

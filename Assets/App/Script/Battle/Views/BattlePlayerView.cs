@@ -9,6 +9,7 @@ using R3;
 using App.Common.Data;
 using App.Common.Views;
 using App.Framework.Utilities.Extensions;
+using Cysharp.Threading.Tasks;
 
 namespace App.Battle.Views
 {
@@ -35,6 +36,7 @@ namespace App.Battle.Views
         private ISimpleObjectFactory<IPlayerTopDownAimView> _topDownFactory;
         private ISimpleObjectFactory<IPlayerAimMuzzleView> _aimFactory;
         private ISimpleObjectFactory<IPlayerShotView> _shotFactory;
+        private ISimpleObjectFactory<BlitzEffectView> _blitzEffectView;
 
         public ReactiveProperty<Pose> LeftHandPose { get; } = new();
         public ReactiveProperty<Pose> RightHandPose { get; } = new();
@@ -43,12 +45,14 @@ namespace App.Battle.Views
         public void Construct(
             ISimpleObjectFactory<IPlayerTopDownAimView> topDownFactory,
             ISimpleObjectFactory<IPlayerAimMuzzleView> aimFactory,
-            ISimpleObjectFactory<IPlayerShotView> shotFactory
+            ISimpleObjectFactory<IPlayerShotView> shotFactory,
+            ISimpleObjectFactory<BlitzEffectView> blitzEffectView
         )
         {
             _topDownFactory = topDownFactory;
             _aimFactory = aimFactory;
             _shotFactory = shotFactory;
+            _blitzEffectView = blitzEffectView;
 
             var aimViews = new List<IPlayerAimMuzzleView>();
             var shotViews = new List<IPlayerShotView>();
@@ -144,6 +148,12 @@ namespace App.Battle.Views
         public void Shot(HandType handType, BulletData bulletData, int focusTargetId)
         {
             _playerTopDownAimListView.Shot(handType, bulletData, focusTargetId);
+        }
+
+        public void Blitz(Vector3 startPos, Transform playerPos)
+        {
+            var effect = _blitzEffectView.Instantiate(transform);
+            effect.Play(startPos, playerPos).Forget();
         }
 
         private void OnHitBullet(HitData hit)

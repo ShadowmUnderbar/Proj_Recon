@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -163,6 +162,7 @@ MonoBehaviour:
   _playerTopDownAimView: {fileID: 2907134111677622866, guid: 365f7d30cd8b193498bb7ca49145ec0e, type: 3}
   _enemyStoreView: {fileID: 4339147710328061394, guid: 36921a23a35ddae4aab98efe0648b985, type: 3}
   _hitBoxStoreView: {fileID: 6914517933678794931, guid: c33fa19a77f4b3240ad67937a879edf4, type: 3}
+  _blitzEffectView: {fileID: 8959355507770873111, guid: e83cca62039e1484ab7b3365492eebd3, type: 3}
 --- !u!4 &175168502
 Transform:
   m_ObjectHideFlags: 0

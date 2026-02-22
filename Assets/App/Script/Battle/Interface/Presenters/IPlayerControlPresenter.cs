@@ -13,6 +13,7 @@ namespace App.Battle.Interface
         ReactiveProperty<Vector3> OnUpdatePosition { get; }
         ReactiveProperty<Pose> LeftHandPose { get; }
         ReactiveProperty<Pose> RightHandPose { get; }
+        Transform PlayerTransform { get; }
 
         void Move(Vector2 moveV2);
         void Aim();
@@ -24,5 +25,6 @@ namespace App.Battle.Interface
         void MouseAim(Vector2 mousePos);
         void IsFocusRight(bool isFocus);
         void IsFocusLeft(bool isFocus);
+        void Blitz(Vector3 startPos, Transform playerPos);
     }
 }

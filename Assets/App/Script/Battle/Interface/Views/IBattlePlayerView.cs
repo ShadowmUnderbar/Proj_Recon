@@ -29,5 +29,6 @@ namespace App.Battle.Interface
         void SetHandRayColor(HandType handType, Color color);
         void SetHandEnableRay(HandType handType, bool enable);
         void Shot(HandType handType, BulletData bulletData, int focusTargetId);
+        void Blitz(Vector3 startPos, Transform playerPos);
     }
 }
