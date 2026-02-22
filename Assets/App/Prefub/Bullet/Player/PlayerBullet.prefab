@@ -120,6 +120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2fefa4638e8bdc43911ed54326325c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _trailRenderer: {fileID: 1582486052492150040}
   _shooterLayer:
     _value: 3
   _hitCollider: {fileID: 1099906825193775121}
