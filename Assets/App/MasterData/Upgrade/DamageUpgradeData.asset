@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
-  m_Name: CommonDamageUpgradeData
+  m_Name: DamageUpgradeData
   m_EditorClassIdentifier: 
-  _id: 
+  _id: 0
   _upgradeType: 1
   _requiredUnlockType: 0
+  _level: 0
   _value: 0

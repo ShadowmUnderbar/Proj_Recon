@@ -3,18 +3,28 @@ using App.Battle.Interface.DataStore;
 using App.Common.Data;
 using App.Common.Data.Database;
 using App.Common.Data.MasterData;
+using VContainer;
+using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
-    public class UpgradeSessionDataStore : IUpgradeSessionDataStore
+    public class UpgradeSessionDataStore : IUpgradeSessionDataStore, IInitializable
     {
         private readonly UpgradeDatabase _upgradeDatabase;
-        public List<string> AppliedUpgrades { get; }
+        public List<string> AppliedUpgrades { get; } = new();
 
-        public UpgradeSessionDataStore(UpgradeDatabase upgradeDatabase, List<string> appliedUpgrades)
+        [Inject]
+        public UpgradeSessionDataStore(
+            UpgradeDatabase upgradeDatabase
+        )
         {
             _upgradeDatabase = upgradeDatabase;
-            AppliedUpgrades = appliedUpgrades;
+        }
+
+        public void Initialize()
+        {
+            _upgradeDatabase.TryGetUpgradeMasterData("BulletDamage001", out var upgradeMasterData);
+            AddUpgrade(upgradeMasterData);
         }
 
         public float GetUpgradeValue(UpgradeType upgradeType)
