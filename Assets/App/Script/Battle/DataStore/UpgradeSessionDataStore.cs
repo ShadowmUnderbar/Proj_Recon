@@ -4,11 +4,10 @@ using App.Common.Data;
 using App.Common.Data.Database;
 using App.Common.Data.MasterData;
 using VContainer;
-using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
-    public class UpgradeSessionDataStore : IUpgradeSessionDataStore, IInitializable
+    public class UpgradeSessionDataStore : IUpgradeSessionDataStore
     {
         private readonly UpgradeDatabase _upgradeDatabase;
         public List<string> AppliedUpgrades { get; } = new();
@@ -21,15 +20,9 @@ namespace App.Battle.DataStore
             _upgradeDatabase = upgradeDatabase;
         }
 
-        public void Initialize()
-        {
-            _upgradeDatabase.TryGetUpgradeMasterData("BulletDamage001", out var upgradeMasterData);
-            AddUpgrade(upgradeMasterData);
-        }
-
         public float GetUpgradeValue(UpgradeType upgradeType)
         {
-            var value = 0f;
+            var value = 1f;
 
             foreach (var upgrade in AppliedUpgrades)
             {

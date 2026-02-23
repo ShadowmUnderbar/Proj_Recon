@@ -90,46 +90,36 @@ namespace App.Battle.UseCase
         {
             if (_gameInputDataStore.IsLeftTrigger.Value)
             {
-                TryLeftShot();
+                TryShot(HandType.Left);
             }
 
             if (_gameInputDataStore.IsRightTrigger.Value)
             {
-                TryRightShot();
+                TryShot(HandType.Right);
             }
         }
 
-        private void TryLeftShot()
+        private void TryShot(HandType handType)
         {
             var shotType = _playerShotTypeDataStore.ShotType.Value;
 
-            if (!_playerBulletParameterDataStore.CanShot(HandType.Left, shotType))
+            if (!_playerBulletParameterDataStore.CanShot(handType, shotType))
             {
                 return;
             }
 
-            var focusType = _playerFocusDataStore.LeftFocusType.Value;
+            var focusType = handType == HandType.Left
+                ? _playerFocusDataStore.LeftFocusType.Value
+                : _playerFocusDataStore.RightFocusType.Value;
+
             var bulletData = _playerBulletParameterDataStore.GetBulletData(shotType, focusType);
 
-            _playerBulletParameterDataStore.SetCoolDownTime(HandType.Left, shotType, focusType);
-            _playerControlPresenter.Shot(HandType.Left, bulletData, _playerFocusDataStore.FocusLeftTargetId.Value);
-        }
+            var targetId = handType == HandType.Left
+                ? _playerFocusDataStore.FocusLeftTargetId.Value
+                : _playerFocusDataStore.FocusRightTargetId.Value;
 
-        private void TryRightShot()
-        {
-            var shotType = _playerShotTypeDataStore.ShotType.Value;
-
-            if (!_playerBulletParameterDataStore.CanShot(HandType.Right, shotType))
-            {
-                return;
-            }
-
-            var focusType = _playerFocusDataStore.RightFocusType.Value;
-            var bulletData = _playerBulletParameterDataStore.GetBulletData(shotType, focusType);
-
-            _playerBulletParameterDataStore.SetCoolDownTime(HandType.Right, shotType, focusType);
-            _playerControlPresenter.Shot(HandType.Right, bulletData,
-                _playerFocusDataStore.FocusRightTargetId.Value);
+            _playerBulletParameterDataStore.SetCoolDownTime(handType, shotType, focusType);
+            _playerControlPresenter.Shot(handType, bulletData, targetId);
         }
 
         public void Dispose()

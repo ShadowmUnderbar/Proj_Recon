@@ -4,7 +4,6 @@ using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using Cysharp.Threading.Tasks;
 using R3;
-using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -33,7 +32,10 @@ namespace App.Battle.UseCase
 
         public void Initialize()
         {
-            _battleHitPresenter.OnHit.Subscribe(OnHit).AddTo(_disposable);
+            _battleHitPresenter.OnHit
+                .Subscribe(OnHit)
+                .AddTo(_disposable);
+
             _enemyDataStore.OnEnemyDead
                 .Subscribe(x => OnEnemyDead(x).Forget())
                 .AddTo(_disposable);

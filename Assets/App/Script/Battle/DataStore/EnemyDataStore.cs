@@ -58,7 +58,7 @@ namespace App.Battle.DataStore
         public bool TryGetRandomEnemyMasterData(EnemyRankType rankType, UnlockCoreSkillType unlockCoreSkillType,
             out EnemyMasterData enemyMasterData)
         {
-            const int MaxRetryCount = 100;  // 最大試行回数
+            const int MaxRetryCount = 100; // 最大試行回数
             int retryCount = 0;
 
             while (retryCount < MaxRetryCount)

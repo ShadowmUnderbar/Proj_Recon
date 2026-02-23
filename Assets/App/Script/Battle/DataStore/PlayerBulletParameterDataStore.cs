@@ -12,6 +12,7 @@ namespace App.Battle.DataStore
     {
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
+        private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -19,11 +20,13 @@ namespace App.Battle.DataStore
         [Inject]
         public PlayerBulletParameterDataStore(
             IPlayerSettingDataStore playerSettingDataStore,
-            ICoreSkillUnlockDataStore coreSkillUnlockDataStore
+            ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
+            IUpgradeSessionDataStore upgradeSessionDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
+            _upgradeSessionDataStore = upgradeSessionDataStore;
         }
 
         public void Tick()
@@ -82,7 +85,7 @@ namespace App.Battle.DataStore
                 return false;
             }
 
-            if (shotType == ShotType.Merge&&
+            if (shotType == ShotType.Merge &&
                 !CanMergeShot(handType))
             {
                 return false;
@@ -135,6 +138,8 @@ namespace App.Battle.DataStore
                 ShotType.Waltz => BasePlayerParameter.WaltzDamageMagnification,
                 _ => 1f
             };
+
+            damage *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletDamageUp);
 
             damage *= focusType switch
             {
