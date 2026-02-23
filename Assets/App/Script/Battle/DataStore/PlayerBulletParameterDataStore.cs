@@ -160,6 +160,8 @@ namespace App.Battle.DataStore
                 _ => 1f
             };
 
+            speed *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletSpeedUp);
+
             speed *= focusType switch
             {
                 AimFocusType.Focus => BasePlayerParameter.FocusBulletSpeedMagnification,
