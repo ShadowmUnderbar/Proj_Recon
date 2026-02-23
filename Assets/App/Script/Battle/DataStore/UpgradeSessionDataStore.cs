@@ -10,7 +10,8 @@ namespace App.Battle.DataStore
     public class UpgradeSessionDataStore : IUpgradeSessionDataStore
     {
         private readonly UpgradeDatabase _upgradeDatabase;
-        public List<string> AppliedUpgrades { get; } = new();
+        private readonly List<string> _appliedUpgrades = new();
+        public IReadOnlyList<string> AppliedUpgrades => _appliedUpgrades;
 
         [Inject]
         public UpgradeSessionDataStore(
@@ -24,7 +25,7 @@ namespace App.Battle.DataStore
         {
             var value = 1f;
 
-            foreach (var upgrade in AppliedUpgrades)
+            foreach (var upgrade in _appliedUpgrades)
             {
                 if (!_upgradeDatabase.TryGetUpgradeMasterData(upgrade, out var upgradeMasterData))
                 {
@@ -42,17 +43,17 @@ namespace App.Battle.DataStore
 
         public void AddUpgrade(UpgradeMasterData upgradeData)
         {
-            if (AppliedUpgrades.Contains(upgradeData.Id))
+            if (_appliedUpgrades.Contains(upgradeData.Id))
             {
                 return;
             }
 
-            AppliedUpgrades.Add(upgradeData.Id);
+            _appliedUpgrades.Add(upgradeData.Id);
         }
 
         public void Reset()
         {
-            AppliedUpgrades.Clear();
+            _appliedUpgrades.Clear();
         }
     }
 }

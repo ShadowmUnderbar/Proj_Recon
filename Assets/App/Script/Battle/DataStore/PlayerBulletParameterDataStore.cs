@@ -152,21 +152,21 @@ namespace App.Battle.DataStore
 
         private float GetBulletSpeed(ShotType shotType, AimFocusType focusType)
         {
-            var damage = BasePlayerParameter.BaseBulletSpeed;
-            damage *= shotType switch
+            var speed = BasePlayerParameter.BaseBulletSpeed;
+            speed *= shotType switch
             {
                 ShotType.Merge => BasePlayerParameter.MergeBulletSpeedMagnification,
                 ShotType.Waltz => BasePlayerParameter.WaltzBulletSpeedMagnification,
                 _ => 1f
             };
 
-            damage *= focusType switch
+            speed *= focusType switch
             {
                 AimFocusType.Focus => BasePlayerParameter.FocusBulletSpeedMagnification,
                 AimFocusType.LongFocus => BasePlayerParameter.LongFocusBulletSpeedMagnification,
                 _ => 1f
             };
-            return damage;
+            return speed;
         }
 
         private int GetBulletPenetration(ShotType shotType, AimFocusType focusType)

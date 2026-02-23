@@ -6,7 +6,7 @@ namespace App.Battle.Interface.DataStore
 {
     public interface IUpgradeSessionDataStore
     {
-        List<string> AppliedUpgrades { get; }
+        IReadOnlyList<string> AppliedUpgrades { get; }
         float GetUpgradeValue(UpgradeType upgradeType);
         void AddUpgrade(UpgradeMasterData upgradeData);
         void Reset();

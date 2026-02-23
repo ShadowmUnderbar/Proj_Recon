@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using App.Common.Data.MasterData;
 using UnityEngine;
@@ -17,12 +18,12 @@ namespace App.Common.Data.Database
                 _upgradeMasterData.FirstOrDefault(upgradeMasterData => upgradeMasterData.Id == id);
             return upgradeMasterData != null;
         }
-        
+
         public UpgradeMasterData[] GetSameLevelUpgrades(string id)
         {
             if (!TryGetUpgradeMasterData(id, out var upgradeMasterData))
             {
-                return null;
+                return Array.Empty<UpgradeMasterData>();
             }
 
             var sameLevelUpgrades = _upgradeMasterData.Where(data =>
