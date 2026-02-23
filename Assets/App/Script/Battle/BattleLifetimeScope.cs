@@ -42,6 +42,8 @@ namespace App.Battle
                 .As<IPlayerBulletParameterDataStore>();
             builder.Register<PlayerDodgeParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerDodgeParameterDataStore>();
+            builder.Register<UpgradeSessionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IUpgradeSessionDataStore>();
 
             #endregion
 

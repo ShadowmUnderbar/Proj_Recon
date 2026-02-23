@@ -1,12 +1,8 @@
-using App.Common.Data;
 using App.Common.Interface;
 using App.Common.Data.Database;
 using App.Common.DataStore;
 using App.Common.UseCase;
-using Cysharp.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.XR.Management;
 using VContainer;
 using VContainer.Unity;
 
@@ -16,6 +12,7 @@ namespace App.Common
     {
         [SerializeField] private EnemyDatabase _enemyDatabase;
         [SerializeField] private EnemySpawnDatabase _enemySpawnDatabase;
+        [SerializeField] private UpgradeDatabase _upgradeDatabase;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -42,6 +39,7 @@ namespace App.Common
 
             builder.RegisterInstance(_enemyDatabase);
             builder.RegisterInstance(_enemySpawnDatabase);
+            builder.RegisterInstance(_upgradeDatabase);
 
             #endregion
         }

@@ -12,6 +12,7 @@ namespace App.Battle.DataStore
     {
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
+        private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -19,11 +20,13 @@ namespace App.Battle.DataStore
         [Inject]
         public PlayerBulletParameterDataStore(
             IPlayerSettingDataStore playerSettingDataStore,
-            ICoreSkillUnlockDataStore coreSkillUnlockDataStore
+            ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
+            IUpgradeSessionDataStore upgradeSessionDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
+            _upgradeSessionDataStore = upgradeSessionDataStore;
         }
 
         public void Tick()
@@ -82,7 +85,7 @@ namespace App.Battle.DataStore
                 return false;
             }
 
-            if (shotType == ShotType.Merge&&
+            if (shotType == ShotType.Merge &&
                 !CanMergeShot(handType))
             {
                 return false;
@@ -136,6 +139,8 @@ namespace App.Battle.DataStore
                 _ => 1f
             };
 
+            damage *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletDamageUp);
+
             damage *= focusType switch
             {
                 AimFocusType.Focus => BasePlayerParameter.FocusDamageMagnification,
@@ -147,21 +152,23 @@ namespace App.Battle.DataStore
 
         private float GetBulletSpeed(ShotType shotType, AimFocusType focusType)
         {
-            var damage = BasePlayerParameter.BaseBulletSpeed;
-            damage *= shotType switch
+            var speed = BasePlayerParameter.BaseBulletSpeed;
+            speed *= shotType switch
             {
                 ShotType.Merge => BasePlayerParameter.MergeBulletSpeedMagnification,
                 ShotType.Waltz => BasePlayerParameter.WaltzBulletSpeedMagnification,
                 _ => 1f
             };
 
-            damage *= focusType switch
+            speed *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletSpeedUp);
+
+            speed *= focusType switch
             {
                 AimFocusType.Focus => BasePlayerParameter.FocusBulletSpeedMagnification,
                 AimFocusType.LongFocus => BasePlayerParameter.LongFocusBulletSpeedMagnification,
                 _ => 1f
             };
-            return damage;
+            return speed;
         }
 
         private int GetBulletPenetration(ShotType shotType, AimFocusType focusType)
