@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      margin: 0;
+      padding: 16px;
+      box-sizing: border-box;
+      color: #333;
+    }
+    p { margin: 0 0 12px; font-size: 14px; }
+    button {
+      padding: 6px 20px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <p id="status">CSVを準備しています...</p>
+  <button onclick="google.script.host.close()">閉じる</button>
+
+  <script>
+    // GASテンプレートからCSV文字列とファイル名を受け取る
+    const csvContent = <?!= JSON.stringify(csvContent) ?>;
+    const fileName   = <?!= JSON.stringify(fileName) ?>;
+
+    window.onload = function () {
+      try {
+        // BOM付きでExcelの文字化けを防ぐ
+        const bom = '\uFEFF';
+        const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url  = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href     = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        URL.revokeObjectURL(url);
+        document.getElementById('status').textContent =
+          fileName + ' のダウンロードを開始しました。';
+      } catch (e) {
+        document.getElementById('status').textContent =
+          'ダウンロードに失敗しました: ' + e.message;
+      }
+    };
+  </script>
+</body>
+</html>
