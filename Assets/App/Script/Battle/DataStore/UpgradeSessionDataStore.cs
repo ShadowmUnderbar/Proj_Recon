@@ -34,7 +34,7 @@ namespace App.Battle.DataStore
 
                 if (upgradeMasterData.UpgradeType == upgradeType)
                 {
-                    value += upgradeMasterData.Value;
+                    value += upgradeMasterData.Value1.Item1;
                 }
             }
 

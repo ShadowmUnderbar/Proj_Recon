@@ -9,11 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
-  m_Name: BaseDamageUpGrade
+  m_Script: {fileID: 11500000, guid: 5834b5087d578d24c926ce20cd31e6d6, type: 3}
+  m_Name: Localization-Locales_ContentUpdateGroupSchema
   m_EditorClassIdentifier: 
-  _id: BaseDamageUpGrade001
-  _upgradeType: 1
-  _requiredUnlockType: 0
-  _level: 0
-  _value: 0
+  m_Group: {fileID: 11400000, guid: d395f8d9eb93319419a04f50b2ebcacb, type: 2}
+  m_StaticContent: 0

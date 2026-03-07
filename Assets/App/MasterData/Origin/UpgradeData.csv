@@ -1,0 +1,4 @@
+﻿id,NameKey,SimpleDescriptionKey,DescriptionKey,UpgradeType,PlayerUnlockType,Level,Value1,Value1ParameterType,Value2,Value2ParameterType,Value3,Value3ParameterType,Value4,Value4ParameterType,Value5,Value5ParameterType
+1,$BaseDamageUp1,$BaseDamageUp1_SimpleDesc,$BaseDamageUp1_Desc,2,0,1,1.1,1,0,0,0,0,0,0,0,0
+2,$BaseDamageUp2,$BaseDamageUp2_SimpleDesc,$BaseDamageUp2_Desc,2,0,2,1.2,1,0,0,0,0,0,0,0,0
+3,$BaseDamageUp3,$BaseDamageUp3_SimpleDesc,$BaseDamageUp3_Desc,2,0,3,1.4,1,0,0,0,0,0,0,0,0
