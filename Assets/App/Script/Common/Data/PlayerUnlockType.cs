@@ -6,7 +6,6 @@ namespace App.Common.Data
         Akimbo,
         Focus,
         Waltz,
-        LongFocus,
         Merge,
         Blitz
     }

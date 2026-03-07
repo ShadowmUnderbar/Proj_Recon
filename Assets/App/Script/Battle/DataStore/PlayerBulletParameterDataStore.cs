@@ -46,12 +46,7 @@ namespace App.Battle.DataStore
         {
             var baseCoolDown = BasePlayerParameter.BaseFireRate;
 
-            baseCoolDown *= focusType switch
-            {
-                AimFocusType.Focus => BasePlayerParameter.FocusFireRateMagnification,
-                AimFocusType.LongFocus => BasePlayerParameter.LongFocusFireRateMagnification,
-                _ => 1f
-            };
+            baseCoolDown *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusFireRateMagnification : 0f;
 
             baseCoolDown *= shotType switch
             {
@@ -140,13 +135,8 @@ namespace App.Battle.DataStore
             };
 
             damage *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletDamageUp);
+            damage *= focusType == AimFocusType.Focus ? BasePlayerParameter.LongFocusDamageMagnification : 1f;
 
-            damage *= focusType switch
-            {
-                AimFocusType.Focus => BasePlayerParameter.FocusDamageMagnification,
-                AimFocusType.LongFocus => BasePlayerParameter.LongFocusDamageMagnification,
-                _ => 1f
-            };
             return damage;
         }
 
@@ -162,25 +152,13 @@ namespace App.Battle.DataStore
 
             speed *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletSpeedUp);
 
-            speed *= focusType switch
-            {
-                AimFocusType.Focus => BasePlayerParameter.FocusBulletSpeedMagnification,
-                AimFocusType.LongFocus => BasePlayerParameter.LongFocusBulletSpeedMagnification,
-                _ => 1f
-            };
+            speed *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusBulletSpeedMagnification : 1f;
             return speed;
         }
 
         private int GetBulletPenetration(ShotType shotType, AimFocusType focusType)
         {
             var penetration = (float)BasePlayerParameter.BasePenetration;
-
-            penetration *= focusType switch
-            {
-                AimFocusType.Focus => BasePlayerParameter.FocusPenetration,
-                AimFocusType.LongFocus => BasePlayerParameter.LongFocusPenetrationMagnification,
-                _ => 1
-            };
             return Mathf.CeilToInt(penetration);
         }
 
@@ -193,12 +171,7 @@ namespace App.Battle.DataStore
                 explosive += BasePlayerParameter.MergeExplosiveScale;
             }
 
-            explosive *= focusType switch
-            {
-                AimFocusType.Focus => BasePlayerParameter.FocusExplosiveMagnification,
-                AimFocusType.LongFocus => BasePlayerParameter.LongFocusExplosiveMagnification,
-                _ => 0
-            };
+            explosive *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusExplosiveMagnification : 0f;
             return explosive;
         }
     }
