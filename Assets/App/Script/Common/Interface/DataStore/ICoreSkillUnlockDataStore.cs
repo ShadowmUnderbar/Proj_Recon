@@ -5,7 +5,6 @@ namespace App.Common.Interface
         bool IsUnLockAkimbo { get; }
         bool IsUnLockFocus { get; }
         bool IsUnLockWaltz { get; }
-        bool IsUnLockLongFocus { get; }
         bool IsUnLockMerge { get; }
         bool IsUnLockBlitz { get; }
     }

@@ -28,10 +28,6 @@ namespace App.Common.DataStore
             DebugConfig.IsAllUnLock ||
             _saveDataStore.SaveData.UnlockType >= PlayerUnlockType.Waltz;
 
-        public bool IsUnLockLongFocus =>
-            DebugConfig.IsAllUnLock ||
-            _saveDataStore.SaveData.UnlockType >= PlayerUnlockType.LongFocus;
-
         public bool IsUnLockMerge =>
             DebugConfig.IsAllUnLock ||
             _saveDataStore.SaveData.UnlockType >= PlayerUnlockType.Merge;

@@ -55,16 +55,9 @@ namespace App.Battle.DataStore
                 return;
             }
 
-            if (!_enemyDataStore.TryGetEnemyData(focusTargetId.Value, out var enemy))
+            if (!_enemyDataStore.TryGetEnemyData(focusTargetId.Value, out _))
             {
                 focusType.Value = AimFocusType.NotFocus;
-                return;
-            }
-
-            var distance = (enemy.Pose.position - _playerStateDataStore.Position.Value).sqrMagnitude;
-            if (Mathf.Abs(distance) >= LongFocusDistance * LongFocusDistance)
-            {
-                focusType.Value = AimFocusType.LongFocus;
                 return;
             }
 
