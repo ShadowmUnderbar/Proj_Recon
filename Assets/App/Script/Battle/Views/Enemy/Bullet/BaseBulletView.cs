@@ -16,6 +16,7 @@ namespace App.Battle.Views.Enemy.Bullet
         [SerializeField] private Collider _hitCollider;
 
         private readonly List<int> _hitTargetIds = new();
+        private readonly RaycastHit[] _instantHitBuffer = new RaycastHit[10];
 
         protected bool CanHit { get; private set; } = true;
         protected BulletData BulletData { get; private set; }
@@ -31,7 +32,12 @@ namespace App.Battle.Views.Enemy.Bullet
             _focusTargetId = focusTargetId;
             transform.SetPositionAndRotation(pose.position, pose.rotation);
             BulletData = bulletData;
+            transform.localScale = Vector3.one * BulletData.Size;
             Destroy(gameObject, 5.0f);
+            if (bulletData.Speed <= 0)
+            {
+                InstantHitCheck();
+            }
         }
 
         protected virtual void Awake()
@@ -44,6 +50,27 @@ namespace App.Battle.Views.Enemy.Bullet
 
         protected virtual void Update()
         {
+        }
+
+        private void InstantHitCheck()
+        {
+            var hitCount = Physics.SphereCastNonAlloc(
+                transform.position,
+                BulletData.Size * 0.5f,
+                transform.forward,
+                _instantHitBuffer,
+                Mathf.Infinity);
+
+            for (var i = 0; i < hitCount; i++)
+            {
+                if (!CanHit) break;
+                HitProcess(_instantHitBuffer[i].collider);
+            }
+
+            if (CanHit)
+            {
+                HitAfterProcess().Forget();
+            }
         }
 
         private void HitProcess(Collider col)

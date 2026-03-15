@@ -44,13 +44,13 @@ namespace App.Battle.DataStore
 
         public void SetCoolDownTime(HandType handType, ShotType shotType, AimFocusType focusType)
         {
-            var baseCoolDown = BasePlayerParameter.BaseFireRate;
-            
-            baseCoolDown *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.FireRate);
+            var coolDown = BasePlayerParameter.BaseFireRate;
 
-            baseCoolDown *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusFireRateMagnification : 0f;
+            coolDown *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.FireRate);
 
-            baseCoolDown *= shotType switch
+            coolDown *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusFireRateMagnification : 1f;
+
+            coolDown *= shotType switch
             {
                 ShotType.Merge => BasePlayerParameter.MergeFireRateMagnification,
                 ShotType.Waltz => BasePlayerParameter.WaltzFireRateMagnification,
@@ -59,11 +59,11 @@ namespace App.Battle.DataStore
 
             if (handType == HandType.Left)
             {
-                _leftShotCoolDown = baseCoolDown;
+                _leftShotCoolDown = coolDown;
             }
             else
             {
-                _rightShotCoolDown = baseCoolDown;
+                _rightShotCoolDown = coolDown;
             }
         }
 
@@ -117,6 +117,7 @@ namespace App.Battle.DataStore
             {
                 ShotType = shotType,
                 FocusType = focusType,
+                Speed = shotType == ShotType.Merge ? BasePlayerParameter.MergeBulletSpeed : 0, //プレイヤーは即着弾
                 Damage = GetBulletDamage(shotType, focusType),
                 Penetration = GetBulletPenetration(shotType, focusType),
                 Explosive = GetBulletExplosive(shotType, focusType)

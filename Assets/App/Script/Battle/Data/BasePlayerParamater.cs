@@ -11,7 +11,6 @@ namespace App.Battle.Data
 
         public static float BaseDamage => 4f;
         public static float BaseShotRate => 1f;
-        public static float BaseBulletSpeed => 20f;
         public static float BaseFireRate => 0.3f;
         public static int BasePenetration => 0;
 
@@ -21,7 +20,6 @@ namespace App.Battle.Data
 
         public static float FocusDamageMagnification => 1.1f;
         public static float FocusFireRateMagnification => 0.9f;
-        public static float FocusBulletSpeedMagnification => 0.9f;
         public static float FocusPenetration => 3f;
         public static float FocusExplosiveMagnification => 1.5f;
 
@@ -31,7 +29,6 @@ namespace App.Battle.Data
 
         public static float LongFocusDamageMagnification => 3f;
         public static float LongFocusFireRateMagnification => 2.5f;
-        public static float LongFocusBulletSpeedMagnification => 2.5f;
         public static float LongFocusPenetrationMagnification => 3f;
         public static float LongFocusExplosiveMagnification => 3f;
 
@@ -41,7 +38,6 @@ namespace App.Battle.Data
 
         public static float WaltzDamageMagnification => 0.15f;
         public static float WaltzFireRateMagnification => 0.3f;
-        public static float WaltzBulletSpeedMagnification => 0.8f;
 
         #endregion
 
@@ -49,7 +45,7 @@ namespace App.Battle.Data
 
         public static float MergeDamageMagnification => 2f;
         public static float MergeFireRateMagnification => 1.5f;
-        public static float MergeBulletSpeedMagnification => 1.5f;
+        public static float MergeBulletSpeed => 40f;
         public static float MergeExplosiveScale => 2f;
 
         #endregion

@@ -25,6 +25,7 @@ namespace App.Battle.Views.Enemy.AI
                 FocusType = AimFocusType.NotFocus,
                 Damage = EnemyData.BaseDamage,
                 Speed = EnemyData.BaseBulletSpeed,
+                Size = EnemyData.BaseBulletSize,
                 Penetration = 0,
                 Explosive = 0
             };

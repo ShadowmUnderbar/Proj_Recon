@@ -26,6 +26,7 @@ namespace App.Battle.Data
         public float Hp { get; set; }
         public float BaseDamage { get; set; }
         public float BaseBulletSpeed { get; set; }
+        public float BaseBulletSize => 0.4f;
         public float IdleSpeed { get; set; }
         public float AttackDistanceRange { get; set; }
         public float BattleSpeed { get; set; }
