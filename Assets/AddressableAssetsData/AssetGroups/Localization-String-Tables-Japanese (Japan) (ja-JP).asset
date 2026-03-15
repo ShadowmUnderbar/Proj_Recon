@@ -16,7 +16,13 @@ MonoBehaviour:
   m_Data:
     m_SerializedData: []
   m_GUID: ecada455082285e4092355f6fb5ad257
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: edc4dcdf949dc8941a0572b767074eff
+    m_Address: Upgrade_ja-JP
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ja-JP
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: 4149639a9e3e3b04197cb5ffb3670edb, type: 2}
   m_SchemaSet:

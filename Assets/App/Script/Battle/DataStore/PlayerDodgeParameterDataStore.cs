@@ -17,7 +17,6 @@ namespace App.Battle.DataStore
 
         public float DodgeRange => BasePlayerParameter.DodgeRange;
 
-
         public void Initialize()
         {
             DodgeCount.Value = MaxDodgeCount.Value;

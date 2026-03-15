@@ -13,32 +13,30 @@ namespace App.Editor
     public static class UpgradeDataImporter
     {
         // パス定数
-        private const string CsvPath      = "Assets/App/MasterData/Origin/UpgradeData.csv";
-        private const string OutputPath   = "Assets/App/MasterData/Upgrade";
+        private const string CsvPath = "Assets/App/MasterData/Origin/UpgradeData.csv";
+        private const string OutputPath = "Assets/App/MasterData/Upgrade";
         private const string DatabasePath = "Assets/App/MasterData/Database/UpgradeDatabase.asset";
 
         // CSV列インデックス（GASエクスポーターのスキーマに対応）
         // ヘッダー: id,NameKey,SimpleDescriptionKey,DescriptionKey,UpgradeType,PlayerUnlockType,Level,
         //          Value1,Value1ParameterType,Value2,Value2ParameterType,Value3,Value3ParameterType,
         //          Value4,Value4ParameterType,Value5,Value5ParameterType
-        private const int ColId                   =  0;
-        private const int ColNameKey              =  1;
-        private const int ColSimpleDescriptionKey =  2;
-        private const int ColDescriptionKey       =  3;
-        private const int ColUpgradeType          =  4;
-        private const int ColPlayerUnlockType     =  5;
-        private const int ColLevel                =  6;
-        private const int ColValue1               =  7;
-        private const int ColValue1ParameterType  =  8;
-        private const int ColValue2               =  9;
-        private const int ColValue2ParameterType  = 10;
-        private const int ColValue3               = 11;
-        private const int ColValue3ParameterType  = 12;
-        private const int ColValue4               = 13;
-        private const int ColValue4ParameterType  = 14;
-        private const int ColValue5               = 15;
-        private const int ColValue5ParameterType  = 16;
-        private const int MinColumnCount          = 17;
+        private const int ColId = 0;
+        private const int ColNameKey = 1;
+        private const int ColUpgradeType = 2;
+        private const int ColPlayerUnlockType = 3;
+        private const int ColLevel = 4;
+        private const int ColValue1 = 5;
+        private const int ColValue1ParameterType = 6;
+        private const int ColValue2 = 7;
+        private const int ColValue2ParameterType = 8;
+        private const int ColValue3 = 9;
+        private const int ColValue3ParameterType = 10;
+        private const int ColValue4 = 11;
+        private const int ColValue4ParameterType = 12;
+        private const int ColValue5 = 13;
+        private const int ColValue5ParameterType = 14;
+        private const int MinColumnCount = 15;
 
         private static readonly BindingFlags PrivateInstance =
             BindingFlags.NonPublic | BindingFlags.Instance;
@@ -103,8 +101,17 @@ namespace App.Editor
                     continue;
                 }
 
-                if (!TryParseEnum<UpgradeType>(cols[ColUpgradeType].Trim(), rowNum, "UpgradeType", errors, out var upgradeType)) continue;
-                if (!TryParseEnum<PlayerUnlockType>(cols[ColPlayerUnlockType].Trim(), rowNum, "PlayerUnlockType", errors, out var playerUnlockType)) continue;
+                if (!TryParseEnum<UpgradeType>(cols[ColUpgradeType].Trim(), rowNum, "UpgradeType", errors,
+                        out var upgradeType))
+                {
+                    continue;
+                }
+
+                if (!TryParseEnum<PlayerUnlockType>(cols[ColPlayerUnlockType].Trim(), rowNum, "PlayerUnlockType",
+                        errors, out var playerUnlockType))
+                {
+                    continue;
+                }
 
                 if (!int.TryParse(cols[ColLevel].Trim(), out var level))
                 {
@@ -112,16 +119,60 @@ namespace App.Editor
                     continue;
                 }
 
-                if (!TryParseFloat(cols[ColValue1].Trim(), rowNum, "Value1", errors, out var value1)) continue;
-                if (!TryParseEnum<ParameterType>(cols[ColValue1ParameterType].Trim(), rowNum, "Value1ParameterType", errors, out var value1Pt)) continue;
-                if (!TryParseFloat(cols[ColValue2].Trim(), rowNum, "Value2", errors, out var value2)) continue;
-                if (!TryParseEnum<ParameterType>(cols[ColValue2ParameterType].Trim(), rowNum, "Value2ParameterType", errors, out var value2Pt)) continue;
-                if (!TryParseFloat(cols[ColValue3].Trim(), rowNum, "Value3", errors, out var value3)) continue;
-                if (!TryParseEnum<ParameterType>(cols[ColValue3ParameterType].Trim(), rowNum, "Value3ParameterType", errors, out var value3Pt)) continue;
-                if (!TryParseFloat(cols[ColValue4].Trim(), rowNum, "Value4", errors, out var value4)) continue;
-                if (!TryParseEnum<ParameterType>(cols[ColValue4ParameterType].Trim(), rowNum, "Value4ParameterType", errors, out var value4Pt)) continue;
-                if (!TryParseFloat(cols[ColValue5].Trim(), rowNum, "Value5", errors, out var value5)) continue;
-                if (!TryParseEnum<ParameterType>(cols[ColValue5ParameterType].Trim(), rowNum, "Value5ParameterType", errors, out var value5Pt)) continue;
+                if (!TryParseFloat(cols[ColValue1].Trim(), rowNum, "Value1", errors, out var value1))
+                {
+                    continue;
+                }
+
+                if (!TryParseEnum<ParameterType>(cols[ColValue1ParameterType].Trim(), rowNum, "Value1ParameterType",
+                        errors, out var value1Pt))
+                {
+                    continue;
+                }
+
+                if (!TryParseFloat(cols[ColValue2].Trim(), rowNum, "Value2", errors, out var value2))
+                {
+                    continue;
+                }
+
+                if (!TryParseEnum<ParameterType>(cols[ColValue2ParameterType].Trim(), rowNum, "Value2ParameterType",
+                        errors, out var value2Pt))
+                {
+                    continue;
+                }
+
+                if (!TryParseFloat(cols[ColValue3].Trim(), rowNum, "Value3", errors, out var value3))
+                {
+                    continue;
+                }
+
+                if (!TryParseEnum<ParameterType>(cols[ColValue3ParameterType].Trim(), rowNum, "Value3ParameterType",
+                        errors, out var value3Pt))
+                {
+                    continue;
+                }
+
+                if (!TryParseFloat(cols[ColValue4].Trim(), rowNum, "Value4", errors, out var value4))
+                {
+                    continue;
+                }
+
+                if (!TryParseEnum<ParameterType>(cols[ColValue4ParameterType].Trim(), rowNum, "Value4ParameterType",
+                        errors, out var value4Pt))
+                {
+                    continue;
+                }
+
+                if (!TryParseFloat(cols[ColValue5].Trim(), rowNum, "Value5", errors, out var value5))
+                {
+                    continue;
+                }
+
+                if (!TryParseEnum<ParameterType>(cols[ColValue5ParameterType].Trim(), rowNum, "Value5ParameterType",
+                        errors, out var value5Pt))
+                {
+                    continue;
+                }
 
                 // NameKey の $ を除いた名前をファイル名に使用
                 var assetName = cols[ColNameKey].Trim().TrimStart('$');
@@ -136,23 +187,21 @@ namespace App.Editor
                 }
 
                 // [SerializeField] がないためリフレクション経由でフィールドに値をセット
-                type.GetField("_id",                   PrivateInstance).SetValue(masterData, id);
-                type.GetField("_nameKey",              PrivateInstance).SetValue(masterData, cols[ColNameKey].Trim());
-                type.GetField("_simpleDescriptionKey", PrivateInstance).SetValue(masterData, cols[ColSimpleDescriptionKey].Trim());
-                type.GetField("_descriptionKey",       PrivateInstance).SetValue(masterData, cols[ColDescriptionKey].Trim());
-                type.GetField("_upgradeType",          PrivateInstance).SetValue(masterData, upgradeType);
-                type.GetField("_playerUnlockType",     PrivateInstance).SetValue(masterData, playerUnlockType);
-                type.GetField("_level",                PrivateInstance).SetValue(masterData, level);
-                type.GetField("_value1",               PrivateInstance).SetValue(masterData, value1);
-                type.GetField("_value1ParameterType",  PrivateInstance).SetValue(masterData, value1Pt);
-                type.GetField("_value2",               PrivateInstance).SetValue(masterData, value2);
-                type.GetField("_value2ParameterType",  PrivateInstance).SetValue(masterData, value2Pt);
-                type.GetField("_value3",               PrivateInstance).SetValue(masterData, value3);
-                type.GetField("_value3ParameterType",  PrivateInstance).SetValue(masterData, value3Pt);
-                type.GetField("_value4",               PrivateInstance).SetValue(masterData, value4);
-                type.GetField("_value4ParameterType",  PrivateInstance).SetValue(masterData, value4Pt);
-                type.GetField("_value5",               PrivateInstance).SetValue(masterData, value5);
-                type.GetField("_value5ParameterType",  PrivateInstance).SetValue(masterData, value5Pt);
+                type.GetField("_id", PrivateInstance).SetValue(masterData, id);
+                type.GetField("_nameKey", PrivateInstance).SetValue(masterData, cols[ColNameKey].Trim());
+                type.GetField("_upgradeType", PrivateInstance).SetValue(masterData, upgradeType);
+                type.GetField("_playerUnlockType", PrivateInstance).SetValue(masterData, playerUnlockType);
+                type.GetField("_level", PrivateInstance).SetValue(masterData, level);
+                type.GetField("_value1", PrivateInstance).SetValue(masterData, value1);
+                type.GetField("_value1ParameterType", PrivateInstance).SetValue(masterData, value1Pt);
+                type.GetField("_value2", PrivateInstance).SetValue(masterData, value2);
+                type.GetField("_value2ParameterType", PrivateInstance).SetValue(masterData, value2Pt);
+                type.GetField("_value3", PrivateInstance).SetValue(masterData, value3);
+                type.GetField("_value3ParameterType", PrivateInstance).SetValue(masterData, value3Pt);
+                type.GetField("_value4", PrivateInstance).SetValue(masterData, value4);
+                type.GetField("_value4ParameterType", PrivateInstance).SetValue(masterData, value4Pt);
+                type.GetField("_value5", PrivateInstance).SetValue(masterData, value5);
+                type.GetField("_value5ParameterType", PrivateInstance).SetValue(masterData, value5Pt);
 
                 EditorUtility.SetDirty(masterData);
                 importedAssets.Add(masterData);

@@ -12,12 +12,6 @@ namespace App.Common.Data.MasterData
         [SerializeField, ReadOnlyAttribute] private string _nameKey;
         public string NameKey => _nameKey;
 
-        [SerializeField, ReadOnlyAttribute] private string _simpleDescriptionKey;
-        public string SimpleDescriptionKey => _simpleDescriptionKey;
-
-        [SerializeField, ReadOnlyAttribute] private string _descriptionKey;
-        public string DescriptionKey => _descriptionKey;
-
         [SerializeField, ReadOnlyAttribute] private UpgradeType _upgradeType;
         public UpgradeType UpgradeType => _upgradeType;
 
@@ -50,8 +44,6 @@ namespace App.Common.Data.MasterData
         public UpgradeMasterData(
             string id,
             string nameKey,
-            string simpleDescriptionKey,
-            string descriptionKey,
             UpgradeType upgradeType,
             PlayerUnlockType playerUnlockType,
             int level,
@@ -69,8 +61,6 @@ namespace App.Common.Data.MasterData
         {
             _id = id;
             _nameKey = nameKey;
-            _simpleDescriptionKey = simpleDescriptionKey;
-            _descriptionKey = descriptionKey;
             _upgradeType = upgradeType;
             _playerUnlockType = playerUnlockType;
             _level = level;

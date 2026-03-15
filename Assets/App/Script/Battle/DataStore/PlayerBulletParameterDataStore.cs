@@ -134,7 +134,7 @@ namespace App.Battle.DataStore
                 _ => 1f
             };
 
-            damage *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletDamageUp);
+            damage *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletDamage);
             damage *= focusType == AimFocusType.Focus ? BasePlayerParameter.LongFocusDamageMagnification : 1f;
 
             return damage;
@@ -150,7 +150,7 @@ namespace App.Battle.DataStore
                 _ => 1f
             };
 
-            speed *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletSpeedUp);
+            speed *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletSpeed);
 
             speed *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusBulletSpeedMagnification : 1f;
             return speed;
