@@ -45,6 +45,8 @@ namespace App.Battle.DataStore
         public void SetCoolDownTime(HandType handType, ShotType shotType, AimFocusType focusType)
         {
             var baseCoolDown = BasePlayerParameter.BaseFireRate;
+            
+            baseCoolDown *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.FireRate);
 
             baseCoolDown *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusFireRateMagnification : 0f;
 
@@ -116,7 +118,6 @@ namespace App.Battle.DataStore
                 ShotType = shotType,
                 FocusType = focusType,
                 Damage = GetBulletDamage(shotType, focusType),
-                Speed = GetBulletSpeed(shotType, focusType),
                 Penetration = GetBulletPenetration(shotType, focusType),
                 Explosive = GetBulletExplosive(shotType, focusType)
             };
@@ -140,22 +141,6 @@ namespace App.Battle.DataStore
             return damage;
         }
 
-        private float GetBulletSpeed(ShotType shotType, AimFocusType focusType)
-        {
-            var speed = BasePlayerParameter.BaseBulletSpeed;
-            speed *= shotType switch
-            {
-                ShotType.Merge => BasePlayerParameter.MergeBulletSpeedMagnification,
-                ShotType.Waltz => BasePlayerParameter.WaltzBulletSpeedMagnification,
-                _ => 1f
-            };
-
-            speed *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletSpeed);
-
-            speed *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusBulletSpeedMagnification : 1f;
-            return speed;
-        }
-
         private int GetBulletPenetration(ShotType shotType, AimFocusType focusType)
         {
             var penetration = (float)BasePlayerParameter.BasePenetration;
@@ -171,7 +156,7 @@ namespace App.Battle.DataStore
                 explosive += BasePlayerParameter.MergeExplosiveScale;
             }
 
-            explosive *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusExplosiveMagnification : 0f;
+            explosive *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BombRange);
             return explosive;
         }
     }
