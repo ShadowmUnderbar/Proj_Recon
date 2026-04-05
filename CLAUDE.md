@@ -1,5 +1,14 @@
 # RECON プロジェクト - Claude向け指示書
 
+## Project Overview
+This project involves a Unity C# codebase with Google Apps Script (GAS) for spreadsheet export and Unity Editor extensions for CSV import. When asked about CSV/data pipeline work, assume this full GAS → CSV → Unity Editor importer workflow.
+
+## Architecture Conventions
+This project uses a DataStore pattern for data and calculations. Do NOT create UseCase or Service classes for logic that belongs in DataStore helpers. When adding new calculation logic, first check existing DataStore classes and add helper/calculator classes within that pattern.
+
+## Data Import/Export
+When parsing CSV or spreadsheet data, always confirm the header/data start row with the user before implementing. Default assumption: data starts at row 4 unless specified otherwise.
+
 ## プロジェクト概要
 - Unity製VR/XRゲーム（Meta Quest向け）
 - クリーンアーキテクチャ採用
