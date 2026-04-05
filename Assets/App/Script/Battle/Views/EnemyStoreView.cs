@@ -129,6 +129,14 @@ namespace App.Battle.Views
             }
         }
 
+        public void SetPause(bool isPause)
+        {
+            foreach (var enemy in _enemies.Values)
+            {
+                enemy.SetPause(isPause);
+            }
+        }
+
         private void OnDestroy()
         {
             foreach (var enemy in _enemies.Values)

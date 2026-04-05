@@ -46,6 +46,8 @@ namespace App.Battle
                 .As<IUpgradeSessionDataStore>();
             builder.Register<UpgradeEffectSimpleCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeEffectSimpleCalculatorDataStore>();
+            builder.Register<WaveManagerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IWaveManagerDataStore>();
 
             #endregion
 
@@ -59,6 +61,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<BattleHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
+            builder.RegisterEntryPoint<WaveManagerUseCase>();
 
             #endregion
 

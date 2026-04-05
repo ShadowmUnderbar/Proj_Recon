@@ -42,6 +42,11 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.BattleState();
 
+            if (IsPause)
+            {
+                return;
+            }
+
             transform.LookAt(PlayerTransform.position, Vector3.up);
             transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
 

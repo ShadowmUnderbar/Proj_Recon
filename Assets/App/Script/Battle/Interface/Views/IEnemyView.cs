@@ -17,5 +17,6 @@ namespace App.Battle.Interface
         UniTask Dead();
         void SetPlayerTransform(Transform playerTransform);
         void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2);
+        void SetPause(bool isPause);
     }
 }

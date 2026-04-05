@@ -10,6 +10,7 @@ namespace App.Battle.Interface.EnemyAI
     {
         public int EnemyId { get; private set; }
         protected bool CanAttack { get; set; } = true;
+        protected bool IsPause { get; set; } = false;
         protected EnemyData EnemyData;
         protected NavMeshAgent Agent;
         protected Transform PlayerTransform;
@@ -133,6 +134,16 @@ namespace App.Battle.Interface.EnemyAI
                 return;
             }
 
+            if (IsPause)
+            {
+                return;
+            }
+
+            if (!CanAttack)
+            {
+                return;
+            }
+
             Attack();
         }
 
@@ -152,11 +163,6 @@ namespace App.Battle.Interface.EnemyAI
 
         protected virtual void Attack()
         {
-            if (!CanAttack)
-            {
-                return;
-            }
-
             LastAttackTime = 0f;
         }
 
@@ -184,6 +190,22 @@ namespace App.Battle.Interface.EnemyAI
         public virtual bool IsAttackDistanceRange()
         {
             return DistanceSqr <= EnemyData.AttackDistanceRange * EnemyData.AttackDistanceRange;
+        }
+
+        public virtual void SetPause(bool isPause)
+        {
+            IsPause = isPause;
+            if (Agent == null)
+            {
+                return;
+            }
+
+            Agent.isStopped = isPause;
+
+            if (isPause)
+            {
+                Agent.velocity = Vector3.zero;
+            }
         }
     }
 }

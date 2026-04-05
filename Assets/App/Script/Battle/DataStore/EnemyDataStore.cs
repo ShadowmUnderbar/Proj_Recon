@@ -1,6 +1,7 @@
 using App.Battle.Data;
 using App.Common.Data.MasterData;
 using System.Collections.Generic;
+using System.Linq;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
 using App.Common.Data.Database;
@@ -25,6 +26,8 @@ namespace App.Battle.DataStore
 
         private readonly Subject<int> _onEnemyDead = new();
         public Observable<int> OnEnemyDead => _onEnemyDead;
+
+        public List<EnemyData> Enemies => _spawnEnemyDataList.Values.ToList();
 
         private List<string> _onceSpawnedEnemyCodes = new();
 

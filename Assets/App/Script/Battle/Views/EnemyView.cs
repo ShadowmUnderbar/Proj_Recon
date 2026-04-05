@@ -17,6 +17,8 @@ namespace App.Battle.Views
         public IHitBoxView[] HitBoxes { get; private set; }
         public EnemyAIBase EnemyAI { get; private set; }
 
+        private bool _isPause = false;
+
         public void Init(int id, EnemyData enemyData, HitDirectionType resistanceDirectionType)
         {
             Id = id;
@@ -36,6 +38,7 @@ namespace App.Battle.Views
             }
 
             EnemyAI.Init(enemyData, Id);
+            EnemyAI.SetPause(_isPause);
         }
 
         public void Destroy()
@@ -77,6 +80,18 @@ namespace App.Battle.Views
             }
 
             EnemyAI.SetPlayerAimDirection(aimDir1, aimDir2);
+        }
+
+        public void SetPause(bool isPause)
+        {
+            _isPause = isPause;
+
+            if (EnemyAI == null)
+            {
+                return;
+            }
+
+            EnemyAI.SetPause(isPause);
         }
 
         private void OnDestroy()

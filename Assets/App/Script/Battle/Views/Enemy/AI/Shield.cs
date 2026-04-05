@@ -45,6 +45,11 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.BattleState();
 
+            if (IsPause)
+            {
+                return;
+            }
+
             _aimTargetPosition1 = PlayerTransform.position + -PlayerAimDirection1 * JammingDistance;
             _aimTargetPosition2 = PlayerTransform.position + -PlayerAimDirection2 * JammingDistance;
 

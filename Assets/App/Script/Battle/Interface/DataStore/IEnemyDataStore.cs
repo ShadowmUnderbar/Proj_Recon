@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using App.Common.Data.MasterData;
 using App.Battle.Data;
 using App.Common.Data;
@@ -11,6 +12,7 @@ namespace App.Battle.Interface.DataStore
         Observable<int> OnEnemyAdded { get; }
         Observable<int> OnEnemyRemoved { get; }
         Observable<int> OnEnemyDead { get; }
+        List<EnemyData> Enemies { get; }
 
         bool TryGetEnemyMasterData(string enemyCode, out EnemyMasterData enemyMasterData);
 

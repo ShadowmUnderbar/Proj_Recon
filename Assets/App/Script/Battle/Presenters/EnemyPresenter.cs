@@ -46,5 +46,10 @@ namespace App.Battle.Presenters
         {
             return _enemyStoreView.Dead(id);
         }
+
+        public void SetPause(bool isPause)
+        {
+            _enemyStoreView.SetPause(isPause);
+        }
     }
 }

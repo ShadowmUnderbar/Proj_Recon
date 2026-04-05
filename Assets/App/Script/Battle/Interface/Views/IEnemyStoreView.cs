@@ -15,5 +15,6 @@ namespace App.Battle.Interface
         void AllDeadEnemies();
         int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance);
         void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2);
+        void SetPause(bool isPause);
     }
 }

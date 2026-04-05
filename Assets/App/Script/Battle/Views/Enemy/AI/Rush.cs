@@ -25,6 +25,7 @@ namespace App.Battle.Views.EnemyAI
         protected override void Attack()
         {
             base.Attack();
+
             var size = Physics.OverlapSphereNonAlloc(transform.position, EnemyData.AttackDistanceRange, _hitResults);
 
             for (var i = 0; i < size; i++)
