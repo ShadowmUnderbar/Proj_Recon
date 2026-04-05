@@ -10,16 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
-  m_Name: BaseDamageUp3
+  m_Name: BulletSize_L2
   m_EditorClassIdentifier: 
-  _id: 3
-  _nameKey: $BaseDamageUp3
-  _simpleDescriptionKey: $BaseDamageUp3_SimpleDesc
-  _descriptionKey: $BaseDamageUp3_Desc
-  _upgradeType: 2
+  _id: 5
+  _nameKey: $BulletSize
+  _upgradeType: 3
   _playerUnlockType: 0
-  _level: 3
-  _value1: 1.4
+  _level: 2
+  _value1: 1.2
   _value1ParameterType: 1
   _value2: 0
   _value2ParameterType: 0

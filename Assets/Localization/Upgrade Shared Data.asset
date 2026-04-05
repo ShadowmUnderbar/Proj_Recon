@@ -15,16 +15,20 @@ MonoBehaviour:
   m_TableCollectionName: Upgrade
   m_TableCollectionNameGuidString: ab2ac04de6ad14749a82aaf78311d4c7
   m_Entries:
-  - m_Id: 4107389329408
-    m_Key: $BaseDamageUp1
+  - m_Id: 10454283904049152
+    m_Key: $Level1_Upgrade
     m_Metadata:
       m_Items: []
-  - m_Id: 4107393523712
-    m_Key: $BaseDamageUp2
+  - m_Id: 10454283950186496
+    m_Key: $Level2_Upgrade
     m_Metadata:
       m_Items: []
-  - m_Id: 29351436288
-    m_Key: $BaseDamageUp3
+  - m_Id: 10454283950186497
+    m_Key: $Level3_Upgrade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380800
+    m_Key: $BaseDamageUp
     m_Metadata:
       m_Items: []
   - m_Id: 3707760238592
@@ -33,6 +37,42 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 3707760238593
     m_Key: $BaseDamageUp_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380801
+    m_Key: $BulletSize
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380802
+    m_Key: $BulletSize_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380803
+    m_Key: $BulletSize_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380804
+    m_Key: $BaseFireRate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380804
+    m_Key: $BaseFireRate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380804
+    m_Key: $BaseFireRate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380805
+    m_Key: $Health
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380805
+    m_Key: $Health
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380805
+    m_Key: $Health
     m_Metadata:
       m_Items: []
   m_Metadata:

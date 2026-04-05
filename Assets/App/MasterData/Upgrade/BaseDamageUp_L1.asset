@@ -10,16 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
-  m_Name: BaseDamageUp2
+  m_Name: BaseDamageUp_L1
   m_EditorClassIdentifier: 
-  _id: 2
-  _nameKey: $BaseDamageUp2
-  _simpleDescriptionKey: $BaseDamageUp2_SimpleDesc
-  _descriptionKey: $BaseDamageUp2_Desc
-  _upgradeType: 2
+  _id: 1
+  _nameKey: $BaseDamageUp
+  _upgradeType: 1
   _playerUnlockType: 0
-  _level: 2
-  _value1: 1.2
+  _level: 1
+  _value1: 1.1
   _value1ParameterType: 1
   _value2: 0
   _value2ParameterType: 0

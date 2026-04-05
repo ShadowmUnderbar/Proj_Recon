@@ -20,23 +20,28 @@ namespace App.Common.Data.MasterData
 
         [SerializeField, ReadOnlyAttribute] private int _level;
         public int Level => _level;
-
+        
+        [Space]
         [SerializeField, ReadOnlyAttribute] private float _value1;
         [SerializeField, ReadOnlyAttribute] private ParameterType _value1ParameterType;
         public (float value, ParameterType parameterType) Value1 => (_value1, _value1ParameterType);
 
+        [Space]
         [SerializeField, ReadOnlyAttribute] private float _value2;
         [SerializeField, ReadOnlyAttribute] private ParameterType _value2ParameterType;
         public (float value, ParameterType parameterType) Value2 => (_value2, _value2ParameterType);
 
+        [Space]
         [SerializeField, ReadOnlyAttribute] private float _value3;
         [SerializeField, ReadOnlyAttribute] private ParameterType _value3ParameterType;
         public (float value, ParameterType parameterType) Value3 => (_value3, _value3ParameterType);
 
+        [Space]
         [SerializeField, ReadOnlyAttribute] private float _value4;
         [SerializeField, ReadOnlyAttribute] private ParameterType _value4ParameterType;
         public (float value, ParameterType parameterType) Value4 => (_value4, _value4ParameterType);
 
+        [Space]
         [SerializeField, ReadOnlyAttribute] private float _value5;
         [SerializeField, ReadOnlyAttribute] private ParameterType _value5ParameterType;
         public (float value, ParameterType parameterType) Value5 => (_value5, _value5ParameterType);

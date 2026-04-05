@@ -19,23 +19,47 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 3707760238593
-    m_Localized: Increases base attack power by {value1}%
+    m_Localized: Base attack power increases by {value1}%
     m_Metadata:
       m_Items: []
   - m_Id: 3707760238592
-    m_Localized: Attack power up
+    m_Localized: Attack power increases
     m_Metadata:
       m_Items: []
-  - m_Id: 29351436288
-    m_Localized: BaseDamageUp-Level3
+  - m_Id: 10454283904049152
+    m_Localized: -Level1
     m_Metadata:
       m_Items: []
-  - m_Id: 4107389329408
-    m_Localized: BaseDamageUp-Level1
+  - m_Id: 10454283950186496
+    m_Localized: -Level2
     m_Metadata:
       m_Items: []
-  - m_Id: 4107393523712
-    m_Localized: BaseDamageUp-Level2
+  - m_Id: 10454283950186497
+    m_Localized: -Level3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380800
+    m_Localized: BaseDamageUp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380801
+    m_Localized: Bullet size
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380802
+    m_Localized: The bullet gets bigger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380803
+    m_Localized: The base size of the bullet increases by {value1}%.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380804
+    m_Localized: The base rate of fire increases by {value1}%.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10454283954380805
+    m_Localized: Maximum HP increases by {value1}%
     m_Metadata:
       m_Items: []
   references:

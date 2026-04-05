@@ -5,9 +5,10 @@
       "depth": 0,
       "source": "git",
       "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "3.0.2"
+        "com.unity.nuget.newtonsoft-json": "3.0.2",
+        "com.unity.test-framework": "1.1.31"
       },
-      "hash": "c4393b091e932835acfa6cda6ead8126f530dade"
+      "hash": "940831fe8a474e92b96a5c183298b45843cf067e"
     },
     "com.cysharp.r3": {
       "version": "https://github.com/Cysharp/R3.git?path=src/R3.Unity/Assets/R3.Unity",

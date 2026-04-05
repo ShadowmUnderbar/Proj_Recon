@@ -16,6 +16,9 @@ namespace App.Editor
         private const string CsvPath = "Assets/App/MasterData/Origin/UpgradeData.csv";
         private const string OutputPath = "Assets/App/MasterData/Upgrade";
         private const string DatabasePath = "Assets/App/MasterData/Database/UpgradeDatabase.asset";
+        private const string UpgradeCsvFileName = "UpgradeData.csv";
+        private const string UpgradeTypeFileName = "UpgradeType.cs";
+        private const string DestCsPath = "Assets/App/Script/Common/Data/UpgradeType.cs";
 
         // CSV列インデックス（GASエクスポーターのスキーマに対応）
         // ヘッダー: id,NameKey,SimpleDescriptionKey,DescriptionKey,UpgradeType,PlayerUnlockType,Level,
@@ -41,6 +44,56 @@ namespace App.Editor
         private static readonly BindingFlags PrivateInstance =
             BindingFlags.NonPublic | BindingFlags.Instance;
 
+        [MenuItem("Tools/マスターデータ/UpgradeData ファイルコピー")]
+        private static void CopyFilesFromFolder()
+        {
+            var selectedFolder = EditorUtility.OpenFolderPanel("インポート元フォルダを選択", "", "");
+            if (string.IsNullOrEmpty(selectedFolder)) return;
+
+            var csvFiles = Directory.GetFiles(selectedFolder, UpgradeCsvFileName, SearchOption.AllDirectories);
+            var csFiles = Directory.GetFiles(selectedFolder, UpgradeTypeFileName, SearchOption.AllDirectories);
+
+            if (csvFiles.Length == 0 || csFiles.Length == 0)
+            {
+                var missing = new System.Text.StringBuilder();
+                if (csvFiles.Length == 0) missing.AppendLine($"・{UpgradeCsvFileName}");
+                if (csFiles.Length == 0) missing.AppendLine($"・{UpgradeTypeFileName}");
+                EditorUtility.DisplayDialog("エラー", $"以下のファイルが見つかりませんでした:\n{missing}", "OK");
+                return;
+            }
+
+            var srcCsv = csvFiles[0];
+            var srcCs = csFiles[0];
+            var destCsAbsolute = Path.GetFullPath(DestCsPath);
+            var upgradeTypeChanged = !File.Exists(destCsAbsolute) ||
+                                     File.ReadAllText(srcCs) != File.ReadAllText(destCsAbsolute);
+
+            try
+            {
+                File.Copy(srcCsv, Path.GetFullPath(CsvPath), overwrite: true);
+                File.Copy(srcCs, destCsAbsolute, overwrite: true);
+            }
+            catch (Exception e)
+            {
+                EditorUtility.DisplayDialog("エラー", $"ファイルのコピーに失敗しました:\n{e.Message}", "OK");
+                return;
+            }
+
+            AssetDatabase.Refresh();
+
+            if (upgradeTypeChanged)
+            {
+                EditorUtility.DisplayDialog(
+                    "UpgradeType.cs を更新しました",
+                    "UpgradeType.cs を更新しました。\nUnityの再コンパイル後に再度インポートを実行してください。",
+                    "OK");
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("コピー完了", "ファイルのコピーが完了しました。", "OK");
+            }
+        }
+
         [MenuItem("Tools/マスターデータ/UpgradeData CSVインポート")]
         private static void Import()
         {
@@ -63,11 +116,13 @@ namespace App.Editor
 
             // ヘッダー行（Row0）をスキップし、空行を除いたデータ行を収集
             var dataLines = new List<string>();
-            for (int i = 1; i < lines.Length; i++)
+            for (var i = 1; i < lines.Length; i++)
             {
                 var trimmed = lines[i].Trim();
                 if (trimmed.Length > 0)
+                {
                     dataLines.Add(trimmed);
+                }
             }
 
             if (dataLines.Count == 0)
@@ -77,7 +132,9 @@ namespace App.Editor
             }
 
             if (!AssetDatabase.IsValidFolder(OutputPath))
+            {
                 AssetDatabase.CreateFolder("Assets/App/MasterData", "Upgrade");
+            }
 
             var errors = new List<string>();
             var importedAssets = new List<UpgradeMasterData>();
@@ -176,6 +233,11 @@ namespace App.Editor
 
                 // NameKey の $ を除いた名前をファイル名に使用
                 var assetName = cols[ColNameKey].Trim().TrimStart('$');
+                if (level >= 1)
+                {
+                    //かつレベルが1以上なら、ファイル名にレベルを付与して区別する
+                    assetName += $"_L{level}";
+                }
                 var assetPath = $"{OutputPath}/{assetName}.asset";
 
                 // 既存アセットを読み込む、なければ新規作成（同名なら上書き）
