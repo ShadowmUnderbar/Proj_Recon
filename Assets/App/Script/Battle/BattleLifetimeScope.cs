@@ -44,6 +44,8 @@ namespace App.Battle
                 .As<IPlayerDodgeParameterDataStore>();
             builder.Register<UpgradeSessionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeSessionDataStore>();
+            builder.Register<UpgradeEffectSimpleCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IUpgradeEffectSimpleCalculatorDataStore>();
 
             #endregion
 

@@ -12,7 +12,7 @@ namespace App.Battle.DataStore
     {
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
-        private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
+        private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -21,12 +21,13 @@ namespace App.Battle.DataStore
         public PlayerBulletParameterDataStore(
             IPlayerSettingDataStore playerSettingDataStore,
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
-            IUpgradeSessionDataStore upgradeSessionDataStore
+            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
-            _upgradeSessionDataStore = upgradeSessionDataStore;
+            _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
+            _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
         }
 
         public void Tick()
@@ -46,7 +47,7 @@ namespace App.Battle.DataStore
         {
             var coolDown = BasePlayerParameter.BaseFireRate;
 
-            coolDown *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.FireRate);
+            coolDown *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.FireRate);
 
             coolDown *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusFireRateMagnification : 1f;
 
@@ -136,7 +137,7 @@ namespace App.Battle.DataStore
                 _ => 1f
             };
 
-            damage *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BulletDamage);
+            damage *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.BulletDamage);
             damage *= focusType == AimFocusType.Focus ? BasePlayerParameter.LongFocusDamageMagnification : 1f;
 
             return damage;
@@ -157,7 +158,7 @@ namespace App.Battle.DataStore
                 explosive += BasePlayerParameter.MergeExplosiveScale;
             }
 
-            explosive *= _upgradeSessionDataStore.GetUpgradeValue(UpgradeType.BombRange);
+            explosive *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.BombRange);
             return explosive;
         }
     }
