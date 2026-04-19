@@ -27,18 +27,18 @@ namespace App.Battle.DataStore
         private float SpawnDistanceMax => 40f;
 
         private float _commonSpawnCycle;
-        private float CommonSpawnInterval => 1.5f;
+        private float CommonSpawnInterval => 4f;
         private int _commonSpawnCounts = 2;
 
-        private float CommonSpawnCountUpInterval => 20f;
+        private float CommonSpawnCountUpInterval => 40f;
         private float _commonSpawnCountUpCycle;
 
         private float _minorSpawnCycle;
-        private float MinorSpawnInterval => 12f;
+        private float MinorSpawnInterval => 20f;
         private float _minorSpawnCounts = 1;
 
         private float _majorSpawnCycle;
-        private float MajorSpawnInterval => 25f;
+        private float MajorSpawnInterval => 50f;
 
         public void Tick()
         {
