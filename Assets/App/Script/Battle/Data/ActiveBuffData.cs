@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+using UnityEngine;
 
 namespace App.Battle.Data
 {
     /// <summary>
     /// バトル中に保持するバフのランタイム状態。
-    /// スタック数と残時間はそれぞれ独立して管理する。
+    /// スタック数は加算で管理し、効果時間は既存と新規の長い方を採用する。
     /// </summary>
     public class ActiveBuffData
     {
@@ -15,42 +15,46 @@ namespace App.Battle.Data
         public int StackCount { get; private set; }
 
         /// <summary>
-        /// スタックごとの残効果時間（秒）のリスト。
-        /// HasDuration=falseのバフでは空リストのまま。
+        /// 残効果時間（秒）。全スタック共通。
+        /// HasDuration=falseのバフでは0のまま（時間管理しない）。
         /// </summary>
-        private readonly List<float> _remainingTimes = new();
-        public IReadOnlyList<float> RemainingTimes => _remainingTimes;
+        public float RemainingDuration { get; private set; }
 
-        public ActiveBuffData(string buffId, BuffType buffType, float initialDuration, bool hasDuration)
+        public bool HasDuration { get; }
+
+        public ActiveBuffData(string buffId, BuffType buffType, float initialDuration, bool hasDuration, int initialStackCount = 1)
         {
             BuffId = buffId;
             BuffType = buffType;
-            StackCount = 1;
-            if (hasDuration) _remainingTimes.Add(initialDuration);
-        }
-
-        /// <summary>スタックを追加する（MaxStackチェックはDataStore側で実施済み）。</summary>
-        public void AddStack(float duration, bool hasDuration)
-        {
-            StackCount++;
-            if (hasDuration) _remainingTimes.Add(duration);
+            StackCount = initialStackCount;
+            HasDuration = hasDuration;
+            RemainingDuration = hasDuration ? initialDuration : 0f;
         }
 
         /// <summary>
-        /// 時間経過を反映し残スタック数を返す。
-        /// 0を返した場合はDataStore側でエントリ除去する。
-        /// HasDuration=falseのバフは常にStackCountをそのまま返す。
+        /// スタックを加算する。効果時間は既存残時間と新規時間の長い方を採用する。
+        /// 例: 残10秒に3秒追加→10秒、残5秒に7秒追加→7秒
+        /// </summary>
+        public void AddStack(int count, float duration, bool hasDuration)
+        {
+            StackCount += count;
+            if (hasDuration)
+                RemainingDuration = Mathf.Max(RemainingDuration, duration);
+        }
+
+        /// <summary>
+        /// 時間経過を反映する。HasDuration=falseのバフは変化なし。
+        /// 時間切れで全スタック消滅し0を返す。
         /// </summary>
         public int Tick(float deltaTime)
         {
-            for (var i = _remainingTimes.Count - 1; i >= 0; i--)
+            if (!HasDuration) return StackCount;
+
+            RemainingDuration -= deltaTime;
+            if (RemainingDuration <= 0f)
             {
-                _remainingTimes[i] -= deltaTime;
-                if (_remainingTimes[i] <= 0f)
-                {
-                    _remainingTimes.RemoveAt(i);
-                    StackCount--;
-                }
+                RemainingDuration = 0f;
+                StackCount = 0;
             }
             return StackCount;
         }
@@ -60,7 +64,6 @@ namespace App.Battle.Data
         {
             if (StackCount <= 0) return false;
             StackCount--;
-            if (_remainingTimes.Count > 0) _remainingTimes.RemoveAt(0);
             return true;
         }
     }

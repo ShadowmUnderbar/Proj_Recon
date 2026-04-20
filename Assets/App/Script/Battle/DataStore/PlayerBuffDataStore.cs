@@ -52,23 +52,27 @@ namespace App.Battle.DataStore
             }
         }
 
-        public void AddBuff(BuffMasterData masterData)
+        public void AddBuff(BuffMasterData masterData, int stackCount = 1)
         {
+            if (stackCount <= 0) return;
+
             if (_activeBuffs.TryGetValue(masterData.Id, out var existing))
             {
-                if (existing.StackCount < masterData.MaxStack)
-                {
-                    existing.AddStack(masterData.Duration, masterData.HasDuration);
-                    _onBuffChanged.OnNext(masterData.BuffType);
-                }
+                // MaxStackを超えないよう実際に加算するスタック数を制限
+                var addCount = Mathf.Min(stackCount, masterData.MaxStack - existing.StackCount);
+                if (addCount <= 0) return;
+                existing.AddStack(addCount, masterData.Duration, masterData.HasDuration);
+                _onBuffChanged.OnNext(masterData.BuffType);
                 return;
             }
 
+            var initialCount = Mathf.Min(stackCount, masterData.MaxStack);
             _activeBuffs[masterData.Id] = new ActiveBuffData(
                 masterData.Id,
                 masterData.BuffType,
                 masterData.Duration,
-                masterData.HasDuration);
+                masterData.HasDuration,
+                initialCount);
             _onBuffChanged.OnNext(masterData.BuffType);
         }
 

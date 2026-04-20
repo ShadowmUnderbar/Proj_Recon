@@ -12,8 +12,11 @@ namespace App.Battle.Interface.DataStore
 
         IReadOnlyList<ActiveBuffData> ActiveBuffs { get; }
 
-        /// <summary>バフを付与する（スタック加算含む）。</summary>
-        void AddBuff(BuffMasterData masterData);
+        /// <summary>
+        /// バフを付与する。stackCountで一度に複数スタック付与可能。
+        /// 既存バフがある場合: スタック数を加算し、効果時間は長い方を採用する。
+        /// </summary>
+        void AddBuff(BuffMasterData masterData, int stackCount = 1);
 
         /// <summary>指定IDのバフを手動除去する（HasDuration=falseのバフ向け）。</summary>
         bool RemoveBuff(string buffId);
