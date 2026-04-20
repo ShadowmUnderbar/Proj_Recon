@@ -30,6 +30,7 @@ When parsing CSV or spreadsheet data, always confirm the header/data start row w
 - **PRのベース**: developブランチ
 - **コミット単位**: 機能単位で分割、わかりやすいメッセージ
 - **Co-Authored-By**: Claudeとの共同作業時は必ず追加
+- **PR必須**: Claudeによるコード変更は必ずプルリクエストを作成する（直接developへのpushは禁止）
 
 
 ### リファクタリング優先度

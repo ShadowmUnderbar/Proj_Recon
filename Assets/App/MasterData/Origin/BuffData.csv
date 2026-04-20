@@ -1,0 +1,7 @@
+id,NameKey,BuffType,Duration,BaseValue,MaxStack
+buff_atk_001,$AttackUp,Attack,10,0.2,3
+buff_atk_debuff_001,$AttackDown,Attack,8,-0.15,2
+buff_spd_001,$SpeedUp,Speed,0,0.3,1
+buff_spd_debuff_001,$SpeedDown,Speed,6,-0.2,2
+buff_fr_001,$FireRateUp,FireRate,5,0.1,5
+buff_fr_debuff_001,$FireRateDown,FireRate,4,-0.1,3

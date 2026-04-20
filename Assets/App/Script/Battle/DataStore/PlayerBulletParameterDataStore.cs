@@ -13,6 +13,7 @@ namespace App.Battle.DataStore
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
+        private readonly IPlayerBuffDataStore _playerBuffDataStore;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -21,13 +22,14 @@ namespace App.Battle.DataStore
         public PlayerBulletParameterDataStore(
             IPlayerSettingDataStore playerSettingDataStore,
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
-            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore
+            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
+            IPlayerBuffDataStore playerBuffDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
-            _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
+            _playerBuffDataStore = playerBuffDataStore;
         }
 
         public void Tick()
@@ -50,6 +52,10 @@ namespace App.Battle.DataStore
             coolDown *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.FireRate);
 
             coolDown *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusFireRateMagnification : 1f;
+
+            // FireRateバフ: GetEffectMultiplierが1.2fなら連射速度+20%（クールダウン短縮）
+            var fireRateMultiplier = _playerBuffDataStore.GetEffectMultiplier(BuffType.FireRate);
+            if (fireRateMultiplier > 0f) coolDown /= fireRateMultiplier;
 
             coolDown *= shotType switch
             {
@@ -139,6 +145,7 @@ namespace App.Battle.DataStore
 
             damage *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.BulletDamage);
             damage *= focusType == AimFocusType.Focus ? BasePlayerParameter.LongFocusDamageMagnification : 1f;
+            damage *= _playerBuffDataStore.GetEffectMultiplier(BuffType.Attack);
 
             return damage;
         }

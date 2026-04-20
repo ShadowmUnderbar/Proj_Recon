@@ -27,6 +27,10 @@ namespace App.Battle
             #region DataStore
 
             // 登録順序がTick順序に影響するため、依存順に登録
+            // PlayerBulletParameterDataStoreより前に登録してTick順を保証
+            builder.Register<PlayerBuffDataStore>(Lifetime.Singleton)
+                .AsImplementedInterfaces().As<IPlayerBuffDataStore>();
+
             builder.Register<PlayerStateDataStore>(Lifetime.Singleton)
                 .AsImplementedInterfaces().As<IPlayerStateDataStore>();
             builder.Register<PlayerFocusDataStore>(Lifetime.Singleton)
@@ -48,6 +52,14 @@ namespace App.Battle
                 .As<IUpgradeEffectSimpleCalculatorDataStore>();
             builder.Register<WaveManagerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IWaveManagerDataStore>();
+
+            #endregion
+
+            #region BuffEffectCalculator
+
+            builder.Register<AttackBuffCalculator>(Lifetime.Singleton).As<IBuffEffectCalculator>();
+            builder.Register<SpeedBuffCalculator>(Lifetime.Singleton).As<IBuffEffectCalculator>();
+            builder.Register<FireRateBuffCalculator>(Lifetime.Singleton).As<IBuffEffectCalculator>();
 
             #endregion
 
