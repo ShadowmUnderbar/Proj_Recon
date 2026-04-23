@@ -5,6 +5,7 @@ using App.Battle.Views;
 using App.Framework.Utilities;
 using App.Battle.DataStore;
 using App.Battle.Interface.DataStore;
+using App.Common.Data;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -21,6 +22,8 @@ namespace App.Battle
         [SerializeField] private EnemyStoreView _enemyStoreView;
         [SerializeField] private HitBoxStoreView _hitBoxStoreView;
         [SerializeField] private BlitzEffectView _blitzEffectView;
+        [SerializeField] private RunLevelView _runLevelView;
+        [SerializeField] private RunLevelConfig _runLevelConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -48,6 +51,8 @@ namespace App.Battle
                 .As<IUpgradeEffectSimpleCalculatorDataStore>();
             builder.Register<WaveManagerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IWaveManagerDataStore>();
+            builder.Register<RunLevelDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IRunLevelDataStore>();
 
             #endregion
 
@@ -62,6 +67,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
+            builder.RegisterEntryPoint<RunLevelUseCase>();
 
             #endregion
 
@@ -74,6 +80,8 @@ namespace App.Battle
                 .As<IEnemyPresenter>();
             builder.Register<BattleHitPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IBattleHitPresenter>();
+            builder.Register<RunLevelPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IRunLevelPresenter>();
 
             #endregion
 
@@ -81,6 +89,8 @@ namespace App.Battle
 
             builder.RegisterComponentInNewPrefab(_playerView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IBattlePlayerView>();
+            builder.RegisterComponentInHierarchy<RunLevelView>().As<IRunLevelView>();
+            builder.RegisterInstance(_runLevelConfig);
 
             #endregion
 
