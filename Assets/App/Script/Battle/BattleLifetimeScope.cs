@@ -2,6 +2,7 @@ using App.Battle.Interface;
 using App.Battle.Presenters;
 using App.Battle.UseCase;
 using App.Battle.Views;
+using App.Common.Data;
 using App.Framework.Utilities;
 using App.Battle.DataStore;
 using App.Battle.Interface.DataStore;
@@ -21,6 +22,8 @@ namespace App.Battle
         [SerializeField] private EnemyStoreView _enemyStoreView;
         [SerializeField] private HitBoxStoreView _hitBoxStoreView;
         [SerializeField] private BlitzEffectView _blitzEffectView;
+        [SerializeField] private BulletStoreView _bulletStoreView;
+        [SerializeField] private WaveConfig _waveConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -113,6 +116,11 @@ namespace App.Battle
             builder.Register<SimpleObjectFactory<BlitzEffectView, BlitzEffectView>>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<BlitzEffectView>>()
                 .WithParameter("prefab", _blitzEffectView);
+
+            builder.RegisterComponentInNewPrefab(_bulletStoreView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<IBulletStoreView>();
+
+            builder.RegisterInstance(_waveConfig);
 
             #endregion
         }

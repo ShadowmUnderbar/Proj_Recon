@@ -11,5 +11,6 @@ namespace App.Battle.Interface.DataStore
         Observable<Unit> OnSpawnBossEnemy { get; }
         Observable<Unit> OnSpawnIrregularEnemy { get; }
         Vector3 GetRandomSpawnPositionFast(Vector3 playerPosition);
+        void ResetSpawnCycle();
     }
 }

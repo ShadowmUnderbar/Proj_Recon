@@ -142,6 +142,17 @@ namespace App.Battle.DataStore
             return _spawnEnemyDataList.Remove(enemyId);
         }
 
+        public void RemoveAllEnemyData()
+        {
+            // 辞書の列挙中に変更を避けるため一旦コピーしてから削除
+            var ids = _spawnEnemyDataList.Keys.ToList();
+            _spawnEnemyDataList.Clear();
+            foreach (var id in ids)
+            {
+                _onEnemyRemoved.OnNext(id);
+            }
+        }
+
         public void Damage(HitData hitData)
         {
             if (!_spawnEnemyDataList.TryGetValue(hitData.DamagedId, out var enemyData))

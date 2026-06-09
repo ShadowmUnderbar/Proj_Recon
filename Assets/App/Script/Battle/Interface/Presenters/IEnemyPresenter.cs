@@ -11,6 +11,7 @@ namespace App.Battle.Interface
         Observable<(int id, Pose pose)> OnEnemyPoseUpdate { get; }
         void Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType);
         void UnSpawn(int enemyId);
+        void RemoveAllEnemies();
 
         int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance);
         void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2);

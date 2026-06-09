@@ -75,6 +75,15 @@ namespace App.Battle.DataStore
             }
         }
 
+        public void ResetSpawnCycle()
+        {
+            // 累積スポーンタイマーのみゼロ化（_commonSpawnCounts等の難易度カウントはウェーブを跨いで維持）
+            _commonSpawnCycle = 0f;
+            _minorSpawnCycle = 0f;
+            _majorSpawnCycle = 0f;
+            _commonSpawnCountUpCycle = 0f;
+        }
+
         public Vector3 GetRandomSpawnPositionFast(Vector3 playerPosition)
         {
             Vector3 targetPos;

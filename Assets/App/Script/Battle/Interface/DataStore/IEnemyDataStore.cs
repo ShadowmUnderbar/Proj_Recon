@@ -22,6 +22,7 @@ namespace App.Battle.Interface.DataStore
         bool TryGetEnemyData(int enemyId, out EnemyData enemyData);
         EnemyData AddEnemyData(EnemyMasterData enemyMasterData, Pose spawnPose);
         bool RemoveEnemyData(int enemyId);
+        void RemoveAllEnemyData();
         void Damage(HitData hitData);
         void UpdateEnemyPose(int id, Pose pose);
     }

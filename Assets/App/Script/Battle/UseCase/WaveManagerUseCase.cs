@@ -1,7 +1,7 @@
 using System;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
-using App.Common.Interface;
+using App.Common.Data;
 using R3;
 using UnityEngine;
 using VContainer;
@@ -14,7 +14,9 @@ namespace App.Battle.UseCase
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IEnemyPresenter _enemyPresenter;
-        private readonly IGameInputDataStore _gameInputDataStore;
+        private readonly IEnemyRandomSpawnCycleDataStore _enemyRandomSpawnCycleDataStore;
+        private readonly IBulletStoreView _bulletStoreView;
+        private readonly WaveConfig _waveConfig;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -23,20 +25,91 @@ namespace App.Battle.UseCase
             IWaveManagerDataStore waveManagerDataStore,
             IEnemyDataStore enemyDataStore,
             IEnemyPresenter enemyPresenter,
-            IGameInputDataStore gameInputDataStore
+            IEnemyRandomSpawnCycleDataStore enemyRandomSpawnCycleDataStore,
+            IBulletStoreView bulletStoreView,
+            WaveConfig waveConfig
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
             _enemyDataStore = enemyDataStore;
             _enemyPresenter = enemyPresenter;
-            _gameInputDataStore = gameInputDataStore;
+            _enemyRandomSpawnCycleDataStore = enemyRandomSpawnCycleDataStore;
+            _bulletStoreView = bulletStoreView;
+            _waveConfig = waveConfig;
         }
 
         public void Initialize()
         {
+            // ポーズ状態を敵側へ伝搬
             _waveManagerDataStore.IsWavePause
                 .Subscribe(OnUpdateWavePause)
                 .AddTo(_disposable);
+
+            // 敵撃破でキル数加算 → 進行条件評価
+            _enemyDataStore.OnEnemyDead
+                .Subscribe(_ => OnEnemyDead())
+                .AddTo(_disposable);
+        }
+
+        public void Tick()
+        {
+            // ポーズ中は経過時間を進めない（ウェーブ遷移中・将来のウェーブ選択UI中の停止）
+            if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
+            _waveManagerDataStore.AddElapsedTime(Time.deltaTime);
+            TryAdvanceWave();
+        }
+
+        private void OnEnemyDead()
+        {
+            // ポーズ中はカウントしない（クリーンナップで湧いた死亡通知をスキップ）
+            if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
+            _waveManagerDataStore.IncrementKillCount();
+            TryAdvanceWave();
+        }
+
+        private void TryAdvanceWave()
+        {
+            // 最大ウェーブ到達時は進行しない（無限ループ設定なら HasMaxWave=false でスキップ）
+            if (_waveConfig.HasMaxWave
+                && _waveManagerDataStore.CurrentWave.Value >= _waveConfig.MaxWaveCount)
+            {
+                return;
+            }
+
+            var isTimeReached = _waveManagerDataStore.ElapsedTime.Value
+                                >= _waveConfig.WaveDurationSeconds;
+            var isKillCountReached = _waveManagerDataStore.KillCount.Value
+                                     >= _waveConfig.WaveEnemyKillCount;
+
+            if (!isTimeReached && !isKillCountReached)
+            {
+                return;
+            }
+
+            AdvanceWaveInternal();
+        }
+
+        private void AdvanceWaveInternal()
+        {
+            // 操作停止（IsWavePauseは将来のウェーブ選択UI完了で解除する想定）
+            _waveManagerDataStore.SetWavePause(true);
+            // スポーン累積タイマーをリセットして次ウェーブの初期間隔から再開
+            _enemyRandomSpawnCycleDataStore.ResetSpawnCycle();
+            // 出現済みの敵を全消去（View 側 GameObject 破棄 → DataStore辞書クリア）
+            _enemyPresenter.RemoveAllEnemies();
+            _enemyDataStore.RemoveAllEnemyData();
+            // プレイヤー弾・敵弾を全消去
+            _bulletStoreView.AllRemove();
+            // ウェーブ番号インクリメント＋進行通知
+            _waveManagerDataStore.AdvanceWave();
         }
 
         private void OnUpdateWavePause(bool isPause)
@@ -47,16 +120,6 @@ namespace App.Battle.UseCase
         public void Dispose()
         {
             _disposable?.Dispose();
-        }
-
-        public void Tick()
-        {
-            if (!_gameInputDataStore.IsDodge.Value)
-            {
-                return;
-            }
-
-            _waveManagerDataStore.SetWavePause(!_waveManagerDataStore.IsWavePause.Value);
         }
     }
 }

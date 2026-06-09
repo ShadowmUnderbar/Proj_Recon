@@ -32,6 +32,11 @@ namespace App.Battle.Presenters
             _enemyStoreView.UnSpawn(enemyId);
         }
 
+        public void RemoveAllEnemies()
+        {
+            _enemyStoreView.AllDeadEnemies();
+        }
+
         public int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
         {
             return _enemyStoreView.GetDodgeHitEnemies(playerPosition, direction, distance);
