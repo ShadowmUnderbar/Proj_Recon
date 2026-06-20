@@ -10,6 +10,7 @@ function onOpen() {
     .addItem('UpgradeData CSVエクスポート', 'exportUpgradeCsv')
     .addSeparator()
     .addItem('UpgradeType Enum C#エクスポート', 'exportUpgradeTypeEnumCs')
+    .addItem('ConditionType Enum C#エクスポート', 'exportConditionTypeEnumCs')
     .addToUi();
 }
 
@@ -18,6 +19,14 @@ function onOpen() {
  */
 function exportUpgradeTypeEnumCs() {
   exportEnumCs('UpgradeType');
+}
+
+/**
+ * ConditionTypeシートをC# enumファイルとしてエクスポート（ラッパー）
+ * シート構成・出力形式は UpgradeType と共通（exportEnumCs を流用）
+ */
+function exportConditionTypeEnumCs() {
+  exportEnumCs('ConditionType');
 }
 
 /**

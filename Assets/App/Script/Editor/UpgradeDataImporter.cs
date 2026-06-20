@@ -19,6 +19,8 @@ namespace App.Editor
         private const string UpgradeCsvFileName = "UpgradeData.csv";
         private const string UpgradeTypeFileName = "UpgradeType.cs";
         private const string DestCsPath = "Assets/App/Script/Common/Data/UpgradeType.cs";
+        private const string ConditionTypeFileName = "ConditionType.cs";
+        private const string DestConditionTypePath = "Assets/App/Script/Common/Data/ConditionType.cs";
 
         // CSV列インデックス（GASエクスポーターのスキーマに対応）
         // ヘッダー: id,NameKey,UpgradeType,PlayerUnlockType,Level,
@@ -54,26 +56,34 @@ namespace App.Editor
 
             var csvFiles = Directory.GetFiles(selectedFolder, UpgradeCsvFileName, SearchOption.AllDirectories);
             var csFiles = Directory.GetFiles(selectedFolder, UpgradeTypeFileName, SearchOption.AllDirectories);
+            var conditionCsFiles = Directory.GetFiles(selectedFolder, ConditionTypeFileName, SearchOption.AllDirectories);
 
-            if (csvFiles.Length == 0 || csFiles.Length == 0)
+            if (csvFiles.Length == 0 || csFiles.Length == 0 || conditionCsFiles.Length == 0)
             {
                 var missing = new System.Text.StringBuilder();
                 if (csvFiles.Length == 0) missing.AppendLine($"・{UpgradeCsvFileName}");
                 if (csFiles.Length == 0) missing.AppendLine($"・{UpgradeTypeFileName}");
+                if (conditionCsFiles.Length == 0) missing.AppendLine($"・{ConditionTypeFileName}");
                 EditorUtility.DisplayDialog("エラー", $"以下のファイルが見つかりませんでした:\n{missing}", "OK");
                 return;
             }
 
             var srcCsv = csvFiles[0];
             var srcCs = csFiles[0];
+            var srcConditionCs = conditionCsFiles[0];
             var destCsAbsolute = Path.GetFullPath(DestCsPath);
-            var upgradeTypeChanged = !File.Exists(destCsAbsolute) ||
-                                     File.ReadAllText(srcCs) != File.ReadAllText(destCsAbsolute);
+            var destConditionCsAbsolute = Path.GetFullPath(DestConditionTypePath);
+            var enumChanged =
+                !File.Exists(destCsAbsolute) ||
+                File.ReadAllText(srcCs) != File.ReadAllText(destCsAbsolute) ||
+                !File.Exists(destConditionCsAbsolute) ||
+                File.ReadAllText(srcConditionCs) != File.ReadAllText(destConditionCsAbsolute);
 
             try
             {
                 File.Copy(srcCsv, Path.GetFullPath(CsvPath), overwrite: true);
                 File.Copy(srcCs, destCsAbsolute, overwrite: true);
+                File.Copy(srcConditionCs, destConditionCsAbsolute, overwrite: true);
             }
             catch (Exception e)
             {
@@ -83,11 +93,11 @@ namespace App.Editor
 
             AssetDatabase.Refresh();
 
-            if (upgradeTypeChanged)
+            if (enumChanged)
             {
                 EditorUtility.DisplayDialog(
-                    "UpgradeType.cs を更新しました",
-                    "UpgradeType.cs を更新しました。\nUnityの再コンパイル後に再度インポートを実行してください。",
+                    "enum を更新しました",
+                    "UpgradeType.cs / ConditionType.cs を更新しました。\nUnityの再コンパイル後に再度インポートを実行してください。",
                     "OK");
             }
             else
