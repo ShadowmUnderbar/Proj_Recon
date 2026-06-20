@@ -1,3 +1,4 @@
+using System.Linq;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.EnemyAI;
@@ -12,6 +13,8 @@ namespace App.Battle.Views
     public class EnemyView : MonoBehaviour, IEnemyView
     {
         public int Id { get; private set; }
+
+        [SerializeField] private EnemyHitFeedbackView _hitFeedback;
 
         public ReactiveProperty<Pose> Pose { get; } = new();
         public IHitBoxView[] HitBoxes { get; private set; }
@@ -28,6 +31,14 @@ namespace App.Battle.Views
             foreach (var hitBox in HitBoxes)
             {
                 hitBox.Init(Id, HitBoxType.Enemy, resistanceDirectionType);
+            }
+
+            // 被弾時に傾き演出を再生
+            if (_hitFeedback != null && HitBoxes.Length > 0)
+            {
+                HitBoxes.Select(h => h.OnHitObservable).Merge()
+                    .Subscribe(hit => _hitFeedback.Play(hit.HitDirection))
+                    .AddTo(this);
             }
 
             EnemyAI = GetComponent<EnemyAIBase>();

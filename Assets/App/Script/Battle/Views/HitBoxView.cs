@@ -28,10 +28,16 @@ namespace App.Battle.Views
         {
             var directionType = RelativeYawExtension.GetActorRelative(transform.ToPose(), attackCenter);
 
+            // 弾→敵の水平方向。撃たれた方向と逆＝傾けたい向き
+            var hitDirection = transform.position - attackCenter;
+            hitDirection.y = 0f;
+            hitDirection = hitDirection.sqrMagnitude > 0f ? hitDirection.normalized : Vector3.zero;
+
             var hitData = new HitData(
                 Id,
                 damage,
-                directionType
+                directionType,
+                hitDirection
             );
             _onHitObservable.OnNext(hitData);
 
