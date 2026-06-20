@@ -16,6 +16,7 @@ namespace App.Battle.Views
     public class BattlePlayerView : MonoBehaviour, IBattlePlayerView
     {
         [SerializeField] private PlayerMoveView _playerMoveView;
+        [SerializeField] private PlayerAnimationView _playerAnimationView;
         [SerializeField] private PlayerTopDownAimListView _playerTopDownAimListView;
         [SerializeField] private Transform[] _controllers;
         [SerializeField] private Transform[] _muzzles;
@@ -99,6 +100,16 @@ namespace App.Battle.Views
         public void Move(Vector2 inputV2)
         {
             _playerMoveView.Move(inputV2);
+        }
+
+        public void SetMoveAnimation(Vector2 dir)
+        {
+            _playerAnimationView.SetMoveDirection(dir);
+        }
+
+        public void SetModelFacing(Vector3 dir)
+        {
+            _playerAnimationView.SetFacingDirection(dir);
         }
 
         public void Aim()

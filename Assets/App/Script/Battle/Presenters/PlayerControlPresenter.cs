@@ -34,6 +34,16 @@ namespace App.Battle.Presenters
             _playerView.Move(moveV2);
         }
 
+        public void SetMoveAnimation(Vector2 dir)
+        {
+            _playerView.SetMoveAnimation(dir);
+        }
+
+        public void SetModelFacing(Vector3 dir)
+        {
+            _playerView.SetModelFacing(dir);
+        }
+
         public void MouseAim(Vector2 mousePos)
         {
             _playerView.MouseAim(mousePos);

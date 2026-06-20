@@ -10,6 +10,7 @@ namespace App.Battle.Interface.DataStore
         ReactiveProperty<Pose> RightHandPose { get; }
         Vector3 LeftAimDirection { get; }
         Vector3 RightAimDirection { get; }
+        Vector3 CenterAimDirection { get; }
 
         void SetAimPosition(HandType handType, Vector3 position);
     }

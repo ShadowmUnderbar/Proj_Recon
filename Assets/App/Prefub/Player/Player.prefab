@@ -81,6 +81,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerMoveView: {fileID: 2787126200944847852}
+  _playerAnimationView: {fileID: 7816167697514583543}
   _playerTopDownAimListView: {fileID: 3776856170843482917}
   _controllers:
   - {fileID: 7008251059468729650}
@@ -302,14 +303,48 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5392821630538825289, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 190b92ce0c4ff944a8b229ecd0557383, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1692468126580653705, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7816167697514583543}
   m_SourcePrefab: {fileID: 100100000, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
 --- !u!4 &144352267608366435 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2033105197973300275, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
+  m_PrefabInstance: {fileID: 2177453005255965008}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &669636889445255129 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1692468126580653705, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
+  m_PrefabInstance: {fileID: 2177453005255965008}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7816167697514583543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669636889445255129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7dfc3e3b5fe2bee4eaea6a2511ece2ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 6116164597338359577}
+  _modelTransform: {fileID: 144352267608366435}
+  _dampTime: 0.1
+  _rotationSpeed: 360
+  _turnLockAngle: 150
+--- !u!95 &6116164597338359577 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5392821630538825289, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
   m_PrefabInstance: {fileID: 2177453005255965008}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3521543214263741817

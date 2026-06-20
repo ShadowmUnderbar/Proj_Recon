@@ -45,6 +45,9 @@ namespace App.Battle.UseCase
             // MoveSpeedは既にBaseSpeed * BasePlayerParameter.MoveSpeedを含むため、そのまま使用
             _playerStateDataStore.Move(_gameInputDataStore.V2LeftAxis,
                 _playerStateDataStore.MoveSpeed);
+
+            // ワールド入力を渡し、View側でモデルの向き基準にローカル化して移動モーションへ反映
+            _playerControlPresenter.SetMoveAnimation(_gameInputDataStore.V2LeftAxis);
         }
 
         public void Dispose()

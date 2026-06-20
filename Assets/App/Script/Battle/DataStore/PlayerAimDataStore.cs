@@ -22,6 +22,24 @@ namespace App.Battle.DataStore
         public Vector3 RightAimDirection =>
             (_playerStateDataStore.Position.Value - _aimPositions[HandType.Right]).normalized;
 
+        // 両手のエイム方向（プレイヤー→エイム、XZ平面に投影・正規化）の平均。
+        // 両手がほぼ正反対で合成が不安定なときはVector3.zeroを返し、振り向き先を更新させない。
+        public Vector3 CenterAimDirection
+        {
+            get
+            {
+                var position = _playerStateDataStore.Position.Value;
+                var toLeft = Vector3.ProjectOnPlane(_aimPositions[HandType.Left] - position, Vector3.up);
+                var toRight = Vector3.ProjectOnPlane(_aimPositions[HandType.Right] - position, Vector3.up);
+
+                var sum = toLeft.normalized + toRight.normalized;
+                return sum.sqrMagnitude < CenterAimEpsilon ? Vector3.zero : sum.normalized;
+            }
+        }
+
+        // 合成ベクトルがこの値より小さい場合は両手が正反対付近とみなす
+        private const float CenterAimEpsilon = 0.01f;
+
         private readonly Dictionary<HandType, Vector3> _aimPositions = new()
         {
             { HandType.Left, Vector3.zero },

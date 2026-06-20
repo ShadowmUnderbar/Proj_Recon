@@ -83,6 +83,9 @@ namespace App.Battle.UseCase
             }
 
             _playerControlPresenter.Aim();
+
+            // 両手エイムの中心方向へモデルを振り向かせる
+            _playerControlPresenter.SetModelFacing(_playerAimDataStore.CenterAimDirection);
         }
 
         public void Dispose()
