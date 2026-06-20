@@ -20,8 +20,10 @@ namespace App.Battle.Views
         // 振り向き速度（度/秒）
         [SerializeField] private float _rotationSpeed = 360f;
 
-        // 必要回転がこの角度以上の間は振り向き先を保留（180°付近の急反転を防ぐ）
-        [SerializeField] private float _turnLockAngle = 150f;
+        // 必要回転がこの角度以上の間は振り向き先を保留（180°付近の急反転を防ぐ）。
+        // 既定は180°超とし、中心方向が定義されている限り常に振り向く（腕が後方へ伸びるのを防ぐ）。
+        // 真後ろの曖昧ケースは CenterAimDirection が Vector3.zero を返して別途保留される。
+        [SerializeField] private float _turnLockAngle = 200f;
 
         // 毎フレームの文字列参照を避けるためハッシュをキャッシュ
         private int _moveXHash;

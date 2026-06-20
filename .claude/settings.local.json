@@ -13,5 +13,8 @@
       "PowerShell('{\"message\":\"テスト通知です（権限の確認待ち）\"}' | powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\\\Users\\\\shado\\\\.claude\\\\notify-input-needed.ps1; \"exit code: $LASTEXITCODE\")",
       "PowerShell($j = Get-Content 'C:\\\\Users\\\\shado\\\\.claude\\\\settings.json' -Raw | ConvertFrom-Json; $cmd = $j.hooks.Notification[0].hooks[0].command; if \\($cmd\\) { \"OK: $cmd\" } else { \"MISSING\" })"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "uLoopMCP"
+  ]
 }

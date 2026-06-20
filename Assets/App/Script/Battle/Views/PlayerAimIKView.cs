@@ -22,6 +22,9 @@ namespace App.Battle.Views
         // 手の回転も対象方向へ合わせるか
         [SerializeField] private bool _alignHandRotation = true;
 
+        // モデル前方からこの角度を超える対象は「後方」とみなし、その腕のIKを切る（後方へねじれるのを防ぐ）
+        [SerializeField] private float _maxBackAngle = 110f;
+
         private Camera _camera;
         private Transform _leftUpperArm;
         private Transform _rightUpperArm;
@@ -134,11 +137,18 @@ namespace App.Battle.Views
 
         private void ApplyHandIK(AvatarIKGoal goal, Transform upperArm, Vector3 target, ref float weight)
         {
-            weight = Mathf.MoveTowards(weight, _aimWeight, _weightLerpSpeed * Time.deltaTime);
-
             var shoulder = upperArm.position;
             var toTarget = target - shoulder;
             var distance = toTarget.magnitude;
+
+            // 対象がモデル前方からどれだけ逸れているか（水平面で判定）。後方ならIKを切る。
+            var horizontalToTarget = Vector3.ProjectOnPlane(toTarget, Vector3.up);
+            var isBehind = horizontalToTarget.sqrMagnitude > Mathf.Epsilon
+                && Vector3.Angle(transform.forward, horizontalToTarget) > _maxBackAngle;
+
+            // 後方なら目標ウェイトを0へフェードし、腕を基礎アニメ姿勢へ戻す
+            var targetWeight = isBehind ? 0f : _aimWeight;
+            weight = Mathf.MoveTowards(weight, targetWeight, _weightLerpSpeed * Time.deltaTime);
 
             // 肩から到達距離内へクランプした到達点
             var reachPoint = distance > _armReach
