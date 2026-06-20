@@ -12,6 +12,10 @@ namespace App.Battle.Interface.DataStore
         Vector3 RightAimDirection { get; }
         Vector3 CenterAimDirection { get; }
 
+        // 各手のエイム対象ワールド座標（IKの到達点に使用）
+        Vector3 LeftAimPosition { get; }
+        Vector3 RightAimPosition { get; }
+
         void SetAimPosition(HandType handType, Vector3 position);
     }
 }

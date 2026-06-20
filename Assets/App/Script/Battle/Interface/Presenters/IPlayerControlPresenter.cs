@@ -18,6 +18,7 @@ namespace App.Battle.Interface
         void Move(Vector2 moveV2);
         void SetMoveAnimation(Vector2 dir);
         void SetModelFacing(Vector3 dir);
+        void SetAimTargets(Vector3 leftTarget, Vector3 rightTarget);
         void Aim();
         void SetHandRayColor(HandType handType, Color color);
         void SetAimRayColor(HandType handType, Color color);

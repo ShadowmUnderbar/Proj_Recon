@@ -17,6 +17,7 @@ namespace App.Battle.Views
     {
         [SerializeField] private PlayerMoveView _playerMoveView;
         [SerializeField] private PlayerAnimationView _playerAnimationView;
+        [SerializeField] private PlayerAimIKView _playerAimIKView;
         [SerializeField] private PlayerTopDownAimListView _playerTopDownAimListView;
         [SerializeField] private Transform[] _controllers;
         [SerializeField] private Transform[] _muzzles;
@@ -110,6 +111,11 @@ namespace App.Battle.Views
         public void SetModelFacing(Vector3 dir)
         {
             _playerAnimationView.SetFacingDirection(dir);
+        }
+
+        public void SetAimTargets(Vector3 leftTarget, Vector3 rightTarget)
+        {
+            _playerAimIKView.SetAimTargets(leftTarget, rightTarget);
         }
 
         public void Aim()

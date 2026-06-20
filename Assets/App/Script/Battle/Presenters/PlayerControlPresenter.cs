@@ -44,6 +44,11 @@ namespace App.Battle.Presenters
             _playerView.SetModelFacing(dir);
         }
 
+        public void SetAimTargets(Vector3 leftTarget, Vector3 rightTarget)
+        {
+            _playerView.SetAimTargets(leftTarget, rightTarget);
+        }
+
         public void MouseAim(Vector2 mousePos)
         {
             _playerView.MouseAim(mousePos);

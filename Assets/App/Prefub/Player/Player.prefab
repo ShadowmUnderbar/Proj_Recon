@@ -82,6 +82,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerMoveView: {fileID: 2787126200944847852}
   _playerAnimationView: {fileID: 7816167697514583543}
+  _playerAimIKView: {fileID: 3609262202139811586}
   _playerTopDownAimListView: {fileID: 3776856170843482917}
   _controllers:
   - {fileID: 7008251059468729650}
@@ -314,6 +315,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1692468126580653705, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7816167697514583543}
+    - targetCorrespondingSourceObject: {fileID: 1692468126580653705, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3609262202139811586}
   m_SourcePrefab: {fileID: 100100000, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
 --- !u!4 &144352267608366435 stripped
 Transform:
@@ -342,6 +346,23 @@ MonoBehaviour:
   _dampTime: 0.1
   _rotationSpeed: 360
   _turnLockAngle: 150
+--- !u!114 &3609262202139811586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669636889445255129}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 600bdada1920bdb4d98c3eb7e0241b6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 6116164597338359577}
+  _aimWeight: 1
+  _weightLerpSpeed: 8
+  _armReach: 0.6
+  _alignHandRotation: 1
 --- !u!95 &6116164597338359577 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5392821630538825289, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}

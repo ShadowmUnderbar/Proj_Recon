@@ -86,6 +86,12 @@ namespace App.Battle.UseCase
 
             // 両手エイムの中心方向へモデルを振り向かせる
             _playerControlPresenter.SetModelFacing(_playerAimDataStore.CenterAimDirection);
+
+            // 両手のエイム対象ワールド座標を渡し、両腕のIK追従に使わせる
+            _playerControlPresenter.SetAimTargets(
+                _playerAimDataStore.LeftAimPosition,
+                _playerAimDataStore.RightAimPosition
+            );
         }
 
         public void Dispose()

@@ -24,6 +24,7 @@ namespace App.Battle.Interface
         void Move(Vector2 inputV2);
         void SetMoveAnimation(Vector2 dir);
         void SetModelFacing(Vector3 dir);
+        void SetAimTargets(Vector3 leftTarget, Vector3 rightTarget);
         void Aim();
         void MouseAim(Vector2 mousePos);
         void SetAimRayColor(HandType handType, Color color);

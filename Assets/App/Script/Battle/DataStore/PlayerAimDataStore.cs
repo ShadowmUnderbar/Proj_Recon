@@ -22,6 +22,10 @@ namespace App.Battle.DataStore
         public Vector3 RightAimDirection =>
             (_playerStateDataStore.Position.Value - _aimPositions[HandType.Right]).normalized;
 
+        // 各手のエイム対象ワールド座標（フォーカス敵位置 or マウス/手の位置）
+        public Vector3 LeftAimPosition => _aimPositions[HandType.Left];
+        public Vector3 RightAimPosition => _aimPositions[HandType.Right];
+
         // 両手のエイム方向（プレイヤー→エイム、XZ平面に投影・正規化）の平均。
         // 両手がほぼ正反対で合成が不安定なときはVector3.zeroを返し、振り向き先を更新させない。
         public Vector3 CenterAimDirection
