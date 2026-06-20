@@ -192,12 +192,17 @@ namespace App.Battle.Views.Enemy.Bullet
 
         private async UniTask HitAfterProcess()
         {
-            CanHit = false;
-
             if (_trailRenderer == null)
             {
                 return;
             }
+
+            if (!CanHit)
+            {
+                return;
+            }
+
+            CanHit = false;
 
             var time = _trailRenderer.time *= 0.5f;
             _trailRenderer.time = time;
