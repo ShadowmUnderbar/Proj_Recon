@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using App.Battle.Interface;
+using App.Battle.Views;
 using App.Common.Data;
 using App.Framework;
+using App.Framework.Utilities;
 using Cysharp.Threading.Tasks;
 using R3;
 using R3.Triggers;
 using UnityEngine;
+using VContainer;
 
 namespace App.Battle.Views.Enemy.Bullet
 {
@@ -15,8 +18,20 @@ namespace App.Battle.Views.Enemy.Bullet
         [SerializeField] private Layer _shooterLayer;
         [SerializeField] private Collider _hitCollider;
 
+        // 即着弾で何にも当たらなかった場合にトレーサーを伸ばす最大距離
+        [SerializeField] private float _maxTracerDistance = 50f;
+
         private readonly List<int> _hitTargetIds = new();
         private readonly RaycastHit[] _instantHitBuffer = new RaycastHit[10];
+
+        // 即着弾の曳光弾エフェクト生成用ファクトリ（プレイヤー弾のみDIで注入される。敵弾ではnull）
+        private ISimpleObjectFactory<BulletTracerView> _tracerFactory;
+
+        [Inject]
+        public void Construct(ISimpleObjectFactory<BulletTracerView> tracerFactory)
+        {
+            _tracerFactory = tracerFactory;
+        }
 
         protected bool CanHit { get; private set; } = true;
         protected BulletData BulletData { get; private set; }
@@ -54,12 +69,43 @@ namespace App.Battle.Views.Enemy.Bullet
 
         private void InstantHitCheck()
         {
+            // 弾はまだ移動していないため、現在位置が発射地点
+            var origin = transform.position;
+
             var hitCount = Physics.SphereCastNonAlloc(
-                transform.position,
+                origin,
                 BulletData.Size * 0.5f,
                 transform.forward,
                 _instantHitBuffer,
                 Mathf.Infinity);
+
+            // トレーサーの着弾地点を算出（shooterレイヤー/弾タグを除外した最遠の有効ヒット）
+            var maxHitDistance = -1f;
+            for (var i = 0; i < hitCount; i++)
+            {
+                var hit = _instantHitBuffer[i];
+                if (hit.collider.gameObject.layer == _shooterLayer)
+                {
+                    continue;
+                }
+
+                if (hit.collider.gameObject.CompareTag(TagConstants.Bullet))
+                {
+                    continue;
+                }
+
+                if (hit.distance > maxHitDistance)
+                {
+                    maxHitDistance = hit.distance;
+                }
+            }
+
+            // 有効ヒットが無ければ最大距離まで線を伸ばす
+            var endPos = maxHitDistance >= 0f
+                ? origin + transform.forward * maxHitDistance
+                : origin + transform.forward * _maxTracerDistance;
+
+            SpawnTracer(origin, endPos);
 
             for (var i = 0; i < hitCount; i++)
             {
@@ -71,6 +117,18 @@ namespace App.Battle.Views.Enemy.Bullet
             {
                 HitAfterProcess().Forget();
             }
+        }
+
+        private void SpawnTracer(Vector3 startPos, Vector3 endPos)
+        {
+            // 敵弾などファクトリ未注入の場合はトレーサーを出さない
+            if (_tracerFactory == null)
+            {
+                return;
+            }
+
+            var tracer = _tracerFactory.Instantiate(null);
+            tracer.Play(startPos, endPos).Forget();
         }
 
         private void HitProcess(Collider col)
