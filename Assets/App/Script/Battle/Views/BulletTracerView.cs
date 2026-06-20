@@ -24,13 +24,18 @@ namespace App.Battle.Views
         /// <param name="startPos">発射地点</param>
         /// <param name="endPos">着弾地点</param>
         /// <param name="material">ラインに使用するマテリアル（元の弾と揃える。nullならプレハブ設定のまま）</param>
-        public async UniTask Play(Vector3 startPos, Vector3 endPos, Material material)
+        /// <param name="width">ラインの太さ（弾の当たり判定サイズと揃える）</param>
+        public async UniTask Play(Vector3 startPos, Vector3 endPos, Material material, float width)
         {
             // 元の弾と同じマテリアルを使用
             if (material != null)
             {
                 lineRenderer.sharedMaterial = material;
             }
+
+            // 弾の当たり判定と同じサイズの太さに設定
+            lineRenderer.startWidth = width;
+            lineRenderer.endWidth = width;
 
             // 即座に発射地点→着弾地点の直線を描画
             lineRenderer.positionCount = 2;

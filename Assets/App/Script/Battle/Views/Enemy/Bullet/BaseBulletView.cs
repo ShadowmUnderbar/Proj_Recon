@@ -131,7 +131,8 @@ namespace App.Battle.Views.Enemy.Bullet
             var material = _trailRenderer != null ? _trailRenderer.sharedMaterial : null;
 
             var tracer = _tracerFactory.Instantiate(null);
-            tracer.Play(startPos, endPos, material).Forget();
+            // 線の太さは弾の当たり判定サイズ(SphereCast直径 = BulletData.Size)に合わせる
+            tracer.Play(startPos, endPos, material, BulletData.Size).Forget();
         }
 
         private void HitProcess(Collider col)
