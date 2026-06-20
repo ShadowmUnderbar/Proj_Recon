@@ -79,14 +79,14 @@ namespace App.Battle.UseCase
         {
             // 最大ウェーブ到達時は進行しない（無限ループ設定なら HasMaxWave=false でスキップ）
             if (_waveConfig.HasMaxWave
-                && _waveManagerDataStore.CurrentWave.Value >= _waveConfig.MaxWaveCount)
+                && _waveManagerDataStore.CurrentWave.CurrentValue >= _waveConfig.MaxWaveCount)
             {
                 return;
             }
 
-            var isTimeReached = _waveManagerDataStore.ElapsedTime.Value
+            var isTimeReached = _waveManagerDataStore.ElapsedTime.CurrentValue
                                 >= _waveConfig.WaveDurationSeconds;
-            var isKillCountReached = _waveManagerDataStore.KillCount.Value
+            var isKillCountReached = _waveManagerDataStore.KillCount.CurrentValue
                                      >= _waveConfig.WaveEnemyKillCount;
 
             if (!isTimeReached && !isKillCountReached)

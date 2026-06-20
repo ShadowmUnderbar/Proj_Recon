@@ -163,6 +163,8 @@ MonoBehaviour:
   _enemyStoreView: {fileID: 4339147710328061394, guid: 36921a23a35ddae4aab98efe0648b985, type: 3}
   _hitBoxStoreView: {fileID: 6914517933678794931, guid: c33fa19a77f4b3240ad67937a879edf4, type: 3}
   _blitzEffectView: {fileID: 8959355507770873111, guid: e83cca62039e1484ab7b3365492eebd3, type: 3}
+  _bulletStoreView: {fileID: 1523574698354749414, guid: 0f61ec3ac4e34ed4a8d99b5609a2d29f, type: 3}
+  _waveConfig: {fileID: 11400000, guid: 59d998123a56c164e8af04f7758af639, type: 2}
 --- !u!4 &175168502
 Transform:
   m_ObjectHideFlags: 0
