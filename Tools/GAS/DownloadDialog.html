@@ -15,7 +15,7 @@
       box-sizing: border-box;
       color: #333;
     }
-    p { margin: 0 0 12px; font-size: 14px; }
+    p { margin: 0 0 12px; font-size: 14px; white-space: pre-line; }
     button {
       padding: 6px 20px;
       font-size: 13px;
@@ -24,34 +24,43 @@
   </style>
 </head>
 <body>
-  <p id="status">CSVを準備しています...</p>
+  <p id="status">ファイルを準備しています...</p>
   <button onclick="google.script.host.close()">閉じる</button>
 
   <script>
-    // GASテンプレートからCSV文字列とファイル名を受け取る
-    const csvContent = <?!= JSON.stringify(csvContent) ?>;
-    const fileName   = <?!= JSON.stringify(fileName) ?>;
+    // GASテンプレートからファイル配列（{ fileName, content }）を受け取る
+    const files = <?!= JSON.stringify(files) ?>;
+
+    // 1ファイルをBOM付きBlobとしてダウンロードする
+    function downloadFile(file) {
+      const bom  = '﻿'; // BOM付きでExcel/エディタの文字化けを防ぐ
+      const blob = new Blob([bom + file.content], { type: 'text/plain;charset=utf-8;' });
+      const url  = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href     = url;
+      a.download = file.fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      URL.revokeObjectURL(url);
+    }
 
     window.onload = function () {
+      const status = document.getElementById('status');
       try {
-        // BOM付きでExcelの文字化けを防ぐ
-        const bom = '\uFEFF';
-        const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url  = URL.createObjectURL(blob);
+        // 複数ファイルを連続DLするとブラウザにブロックされやすいため、
+        // 1件ずつ間隔（400ms）を空けて発火する
+        files.forEach(function (file, i) {
+          setTimeout(function () { downloadFile(file); }, i * 400);
+        });
 
-        const a = document.createElement('a');
-        a.href     = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        URL.revokeObjectURL(url);
-        document.getElementById('status').textContent =
-          fileName + ' のダウンロードを開始しました。';
+        const names = files.map(function (f) { return f.fileName; }).join('\n');
+        status.textContent =
+          files.length + ' 件のダウンロードを開始しました:\n' + names;
       } catch (e) {
-        document.getElementById('status').textContent =
-          'ダウンロードに失敗しました: ' + e.message;
+        status.textContent = 'ダウンロードに失敗しました: ' + e.message;
       }
     };
   </script>

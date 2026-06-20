@@ -9,42 +9,45 @@ function onOpen() {
     .createMenu('マスターデータ')
     .addItem('UpgradeData CSVエクスポート', 'exportUpgradeCsv')
     .addSeparator()
-    .addItem('UpgradeType Enum C#エクスポート', 'exportUpgradeTypeEnumCs')
-    .addItem('ConditionType Enum C#エクスポート', 'exportConditionTypeEnumCs')
+    .addItem('全Typeシート Enum C#エクスポート', 'exportAllTypeEnumCs')
     .addToUi();
 }
 
 /**
- * UpgradeTypeシートをC# enumファイルとしてエクスポート（ラッパー）
+ * シート名末尾が "Type" の全シートをC# enumファイルとしてまとめてエクスポートし、
+ * ダウンロードダイアログ（複数ファイル対応）を表示する。
+ * enum（列挙ファイル）が増えてもシートを追加するだけでよく、コード改修は不要。
  */
-function exportUpgradeTypeEnumCs() {
-  exportEnumCs('UpgradeType');
-}
-
-/**
- * ConditionTypeシートをC# enumファイルとしてエクスポート（ラッパー）
- * シート構成・出力形式は UpgradeType と共通（exportEnumCs を流用）
- */
-function exportConditionTypeEnumCs() {
-  exportEnumCs('ConditionType');
-}
-
-/**
- * 指定シートのenum定義をC#ファイルとしてエクスポートしダウンロードダイアログを表示
- * シート列構成: A列=数値、B列=日本語コメント、C列=要素名
- * @param {string} sheetName - 対象シート名（そのままenum名・ファイル名に使用）
- */
-function exportEnumCs(sheetName) {
+function exportAllTypeEnumCs() {
   const ui = SpreadsheetApp.getUi();
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-  const sheet = ss.getSheetByName(sheetName);
-  if (!sheet) {
-    ui.alert('エラー', `"${sheetName}" シートが見つかりません。`, ui.ButtonSet.OK);
+  const targetSheets = ss.getSheets().filter(s => s.getName().endsWith('Type'));
+  if (targetSheets.length === 0) {
+    ui.alert('エラー', '名前が "Type" で終わるシートが見つかりません。', ui.ButtonSet.OK);
     return;
   }
 
-  // 4行目（index=3）から、A列が空になるまでデータを取得
+  const files = targetSheets.map(sheet => {
+    const name = sheet.getName();
+    const entries = readEnumEntries(sheet);
+    if (entries.length === 0) {
+      console.warn(`"${name}" シートはデータが0行です。空のenumを出力します。`);
+    }
+    return { fileName: name + '.cs', content: generateEnumCs(name, entries) };
+  });
+
+  showDownloadDialog(files, 'C#ファイルダウンロード');
+}
+
+/**
+ * enumシートからエントリ配列を読み取る。
+ * シート列構成: A列=数値、B列=日本語コメント、C列=要素名。
+ * 4行目（index=3）から、A列が空になるまで取得する。
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet
+ * @returns {{ value: number, comment: string, name: string }[]}
+ */
+function readEnumEntries(sheet) {
   const allData = sheet.getDataRange().getValues();
   const entries = [];
   const startRow = 3; // 0-indexed（4行目）
@@ -62,23 +65,24 @@ function exportEnumCs(sheetName) {
     }
     entries.push({ value, comment, name });
   }
+  return entries;
+}
 
-  if (entries.length === 0) {
-    ui.alert('警告', 'データが0行です。空のenumを出力します。', ui.ButtonSet.OK);
-  }
-
-  const csContent = generateEnumCs(sheetName, entries);
-
+/**
+ * ダウンロードダイアログを表示する共通処理。
+ * @param {{ fileName: string, content: string }[]} files - DL対象ファイル配列（1件でも可）
+ * @param {string} title - ダイアログタイトル
+ */
+function showDownloadDialog(files, title) {
   const template = HtmlService.createTemplateFromFile('DownloadDialog');
-  template.csvContent = csContent;
-  template.fileName = sheetName + '.cs';
+  template.files = files;
 
   const html = template.evaluate()
     .setWidth(400)
-    .setHeight(120)
-    .setTitle('C#ファイルダウンロード');
+    .setHeight(140)
+    .setTitle(title);
 
-  ui.showModalDialog(html, 'C#ファイルダウンロード');
+  SpreadsheetApp.getUi().showModalDialog(html, title);
 }
 
 /**
@@ -119,16 +123,8 @@ function exportUpgradeCsv() {
   const csvContent = generateCsv(sheet, ss);
   if (csvContent === null) return; // generateCsv内でアラート済み
 
-  const template = HtmlService.createTemplateFromFile('DownloadDialog');
-  template.csvContent = csvContent;
-  template.fileName = 'UpgradeData.csv';
-
-  const html = template.evaluate()
-    .setWidth(400)
-    .setHeight(120)
-    .setTitle('CSVダウンロード');
-
-  ui.showModalDialog(html, 'CSVダウンロード');
+  // 単一ファイルでも files 配列（1件）として共通ダイアログに渡す
+  showDownloadDialog([{ fileName: 'UpgradeData.csv', content: csvContent }], 'CSVダウンロード');
 }
 
 /**

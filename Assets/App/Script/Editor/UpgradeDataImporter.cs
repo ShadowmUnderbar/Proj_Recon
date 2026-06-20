@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using App.Common.Data;
 using App.Common.Data.Database;
@@ -17,10 +18,9 @@ namespace App.Editor
         private const string OutputPath = "Assets/App/MasterData/Upgrade";
         private const string DatabasePath = "Assets/App/MasterData/Database/UpgradeDatabase.asset";
         private const string UpgradeCsvFileName = "UpgradeData.csv";
-        private const string UpgradeTypeFileName = "UpgradeType.cs";
-        private const string DestCsPath = "Assets/App/Script/Common/Data/UpgradeType.cs";
-        private const string ConditionTypeFileName = "ConditionType.cs";
-        private const string DestConditionTypePath = "Assets/App/Script/Common/Data/ConditionType.cs";
+        // GAS出力フォルダ内の「末尾Type.cs」enumファイルを対象にする（enumが増えても無改修）
+        private const string EnumFilePattern = "*Type.cs";
+        private const string EnumDestDir = "Assets/App/Script/Common/Data";
 
         // CSV列インデックス（GASエクスポーターのスキーマに対応）
         // ヘッダー: id,NameKey,UpgradeType,PlayerUnlockType,Level,
@@ -55,35 +55,45 @@ namespace App.Editor
             if (string.IsNullOrEmpty(selectedFolder)) return;
 
             var csvFiles = Directory.GetFiles(selectedFolder, UpgradeCsvFileName, SearchOption.AllDirectories);
-            var csFiles = Directory.GetFiles(selectedFolder, UpgradeTypeFileName, SearchOption.AllDirectories);
-            var conditionCsFiles = Directory.GetFiles(selectedFolder, ConditionTypeFileName, SearchOption.AllDirectories);
+            // 末尾Type.cs のenumファイルを全て収集（同名はファイル名で重複排除）
+            var enumFiles = Directory.GetFiles(selectedFolder, EnumFilePattern, SearchOption.AllDirectories)
+                .GroupBy(Path.GetFileName)
+                .Select(g => g.First())
+                .ToList();
 
-            if (csvFiles.Length == 0 || csFiles.Length == 0 || conditionCsFiles.Length == 0)
+            if (csvFiles.Length == 0 || enumFiles.Count == 0)
             {
                 var missing = new System.Text.StringBuilder();
                 if (csvFiles.Length == 0) missing.AppendLine($"・{UpgradeCsvFileName}");
-                if (csFiles.Length == 0) missing.AppendLine($"・{UpgradeTypeFileName}");
-                if (conditionCsFiles.Length == 0) missing.AppendLine($"・{ConditionTypeFileName}");
+                if (enumFiles.Count == 0) missing.AppendLine($"・{EnumFilePattern}（末尾Typeのenumファイル）");
                 EditorUtility.DisplayDialog("エラー", $"以下のファイルが見つかりませんでした:\n{missing}", "OK");
                 return;
             }
 
             var srcCsv = csvFiles[0];
-            var srcCs = csFiles[0];
-            var srcConditionCs = conditionCsFiles[0];
-            var destCsAbsolute = Path.GetFullPath(DestCsPath);
-            var destConditionCsAbsolute = Path.GetFullPath(DestConditionTypePath);
-            var enumChanged =
-                !File.Exists(destCsAbsolute) ||
-                File.ReadAllText(srcCs) != File.ReadAllText(destCsAbsolute) ||
-                !File.Exists(destConditionCsAbsolute) ||
-                File.ReadAllText(srcConditionCs) != File.ReadAllText(destConditionCsAbsolute);
+
+            // 各enumについて コピー元→コピー先 を決定し、内容差分があるものを記録
+            var changedEnumNames = new List<string>();
+            var copyPairs = new List<(string src, string dest)>();
+            foreach (var src in enumFiles)
+            {
+                var fileName = Path.GetFileName(src);
+                var destAbsolute = Path.GetFullPath($"{EnumDestDir}/{fileName}");
+                copyPairs.Add((src, destAbsolute));
+
+                if (!File.Exists(destAbsolute) || File.ReadAllText(src) != File.ReadAllText(destAbsolute))
+                {
+                    changedEnumNames.Add(fileName);
+                }
+            }
 
             try
             {
                 File.Copy(srcCsv, Path.GetFullPath(CsvPath), overwrite: true);
-                File.Copy(srcCs, destCsAbsolute, overwrite: true);
-                File.Copy(srcConditionCs, destConditionCsAbsolute, overwrite: true);
+                foreach (var (src, dest) in copyPairs)
+                {
+                    File.Copy(src, dest, overwrite: true);
+                }
             }
             catch (Exception e)
             {
@@ -93,11 +103,12 @@ namespace App.Editor
 
             AssetDatabase.Refresh();
 
-            if (enumChanged)
+            if (changedEnumNames.Count > 0)
             {
                 EditorUtility.DisplayDialog(
                     "enum を更新しました",
-                    "UpgradeType.cs / ConditionType.cs を更新しました。\nUnityの再コンパイル後に再度インポートを実行してください。",
+                    $"以下の enum を更新しました:\n{string.Join("\n", changedEnumNames)}\n\n" +
+                    "Unityの再コンパイル後に再度インポートを実行してください。",
                     "OK");
             }
             else
