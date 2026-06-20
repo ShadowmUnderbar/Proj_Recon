@@ -204,9 +204,10 @@ namespace App.Battle.Views.Enemy.Bullet
 
             CanHit = false;
 
-            var time = _trailRenderer.time *= 0.5f;
-            _trailRenderer.time = time;
-            await UniTask.WaitForSeconds(time);
+            _trailRenderer.time *= 0.5f;
+            // 待機中にgameObjectが破棄された場合（Spawnの5秒自動Destroyやプレイモード終了等）に
+            // 破棄済みオブジェクトへアクセスしないよう、destroyCancellationTokenで待機をキャンセルする
+            await UniTask.WaitForSeconds(_trailRenderer.time, cancellationToken: destroyCancellationToken);
             Destroy(gameObject);
         }
     }
