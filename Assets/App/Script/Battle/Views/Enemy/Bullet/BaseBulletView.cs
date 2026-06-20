@@ -202,6 +202,11 @@ namespace App.Battle.Views.Enemy.Bullet
             var time = _trailRenderer.time *= 0.5f;
             _trailRenderer.time = time;
             await UniTask.WaitForSeconds(time);
+            if (gameObject == null)
+            {
+                return;
+            }
+
             Destroy(gameObject);
         }
     }
