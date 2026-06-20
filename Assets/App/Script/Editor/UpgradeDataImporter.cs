@@ -21,9 +21,9 @@ namespace App.Editor
         private const string DestCsPath = "Assets/App/Script/Common/Data/UpgradeType.cs";
 
         // CSV列インデックス（GASエクスポーターのスキーマに対応）
-        // ヘッダー: id,NameKey,SimpleDescriptionKey,DescriptionKey,UpgradeType,PlayerUnlockType,Level,
+        // ヘッダー: id,NameKey,UpgradeType,PlayerUnlockType,Level,
         //          Value1,Value1ParameterType,Value2,Value2ParameterType,Value3,Value3ParameterType,
-        //          Value4,Value4ParameterType,Value5,Value5ParameterType
+        //          Value4,Value4ParameterType,Value5,Value5ParameterType,ConditionType,ConditionValue
         private const int ColId = 0;
         private const int ColNameKey = 1;
         private const int ColUpgradeType = 2;
@@ -39,7 +39,9 @@ namespace App.Editor
         private const int ColValue4ParameterType = 12;
         private const int ColValue5 = 13;
         private const int ColValue5ParameterType = 14;
-        private const int MinColumnCount = 15;
+        private const int ColConditionType = 15;
+        private const int ColConditionValue = 16;
+        private const int MinColumnCount = 17;
 
         private static readonly BindingFlags PrivateInstance =
             BindingFlags.NonPublic | BindingFlags.Instance;
@@ -231,6 +233,17 @@ namespace App.Editor
                     continue;
                 }
 
+                if (!TryParseEnum<ConditionType>(cols[ColConditionType].Trim(), rowNum, "ConditionType",
+                        errors, out var conditionType))
+                {
+                    continue;
+                }
+
+                if (!TryParseFloat(cols[ColConditionValue].Trim(), rowNum, "ConditionValue", errors, out var conditionValue))
+                {
+                    continue;
+                }
+
                 // NameKey の $ を除いた名前をファイル名に使用
                 var assetName = cols[ColNameKey].Trim().TrimStart('$');
                 if (level >= 1)
@@ -264,6 +277,8 @@ namespace App.Editor
                 type.GetField("_value4ParameterType", PrivateInstance).SetValue(masterData, value4Pt);
                 type.GetField("_value5", PrivateInstance).SetValue(masterData, value5);
                 type.GetField("_value5ParameterType", PrivateInstance).SetValue(masterData, value5Pt);
+                type.GetField("_conditionType", PrivateInstance).SetValue(masterData, conditionType);
+                type.GetField("_conditionValue", PrivateInstance).SetValue(masterData, conditionValue);
 
                 EditorUtility.SetDirty(masterData);
                 importedAssets.Add(masterData);

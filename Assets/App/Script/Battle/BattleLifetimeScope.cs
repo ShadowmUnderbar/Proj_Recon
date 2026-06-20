@@ -48,6 +48,8 @@ namespace App.Battle
                 .As<IPlayerDodgeParameterDataStore>();
             builder.Register<UpgradeSessionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeSessionDataStore>();
+            builder.Register<PassiveConditionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPassiveConditionDataStore>();
             builder.Register<UpgradeEffectSimpleCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeEffectSimpleCalculatorDataStore>();
             builder.Register<WaveManagerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()

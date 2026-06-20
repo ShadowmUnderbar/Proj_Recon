@@ -46,6 +46,15 @@ namespace App.Common.Data.MasterData
         [SerializeField, ReadOnlyAttribute] private ParameterType _value5ParameterType;
         public (float value, ParameterType parameterType) Value5 => (_value5, _value5ParameterType);
 
+        [Space]
+        // パッシブ発動条件。None なら従来の恒久アップグレードとして常に適用される。
+        [SerializeField, ReadOnlyAttribute] private ConditionType _conditionType;
+        public ConditionType ConditionType => _conditionType;
+
+        // 条件のしきい値／継続秒数。意味は ConditionType ごとに異なる（ConditionType の定義を参照）。
+        [SerializeField, ReadOnlyAttribute] private float _conditionValue;
+        public float ConditionValue => _conditionValue;
+
         public UpgradeMasterData(
             string id,
             string nameKey,
@@ -61,7 +70,9 @@ namespace App.Common.Data.MasterData
             float value4,
             ParameterType value4ParameterType,
             float value5,
-            ParameterType value5ParameterType
+            ParameterType value5ParameterType,
+            ConditionType conditionType,
+            float conditionValue
         )
         {
             _id = id;
@@ -79,6 +90,8 @@ namespace App.Common.Data.MasterData
             _value4ParameterType = value4ParameterType;
             _value5 = value5;
             _value5ParameterType = value5ParameterType;
+            _conditionType = conditionType;
+            _conditionValue = conditionValue;
         }
     }
 }

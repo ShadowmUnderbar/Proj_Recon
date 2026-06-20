@@ -8,15 +8,18 @@ namespace App.Battle.DataStore
     {
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
         private readonly UpgradeDatabase _upgradeDatabase;
+        private readonly IPassiveConditionDataStore _passiveConditionDataStore;
 
         [Inject]
         public UpgradeEffectSimpleCalculatorDataStore(
             IUpgradeSessionDataStore upgradeSessionDataStore,
-            UpgradeDatabase upgradeDatabase
+            UpgradeDatabase upgradeDatabase,
+            IPassiveConditionDataStore passiveConditionDataStore
         )
         {
             _upgradeSessionDataStore = upgradeSessionDataStore;
             _upgradeDatabase = upgradeDatabase;
+            _passiveConditionDataStore = passiveConditionDataStore;
         }
 
         /// <summary>
@@ -34,6 +37,12 @@ namespace App.Battle.DataStore
                 }
 
                 if (data.UpgradeType != upgradeType)
+                {
+                    continue;
+                }
+
+                // パッシブ条件が成立していない場合は寄与させない（None は常に成立）
+                if (!_passiveConditionDataStore.IsSatisfied(data.ConditionType, data.ConditionValue))
                 {
                     continue;
                 }
@@ -59,6 +68,12 @@ namespace App.Battle.DataStore
                 }
 
                 if (data.UpgradeType != upgradeType)
+                {
+                    continue;
+                }
+
+                // パッシブ条件が成立していない場合は寄与させない（None は常に成立）
+                if (!_passiveConditionDataStore.IsSatisfied(data.ConditionType, data.ConditionValue))
                 {
                     continue;
                 }
