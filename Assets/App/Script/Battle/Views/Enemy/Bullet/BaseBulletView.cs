@@ -127,8 +127,11 @@ namespace App.Battle.Views.Enemy.Bullet
                 return;
             }
 
+            // 元の弾と同じマテリアルをトレーサーに使わせる
+            var material = _trailRenderer != null ? _trailRenderer.sharedMaterial : null;
+
             var tracer = _tracerFactory.Instantiate(null);
-            tracer.Play(startPos, endPos).Forget();
+            tracer.Play(startPos, endPos, material).Forget();
         }
 
         private void HitProcess(Collider col)
