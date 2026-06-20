@@ -52,7 +52,10 @@ namespace App.Battle.Views.Enemy.Bullet
             if (bulletData.Speed <= 0)
             {
                 InstantHitCheck();
+                return;
             }
+
+            _trailRenderer.enabled = true;
         }
 
         protected virtual void Awake()
