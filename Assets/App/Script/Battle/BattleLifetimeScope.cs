@@ -24,6 +24,7 @@ namespace App.Battle
         [SerializeField] private BlitzEffectView _blitzEffectView;
         [SerializeField] private BulletTracerView _bulletTracerView;
         [SerializeField] private BulletStoreView _bulletStoreView;
+        [SerializeField] private ShopView _shopView;
         [SerializeField] private WaveConfig _waveConfig;
 
         protected override void Configure(IContainerBuilder builder)
@@ -50,6 +51,8 @@ namespace App.Battle
                 .As<IUpgradeSessionDataStore>();
             builder.Register<UpgradeEffectSimpleCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeEffectSimpleCalculatorDataStore>();
+            builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IUpgradeLotteryDataStore>();
             builder.Register<WaveManagerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IWaveManagerDataStore>();
 
@@ -66,6 +69,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
+            builder.RegisterEntryPoint<ShopUseCase>();
 
             #endregion
 
@@ -78,6 +82,8 @@ namespace App.Battle
                 .As<IEnemyPresenter>();
             builder.Register<BattleHitPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IBattleHitPresenter>();
+            builder.Register<ShopPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IShopPresenter>();
 
             #endregion
 
@@ -85,6 +91,9 @@ namespace App.Battle
 
             builder.RegisterComponentInNewPrefab(_playerView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IBattlePlayerView>();
+
+            builder.RegisterComponentInNewPrefab(_shopView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<IShopView>();
 
             #endregion
 
