@@ -20,6 +20,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerBulletParameterDataStore _playerBulletParameterDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
+        private readonly IWaveManagerDataStore _waveManagerDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -31,7 +32,8 @@ namespace App.Battle.UseCase
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
             IPlayerBulletParameterDataStore playerBulletParameterDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputDataStore gameInputDataStore
+            IGameInputDataStore gameInputDataStore,
+            IWaveManagerDataStore waveManagerDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -41,6 +43,7 @@ namespace App.Battle.UseCase
             _playerBulletParameterDataStore = playerBulletParameterDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
+            _waveManagerDataStore = waveManagerDataStore;
         }
 
         public void Initialize()
@@ -88,6 +91,12 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
+            // ウェーブ間ポーズ中は発射を停止
+            if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
             if (_gameInputDataStore.IsLeftTrigger.Value)
             {
                 TryShot(HandType.Left);

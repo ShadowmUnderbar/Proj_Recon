@@ -15,6 +15,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
+        private readonly IWaveManagerDataStore _waveManagerDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -22,12 +23,14 @@ namespace App.Battle.UseCase
         public PlayerMoveUseCase(
             IPlayerStateDataStore playerStateDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputDataStore gameInputDataStore
+            IGameInputDataStore gameInputDataStore,
+            IWaveManagerDataStore waveManagerDataStore
         )
         {
             _playerStateDataStore = playerStateDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
+            _waveManagerDataStore = waveManagerDataStore;
         }
 
         public void Initialize()
@@ -42,6 +45,13 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
+            // ウェーブ間ポーズ中は移動を停止（移動モーションも止める）
+            if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                _playerControlPresenter.SetMoveAnimation(Vector2.zero);
+                return;
+            }
+
             // MoveSpeedは既にBaseSpeed * BasePlayerParameter.MoveSpeedを含むため、そのまま使用
             _playerStateDataStore.Move(_gameInputDataStore.V2LeftAxis,
                 _playerStateDataStore.MoveSpeed);

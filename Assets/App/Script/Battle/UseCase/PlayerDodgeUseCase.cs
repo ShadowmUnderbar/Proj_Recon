@@ -20,6 +20,7 @@ namespace App.Battle.UseCase
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
+        private readonly IWaveManagerDataStore _waveManagerDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -31,7 +32,8 @@ namespace App.Battle.UseCase
             IGameInputDataStore gameInputUseCase,
             IEnemyPresenter enemyPresenter,
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
-            IPlayerControlPresenter playerControlPresenter
+            IPlayerControlPresenter playerControlPresenter,
+            IWaveManagerDataStore waveManagerDataStore
         )
         {
             _playerStateDataStore = playerStateDataStore;
@@ -41,6 +43,7 @@ namespace App.Battle.UseCase
             _enemyPresenter = enemyPresenter;
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
             _playerControlPresenter = playerControlPresenter;
+            _waveManagerDataStore = waveManagerDataStore;
         }
 
 
@@ -54,6 +57,12 @@ namespace App.Battle.UseCase
 
         private void OnDodge()
         {
+            // ウェーブ間ポーズ中は回避を停止（Blitzの直接ダメージも防ぐ）
+            if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
             if (_gameInputUseCase.V2LeftAxis == Vector2.zero)
             {
                 return;
