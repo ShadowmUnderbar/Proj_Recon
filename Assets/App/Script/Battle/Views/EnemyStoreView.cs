@@ -24,6 +24,8 @@ namespace App.Battle.Views
         private readonly RaycastHit[] _hits = new RaycastHit[10];
         private readonly List<int> _rayCastEnemyIds = new();
 
+        private bool _isPause;
+
         [Inject]
         public void Construct(
             IHitBoxStoreView hitBoxStoreView,
@@ -53,6 +55,8 @@ namespace App.Battle.Views
                 .Subscribe(x => _onEnemyPoseUpdate.OnNext((view.Id, x)))
                 .AddTo(view as MonoBehaviour);
             view.SetPlayerTransform(_playerView.PlayerTransform);
+            // 非同期ロード中にポーズ状態が変わっていても現在の状態を反映する
+            view.SetPause(_isPause);
 
             _enemies.Add(enemyData.Id, view);
 
@@ -131,6 +135,8 @@ namespace App.Battle.Views
 
         public void SetPause(bool isPause)
         {
+            _isPause = isPause;
+
             foreach (var enemy in _enemies.Values)
             {
                 enemy.SetPause(isPause);

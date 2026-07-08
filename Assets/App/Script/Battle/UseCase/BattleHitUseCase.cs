@@ -14,6 +14,7 @@ namespace App.Battle.UseCase
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IBattleHitPresenter _battleHitPresenter;
         private readonly IEnemyPresenter _enemyPresenter;
+        private readonly IWaveManagerDataStore _waveManagerDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -22,12 +23,14 @@ namespace App.Battle.UseCase
         (
             IEnemyDataStore enemyDataStore,
             IBattleHitPresenter battleHitPresenter,
-            IEnemyPresenter enemyPresenter
+            IEnemyPresenter enemyPresenter,
+            IWaveManagerDataStore waveManagerDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
             _battleHitPresenter = battleHitPresenter;
             _enemyPresenter = enemyPresenter;
+            _waveManagerDataStore = waveManagerDataStore;
         }
 
         public void Initialize()
@@ -43,6 +46,12 @@ namespace App.Battle.UseCase
 
         private void OnHit(HitData hitData)
         {
+            // ウェーブ間ポーズ中は敵を無敵化（ダメージを通さない）
+            if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
             _enemyDataStore.Damage(hitData);
         }
 

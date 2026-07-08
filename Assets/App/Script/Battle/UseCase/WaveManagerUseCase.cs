@@ -65,7 +65,7 @@ namespace App.Battle.UseCase
 
         private void OnEnemyDead()
         {
-            // ポーズ中はカウントしない（クリーンナップで湧いた死亡通知をスキップ）
+            // ポーズ中はカウントしない（ウェーブ遷移中の死亡通知をスキップ）
             if (_waveManagerDataStore.IsWavePause.Value)
             {
                 return;
@@ -99,13 +99,11 @@ namespace App.Battle.UseCase
 
         private void AdvanceWaveInternal()
         {
-            // 操作停止（IsWavePauseは将来のウェーブ選択UI完了で解除する想定）
+            // 敵の停止＋無敵化（ショップの「次のウェーブへ」で解除）
+            // 敵は消さずに残し、ウェーブ再開時に動きを再開させる
             _waveManagerDataStore.SetWavePause(true);
             // スポーン累積タイマーをリセットして次ウェーブの初期間隔から再開
             _enemyRandomSpawnCycleDataStore.ResetSpawnCycle();
-            // 出現済みの敵を全消去（View 側 GameObject 破棄 → DataStore辞書クリア）
-            _enemyPresenter.RemoveAllEnemies();
-            _enemyDataStore.RemoveAllEnemyData();
             // プレイヤー弾・敵弾を全消去
             _bulletStoreView.AllRemove();
             // ウェーブ番号インクリメント＋進行通知
