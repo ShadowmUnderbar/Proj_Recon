@@ -2,12 +2,21 @@ using App.Battle.Interface.DataStore;
 using R3;
 using UnityEngine;
 using UnityEngine.AI;
+using VContainer;
 using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
     public class EnemyRandomSpawnCycleDataStore : IEnemyRandomSpawnCycleDataStore, ITickable
     {
+        private readonly IWaveManagerDataStore _waveManagerDataStore;
+
+        [Inject]
+        public EnemyRandomSpawnCycleDataStore(IWaveManagerDataStore waveManagerDataStore)
+        {
+            _waveManagerDataStore = waveManagerDataStore;
+        }
+
         private readonly Subject<int> _onSpawnCommonEnemy = new();
         public Observable<int> OnSpawnCommonEnemy => _onSpawnCommonEnemy;
 
@@ -42,6 +51,12 @@ namespace App.Battle.DataStore
 
         public void Tick()
         {
+            // ウェーブ間ポーズ中はスポーンタイマーを進めない（敵の生成を停止）
+            if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
             _commonSpawnCycle += Time.deltaTime;
             _minorSpawnCycle += Time.deltaTime;
             _majorSpawnCycle += Time.deltaTime;
