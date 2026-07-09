@@ -35,7 +35,7 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.IdleState();
 
-            Agent.SetDestination(PlayerTransform.position);
+            SetAgentDestination(PlayerTransform.position);
         }
 
         protected override void BattleState()
@@ -53,7 +53,7 @@ namespace App.Battle.Views.Enemy.AI
             var targetPos = transform.right * EnemyData.BattleSpeed * (_isRotateRight ? 1 : -1) * 10f;
             targetPos += transform.forward * EnemyData.BattleSpeed * (IsChaseRange ? 1 : -1) * 10f;
 
-            Agent.SetDestination(targetPos);
+            SetAgentDestination(targetPos);
         }
     }
 }

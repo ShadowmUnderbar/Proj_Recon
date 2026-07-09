@@ -192,6 +192,16 @@ namespace App.Battle.Interface.EnemyAI
             return DistanceSqr <= EnemyData.AttackDistanceRange * EnemyData.AttackDistanceRange;
         }
 
+        protected void SetAgentDestination(Vector3 position)
+        {
+            if (Agent == null || !Agent.isOnNavMesh)
+            {
+                return;
+            }
+
+            Agent.SetDestination(position);
+        }
+
         public virtual void SetPause(bool isPause)
         {
             IsPause = isPause;

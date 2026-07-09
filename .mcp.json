@@ -6,7 +6,7 @@
         "Library/uLoopMCP/server.bundle.js"
       ],
       "env": {
-        "UNITY_TCP_PORT": "8701"
+        "UNITY_TCP_PORT": "8700"
       }
     }
   }

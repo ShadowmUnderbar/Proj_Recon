@@ -71,3 +71,6 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 .uloop
+
+# Playtest runner reports (rotated locally, not for source control)
+/Tools/Playtest/Reports/

@@ -29,7 +29,7 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.IdleState();
 
-            Agent.SetDestination(PlayerTransform.position);
+            SetAgentDestination(PlayerTransform.position);
         }
 
         protected override void BattleState()
@@ -53,7 +53,7 @@ namespace App.Battle.Views.Enemy.AI
                           transform.right * Random.Range(-RandomMoveRange, RandomMoveRange);
             var candidate = PlayerTransform.position + dirAway * EscapeDistance;
 
-            Agent.SetDestination(candidate);
+            SetAgentDestination(candidate);
         }
     }
 }
