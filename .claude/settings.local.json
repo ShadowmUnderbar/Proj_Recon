@@ -11,7 +11,10 @@
       "Bash(git commit:*)",
       "Bash(xargs grep:*)",
       "PowerShell('{\"message\":\"テスト通知です（権限の確認待ち）\"}' | powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\\\\Users\\\\shado\\\\.claude\\\\notify-input-needed.ps1; \"exit code: $LASTEXITCODE\")",
-      "PowerShell($j = Get-Content 'C:\\\\Users\\\\shado\\\\.claude\\\\settings.json' -Raw | ConvertFrom-Json; $cmd = $j.hooks.Notification[0].hooks[0].command; if \\($cmd\\) { \"OK: $cmd\" } else { \"MISSING\" })"
+      "PowerShell($j = Get-Content 'C:\\\\Users\\\\shado\\\\.claude\\\\settings.json' -Raw | ConvertFrom-Json; $cmd = $j.hooks.Notification[0].hooks[0].command; if \\($cmd\\) { \"OK: $cmd\" } else { \"MISSING\" })",
+      "Bash(echo \"=== .claude/settings.json ===\"; cat \"D:/UnityProj/Proj_Recon/.claude/settings.json\" 2>/dev/null || echo \"\\(none\\)\"; echo; echo \"=== .claude/settings.local.json ===\"; cat \"D:/UnityProj/Proj_Recon/.claude/settings.local.json\" 2>/dev/null || echo \"\\(none\\)\"; echo; echo \"=== ~/.claude/settings.json ===\"; cat \"$HOME/.claude/settings.json\" 2>/dev/null || echo \"\\(none\\)\")",
+      "Bash(command -v python)",
+      "Bash(command -v python3)"
     ]
   },
   "enabledMcpjsonServers": [
