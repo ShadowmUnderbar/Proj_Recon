@@ -55,9 +55,20 @@ function Resolve-ShopIfOpen {
     return $true
 }
 
+$Global:PlaytestKnownIssuePatterns = @(
+    'can only be called on an active agent that has been placed on a NavMesh'
+)
+
 function Get-NewErrors {
     $result = Invoke-Uloop -Command 'get-logs' -Params @{ 'log-type' = 'Error'; 'include-stack-trace' = 'true'; 'max-count' = '50' }
-    return @($result.Logs)
+    $found = @($result.Logs)
+
+    foreach ($pattern in $Global:PlaytestKnownIssuePatterns) {
+        $patternResult = Invoke-Uloop -Command 'get-logs' -Params @{ 'log-type' = 'All'; 'search-text' = $pattern; 'include-stack-trace' = 'true'; 'max-count' = '50' }
+        $found += @($patternResult.Logs)
+    }
+
+    return $found
 }
 
 function Write-PlaytestReport {

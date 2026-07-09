@@ -35,7 +35,7 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.IdleState();
 
-            Agent.SetDestination(PlayerTransform.position);
+            SetAgentDestination(PlayerTransform.position);
         }
 
         protected override void BattleState()
@@ -51,7 +51,7 @@ namespace App.Battle.Views.Enemy.AI
             transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
 
             var targetPos = transform.forward * EnemyData.BattleSpeed * (IsChaseRange ? 1 : -1) * 10f;
-            Agent.SetDestination(targetPos);
+            SetAgentDestination(targetPos);
 
             MuzzleTransform.LookAt(PlayerTransform.position);
         }

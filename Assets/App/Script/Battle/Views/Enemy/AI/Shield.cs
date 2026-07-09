@@ -38,7 +38,7 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.IdleState();
 
-            Agent.SetDestination(PlayerTransform.position);
+            SetAgentDestination(PlayerTransform.position);
         }
 
         protected override void BattleState()
@@ -55,11 +55,11 @@ namespace App.Battle.Views.Enemy.AI
 
             if (_isMovingToTargetPosition1)
             {
-                Agent.SetDestination(_aimTargetPosition1 + _positionOffset);
+                SetAgentDestination(_aimTargetPosition1 + _positionOffset);
             }
             else
             {
-                Agent.SetDestination(_aimTargetPosition2 + _positionOffset);
+                SetAgentDestination(_aimTargetPosition2 + _positionOffset);
             }
 
             var direction = PlayerTransform.position - transform.position;

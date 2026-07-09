@@ -27,7 +27,7 @@ $f = "Tools/Playtest/対象ファイル.ps1"
 - プレイヤーのHP減少・ゲームオーバー判定は未実装 → 「ゲームオーバーまで」のフローは組めない。**ウェーブクリアの繰り返し**が自然な終端
 - ウェーブ数を表示するUIは存在しない → 状態はUIではなく`execute-dynamic-code`経由でDataStoreから読む
 - ショップの開閉状態を公開するプロパティはない → `IsWavePause`とショップUIプレハブ（`ShopView`）の出現で判断する
-- 検知基準は`Debug.LogError`と例外のみ（Warning/Logは対象外、ただし調査の参考として記録はする）
+- 検知基準は`Debug.LogError`/例外に加え、`PlaytestCommon.ps1`の`$Global:PlaytestKnownIssuePatterns`に登録した既知の問題メッセージ（Log/Warningレベルでも検知対象になる）。登録されていないWarning/Logは対象外
 
 ## 実行方法
 
@@ -119,11 +119,17 @@ BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/NextWaveButton
 - **ショップの選択ロジックを増やす**（例: 常に同じ候補ではなく、状況に応じて選ぶ）→ `PlaytestCommon.ps1`の`Resolve-ShopIfOpen`を拡張
 - **新しい状態観測が必要になる**（例: プレイヤーのHP減少/ゲームオーバー判定が実装された、ウェーブ数UIが追加された）→ `Get-WaveState`のC#スニペットに新しいDataStore/プロパティを追加し、「前提・制約」セクションの記述を更新
 - **検知基準を広げる**（例: ソフトロック検知、見た目異常チェックを追加する）→ `run-playtest.ps1`のエラー確認部分に新しいチェックを追記し、「前提・制約」の検知基準の記述も更新
+- **`Debug.LogError`ではないが検知したい既知の問題が見つかった** → `PlaytestCommon.ps1`の`$Global:PlaytestKnownIssuePatterns`にメッセージの一部（検索文字列）を1行追加するだけでよい。`Get-NewErrors`が`log-type=All`＋`search-text`でLog/Warningレベルのメッセージも横断検索し、エラーとして報告する
 - **入力バインドが変わる**（`GameMaininput.inputactions`の変更）→ 「入力操作」の表を更新
+
+## 検知対象に加えた既知の問題
+
+`$Global:PlaytestKnownIssuePatterns`（`PlaytestCommon.ps1`）に登録済み。ここに載っていないWarning/Logは検知対象外（気になる場合は「既知の非エラー事象」を参照、またはパターンを追加する）。
+
+- `'can only be called on an active agent that has been placed on a NavMesh'` — `Assets/App/Script/Battle/Views/Enemy/AI/Rush.cs:22`で`NavMeshAgent.SetDestination`をエージェントがNavMeshに配置される前に呼んでいる（`Log`レベルだが実害があるため検知対象に追加）
 
 ## 既知の非エラー事象（参考、Errorではないため検知対象外）
 
-過去の実行で見つかった、`Debug.LogError`ではないが気になる挙動。再度Claudeに調査を依頼する際の手がかりとして残す。新たに見つけたものもここに追記する。
+過去の実行で見つかった、`Debug.LogError`ではないが気になる挙動。再度Claudeに調査を依頼する際の手がかりとして残す。新たに見つけたものもここに追記する。検知したいと判断したら上の「検知対象に加えた既知の問題」に移すこと。
 
-- `Assets/App/Script/Battle/Views/Enemy/AI/Rush.cs:22` — `NavMeshAgent.SetDestination`をエージェントがNavMeshに配置される前に呼んでおり、`Log`レベルの警告が多発する
 - `Assets/App/Script/Battle/Views/HitBoxStoreView.cs:18`, `Assets/App/Script/Battle/Views/EnemyStoreView.cs:25` — VContainerのDI経由で`MonoBehaviour`を`new`で生成しようとする`Warning`が出る
