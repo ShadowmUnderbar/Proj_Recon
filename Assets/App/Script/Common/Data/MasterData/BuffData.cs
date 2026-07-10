@@ -15,7 +15,7 @@ namespace App.Common.Data.MasterData
         [SerializeField, ReadOnlyAttribute] private BuffConditionType _conditionType;
         public BuffConditionType ConditionType => _conditionType;
 
-        // 条件の閾値（HitCount: 必要ヒット数 / HealthRatioBelow: HP割合 0〜1）
+        // 条件の閾値（HitCount: 必要ヒット数 / HpBelow: HP割合 0〜1）
         [SerializeField, ReadOnlyAttribute] private float _conditionValue;
         public float ConditionValue => _conditionValue;
 

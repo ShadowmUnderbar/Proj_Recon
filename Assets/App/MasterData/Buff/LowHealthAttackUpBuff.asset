@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 2
   _nameKey: $LowHealthAttackUpBuff
-  _conditionType: 2
+  _conditionType: 1
   _conditionValue: 0.3
   _duration: 0
   _effectType: 1

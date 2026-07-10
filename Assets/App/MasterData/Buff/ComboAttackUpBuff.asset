@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 1
   _nameKey: $ComboAttackUpBuff
-  _conditionType: 1
+  _conditionType: 4
   _conditionValue: 10
   _duration: 5
   _effectType: 1

@@ -23,13 +23,13 @@ namespace App.Battle.DataStore
             // HitCount条件: 残り効果時間（秒）。0以下なら非アクティブ
             public float RemainingTime;
 
-            // HealthRatioBelow条件: 条件成立中フラグ
+            // HpBelow条件: 条件成立中フラグ
             public bool IsConditionActive;
 
             public bool IsActive => Master.ConditionType switch
             {
                 BuffConditionType.HitCount => RemainingTime > 0f,
-                BuffConditionType.HealthRatioBelow => IsConditionActive,
+                BuffConditionType.HpBelow => IsConditionActive,
                 _ => false
             };
         }
@@ -59,7 +59,7 @@ namespace App.Battle.DataStore
             var state = new BuffState { Master = buffData };
 
             // 取得時点のHP割合で条件を初期判定する
-            if (buffData.ConditionType == BuffConditionType.HealthRatioBelow)
+            if (buffData.ConditionType == BuffConditionType.HpBelow)
             {
                 state.IsConditionActive = _currentHealthRatio <= buffData.ConditionValue;
             }
@@ -94,7 +94,7 @@ namespace App.Battle.DataStore
 
             foreach (var state in _buffStates)
             {
-                if (state.Master.ConditionType != BuffConditionType.HealthRatioBelow)
+                if (state.Master.ConditionType != BuffConditionType.HpBelow)
                 {
                     continue;
                 }

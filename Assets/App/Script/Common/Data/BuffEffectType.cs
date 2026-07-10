@@ -1,13 +1,7 @@
-namespace App.Common.Data
-{
-    /// <summary>
-    /// バフの効果の種類
-    /// </summary>
-    public enum BuffEffectType
-    {
-        None = 0,
+// このファイルはGASで自動生成されました。手動編集しないでください。
 
-        /// <summary>攻撃力倍率（弾ダメージ。爆発ダメージも弾ダメージを共用するため両方に効く）</summary>
-        AttackPower = 1,
-    }
+public enum BuffEffectType
+{
+    None = 0, // なし
+    AttackPower = 1, // 攻撃力倍率
 }
