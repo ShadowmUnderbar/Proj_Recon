@@ -74,3 +74,8 @@ crashlytics-build.properties
 
 # Playtest runner reports (rotated locally, not for source control)
 /Tools/Playtest/Reports/
+
+# Sheets CLI（認証キー・依存パッケージはコミット禁止）
+Tools/Sheets/service-account.json
+Tools/Sheets/node_modules/
+Tools/Sheets/package-lock.json
