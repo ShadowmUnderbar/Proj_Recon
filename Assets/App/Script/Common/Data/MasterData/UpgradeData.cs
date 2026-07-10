@@ -46,6 +46,11 @@ namespace App.Common.Data.MasterData
         [SerializeField, ReadOnlyAttribute] private ParameterType _value5ParameterType;
         public (float value, ParameterType parameterType) Value5 => (_value5, _value5ParameterType);
 
+        // UpgradeType.GrantBuff のとき付与するバフのID（それ以外は空）
+        [Space]
+        [SerializeField, ReadOnlyAttribute] private string _buffId;
+        public string BuffId => _buffId;
+
         public UpgradeMasterData(
             string id,
             string nameKey,

@@ -39,6 +39,7 @@ namespace App.Editor
         private const int ColValue4ParameterType = 12;
         private const int ColValue5 = 13;
         private const int ColValue5ParameterType = 14;
+        private const int ColBuffId = 15; // 任意列（GrantBuff用。既存行は列ごと省略可）
         private const int MinColumnCount = 15;
 
         private static readonly BindingFlags PrivateInstance =
@@ -264,6 +265,8 @@ namespace App.Editor
                 type.GetField("_value4ParameterType", PrivateInstance).SetValue(masterData, value4Pt);
                 type.GetField("_value5", PrivateInstance).SetValue(masterData, value5);
                 type.GetField("_value5ParameterType", PrivateInstance).SetValue(masterData, value5Pt);
+                var buffId = cols.Length > ColBuffId ? cols[ColBuffId].Trim() : string.Empty;
+                type.GetField("_buffId", PrivateInstance).SetValue(masterData, buffId);
 
                 EditorUtility.SetDirty(masterData);
                 importedAssets.Add(masterData);
