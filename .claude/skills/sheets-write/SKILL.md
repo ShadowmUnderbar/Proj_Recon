@@ -29,6 +29,8 @@ node sheets-cli.mjs append-rows UpgradeData '[[13,"$Foo",9,0,1,0,0,0,0,0,0,0,0,0
 node sheets-cli.mjs add-column UpgradeData "BuffId,string"       # Row1右端に列スキーマ追記
 node sheets-cli.mjs create-sheet BuffData --schema '["id,int","NameKey,string"]'  # シート新設
 node sheets-cli.mjs add-enum UpgradeType 9 "バフ付与" GrantBuff  # enumシートへ行追加
+node sheets-cli.mjs rename-sheet ConditionType BuffConditionType # シート名変更
+node sheets-cli.mjs delete-columns UpgradeData X:Z               # 列削除（単一なら "X"）
 ```
 
 ## シート構成の約束事（GASエクスポータと対応）

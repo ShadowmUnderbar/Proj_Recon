@@ -11,6 +11,8 @@ function onOpen() {
     .addItem('BuffData CSVエクスポート', 'exportBuffCsv')
     .addSeparator()
     .addItem('UpgradeType Enum C#エクスポート', 'exportUpgradeTypeEnumCs')
+    .addItem('BuffConditionType Enum C#エクスポート', 'exportBuffConditionTypeEnumCs')
+    .addItem('BuffEffectType Enum C#エクスポート', 'exportBuffEffectTypeEnumCs')
     .addToUi();
 }
 
@@ -19,6 +21,20 @@ function onOpen() {
  */
 function exportUpgradeTypeEnumCs() {
   exportEnumCs('UpgradeType');
+}
+
+/**
+ * BuffConditionTypeシートをC# enumファイルとしてエクスポート（ラッパー）
+ */
+function exportBuffConditionTypeEnumCs() {
+  exportEnumCs('BuffConditionType');
+}
+
+/**
+ * BuffEffectTypeシートをC# enumファイルとしてエクスポート（ラッパー）
+ */
+function exportBuffEffectTypeEnumCs() {
+  exportEnumCs('BuffEffectType');
 }
 
 /**

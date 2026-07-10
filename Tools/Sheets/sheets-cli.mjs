@@ -10,6 +10,8 @@
 //   node sheets-cli.mjs add-column <シート名> "<変数名,型>"
 //   node sheets-cli.mjs create-sheet <シート名> [--schema '<JSON 文字列配列>']
 //   node sheets-cli.mjs add-enum <シート名> <数値> <日本語コメント> <要素名>
+//   node sheets-cli.mjs rename-sheet <旧シート名> <新シート名>
+//   node sheets-cli.mjs delete-columns <シート名> <列A1>[:<列A1>]  （例: X:Z）
 //
 // シート構成の前提（GASエクスポータ UpgradeDataExporter.gs と対応）:
 //   - データシート: Row1=スキーマ定義行（各セル「変数名,型」、ref@シート名 で参照）、Row2以降データ
@@ -228,6 +230,69 @@ async function cmdAddEnum(sheets, spreadsheetId, args) {
     console.log(`enum追加完了: ${sheetName} Row${targetRow} = ${name} = ${value} // ${comment}`);
 }
 
+// シートIDをタイトルから取得する
+async function getSheetId(sheets, spreadsheetId, sheetName) {
+    const res = await sheets.spreadsheets.get({ spreadsheetId });
+    const sheet = res.data.sheets.find(s => s.properties.title === sheetName);
+    if (!sheet) fail(`シート "${sheetName}" が見つかりません。`);
+    return sheet.properties.sheetId;
+}
+
+// rename-sheet: シート名を変更
+async function cmdRenameSheet(sheets, spreadsheetId, args) {
+    const [oldName, newName] = args;
+    if (!oldName || !newName) fail('使い方: rename-sheet <旧シート名> <新シート名>');
+    const sheetId = await getSheetId(sheets, spreadsheetId, oldName);
+    await sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+            requests: [{
+                updateSheetProperties: {
+                    properties: { sheetId, title: newName },
+                    fields: 'title',
+                },
+            }],
+        },
+    });
+    console.log(`シート名変更完了: ${oldName} → ${newName}`);
+}
+
+// delete-columns: 列を削除（例: "X" 単一、"X:Z" 範囲）
+async function cmdDeleteColumns(sheets, spreadsheetId, args) {
+    const [sheetName, colRange] = args;
+    if (!sheetName || !colRange) fail('使い方: delete-columns <シート名> <列A1>[:<列A1>]');
+    const [startCol, endCol = startCol] = colRange.split(':');
+    const start = a1ToColumn(startCol);
+    const end = a1ToColumn(endCol);
+    if (start < 0 || end < start) fail(`列指定が不正です: ${colRange}`);
+    const sheetId = await getSheetId(sheets, spreadsheetId, sheetName);
+    await sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+            requests: [{
+                deleteDimension: {
+                    range: {
+                        sheetId,
+                        dimension: 'COLUMNS',
+                        startIndex: start,
+                        endIndex: end + 1,
+                    },
+                },
+            }],
+        },
+    });
+    console.log(`列削除完了: ${sheetName}!${startCol.toUpperCase()}:${endCol.toUpperCase()} (${end - start + 1}列)`);
+}
+
+// A1形式の列名を0始まりのインデックスへ変換（A→0, Z→25, AA→26）
+function a1ToColumn(a1) {
+    const s = String(a1).trim().toUpperCase();
+    if (!/^[A-Z]+$/.test(s)) return -1;
+    let n = 0;
+    for (const ch of s) n = n * 26 + (ch.charCodeAt(0) - 64);
+    return n - 1;
+}
+
 // 0始まりの列インデックスをA1形式の列名へ変換（0→A, 25→Z, 26→AA）
 function columnToA1(index) {
     let result = '';
@@ -258,6 +323,8 @@ async function main() {
         'add-column': cmdAddColumn,
         'create-sheet': cmdCreateSheet,
         'add-enum': cmdAddEnum,
+        'rename-sheet': cmdRenameSheet,
+        'delete-columns': cmdDeleteColumns,
     };
 
     if (!command || !commands[command]) {
