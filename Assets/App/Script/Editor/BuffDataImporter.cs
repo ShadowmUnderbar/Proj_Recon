@@ -16,6 +16,14 @@ namespace App.Editor
         private const string CsvPath = "Assets/App/MasterData/Origin/BuffData.csv";
         private const string OutputPath = "Assets/App/MasterData/Buff";
         private const string DatabasePath = "Assets/App/MasterData/Database/BuffDatabase.asset";
+        private const string BuffCsvFileName = "BuffData.csv";
+
+        // GAS出力からコピーするenumファイル（ファイル名, コピー先パス）
+        private static readonly (string fileName, string destPath)[] EnumCsFiles =
+        {
+            ("BuffConditionType.cs", "Assets/App/Script/Common/Data/BuffConditionType.cs"),
+            ("BuffEffectType.cs", "Assets/App/Script/Common/Data/BuffEffectType.cs"),
+        };
 
         // CSV列インデックス
         // ヘッダー: id,NameKey,ConditionType,ConditionValue,Duration,EffectType,EffectValue
@@ -30,6 +38,90 @@ namespace App.Editor
 
         private static readonly BindingFlags PrivateInstance =
             BindingFlags.NonPublic | BindingFlags.Instance;
+
+        [MenuItem("Tools/マスターデータ/BuffData ファイルコピー")]
+        private static void CopyFilesFromFolder()
+        {
+            var selectedFolder = EditorUtility.OpenFolderPanel("インポート元フォルダを選択", "", "");
+            if (string.IsNullOrEmpty(selectedFolder)) return;
+
+            string errorMessage;
+            bool enumChanged;
+            try
+            {
+                errorMessage = CopyFilesCore(selectedFolder, out enumChanged);
+            }
+            catch (Exception e)
+            {
+                EditorUtility.DisplayDialog("エラー", $"ファイルのコピーに失敗しました:\n{e.Message}", "OK");
+                return;
+            }
+
+            if (errorMessage != null)
+            {
+                EditorUtility.DisplayDialog("エラー", errorMessage, "OK");
+                return;
+            }
+
+            AssetDatabase.Refresh();
+
+            if (enumChanged)
+            {
+                EditorUtility.DisplayDialog(
+                    "enumファイルを更新しました",
+                    "BuffConditionType.cs / BuffEffectType.cs を更新しました。\nUnityの再コンパイル後に再度インポートを実行してください。",
+                    "OK");
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("コピー完了", "ファイルのコピーが完了しました。", "OK");
+            }
+        }
+
+        /// <summary>
+        /// GAS出力フォルダからCSVとenumファイルをプロジェクトへコピーする（ダイアログなしの本体）。
+        /// enumChanged にはコピーによってenumファイルの内容が変わったかを返す。
+        /// </summary>
+        /// <returns>エラーメッセージ。正常時は null</returns>
+        private static string CopyFilesCore(string selectedFolder, out bool enumChanged)
+        {
+            enumChanged = false;
+
+            var csvFiles = Directory.GetFiles(selectedFolder, BuffCsvFileName, SearchOption.AllDirectories);
+            var enumSrcFiles = new string[EnumCsFiles.Length];
+            var missing = new System.Text.StringBuilder();
+
+            if (csvFiles.Length == 0) missing.AppendLine($"・{BuffCsvFileName}");
+            for (var i = 0; i < EnumCsFiles.Length; i++)
+            {
+                var found = Directory.GetFiles(selectedFolder, EnumCsFiles[i].fileName, SearchOption.AllDirectories);
+                if (found.Length == 0)
+                {
+                    missing.AppendLine($"・{EnumCsFiles[i].fileName}");
+                }
+                else
+                {
+                    enumSrcFiles[i] = found[0];
+                }
+            }
+
+            if (missing.Length > 0)
+            {
+                return $"以下のファイルが見つかりませんでした:\n{missing}";
+            }
+
+            File.Copy(csvFiles[0], Path.GetFullPath(CsvPath), overwrite: true);
+
+            for (var i = 0; i < EnumCsFiles.Length; i++)
+            {
+                var destAbsolute = Path.GetFullPath(EnumCsFiles[i].destPath);
+                enumChanged |= !File.Exists(destAbsolute) ||
+                               File.ReadAllText(enumSrcFiles[i]) != File.ReadAllText(destAbsolute);
+                File.Copy(enumSrcFiles[i], destAbsolute, overwrite: true);
+            }
+
+            return null;
+        }
 
         [MenuItem("Tools/マスターデータ/BuffData CSVインポート")]
         private static void Import()
