@@ -49,6 +49,8 @@ namespace App.Battle
                 .As<IPlayerDodgeParameterDataStore>();
             builder.Register<UpgradeSessionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeSessionDataStore>();
+            builder.Register<BuffStateDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IBuffStateDataStore>();
             builder.Register<UpgradeEffectSimpleCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeEffectSimpleCalculatorDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -70,6 +72,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
             builder.RegisterEntryPoint<ShopUseCase>();
+            builder.RegisterEntryPoint<BuffConditionUseCase>();
 
             #endregion
 

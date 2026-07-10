@@ -13,6 +13,7 @@ namespace App.Common
         [SerializeField] private EnemyDatabase _enemyDatabase;
         [SerializeField] private EnemySpawnDatabase _enemySpawnDatabase;
         [SerializeField] private UpgradeDatabase _upgradeDatabase;
+        [SerializeField] private BuffDatabase _buffDatabase;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -40,6 +41,7 @@ namespace App.Common
             builder.RegisterInstance(_enemyDatabase);
             builder.RegisterInstance(_enemySpawnDatabase);
             builder.RegisterInstance(_upgradeDatabase);
+            builder.RegisterInstance(_buffDatabase);
 
             #endregion
         }
