@@ -11,4 +11,5 @@ public enum UpgradeType
     DodgeCount = 6, // 回避回数アップ
     DodgeCooldown = 7, // 回避クールダウン短縮
     Health = 8, // HP最大値
+    GrantBuff = 9, // バフ付与（BuffId列で指定したバフを取得する） ※手動追加。GAS側スプレッドシートへの反映が必要
 }

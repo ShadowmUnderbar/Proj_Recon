@@ -13,6 +13,7 @@ namespace App.Battle.DataStore
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
+        private readonly IBuffStateDataStore _buffStateDataStore;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -21,13 +22,14 @@ namespace App.Battle.DataStore
         public PlayerBulletParameterDataStore(
             IPlayerSettingDataStore playerSettingDataStore,
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
-            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore
+            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
+            IBuffStateDataStore buffStateDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
-            _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
+            _buffStateDataStore = buffStateDataStore;
         }
 
         public void Tick()
@@ -138,6 +140,10 @@ namespace App.Battle.DataStore
             };
 
             damage *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.BulletDamage);
+
+            // バフによる攻撃力倍率（爆発ダメージも弾ダメージを共用するため両方に効く）
+            damage *= _buffStateDataStore.CalcMultiply(BuffEffectType.AttackPower);
+
             damage *= focusType == AimFocusType.Focus ? BasePlayerParameter.LongFocusDamageMagnification : 1f;
 
             return damage;

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
-  m_Name: BulletSize_L3
+  m_Name: ComboAttackUp_L1
   m_EditorClassIdentifier: 
-  _id: 6
-  _nameKey: $BulletSize
-  _upgradeType: 3
+  _id: 13
+  _nameKey: $ComboAttackUp
+  _upgradeType: 9
   _playerUnlockType: 0
-  _level: 3
-  _value1: 1.4
-  _value1ParameterType: 1
+  _level: 1
+  _value1: 0
+  _value1ParameterType: 0
   _value2: 0
   _value2ParameterType: 0
   _value3: 0
@@ -27,4 +27,4 @@ MonoBehaviour:
   _value4ParameterType: 0
   _value5: 0
   _value5ParameterType: 0
-  _buffId: 
+  _buffId: 1
