@@ -8,8 +8,11 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('マスターデータ')
     .addItem('UpgradeData CSVエクスポート', 'exportUpgradeCsv')
+    .addItem('BuffData CSVエクスポート', 'exportBuffCsv')
     .addSeparator()
     .addItem('UpgradeType Enum C#エクスポート', 'exportUpgradeTypeEnumCs')
+    .addItem('BuffConditionType Enum C#エクスポート', 'exportBuffConditionTypeEnumCs')
+    .addItem('BuffEffectType Enum C#エクスポート', 'exportBuffEffectTypeEnumCs')
     .addToUi();
 }
 
@@ -18,6 +21,20 @@ function onOpen() {
  */
 function exportUpgradeTypeEnumCs() {
   exportEnumCs('UpgradeType');
+}
+
+/**
+ * BuffConditionTypeシートをC# enumファイルとしてエクスポート（ラッパー）
+ */
+function exportBuffConditionTypeEnumCs() {
+  exportEnumCs('BuffConditionType');
+}
+
+/**
+ * BuffEffectTypeシートをC# enumファイルとしてエクスポート（ラッパー）
+ */
+function exportBuffEffectTypeEnumCs() {
+  exportEnumCs('BuffEffectType');
 }
 
 /**
@@ -95,15 +112,30 @@ function generateEnumCs(sheetName, entries) {
 }
 
 /**
- * UpgradeDataシートをCSVとしてエクスポートしダウンロードダイアログを表示
+ * UpgradeDataシートをCSVとしてエクスポート（ラッパー）
  */
 function exportUpgradeCsv() {
+  exportDataCsv('UpgradeData');
+}
+
+/**
+ * BuffDataシートをCSVとしてエクスポート（ラッパー）
+ */
+function exportBuffCsv() {
+  exportDataCsv('BuffData');
+}
+
+/**
+ * 指定データシートをCSVとしてエクスポートしダウンロードダイアログを表示
+ * @param {string} sheetName - 対象シート名（そのままCSVファイル名に使用）
+ */
+function exportDataCsv(sheetName) {
   const ui = SpreadsheetApp.getUi();
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-  const sheet = ss.getSheetByName('UpgradeData');
+  const sheet = ss.getSheetByName(sheetName);
   if (!sheet) {
-    ui.alert('エラー', '"UpgradeData" シートが見つかりません。', ui.ButtonSet.OK);
+    ui.alert('エラー', `"${sheetName}" シートが見つかりません。`, ui.ButtonSet.OK);
     return;
   }
 
@@ -112,7 +144,7 @@ function exportUpgradeCsv() {
 
   const template = HtmlService.createTemplateFromFile('DownloadDialog');
   template.csvContent = csvContent;
-  template.fileName = 'UpgradeData.csv';
+  template.fileName = sheetName + '.csv';
 
   const html = template.evaluate()
     .setWidth(400)
