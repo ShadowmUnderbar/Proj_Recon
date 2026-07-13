@@ -143,6 +143,53 @@ BuffData.csv ヘッダー: `id,NameKey,ConditionType,ConditionValue,Duration,Eff
 
 - `UpgradeType.GrantBuff=9` は現状 `UpgradeType.cs` に手動追加された状態で、スプレッドシート側 `UpgradeType` シートへの反映が未完了の可能性がある。GASエクスポートを走らせる前に、スプレッドシートに `GrantBuff` 行があるか確認すること（無いままエクスポートすると enum から消える）。
 
+---
+
+## issue駆動エントリポイント（スマホから仕様を送って自動実装するモード）
+
+GitHub Issue（`.github/ISSUE_TEMPLATE/add-upgrade.yml` のフォーム）で送られた仕様を、開発マシン上のClaudeが受け取って本スキルの手順を最後まで実行し、developベースのPRを作るための入口と出口を定義する。対話でユーザーが直接依頼する通常モードと手順本体（パターンA/B/C）は共通で、以下は自律実行時の追加ルール。
+
+### 前提
+- **Unity Editorが起動していること**（CSVインポート・`uloop-compile`・`playtest-run` に必須）。
+- ポーラー（後述）が `add-upgrade` ラベルの open issue を検知して本スキルを起動する。
+
+### 入口: Issueフォーム → スキル語彙の対応
+
+| フォーム項目 | スキル上の扱い |
+|---|---|
+| アップグレード名（NameKey） | CSV `NameKey` 列（`$`+PascalCase）。生成アセット名・ブランチ名の元 |
+| 効果カテゴリ（UpgradeType） | 「既存」を選択 → **パターンA**（コード変更不要）。「GrantBuff」→ **パターンC**。「新規カテゴリを作る」→ **パターンB** |
+| レベルごとの効果値（Value1） | `Lv{n}=値` を1行1レベルとしてパース。各行が CSV 1行（`Level`=n, `Value1`=値）になる |
+| 解放条件（PlayerUnlockType） | CSV `PlayerUnlockType` 列（enum数値に変換） |
+| GrantBuffの場合のバフ内容 | パターンC。既存BuffIdならその番号、新規記述なら [`buff-add`](../buff-add/SKILL.md) スキルでバフを先に用意してから `BuffId` を紐づける |
+| 効果の意図・補足 | パターンBの「消費側コードの追加先」の手がかり。ここに指定があればその DataStore に `CalcMultiply/CalcAdd` を追加する |
+
+判断に迷う点（新規カテゴリでどのパラメータに掛けるか不明、など）があり、フォームだけで確定できない場合は**推測で実装せず、issueにコメントで質問して一旦停止する**（PRは作らない）。
+
+### 出口: PR作成とissueクローズの定型
+本スキルの「完了チェックリスト」を満たしたうえで:
+
+1. `git checkout develop && git pull` → `feature/add-upgrade-<name>`（`<name>`はNameKeyの`$`除去・kebab化）を作成
+2. 変更をコミット（**日本語メッセージ + `Co-Authored-By`**）。差分には `UpgradeData.csv`・再生成された `.asset`（GrantBuffなら Buff 側も）・パターンBのコードを含む
+3. `gh pr create --base develop`（本文に対象issue番号 `Closes #N`、実装したパターン、playtest結果を日本語で記載）
+4. `gh issue comment <N>` でPRリンクを通知し、`gh issue close <N>`
+5. **マージは絶対にしない**（人間レビュー必須）。`main`/`develop` へのforce push禁止
+
+## ローカルポーラーの起動（Runbook）
+
+`add-upgrade` issue を拾って本スキルを回す常駐ループ。開発マシンで Unity Editor を開いた状態で使う。
+
+- **初回のみ**: リポジトリに `add-upgrade` ラベルを作成する（無いとテンプレートのラベルが付かない）。
+  ```powershell
+  gh label create add-upgrade --description "スマホ等から送るアップグレード追加依頼" --color 1D76DB
+  ```
+- **起動**: Claude Code で `/loop 5m` を使い、次の主旨のプロンプトを回す（自己ペースで回す場合は間隔省略）。
+  > `gh issue list --label add-upgrade --state open` を確認し、未処理のissueがあれば `upgrade-add` スキルの「issue駆動エントリポイント」に従って1件実装し、developベースのPRを作ってissueをクローズする。open issueが無ければ何もしない。
+- **停止**: `/loop` を停止する（ループのループ停止操作）。
+- ポーラーは **PR作成まで**。マージ・force push はしない。`@claude` を含むissueには反応しない（そちらはクラウドの `.github/workflows/claude.yml` の担当）。
+
+> 補足: クラウドの `claude.yml`（`runs-on: ubuntu-latest`）では Unity Editor が無く、CSVインポート/コンパイル/playtest ができないため、アップグレード追加はローカルポーラー方式を採る。将来 self-hosted runner を用意すれば `@claude` 起動に一本化する余地はある。
+
 ## このスキルを拡張するタイミング
 
 - 新しい `UpgradeType` を接続したら「効果適用の仕組み」の接続済みテーブルに追記する
