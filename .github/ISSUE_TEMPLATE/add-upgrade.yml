@@ -1,0 +1,83 @@
+name: アップグレード追加
+description: 1ランで獲得できるアップグレード（ウェーブ間ショップで獲得する強化）を1件追加する。スマホからでもこのフォームで仕様を送れる。
+title: "[アップグレード] "
+labels: ["add-upgrade"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        このフォームで送った内容を、開発マシン上のClaude（`upgrade-add` スキル）が実装し、developベースのPRを作成します。
+        **このフォームでは `@claude` を書かないでください**（クラウド側のActionと二重起動するため）。ラベル `add-upgrade` が自動で付きます。
+        マージは人間が最終確認して行います。
+
+  - type: input
+    id: name_key
+    attributes:
+      label: アップグレード名（NameKey）
+      description: "`$` + PascalCase のローカライズキー。例: $BaseDamageUp, $ComboAttackUp"
+      placeholder: "$MoveSpeedUp"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: upgrade_type
+    attributes:
+      label: 効果カテゴリ（UpgradeType）
+      description: 既存カテゴリを選ぶとコード変更不要（データのみ）。新規カテゴリは効果適用コードの追加が必要。GrantBuffは条件付きバフを付与する型。
+      options:
+        - "BulletDamage（ダメージアップ・既存）"
+        - "FireRate（連射速度アップ・既存）"
+        - "BombRange（爆破サイズ・既存）"
+        - "GrantBuff（条件付きバフ付与・既存の仕組み）"
+        - "HitRange（判定サイズ・enumはあるが効果未接続）"
+        - "Health（HP最大値・enumはあるが効果未接続）"
+        - "DodgeDistance/DodgeCount/DodgeCooldown（回避系・enumはあるが効果未接続）"
+        - "新規カテゴリを作る（下の自由記述に詳細を書く）"
+    validations:
+      required: true
+
+  - type: textarea
+    id: levels
+    attributes:
+      label: レベルごとの効果値（Value1）
+      description: "1行 = 1レベル。`Lv{番号}=値` の形式で。倍率系は1.0基準の乗算値、加算系はそのまま。実際に使われるのは Value1 のみ。"
+      placeholder: |
+        Lv1=1.1
+        Lv2=1.2
+        Lv3=1.4
+    validations:
+      required: true
+
+  - type: dropdown
+    id: unlock_type
+    attributes:
+      label: 解放条件（PlayerUnlockType）
+      description: このアップグレードが抽選対象になる前提のコアスキル。特になければ None。
+      options:
+        - "None（常に抽選対象）"
+        - "Akimbo"
+        - "Focus"
+        - "Waltz"
+        - "Merge"
+        - "Blitz"
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: grant_buff
+    attributes:
+      label: GrantBuffの場合のバフ内容
+      description: "効果カテゴリが GrantBuff のときのみ記入。既存BuffIdを使うなら番号、新規バフなら『条件（例: 10ヒットで）× 効果（例: 5秒間 攻撃力1.1倍）』を書く。現状の実装済み条件は HitCount / HpBelow、効果は AttackPower のみ（buff-add スキル参照）。"
+      placeholder: "新規バフ: 10ヒットするたびに5秒間 攻撃力1.1倍"
+    validations:
+      required: false
+
+  - type: textarea
+    id: intent
+    attributes:
+      label: 効果の意図・補足（新規カテゴリの場合は必須）
+      description: "新規カテゴリの場合は『どのプレイヤーパラメータに乗算/加算するか』を書く（例: 移動速度に乗算）。効果を反映する消費側コードの追加先の手がかりになる。"
+      placeholder: "移動速度に乗算補正をかけたい。PlayerMoveParameter系のDataStoreに CalcMultiply(MoveSpeed) を追加してほしい。"
+    validations:
+      required: false
