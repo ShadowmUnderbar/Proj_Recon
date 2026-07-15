@@ -15,3 +15,6 @@ MonoBehaviour:
   _buffMasterData:
   - {fileID: 11400000, guid: 616faf47f8d91d24e96c29cce33ed8fa, type: 2}
   - {fileID: 11400000, guid: d62be08ec01b63e4c9039fca74510dc5, type: 2}
+  - {fileID: 11400000, guid: e0737060066c4764fa5877543b52ef2b, type: 2}
+  - {fileID: 11400000, guid: cf43fb3602adf3f4d9c9a83e4a997159, type: 2}
+  - {fileID: 11400000, guid: b2e11c2a83e194246a847e9f146f44ee, type: 2}

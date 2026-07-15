@@ -13,3 +13,6 @@ id,NameKey,UpgradeType,PlayerUnlockType,Level,Value1,Value1ParameterType,Value2,
 12,$Health,8,0,3,3,1,0,0,0,0,0,0,0,0,
 13,$ComboAttackUp,9,0,1,0,0,0,0,0,0,0,0,0,0,1
 14,$LowHealthAttackUp,9,0,1,0,0,0,0,0,0,0,0,0,0,2
+15,$Multitasking,9,1,1,0,0,0,0,0,0,0,0,0,0,3
+16,$Multitasking,9,1,2,0,0,0,0,0,0,0,0,0,0,4
+17,$Multitasking,9,1,3,0,0,0,0,0,0,0,0,0,0,5

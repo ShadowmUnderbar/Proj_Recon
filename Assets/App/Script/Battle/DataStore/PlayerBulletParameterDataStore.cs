@@ -51,6 +51,9 @@ namespace App.Battle.DataStore
 
             coolDown *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.FireRate);
 
+            // バフによる連射速度倍率（倍率が大きいほど連射が速い＝クールダウンを短縮するため除算する）
+            coolDown /= _buffStateDataStore.CalcMultiply(BuffEffectType.FireRate);
+
             coolDown *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusFireRateMagnification : 1f;
 
             coolDown *= shotType switch
