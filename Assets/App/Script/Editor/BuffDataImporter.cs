@@ -124,12 +124,22 @@ namespace App.Editor
         }
 
         [MenuItem("Tools/マスターデータ/BuffData CSVインポート")]
-        private static void Import()
+        private static void ImportFromMenu() => ImportData(interactive: true);
+
+        /// <summary>
+        /// BuffData.csv をインポートしてアセットと BuffDatabase を更新する。
+        /// </summary>
+        /// <param name="interactive">
+        /// true: 完了/エラーをダイアログ表示（メニュー実行向け）。
+        /// false: ダイアログを出さずログに出力する（issue駆動などの自動実行向け。メインスレッドをブロックしない）。
+        /// </param>
+        /// <returns>インポートを実行できたら true、前提エラーで中断したら false</returns>
+        public static bool ImportData(bool interactive = false)
         {
             if (!File.Exists(CsvPath))
             {
-                EditorUtility.DisplayDialog("エラー", $"CSVファイルが見つかりません:\n{CsvPath}", "OK");
-                return;
+                Notify(interactive, "エラー", $"CSVファイルが見つかりません:\n{CsvPath}", isError: true);
+                return false;
             }
 
             string[] lines;
@@ -139,8 +149,8 @@ namespace App.Editor
             }
             catch (Exception e)
             {
-                EditorUtility.DisplayDialog("エラー", $"CSVファイルの読み込みに失敗しました:\n{e.Message}", "OK");
-                return;
+                Notify(interactive, "エラー", $"CSVファイルの読み込みに失敗しました:\n{e.Message}", isError: true);
+                return false;
             }
 
             // ヘッダー行（Row0）をスキップし、空行を除いたデータ行を収集
@@ -156,8 +166,8 @@ namespace App.Editor
 
             if (dataLines.Count == 0)
             {
-                EditorUtility.DisplayDialog("警告", "CSVにデータ行がありません。インポートを中断します。", "OK");
-                return;
+                Notify(interactive, "警告", "CSVにデータ行がありません。インポートを中断します。", isError: true);
+                return false;
             }
 
             if (!AssetDatabase.IsValidFolder(OutputPath))
@@ -263,11 +273,32 @@ namespace App.Editor
             if (errors.Count > 0)
             {
                 message += $"\n\n警告 ({errors.Count} 件):\n" + string.Join("\n", errors);
-                EditorUtility.DisplayDialog("インポート完了（警告あり）", message, "OK");
+                Notify(interactive, "インポート完了（警告あり）", message, isError: true);
             }
             else
             {
-                EditorUtility.DisplayDialog("インポート完了", message, "OK");
+                Notify(interactive, "インポート完了", message, isError: false);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 対話モードならダイアログ、自動実行モードならログで結果を通知する。
+        /// </summary>
+        private static void Notify(bool interactive, string title, string message, bool isError)
+        {
+            if (interactive)
+            {
+                EditorUtility.DisplayDialog(title, message, "OK");
+            }
+            else if (isError)
+            {
+                Debug.LogError($"[BuffDataImporter] {title}: {message}");
+            }
+            else
+            {
+                Debug.Log($"[BuffDataImporter] {title}: {message}");
             }
         }
 
