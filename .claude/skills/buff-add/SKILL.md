@@ -118,6 +118,7 @@ BuffData.csv（発動条件・効果・時間の定義）
 - ヒット判定はウェーブ間ポーズ中は除外される（`BuffConditionUseCase.OnHit`）
 - enum系（`BuffConditionType.cs` / `BuffEffectType.cs`）は**GAS自動生成物**。手編集は次回エクスポートで消えるため必ずスプレッドシートへ反映
 - コード変更は日本語コミット。Claudeの変更はPR運用が原則（developベース）
+- **自動実行時のインポート**は `Tools/マスターデータ/BuffData CSVインポート` メニュー（`ExecuteMenuItem`）だと完了ダイアログでメインスレッドがブロックしuLoopがハングする。execute-dynamic-code から `App.Editor.BuffDataImporter.ImportData(false)` を呼ぶ（`interactive=false` でダイアログを出さずログ出力）。詳細は [`upgrade-add`](../upgrade-add/SKILL.md) の「自動実行の落とし穴」を参照
 
 ## 完了チェックリスト
 

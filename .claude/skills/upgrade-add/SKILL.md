@@ -190,6 +190,19 @@ GitHub Issue（`.github/ISSUE_TEMPLATE/add-upgrade.yml` のフォーム）で送
 
 > 補足: クラウドの `claude.yml`（`runs-on: ubuntu-latest`）では Unity Editor が無く、CSVインポート/コンパイル/playtest ができないため、アップグレード追加はローカルポーラー方式を採る。将来 self-hosted runner を用意すれば `@claude` 起動に一本化する余地はある。
 
+## 自動実行の落とし穴（issue #25 の実装で判明）
+
+自動実行（uLoop CLI / execute-dynamic-code 経由）でインポートや検証を回すときの既知の罠。対話でメニューを手動実行する分にはどれも問題にならない。
+
+- **インポートはメニュー実行(`ExecuteMenuItem`)ではなく `ImportData(false)` を呼ぶ**。インポーターは完了時に `EditorUtility.DisplayDialog`（モーダル）を出し、`ExecuteMenuItem` 経由だと Unity のメインスレッドがダイアログ待ちでブロックし、uLoop の全コマンドが 180 秒タイムアウトする（＝ハング）。自動実行では次を execute-dynamic-code で呼ぶ:
+  ```csharp
+  App.Editor.BuffDataImporter.ImportData(false);      // interactive=false でダイアログを出さずログ出力
+  App.Editor.UpgradeDataImporter.ImportData(false);
+  ```
+  なお `ImportData(false)` でも AssetDatabase 更新で応答が返らずタイムアウト表示になることがあるが、**インポート自体は完了している**（`git status` で `Upgrade/*.asset`・`UpgradeDatabase.asset` の生成/更新を確認できる）。
+- **スプレッドシートの列構成はCSVと違う**。`UpgradeData`/`BuffData` シートには CSV に無い人間用の列（`開発名称`、および UpgradeData では enum の表示名を入れる補助列）があり、GAS エクスポートで除外される。`sheets-write` の `append-rows` は**シートの全列順に値を並べる**必要があり、CSV の列順で渡すと列ずれする。既存行（例: 既存の GrantBuff 行）を `get` で読んでテンプレにし、補助列は空欄でよい。詳細は [`sheets-write`](../sheets-write/SKILL.md) を参照。
+- **Play Mode 遷移直後はドメインリロードで uLoop が一時的に応答しない**。`control-play-mode --action Play` の直後に execute-dynamic-code を撃つと「Domain Reload in progress」で失敗する。数秒待ってリトライするか、シーン非依存のロジック検証は **Edit モードで完結**させる（例: `BuffStateDataStore` は素の C# クラスなので `new` して `NotifyHit`/`CalcMultiply` を直接叩けば、Play Mode 不要でスタック挙動を検証できる）。
+
 ## このスキルを拡張するタイミング
 
 - 新しい `UpgradeType` を接続したら「効果適用の仕組み」の接続済みテーブルに追記する
