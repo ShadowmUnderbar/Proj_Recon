@@ -26,12 +26,24 @@ namespace App.Battle.DataStore
             // HpBelow条件: 条件成立中フラグ
             public bool IsConditionActive;
 
+            // HitDifferentEnemy条件: 現在の累積効果倍率（初期値1=補正なし。上限は Master.EffectValue）
+            public float StackMultiplier = 1f;
+
+            // HitDifferentEnemy条件: 直前に命中した敵ID（-1=未命中）。同一敵の連続命中でリセット判定に使う
+            public int LastHitEnemyId = -1;
+
             public bool IsActive => Master.ConditionType switch
             {
                 BuffConditionType.HitCount => RemainingTime > 0f,
                 BuffConditionType.HpBelow => IsConditionActive,
+                BuffConditionType.HitDifferentEnemy => StackMultiplier > 1f,
                 _ => false
             };
+
+            // アクティブ時に適用する効果倍率。スタック型は累積倍率、それ以外はマスターの固定倍率
+            public float EffectMultiplier => Master.ConditionType == BuffConditionType.HitDifferentEnemy
+                ? StackMultiplier
+                : Master.EffectValue;
         }
 
         private readonly List<BuffState> _buffStates = new();
@@ -67,24 +79,41 @@ namespace App.Battle.DataStore
             _buffStates.Add(state);
         }
 
-        public void NotifyHit()
+        public void NotifyHit(int damagedId)
         {
             foreach (var state in _buffStates)
             {
-                if (state.Master.ConditionType != BuffConditionType.HitCount)
+                switch (state.Master.ConditionType)
                 {
-                    continue;
-                }
+                    case BuffConditionType.HitCount:
+                        state.HitCount++;
+                        if (state.HitCount < state.Master.ConditionValue)
+                        {
+                            break;
+                        }
 
-                state.HitCount++;
-                if (state.HitCount < state.Master.ConditionValue)
-                {
-                    continue;
-                }
+                        // 発動: カウンタをリセットし、効果時間をリフレッシュ（スタックはしない）
+                        state.HitCount = 0;
+                        state.RemainingTime = state.Master.Duration;
+                        break;
 
-                // 発動: カウンタをリセットし、効果時間をリフレッシュ（スタックはしない）
-                state.HitCount = 0;
-                state.RemainingTime = state.Master.Duration;
+                    case BuffConditionType.HitDifferentEnemy:
+                        if (damagedId == state.LastHitEnemyId)
+                        {
+                            // 同一敵への連続命中 → 積み上げた倍率をリセット
+                            state.StackMultiplier = 1f;
+                        }
+                        else
+                        {
+                            // 直前と異なる敵への命中 → 増分(ConditionValue)を加算し上限(EffectValue)でクランプ
+                            state.StackMultiplier = Mathf.Min(
+                                state.StackMultiplier + state.Master.ConditionValue,
+                                state.Master.EffectValue);
+                        }
+
+                        state.LastHitEnemyId = damagedId;
+                        break;
+                }
             }
         }
 
@@ -113,7 +142,7 @@ namespace App.Battle.DataStore
                     continue;
                 }
 
-                result *= state.Master.EffectValue;
+                result *= state.EffectMultiplier;
             }
 
             return result;

@@ -1,4 +1,5 @@
 using System;
+using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using R3;
@@ -36,7 +37,7 @@ namespace App.Battle.UseCase
         public void Initialize()
         {
             _battleHitPresenter.OnHit
-                .Subscribe(_ => OnHit())
+                .Subscribe(OnHit)
                 .AddTo(_disposable);
 
             // HP・最大HPのどちらが変化してもHP割合を再計算して通知する
@@ -47,7 +48,7 @@ namespace App.Battle.UseCase
                 .AddTo(_disposable);
         }
 
-        private void OnHit()
+        private void OnHit(HitData hitData)
         {
             // ウェーブ間ポーズ中はダメージが通らないため、ヒット数にも数えない（BattleHitUseCaseと同基準）
             if (_waveManagerDataStore.IsWavePause.Value)
@@ -55,7 +56,7 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            _buffStateDataStore.NotifyHit();
+            _buffStateDataStore.NotifyHit(hitData.DamagedId);
         }
 
         public void Dispose()
