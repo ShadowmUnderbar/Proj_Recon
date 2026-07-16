@@ -129,6 +129,13 @@ namespace App.Battle.DataStore
                 Explosive = GetBulletExplosive(shotType, focusType)
             };
 
+            // 非フォーカス時のみ、弾サイズ（＝当たり判定サイズ）に HitRange 強化を乗算する。
+            // フォーカス弾には影響しない（BulletData.Size は BaseBulletView で見た目スケールと SphereCast 判定の両方に使われる）
+            if (focusType == AimFocusType.NotFocus)
+            {
+                bullet.Size *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.HitRange);
+            }
+
             return bullet;
         }
 
