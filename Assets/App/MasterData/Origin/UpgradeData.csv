@@ -21,3 +21,6 @@ id,NameKey,UpgradeType,PlayerUnlockType,Level,Value1,Value1ParameterType,Value2,
 20,$ExcessiveIntimidation,3,0,3,1.5,1,0,0,0,0,0,0,0,0,
 21,$ExcessiveIntimidation,3,0,4,2,1,0,0,0,0,0,0,0,0,
 22,$ExcessiveIntimidation,3,0,5,2.5,1,0,0,0,0,0,0,0,0,
+23,$Bullseye,9,0,1,0,0,0,0,0,0,0,0,0,0,6
+24,$Bullseye,9,0,2,0,0,0,0,0,0,0,0,0,0,7
+25,$Bullseye,9,0,3,0,0,0,0,0,0,0,0,0,0,8

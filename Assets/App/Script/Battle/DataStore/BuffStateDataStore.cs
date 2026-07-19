@@ -148,6 +148,26 @@ namespace App.Battle.DataStore
             return result;
         }
 
+        public float CalcPenetrationMultiply(int penetrationIndex)
+        {
+            var result = 1f;
+            foreach (var state in _buffStates)
+            {
+                if (state.Master.ConditionType != BuffConditionType.PenetrationCount)
+                {
+                    continue;
+                }
+
+                // ConditionValue体貫通するごとに(EffectValue - 1)を加算した倍率を掛ける
+                // 例: 間隔3・倍率1.3なら 1〜2体目=1.0倍, 3〜5体目=1.3倍, 6〜8体目=1.6倍
+                var interval = Mathf.Max(1, Mathf.RoundToInt(state.Master.ConditionValue));
+                var stackCount = penetrationIndex / interval;
+                result *= 1f + stackCount * (state.Master.EffectValue - 1f);
+            }
+
+            return result;
+        }
+
         public void Reset()
         {
             _buffStates.Clear();

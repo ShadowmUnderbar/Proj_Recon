@@ -7,12 +7,13 @@ namespace App.Battle.Data
     public class HitData
     {
         public HitData(int damagedId, float damage, HitDirectionType hitDirectionType,
-            Vector3 hitDirection = default)
+            Vector3 hitDirection = default, int penetrationIndex = 1)
         {
             DamagedId = damagedId;
             Damage = damage;
             HitDirectionType = hitDirectionType;
             HitDirection = hitDirection;
+            PenetrationIndex = penetrationIndex;
         }
 
         public int DamagedId { get; set; }
@@ -24,5 +25,11 @@ namespace App.Battle.Data
         /// 演出用のため、ダメージ計算では参照しない。
         /// </summary>
         public Vector3 HitDirection { get; set; }
+
+        /// <summary>
+        /// この命中が同一弾内で何体目のヒットか（1始まり）。
+        /// 貫通しない攻撃は常に1。PenetrationCount条件バフのダメージ倍率計算に使う。
+        /// </summary>
+        public int PenetrationIndex { get; set; }
     }
 }

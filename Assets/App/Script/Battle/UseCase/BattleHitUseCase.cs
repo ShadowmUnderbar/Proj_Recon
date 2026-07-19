@@ -15,6 +15,7 @@ namespace App.Battle.UseCase
         private readonly IBattleHitPresenter _battleHitPresenter;
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
+        private readonly IBuffStateDataStore _buffStateDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -24,13 +25,15 @@ namespace App.Battle.UseCase
             IEnemyDataStore enemyDataStore,
             IBattleHitPresenter battleHitPresenter,
             IEnemyPresenter enemyPresenter,
-            IWaveManagerDataStore waveManagerDataStore
+            IWaveManagerDataStore waveManagerDataStore,
+            IBuffStateDataStore buffStateDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
             _battleHitPresenter = battleHitPresenter;
             _enemyPresenter = enemyPresenter;
             _waveManagerDataStore = waveManagerDataStore;
+            _buffStateDataStore = buffStateDataStore;
         }
 
         public void Initialize()
@@ -51,6 +54,9 @@ namespace App.Battle.UseCase
             {
                 return;
             }
+
+            // 貫通ヒット数に応じたダメージ倍率（PenetrationCount条件バフ）を適用する
+            hitData.Damage *= _buffStateDataStore.CalcPenetrationMultiply(hitData.PenetrationIndex);
 
             _enemyDataStore.Damage(hitData);
         }

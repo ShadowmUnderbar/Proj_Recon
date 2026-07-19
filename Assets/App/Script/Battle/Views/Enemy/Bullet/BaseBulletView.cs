@@ -24,6 +24,10 @@ namespace App.Battle.Views.Enemy.Bullet
         private readonly List<int> _hitTargetIds = new();
         private readonly RaycastHit[] _instantHitBuffer = new RaycastHit[10];
 
+        // 即着弾のヒット結果を距離昇順に並べるための比較子（毎ショットのアロケーション回避のため共有）
+        private static readonly IComparer<RaycastHit> _hitDistanceComparer =
+            Comparer<RaycastHit>.Create((a, b) => a.distance.CompareTo(b.distance));
+
         // 即着弾の曳光弾エフェクト生成用ファクトリ（プレイヤー弾のみDIで注入される。敵弾ではnull）
         private ISimpleObjectFactory<BulletTracerView> _tracerFactory;
 
@@ -110,6 +114,10 @@ namespace App.Battle.Views.Enemy.Bullet
 
             SpawnTracer(origin, endPos);
 
+            // SphereCastNonAllocの結果は距離順が保証されないため、
+            // 手前の敵から順にヒット処理する（貫通順序に依存する効果のため）
+            System.Array.Sort(_instantHitBuffer, 0, hitCount, _hitDistanceComparer);
+
             for (var i = 0; i < hitCount; i++)
             {
                 if (!CanHit) break;
@@ -168,7 +176,9 @@ namespace App.Battle.Views.Enemy.Bullet
 
             _hitTargetIds.Add(hitBox.Id);
 
-            hitBox.OnHit(BulletData.Damage, _attackerId, transform.position, out var canPenetrable);
+            // 同一弾内で何体目のヒットか（1始まり）。PenetrationCount条件バフの倍率計算に使う
+            hitBox.OnHit(BulletData.Damage, _attackerId, transform.position, out var canPenetrable,
+                _hitTargetIds.Count);
 
             if (_focusTargetId == hitBox.Id)
             {

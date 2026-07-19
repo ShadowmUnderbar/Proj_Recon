@@ -17,6 +17,12 @@ namespace App.Battle.Interface.DataStore
         /// <summary>アクティブなバフの効果値を乗算合成して返す。効果なし時は 1.0f</summary>
         float CalcMultiply(BuffEffectType effectType);
 
+        /// <summary>
+        /// PenetrationCount条件バフのダメージ倍率を乗算合成して返す。効果なし時は 1.0f
+        /// </summary>
+        /// <param name="penetrationIndex">同一弾内で何体目のヒットか（1始まり）</param>
+        float CalcPenetrationMultiply(int penetrationIndex);
+
         void Reset();
     }
 }
