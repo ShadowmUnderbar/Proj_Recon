@@ -55,7 +55,7 @@ function PlaytestScenarioStep {
     # ここでInvoke-Uloopを使い、移動・発射・フォーム切替などを組み立てる。
 }
 ```
-既存の`FixedFlow.ps1`（決め打ち移動+発射）・`RandomDrill.ps1`（移動/発射/フォーム/フォーカス/回避をサイクルごとに変える）を参考にする。ショップでのアップグレード選択・次ウェーブ操作は`PlaytestCommon.ps1`の`Resolve-ShopIfOpen`が共通処理として自動で行う（現在は常に最初の候補=`UpgradeButton0`を選ぶ）。
+既存の`FixedFlow.ps1`（決め打ち移動+発射）・`RandomDrill.ps1`（移動/発射/フォーム/フォーカス/回避をサイクルごとに変える）を参考にする。ショップでのアップグレード選択・次ウェーブ操作は`PlaytestCommon.ps1`の`Resolve-ShopIfOpen`が共通処理として自動で行う（アップグレードを1つ選択=常に最初の候補`UpgradeButton0`→`NextWaveButton`押下→ポーズ解除を確認できるまで最大3回リトライ、解除されなければthrow）。
 
 ### 状態観測の仕組み（`Get-WaveState`の内部）
 `execute-dynamic-code`で以下のC#スニペットを実行し、`currentWave`/`isWavePause`/`elapsed`/`kill`をJSON文字列で取得している。
@@ -104,12 +104,13 @@ return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave
 移動・発射の座標や継続時間に厳密な乱数生成は不要（Claude自身が呼び出しごとに値を変えれば十分）。1回のドリルで移動キー・発射座標・フォーム・フォーカスの組み合わせを変え続けることが目的。ウェーブ1〜3クリア+ショップ2回+フォーム全種切替+フォーカス切替+回避を含む形で検証済み、エラーなしで完走した。
 
 ### ショップUIの階層パス（`Resolve-ShopIfOpen`が使用）
-`BattleLifetimeScope`が実行時にインスタンス化する`ShopView`プレハブの構造：
+`ShopView`プレハブは`BattleLifetimeScope`が実行時にインスタンス化するが、**`ShopCanvas`は初回表示時に`WorldSpaceUICanvasView`によってMainCamera配下へ再ペアレントされる**（VRハンドレイ/PCマウス両対応のWorld Space化）。クリック対象のパスはカメラ配下を指定すること：
 ```
-BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0～4
-BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/NextWaveButton
+BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0～4
+BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/NextWaveButton
 ```
-`simulate-mouse-ui`の`--target-path`+`--bypass-raycast true`でスクリーンショット無しにクリックできる。アップグレード選択後は他のUpgradeButtonが非表示になり`NextWaveButton`のみ残る（`ShopUseCase.HideUpgradeButtons()`の動作）。
+`BattleLifetimeScope/ShopView(Clone)/...`配下を指定すると対象が見つからずクリックが空振りし、ショップから遷移できない（2026-07-19に実際に起きた不具合。プレイヤープレハブやカメラ構成を変えた場合はこのパスも要更新）。
+`simulate-mouse-ui`の`--target-path`+`--bypass-raycast true`でスクリーンショット無しにクリックできる。アップグレード選択後は**選択したボタンだけ**が非表示になり、他の候補と`NextWaveButton`は表示されたまま残る（`ShopView.HideUpgradeButton(index)`の動作。残った候補ボタンは押しても反応しない＝1ウェーブ1回制限はUseCase側で担保）。
 
 ## このスキルを拡張するタイミング
 

@@ -13,7 +13,10 @@ namespace App.Battle.Interface
         Observable<Unit> OnNextWavePressed { get; }
 
         void Open(IReadOnlyList<UpgradeMasterData> upgrades);
-        void HideUpgradeButtons();
+
+        /// <summary>指定インデックスのアップグレードボタンだけを非表示にする（他の候補は表示したまま）</summary>
+        void HideUpgradeButton(int index);
+
         void Close();
     }
 }

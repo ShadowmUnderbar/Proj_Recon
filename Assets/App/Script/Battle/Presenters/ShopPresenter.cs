@@ -26,9 +26,9 @@ namespace App.Battle.Presenters
             _shopView.Open(upgrades);
         }
 
-        public void HideUpgradeButtons()
+        public void HideUpgradeButton(int index)
         {
-            _shopView.HideUpgradeButtons();
+            _shopView.HideUpgradeButton(index);
         }
 
         public void Close()
