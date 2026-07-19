@@ -205,7 +205,10 @@ namespace App.Battle.Interface.EnemyAI
         public virtual void SetPause(bool isPause)
         {
             IsPause = isPause;
-            if (Agent == null)
+
+            // NavMesh未配置のエージェントにisStoppedを設定するとエラーログが出る（SetAgentDestinationと同じガード）。
+            // 論理ポーズ状態(IsPause)は先に更新済みなので、配置後のAI更新はIsPauseに従う
+            if (Agent == null || !Agent.isOnNavMesh)
             {
                 return;
             }

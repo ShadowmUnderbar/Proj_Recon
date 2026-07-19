@@ -99,19 +99,37 @@ namespace App.Battle.DataStore
             _commonSpawnCountUpCycle = 0f;
         }
 
+        // NavMeshサンプルの最大試行回数。
+        // 上限なしでループすると、プレイヤーがマップ端に居てスポーン円環(25〜40m)全体が
+        // NavMesh外になった場合に永遠に成功せず、メインスレッドが完全フリーズする（実際に発生した不具合）
+        private const int MaxSampleRetryCount = 30;
+
         public Vector3 GetRandomSpawnPositionFast(Vector3 playerPosition)
         {
-            Vector3 targetPos;
-            do
+            for (var i = 0; i < MaxSampleRetryCount; i++)
             {
                 var angle = Random.Range(0f, Mathf.PI * 2f);
                 var dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
 
                 var distance = Random.Range(SpawnDistanceMin, SpawnDistanceMax);
-                targetPos = playerPosition + dir * distance;
-            } while (!NavMesh.SamplePosition(targetPos, out _, 1.0f, NavMesh.AllAreas));
+                var targetPos = playerPosition + dir * distance;
 
-            return targetPos;
+                // 生のtargetPosは最大1mメッシュ外にズレうるため、必ずNavMesh上の点を返す
+                // （メッシュ外にスポーンするとNavMeshAgentが配置されず、動けない敵になる）
+                if (NavMesh.SamplePosition(targetPos, out var hit, 1.0f, NavMesh.AllAreas))
+                {
+                    return hit.position;
+                }
+            }
+
+            // 円環全体がNavMesh外の場合のフォールバック: プレイヤー周辺の最寄りNavMesh上の点を返す
+            if (NavMesh.SamplePosition(playerPosition, out var fallbackHit, SpawnDistanceMax, NavMesh.AllAreas))
+            {
+                return fallbackHit.position;
+            }
+
+            Debug.LogWarning("[EnemyRandomSpawnCycleDataStore] スポーン位置のNavMeshサンプルに失敗したため、プレイヤー位置にフォールバックします");
+            return playerPosition;
         }
     }
 }
