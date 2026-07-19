@@ -96,9 +96,10 @@ namespace App.Battle.UseCase
                 }
             }
 
-            // 1ウェーブにつき1回だけ選択可能。選択後は候補ボタンを閉じる
+            // 1ウェーブにつき1回だけ選択可能（_currentCandidates=nullで以降の押下を無効化）。
+            // 選択したボタンだけを消し、他の候補は「選ばなかったもの」として表示したままにする
             _currentCandidates = null;
-            _shopPresenter.HideUpgradeButtons();
+            _shopPresenter.HideUpgradeButton(index);
         }
 
         private void StartNextWave()

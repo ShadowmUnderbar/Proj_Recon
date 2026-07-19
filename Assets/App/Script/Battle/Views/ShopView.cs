@@ -62,12 +62,14 @@ namespace App.Battle.Views
             }
         }
 
-        public void HideUpgradeButtons()
+        public void HideUpgradeButton(int index)
         {
-            foreach (var button in _upgradeButtons)
+            if (index < 0 || index >= _upgradeButtons.Length)
             {
-                button.gameObject.SetActive(false);
+                return;
             }
+
+            _upgradeButtons[index].gameObject.SetActive(false);
         }
 
         public void Close()
