@@ -38,21 +38,34 @@ return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave
     throw "ウェーブ状態の取得に失敗しました: $($result.ErrorMessage)"
 }
 
-$Global:PlaytestShopUpgradeButtonPath = 'BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0'
-$Global:PlaytestShopNextWaveButtonPath = 'BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/NextWaveButton'
+# ShopCanvasはWorldSpaceUICanvasViewによって実行時にMainCamera配下へ再ペアレントされる（VR/PC両対応のWorld Space化）。
+# そのためShopView(Clone)配下ではなくカメラ配下のパスを指定する必要がある
+$Global:PlaytestShopUpgradeButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0'
+$Global:PlaytestShopNextWaveButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/NextWaveButton'
 
 function Resolve-ShopIfOpen {
     param([Parameter(Mandatory)] $WaveState)
     if (-not $WaveState.isWavePause) { return $false }
 
+    # フロー: アップグレードを1つ選択 → 「次のウェーブへ」を押す
+    # 選択後は選んだボタンだけが非表示になり、他の候補は表示されたまま残る（ShopView.HideUpgradeButton(index)の動作）
     Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
         action = 'Click'; 'target-path' = $Global:PlaytestShopUpgradeButtonPath; 'bypass-raycast' = 'true'
     } | Out-Null
     Start-Sleep -Milliseconds 300
-    Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
-        action = 'Click'; 'target-path' = $Global:PlaytestShopNextWaveButtonPath; 'bypass-raycast' = 'true'
-    } | Out-Null
-    return $true
+
+    # 「次のウェーブへ」押下後、実際にポーズ解除されたことを確認できるまでリトライする。
+    # 確認なしに進むと、遷移失敗時にランナーが同じショップ処理を繰り返して進行不能になる
+    for ($attempt = 1; $attempt -le 3; $attempt++) {
+        Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
+            action = 'Click'; 'target-path' = $Global:PlaytestShopNextWaveButtonPath; 'bypass-raycast' = 'true'
+        } | Out-Null
+        Start-Sleep -Milliseconds 500
+
+        $state = Get-WaveState
+        if (-not $state.isWavePause) { return $true }
+    }
+    throw "ショップから次ウェーブへ遷移できませんでした（NextWaveButton押下後もisWavePause=trueのまま）"
 }
 
 $Global:PlaytestKnownIssuePatterns = @(
@@ -60,12 +73,16 @@ $Global:PlaytestKnownIssuePatterns = @(
 )
 
 function Get-NewErrors {
+    # uloopがタイムアウト等で応答しなかった場合、$result.Logsは$nullになる。
+    # $nullをエラー件数に数えるとゲーム側のエラーが無いのにランが失敗扱いになるため必ず除外する
+    $found = @()
+
     $result = Invoke-Uloop -Command 'get-logs' -Params @{ 'log-type' = 'Error'; 'include-stack-trace' = 'true'; 'max-count' = '50' }
-    $found = @($result.Logs)
+    $found += @($result.Logs | Where-Object { $null -ne $_ })
 
     foreach ($pattern in $Global:PlaytestKnownIssuePatterns) {
         $patternResult = Invoke-Uloop -Command 'get-logs' -Params @{ 'log-type' = 'All'; 'search-text' = $pattern; 'include-stack-trace' = 'true'; 'max-count' = '50' }
-        $found += @($patternResult.Logs)
+        $found += @($patternResult.Logs | Where-Object { $null -ne $_ })
     }
 
     return $found
