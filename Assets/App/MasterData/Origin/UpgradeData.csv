@@ -24,3 +24,6 @@ id,NameKey,UpgradeType,PlayerUnlockType,Level,Value1,Value1ParameterType,Value2,
 23,$Bullseye,9,0,1,0,0,0,0,0,0,0,0,0,0,6
 24,$Bullseye,9,0,2,0,0,0,0,0,0,0,0,0,0,7
 25,$Bullseye,9,0,3,0,0,0,0,0,0,0,0,0,0,8
+26,$Rage,9,0,1,0,0,0,0,0,0,0,0,0,0,9
+27,$Rage,9,0,2,0,0,0,0,0,0,0,0,0,0,10
+28,$Rage,9,0,3,0,0,0,0,0,0,0,0,0,0,11

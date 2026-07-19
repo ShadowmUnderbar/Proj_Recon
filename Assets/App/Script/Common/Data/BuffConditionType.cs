@@ -9,4 +9,5 @@ public enum BuffConditionType
     HitCount = 4, // ヒット数N到達
     HitDifferentEnemy = 5, // 直前と異なる敵に命中でスタック増加・同一敵でリセット ※手動追加。スプレッドシート反映済み（次回GASエクスポートで正式生成される）
     PenetrationCount = 6, // 1発の弾がN体貫通するごとにダメージ倍率上昇 ※手動追加。スプレッドシート反映済み（次回GASエクスポートで正式生成される）
+    OnDamaged = 7, // 被弾するとダメージ量×ConditionValueだけ効果時間が延長される ※手動追加。スプレッドシート反映済み（次回GASエクスポートで正式生成される）
 }

@@ -46,6 +46,11 @@ namespace App.Battle.UseCase
                     (health, maxHealth) => maxHealth > 0f ? health / maxHealth : 1f)
                 .Subscribe(_buffStateDataStore.SetHealthRatio)
                 .AddTo(_disposable);
+
+            // 被弾を被弾条件バフ（レイジ等）へ通知する
+            _playerStateDataStore.OnDamaged
+                .Subscribe(_buffStateDataStore.NotifyDamageTaken)
+                .AddTo(_disposable);
         }
 
         private void OnHit(HitData hitData)
