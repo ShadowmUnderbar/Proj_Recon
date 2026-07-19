@@ -10,6 +10,9 @@ namespace App.Battle.Interface
         Transform PlayerTransform { get; }
         Observable<HitData> OnHit { get; }
 
+        /// <summary>被弾したダメージ量を流す（被弾受けコンポーネント由来）</summary>
+        Observable<float> OnDamaged { get; }
+
         Observable<int> OnFocusLeft { get; }
         Observable<int> OnFocusRight { get; }
         Observable<Vector3> OnRightAimPosition { get; }

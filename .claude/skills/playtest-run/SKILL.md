@@ -24,7 +24,7 @@ $f = "Tools/Playtest/対象ファイル.ps1"
 ## 前提・制約（2026-07時点、実装が進んだら要更新）
 
 - ゲームシーンは`Assets/Scenes/SampleScene.unity`の1本のみ
-- プレイヤーのHP減少・ゲームオーバー判定は未実装 → 「ゲームオーバーまで」のフローは組めない。**ウェーブクリアの繰り返し**が自然な終端
+- プレイヤーのHP減少は実装済み（PR #34）。敵の攻撃がプレイヤーの被弾受け（`PlayerDamageReceiverView`）に当たると`PlayerStateDataStore.Health`が減る。ただし**ゲームオーバー判定は未実装**（HPが0でも何も起きない）→ 「ゲームオーバーまで」のフローはまだ組めず、**ウェーブクリアの繰り返し**が自然な終端。プレイヤーHPを観測したい場合は`Get-WaveState`のスニペットに`IPlayerStateDataStore.Health`を足せる
 - ウェーブ数を表示するUIは存在しない → 状態はUIではなく`execute-dynamic-code`経由でDataStoreから読む
 - ショップの開閉状態を公開するプロパティはない → `IsWavePause`とショップUIプレハブ（`ShopView`）の出現で判断する
 - 検知基準は`Debug.LogError`/例外に加え、`PlaytestCommon.ps1`の`$Global:PlaytestKnownIssuePatterns`に登録した既知の問題メッセージ（Log/Warningレベルでも検知対象になる）。登録されていないWarning/Logは対象外

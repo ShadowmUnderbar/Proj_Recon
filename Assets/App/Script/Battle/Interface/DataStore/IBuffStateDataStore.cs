@@ -11,6 +11,10 @@ namespace App.Battle.Interface.DataStore
         /// <param name="damagedId">命中した敵のID（HitDifferentEnemyで直前敵との異同判定に使う）</param>
         void NotifyHit(int damagedId);
 
+        /// <summary>被弾したことを通知する（OnDamaged条件の効果時間を被弾ダメージ量×レベル倍率だけ延長）</summary>
+        /// <param name="damage">被弾したダメージ量</param>
+        void NotifyDamageTaken(float damage);
+
         /// <summary>現在のHP割合（0〜1）を通知する（HpBelow条件の判定）</summary>
         void SetHealthRatio(float healthRatio);
 

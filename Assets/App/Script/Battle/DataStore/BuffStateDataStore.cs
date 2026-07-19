@@ -37,6 +37,7 @@ namespace App.Battle.DataStore
                 BuffConditionType.HitCount => RemainingTime > 0f,
                 BuffConditionType.HpBelow => IsConditionActive,
                 BuffConditionType.HitDifferentEnemy => StackMultiplier > 1f,
+                BuffConditionType.OnDamaged => RemainingTime > 0f,
                 _ => false
             };
 
@@ -114,6 +115,20 @@ namespace App.Battle.DataStore
                         state.LastHitEnemyId = damagedId;
                         break;
                 }
+            }
+        }
+
+        public void NotifyDamageTaken(float damage)
+        {
+            foreach (var state in _buffStates)
+            {
+                if (state.Master.ConditionType != BuffConditionType.OnDamaged)
+                {
+                    continue;
+                }
+
+                // 被弾ダメージ量 × レベル倍率(ConditionValue) だけ効果時間を延長（被弾のたびに累積）
+                state.RemainingTime += damage * state.Master.ConditionValue;
             }
         }
 
