@@ -27,6 +27,10 @@ namespace App.Battle.Views
         public Transform PlayerTransform => transform;
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
+
+        // 被弾受け（子のコライダーに載る PlayerDamageReceiverView）をAwakeで取得
+        private PlayerDamageReceiverView _damageReceiver;
+        public Observable<float> OnDamaged => _damageReceiver.OnDamaged;
         public Observable<int> OnFocusLeft => _playerTopDownAimListView.OnFocusLeft;
         public Observable<int> OnFocusRight => _playerTopDownAimListView.OnFocusRight;
 
@@ -85,6 +89,7 @@ namespace App.Battle.Views
         {
             _onHit.AddTo(this);
             _playerTopDownAimListView.OnHit.Subscribe(OnHitBullet).AddTo(this);
+            _damageReceiver = GetComponentInChildren<PlayerDamageReceiverView>();
         }
 
         private void Update()

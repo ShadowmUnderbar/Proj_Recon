@@ -68,6 +68,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<EnemySpawnUseCase>();
             builder.RegisterEntryPoint<EnemyControlUseCase>();
             builder.RegisterEntryPoint<BattleHitUseCase>();
+            builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();

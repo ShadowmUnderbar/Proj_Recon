@@ -14,10 +14,17 @@ namespace App.Battle.Interface.DataStore
         ReactiveProperty<float> Health { get; }
         ReactiveProperty<float> MaxHealth { get; }
 
+        /// <summary>被弾したダメージ量を流す（HP減少と同時。被弾条件バフの駆動に使う）</summary>
+        Observable<float> OnDamaged { get; }
+
         float MoveSpeed { get; }
         UnlockCoreSkillType UnlockCoreSkillType { get; }
 
         void Move(Vector2 moveV2, float speed);
+
+        /// <summary>プレイヤーにダメージを与える（HPを減らし OnDamaged を発火）</summary>
+        void TakeDamage(float damage);
+
         void SetUnlockCoreSkillType(UnlockCoreSkillType unlockCoreSkillType);
     }
 }
