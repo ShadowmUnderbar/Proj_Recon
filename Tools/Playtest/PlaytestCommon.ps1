@@ -28,12 +28,14 @@ return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave
 '@
     [System.IO.File]::WriteAllText($snippetPath, $snippet, (New-Object System.Text.UTF8Encoding($false)))
 
-    for ($attempt = 1; $attempt -le 5; $attempt++) {
+    # Play Mode突入直後はドメインリロード＋uloopサーバー再起動で30秒以上応答しないことがある。
+    # リトライ枠を計60秒確保する（5回×2秒では開始直後に使い切って失敗する実績あり）
+    for ($attempt = 1; $attempt -le 20; $attempt++) {
         $result = Invoke-Uloop -Command 'execute-dynamic-code' -Params @{ 'code-file' = $snippetPath }
         if ($result.Success) {
             return $result.Result | ConvertFrom-Json
         }
-        Start-Sleep -Seconds 2
+        Start-Sleep -Seconds 3
     }
     throw "ウェーブ状態の取得に失敗しました: $($result.ErrorMessage)"
 }
