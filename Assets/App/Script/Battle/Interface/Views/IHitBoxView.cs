@@ -12,6 +12,7 @@ namespace App.Battle.Interface
         int Id { get; }
         HitDirectionType ResistanceDirectionType { get; }
         HitBoxType HitBoxType { get; }
-        void OnHit(float damage, int attackerId, Vector3 attackCenter, out bool canPenetrable);
+        /// <param name="penetrationIndex">同一弾内で何体目のヒットか（1始まり）。貫通しない攻撃は省略可</param>
+        void OnHit(float damage, int attackerId, Vector3 attackCenter, out bool canPenetrable, int penetrationIndex = 1);
     }
 }
