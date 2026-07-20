@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
-using App.Common.Data.Database;
 using App.Common.Data.MasterData;
 using R3;
-using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -24,10 +22,7 @@ namespace App.Battle.UseCase
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IUpgradeLotteryDataStore _upgradeLotteryDataStore;
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
-        private readonly IBuffStateDataStore _buffStateDataStore;
-        private readonly IPlayerStateDataStore _playerStateDataStore;
-        private readonly IPlayerBarrierDataStore _playerBarrierDataStore;
-        private readonly BuffDatabase _buffDatabase;
+        private readonly UpgradeSideEffectApplier _upgradeSideEffectApplier;
         private readonly IShopPresenter _shopPresenter;
 
         private readonly CompositeDisposable _disposable = new();
@@ -39,20 +34,14 @@ namespace App.Battle.UseCase
             IWaveManagerDataStore waveManagerDataStore,
             IUpgradeLotteryDataStore upgradeLotteryDataStore,
             IUpgradeSessionDataStore upgradeSessionDataStore,
-            IBuffStateDataStore buffStateDataStore,
-            IPlayerStateDataStore playerStateDataStore,
-            IPlayerBarrierDataStore playerBarrierDataStore,
-            BuffDatabase buffDatabase,
+            UpgradeSideEffectApplier upgradeSideEffectApplier,
             IShopPresenter shopPresenter
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
             _upgradeLotteryDataStore = upgradeLotteryDataStore;
             _upgradeSessionDataStore = upgradeSessionDataStore;
-            _buffStateDataStore = buffStateDataStore;
-            _playerStateDataStore = playerStateDataStore;
-            _playerBarrierDataStore = playerBarrierDataStore;
-            _buffDatabase = buffDatabase;
+            _upgradeSideEffectApplier = upgradeSideEffectApplier;
             _shopPresenter = shopPresenter;
         }
 
@@ -89,24 +78,8 @@ namespace App.Battle.UseCase
             var selected = _currentCandidates[index];
             _upgradeSessionDataStore.AddUpgrade(selected);
 
-            // バフ付与型のアップグレードなら、対応するバフの監視を開始する
-            if (selected.UpgradeType == UpgradeType.GrantBuff)
-            {
-                if (_buffDatabase.TryGetBuffMasterData(selected.BuffId, out var buffMasterData))
-                {
-                    _buffStateDataStore.AddBuff(buffMasterData);
-                }
-                else
-                {
-                    Debug.LogWarning($"[ShopUseCase] BuffId \"{selected.BuffId}\" が BuffDatabase に見つかりません (Upgrade: {selected.Id})");
-                }
-            }
-
-            // バリア型なら、最大HPと取得済み倍率から最大値を再計算して満タンで付与する
-            if (selected.UpgradeType == UpgradeType.Barrier)
-            {
-                _playerBarrierDataStore.GrantFull(_playerStateDataStore.MaxHealth.Value);
-            }
+            // GrantBuff/バリア等の付与副作用を適用（読込フローと共通処理）
+            _upgradeSideEffectApplier.Apply(selected);
 
             // 1ウェーブにつき1回だけ選択可能（_currentCandidates=nullで以降の押下を無効化）。
             // 選択したボタンだけを消し、他の候補は「選ばなかったもの」として表示したままにする

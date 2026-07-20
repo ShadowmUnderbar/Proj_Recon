@@ -37,6 +37,13 @@ try {
         $wave = Get-WaveState
         $reachedWave = $wave.currentWave
 
+        # ラン開始時のセット選択ゲート。プレイテストはセットを読み込まず「使わずに開始」でランを始める
+        if ($wave.isSelectingRunStart) {
+            Resolve-RunStartIfSelecting -WaveState $wave | Out-Null
+            Start-Sleep -Seconds $PollIntervalSeconds
+            continue
+        }
+
         # ゲームオーバー（HP0）はランの正常な終端。スロット保存フローを疎通させて終了する
         if ($wave.isGameOver) {
             $gameOver = $true

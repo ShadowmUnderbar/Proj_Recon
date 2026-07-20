@@ -26,7 +26,8 @@ var scope = LifetimeScope.Find<BattleLifetimeScope>();
 var wave = scope.Container.Resolve<IWaveManagerDataStore>();
 var gameState = scope.Container.Resolve<IGameStateDataStore>();
 var player = scope.Container.Resolve<IPlayerStateDataStore>();
-return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"playerHealth\":{player.Health.Value}}}";
+var runStart = scope.Container.Resolve<IRunStartDataStore>();
+return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"playerHealth\":{player.Health.Value},\"isSelectingRunStart\":{runStart.IsSelecting.CurrentValue.ToString().ToLower()}}}";
 '@
     [System.IO.File]::WriteAllText($snippetPath, $snippet, (New-Object System.Text.UTF8Encoding($false)))
 
@@ -56,6 +57,26 @@ function Invoke-GameOverSlotSave {
         action = 'Click'; 'target-path' = $Global:PlaytestGameOverSlotButtonPath; 'bypass-raycast' = 'true'
     } | Out-Null
     Start-Sleep -Milliseconds 500
+}
+
+# ラン開始時のセット選択UIの「使わずに開始」ボタン。カメラ配下へ再ペアレントされる
+$Global:PlaytestRunStartButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/RunStartCanvas/Panel/SlotButtons/StartWithoutLoadButton'
+
+function Resolve-RunStartIfSelecting {
+    # ラン開始のセット選択中なら「使わずに開始」を押してランを始める（プレイテストはセット読込せず開始）
+    param([Parameter(Mandatory)] $WaveState)
+    if (-not $WaveState.isSelectingRunStart) { return $false }
+
+    for ($attempt = 1; $attempt -le 3; $attempt++) {
+        Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
+            action = 'Click'; 'target-path' = $Global:PlaytestRunStartButtonPath; 'bypass-raycast' = 'true'
+        } | Out-Null
+        Start-Sleep -Milliseconds 500
+
+        $state = Get-WaveState
+        if (-not $state.isSelectingRunStart) { return $true }
+    }
+    throw "ラン開始のセット選択を解除できませんでした（使わずに開始ボタン押下後もisSelectingRunStart=trueのまま）"
 }
 
 function Resolve-ShopIfOpen {
