@@ -30,11 +30,25 @@ Start-Sleep -Seconds 5
 $errorsFound = @()
 $reachedWave = 1
 $success = $true
+$gameOver = $false
 
 try {
     for ($i = 0; $i -lt $MaxIterations; $i++) {
         $wave = Get-WaveState
         $reachedWave = $wave.currentWave
+
+        # ゲームオーバー（HP0）はランの正常な終端。スロット保存フローを疎通させて終了する
+        if ($wave.isGameOver) {
+            $gameOver = $true
+            Write-Host "ゲームオーバーを検出（Wave $reachedWave, HP $($wave.playerHealth)）。スロット保存を実行して終了します"
+            Invoke-GameOverSlotSave
+            $newErrors = Get-NewErrors
+            if ($newErrors.Count -gt 0) {
+                $errorsFound = $newErrors
+                $success = $false
+            }
+            break
+        }
 
         if ($reachedWave -gt $Waves -and $wave.isWavePause) {
             Write-Host "目標ウェーブ数($Waves)をクリア、終了します"
@@ -61,11 +75,12 @@ try {
     Invoke-Uloop -Command 'control-play-mode' -Params @{ action = 'Stop' } | Out-Null
 }
 
-$reportPath = Write-PlaytestReport -Scenario $Scenario -TargetWaves $Waves -ReachedWave $reachedWave -Success $success -Errors $errorsFound
+$reportPath = Write-PlaytestReport -Scenario $Scenario -TargetWaves $Waves -ReachedWave $reachedWave -Success $success -GameOver $gameOver -Errors $errorsFound
 Write-Host "レポート: $reportPath"
 
 if ($success) {
-    Write-Host "完了: ウェーブ $reachedWave まで到達、エラーなし"
+    $terminal = if ($gameOver) { "ゲームオーバーで終了" } else { "ウェーブ $reachedWave まで到達" }
+    Write-Host "完了: $terminal、エラーなし"
     exit 0
 } else {
     Write-Host "失敗: ウェーブ $reachedWave で $($errorsFound.Count) 件のエラーを検出"

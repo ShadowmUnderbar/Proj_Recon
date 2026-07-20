@@ -24,7 +24,9 @@ using VContainer;
 using VContainer.Unity;
 var scope = LifetimeScope.Find<BattleLifetimeScope>();
 var wave = scope.Container.Resolve<IWaveManagerDataStore>();
-return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue}}}";
+var gameState = scope.Container.Resolve<IGameStateDataStore>();
+var player = scope.Container.Resolve<IPlayerStateDataStore>();
+return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"playerHealth\":{player.Health.Value}}}";
 '@
     [System.IO.File]::WriteAllText($snippetPath, $snippet, (New-Object System.Text.UTF8Encoding($false)))
 
@@ -44,6 +46,17 @@ return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave
 # そのためShopView(Clone)配下ではなくカメラ配下のパスを指定する必要がある
 $Global:PlaytestShopUpgradeButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0'
 $Global:PlaytestShopNextWaveButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/NextWaveButton'
+
+# ゲームオーバー画面のスロット0保存ボタン。ShopCanvasと同様にWorldSpaceUICanvasViewでカメラ配下へ再ペアレントされる
+$Global:PlaytestGameOverSlotButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/GameOverCanvas/Panel/SlotButtons/SlotButton0'
+
+function Invoke-GameOverSlotSave {
+    # ゲームオーバー画面のスロット0保存ボタンを押し、アップグレードセット保存フローを疎通させる（ベストエフォート）
+    Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
+        action = 'Click'; 'target-path' = $Global:PlaytestGameOverSlotButtonPath; 'bypass-raycast' = 'true'
+    } | Out-Null
+    Start-Sleep -Milliseconds 500
+}
 
 function Resolve-ShopIfOpen {
     param([Parameter(Mandatory)] $WaveState)
@@ -65,6 +78,9 @@ function Resolve-ShopIfOpen {
         Start-Sleep -Milliseconds 500
 
         $state = Get-WaveState
+        # 次ウェーブ再開直後に低HPで即死しゲームオーバーになると、ポーズが解けないまま残る。
+        # これはショップ遷移の失敗ではないので、ゲームオーバーなら成功扱いで抜ける（呼び出し元がゲームオーバー終端を処理する）
+        if ($state.isGameOver) { return $true }
         if (-not $state.isWavePause) { return $true }
     }
     throw "ショップから次ウェーブへ遷移できませんでした（NextWaveButton押下後もisWavePause=trueのまま）"
@@ -96,6 +112,7 @@ function Write-PlaytestReport {
         [Parameter(Mandatory)] [int]$TargetWaves,
         [Parameter(Mandatory)] [int]$ReachedWave,
         [Parameter(Mandatory)] [bool]$Success,
+        [bool]$GameOver = $false,
         [array]$Errors = @()
     )
     $reportsDir = Join-Path $PSScriptRoot 'Reports'
@@ -108,6 +125,7 @@ function Write-PlaytestReport {
         targetWaves = $TargetWaves
         reachedWave = $ReachedWave
         success     = $Success
+        gameOver    = $GameOver
         errors      = $Errors
     }
     $reportPath = Join-Path $reportsDir "playtest_$timestamp.json"
