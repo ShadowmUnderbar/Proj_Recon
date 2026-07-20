@@ -53,6 +53,8 @@ namespace App.Battle
                 .As<IBuffStateDataStore>();
             builder.Register<UpgradeEffectSimpleCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeEffectSimpleCalculatorDataStore>();
+            builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeLotteryDataStore>();
             builder.Register<WaveManagerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()

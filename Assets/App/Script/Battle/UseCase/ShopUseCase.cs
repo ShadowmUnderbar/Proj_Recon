@@ -25,6 +25,8 @@ namespace App.Battle.UseCase
         private readonly IUpgradeLotteryDataStore _upgradeLotteryDataStore;
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
         private readonly IBuffStateDataStore _buffStateDataStore;
+        private readonly IPlayerStateDataStore _playerStateDataStore;
+        private readonly IPlayerBarrierDataStore _playerBarrierDataStore;
         private readonly BuffDatabase _buffDatabase;
         private readonly IShopPresenter _shopPresenter;
 
@@ -38,6 +40,8 @@ namespace App.Battle.UseCase
             IUpgradeLotteryDataStore upgradeLotteryDataStore,
             IUpgradeSessionDataStore upgradeSessionDataStore,
             IBuffStateDataStore buffStateDataStore,
+            IPlayerStateDataStore playerStateDataStore,
+            IPlayerBarrierDataStore playerBarrierDataStore,
             BuffDatabase buffDatabase,
             IShopPresenter shopPresenter
         )
@@ -46,6 +50,8 @@ namespace App.Battle.UseCase
             _upgradeLotteryDataStore = upgradeLotteryDataStore;
             _upgradeSessionDataStore = upgradeSessionDataStore;
             _buffStateDataStore = buffStateDataStore;
+            _playerStateDataStore = playerStateDataStore;
+            _playerBarrierDataStore = playerBarrierDataStore;
             _buffDatabase = buffDatabase;
             _shopPresenter = shopPresenter;
         }
@@ -94,6 +100,12 @@ namespace App.Battle.UseCase
                 {
                     Debug.LogWarning($"[ShopUseCase] BuffId \"{selected.BuffId}\" が BuffDatabase に見つかりません (Upgrade: {selected.Id})");
                 }
+            }
+
+            // バリア型なら、最大HPと取得済み倍率から最大値を再計算して満タンで付与する
+            if (selected.UpgradeType == UpgradeType.Barrier)
+            {
+                _playerBarrierDataStore.GrantFull(_playerStateDataStore.MaxHealth.Value);
             }
 
             // 1ウェーブにつき1回だけ選択可能（_currentCandidates=nullで以降の押下を無効化）。
