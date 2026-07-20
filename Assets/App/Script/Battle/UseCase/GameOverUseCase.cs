@@ -72,9 +72,8 @@ namespace App.Battle.UseCase
             // ウェーブ進行・スポーンを停止（既存のポーズ機構を流用）
             _waveManagerDataStore.SetWavePause(true);
 
-            // Phase1ではセット読込が未実装のため、獲得済み＝そのランで新規獲得したアップグレード。
-            // （Phase2でセット読込を入れる際に「読込分を除外した新規獲得のみ」に絞る）
-            var acquiredCount = _upgradeSessionDataStore.AppliedUpgrades.Count;
+            // 保存対象はそのランで新たに獲得した分のみ（セット読込で最初から持っていた分は除外）
+            var acquiredCount = _upgradeSessionDataStore.NewlyAcquiredUpgrades.Count;
             _gameOverPresenter.Show($"GAME OVER\n獲得アップグレード: {acquiredCount}個\nスロットに上書き保存、またはセーブせずに終了");
 
             RefreshAllSlotLabels();
@@ -93,7 +92,7 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            var ids = _upgradeSessionDataStore.AppliedUpgrades;
+            var ids = _upgradeSessionDataStore.NewlyAcquiredUpgrades;
             var clearedWave = _waveManagerDataStore.CurrentWave.CurrentValue;
 
             _metaProgressionDataStore.SaveToSlot(slotIndex, ids, clearedWave);

@@ -167,6 +167,7 @@ MonoBehaviour:
   _bulletStoreView: {fileID: 1523574698354749414, guid: 0f61ec3ac4e34ed4a8d99b5609a2d29f, type: 3}
   _shopView: {fileID: 8191605006265629756, guid: d1135638dbbe412459fa19440d1e485f, type: 3}
   _gameOverView: {fileID: 2521413792756983357, guid: d2b7af2b77a1a8948b99f80d9bb01e37, type: 3}
+  _runStartView: {fileID: 3004351885307919908, guid: 8ebf5f0ac3c8ed04cb74f5e38f38685f, type: 3}
   _waveConfig: {fileID: 11400000, guid: 59d998123a56c164e8af04f7758af639, type: 2}
 --- !u!4 &175168502
 Transform:
