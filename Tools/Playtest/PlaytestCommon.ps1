@@ -60,7 +60,7 @@ function Invoke-GameOverSlotSave {
 }
 
 # ラン開始時のセット選択UIの「使わずに開始」ボタン。カメラ配下へ再ペアレントされる
-$Global:PlaytestRunStartButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/RunStartCanvas/Panel/StartWithoutLoadButton'
+$Global:PlaytestRunStartButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/RunStartCanvas/Panel/SlotButtons/StartWithoutLoadButton'
 
 function Resolve-RunStartIfSelecting {
     # ラン開始のセット選択中なら「使わずに開始」を押してランを始める（プレイテストはセット読込せず開始）
