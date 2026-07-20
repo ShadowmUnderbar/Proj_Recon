@@ -26,8 +26,14 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("各スロットボタンのラベル（_slotButtonsと同数・同順）")]
         private Text[] _slotButtonLabels;
 
+        [SerializeField, Tooltip("セーブせずに終了ボタン")]
+        private Button _exitButton;
+
         private readonly Subject<int> _onSaveSlotSelected = new();
         public Observable<int> OnSaveSlotSelected => _onSaveSlotSelected;
+
+        private readonly Subject<Unit> _onExitWithoutSave = new();
+        public Observable<Unit> OnExitWithoutSave => _onExitWithoutSave;
 
         private void Awake()
         {
@@ -35,6 +41,11 @@ namespace App.Battle.Views
             {
                 var index = i;
                 _slotButtons[i].onClick.AddListener(() => _onSaveSlotSelected.OnNext(index));
+            }
+
+            if (_exitButton != null)
+            {
+                _exitButton.onClick.AddListener(() => _onExitWithoutSave.OnNext(Unit.Default));
             }
 
             // 初期状態は非表示
@@ -82,6 +93,7 @@ namespace App.Battle.Views
         private void OnDestroy()
         {
             _onSaveSlotSelected.Dispose();
+            _onExitWithoutSave.Dispose();
         }
     }
 }

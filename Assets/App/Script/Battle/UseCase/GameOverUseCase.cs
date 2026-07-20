@@ -49,9 +49,14 @@ namespace App.Battle.UseCase
                 .Subscribe(_ => OnPlayerDead())
                 .AddTo(_disposable);
 
-            // スロット保存ボタン
+            // スロット保存ボタン（保存して終了）
             _gameOverPresenter.OnSaveSlotSelected
                 .Subscribe(OnSaveSlotSelected)
+                .AddTo(_disposable);
+
+            // セーブせずに終了ボタン
+            _gameOverPresenter.OnExitWithoutSave
+                .Subscribe(_ => OnExitWithoutSave())
                 .AddTo(_disposable);
         }
 
@@ -70,7 +75,7 @@ namespace App.Battle.UseCase
             // Phase1ではセット読込が未実装のため、獲得済み＝そのランで新規獲得したアップグレード。
             // （Phase2でセット読込を入れる際に「読込分を除外した新規獲得のみ」に絞る）
             var acquiredCount = _upgradeSessionDataStore.AppliedUpgrades.Count;
-            _gameOverPresenter.Show($"GAME OVER\n獲得アップグレード: {acquiredCount}個\nスロットに保存できます");
+            _gameOverPresenter.Show($"GAME OVER\n獲得アップグレード: {acquiredCount}個\nスロットに上書き保存、またはセーブせずに終了");
 
             RefreshAllSlotLabels();
 
@@ -80,6 +85,7 @@ namespace App.Battle.UseCase
             }
         }
 
+        // スロットへ上書き保存して終了する
         private void OnSaveSlotSelected(int slotIndex)
         {
             if (!_gameStateDataStore.IsGameOver.CurrentValue)
@@ -92,8 +98,25 @@ namespace App.Battle.UseCase
 
             _metaProgressionDataStore.SaveToSlot(slotIndex, ids, clearedWave);
 
-            _gameOverPresenter.SetStatus($"スロット{slotIndex + 1}に {ids.Count}個 を保存しました");
-            _gameOverPresenter.SetSlotLabel(slotIndex, BuildSlotLabel(slotIndex));
+            // 保存もセーブせず終了も同じ終了フロー（画面を閉じる）。
+            // 閉じた後のリスタート等はPhase2で対応する
+            CloseGameOver();
+        }
+
+        // セーブせずに終了する
+        private void OnExitWithoutSave()
+        {
+            if (!_gameStateDataStore.IsGameOver.CurrentValue)
+            {
+                return;
+            }
+
+            CloseGameOver();
+        }
+
+        private void CloseGameOver()
+        {
+            _gameOverPresenter.Hide();
         }
 
         private void RefreshAllSlotLabels()

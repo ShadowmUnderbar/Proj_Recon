@@ -10,6 +10,9 @@ namespace App.Battle.Interface
         /// <summary>保存スロットボタン押下（押されたスロット番号 0〜2）</summary>
         Observable<int> OnSaveSlotSelected { get; }
 
+        /// <summary>「セーブせずに終了」ボタン押下</summary>
+        Observable<Unit> OnExitWithoutSave { get; }
+
         /// <summary>画面を表示し、見出しを設定する</summary>
         void Show(string headline);
 
