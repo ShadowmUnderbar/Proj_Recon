@@ -79,3 +79,7 @@ crashlytics-build.properties
 Tools/Sheets/service-account.json
 Tools/Sheets/node_modules/
 Tools/Sheets/package-lock.json
+
+# 実行時セーブデータ（SaveDataStoreがApplication.dataPath配下に書き出す。ソース管理対象外）
+/Assets/DLHN/
+/Assets/DLHN.meta

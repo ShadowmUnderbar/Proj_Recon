@@ -25,6 +25,8 @@ namespace App.Common
                 .As<ISaveDataStore>();
             builder.Register<CoreSkillUnlockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ICoreSkillUnlockDataStore>();
+            builder.Register<MetaProgressionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IMetaProgressionDataStore>();
             builder.RegisterEntryPoint<GameInputDataStore>()
                 .As<IGameInputDataStore>();
 

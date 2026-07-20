@@ -25,6 +25,7 @@ namespace App.Battle
         [SerializeField] private BulletTracerView _bulletTracerView;
         [SerializeField] private BulletStoreView _bulletStoreView;
         [SerializeField] private ShopView _shopView;
+        [SerializeField] private GameOverView _gameOverView;
         [SerializeField] private WaveConfig _waveConfig;
 
         protected override void Configure(IContainerBuilder builder)
@@ -59,6 +60,8 @@ namespace App.Battle
                 .As<IUpgradeLotteryDataStore>();
             builder.Register<WaveManagerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IWaveManagerDataStore>();
+            builder.Register<GameStateDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IGameStateDataStore>();
 
             #endregion
 
@@ -76,6 +79,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<WaveManagerUseCase>();
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
+            builder.RegisterEntryPoint<GameOverUseCase>();
 
             #endregion
 
@@ -90,6 +94,8 @@ namespace App.Battle
                 .As<IBattleHitPresenter>();
             builder.Register<ShopPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IShopPresenter>();
+            builder.Register<GameOverPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IGameOverPresenter>();
 
             #endregion
 
@@ -100,6 +106,9 @@ namespace App.Battle
 
             builder.RegisterComponentInNewPrefab(_shopView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IShopView>();
+
+            builder.RegisterComponentInNewPrefab(_gameOverView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<IGameOverView>();
 
             #endregion
 

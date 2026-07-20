@@ -24,7 +24,8 @@ $f = "Tools/Playtest/対象ファイル.ps1"
 ## 前提・制約（2026-07時点、実装が進んだら要更新）
 
 - ゲームシーンは`Assets/Scenes/SampleScene.unity`の1本のみ
-- プレイヤーのHP減少は実装済み（PR #34）。敵の攻撃がプレイヤーの被弾受け（`PlayerDamageReceiverView`）に当たると`PlayerStateDataStore.Health`が減る。ただし**ゲームオーバー判定は未実装**（HPが0でも何も起きない）→ 「ゲームオーバーまで」のフローはまだ組めず、**ウェーブクリアの繰り返し**が自然な終端。プレイヤーHPを観測したい場合は`Get-WaveState`のスニペットに`IPlayerStateDataStore.Health`を足せる
+- プレイヤーのHP減少は実装済み（PR #34）。敵の攻撃がプレイヤーの被弾受け（`PlayerDamageReceiverView`）に当たると`PlayerStateDataStore.Health`が減る
+- **ゲームオーバー判定は実装済み**（メタ進行Phase1）。HPが0になると`GameStateDataStore.IsGameOver`がtrueになり`GameOverUseCase`がウェーブをポーズ＋ゲームオーバー画面（`GameOverView`）を表示する。ランナーは`Get-WaveState`の`isGameOver`を監視し、**ゲームオーバーを検出したらスロット0保存ボタン（`Invoke-GameOverSlotSave`）を押してから正常終端**する（エラー扱いにはしない）。つまり終端は「目標ウェーブ到達」か「ゲームオーバー」のどちらか。ランダムドリルは被弾を避けないため、目標ウェーブ到達前にゲームオーバーで終わることがある（正常）。HP0まで到達させたくない検証（全ウェーブクリアの確認等）をしたい場合は将来的に無敵/回復手段の注入が要る
 - ウェーブ数を表示するUIは存在しない → 状態はUIではなく`execute-dynamic-code`経由でDataStoreから読む
 - ショップの開閉状態を公開するプロパティはない → `IsWavePause`とショップUIプレハブ（`ShopView`）の出現で判断する
 - 検知基準は`Debug.LogError`/例外に加え、`PlaytestCommon.ps1`の`$Global:PlaytestKnownIssuePatterns`に登録した既知の問題メッセージ（Log/Warningレベルでも検知対象になる）。登録されていないWarning/Logは対象外
@@ -58,19 +59,22 @@ function PlaytestScenarioStep {
 既存の`FixedFlow.ps1`（決め打ち移動+発射）・`RandomDrill.ps1`（移動/発射/フォーム/フォーカス/回避をサイクルごとに変える）を参考にする。ショップでのアップグレード選択・次ウェーブ操作は`PlaytestCommon.ps1`の`Resolve-ShopIfOpen`が共通処理として自動で行う（アップグレードを1つ選択=常に最初の候補`UpgradeButton0`→`NextWaveButton`押下→ポーズ解除を確認できるまで最大3回リトライ、解除されなければthrow）。
 
 ### 状態観測の仕組み（`Get-WaveState`の内部）
-`execute-dynamic-code`で以下のC#スニペットを実行し、`currentWave`/`isWavePause`/`elapsed`/`kill`をJSON文字列で取得している。
+`execute-dynamic-code`で以下のC#スニペットを実行し、`currentWave`/`isWavePause`/`elapsed`/`kill`/`isGameOver`/`playerHealth`をJSON文字列で取得している。
 
 ```csharp
 using VContainer;
 using VContainer.Unity;
 var scope = LifetimeScope.Find<BattleLifetimeScope>();
 var wave = scope.Container.Resolve<IWaveManagerDataStore>();
-return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue}}}";
+var gameState = scope.Container.Resolve<IGameStateDataStore>();
+var player = scope.Container.Resolve<IPlayerStateDataStore>();
+return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"playerHealth\":{player.Health.Value}}}";
 ```
 - `using VContainer;` が無いと`Container.Resolve<T>()`（拡張メソッド）がコンパイルエラーになる（`CS0308`）。必ず両方の`using`を入れること
 - スニペットを一時ファイル経由で渡す際は**BOM無しUTF-8**で書き込むこと（`[System.IO.File]::WriteAllText(path, text, (New-Object System.Text.UTF8Encoding($false)))`）。PowerShell 5.1の`Set-Content -Encoding utf8`はBOM付きになり、先頭の`using`が`CS1001`等で壊れる（検証済みの既知の落とし穴）
 - `BattleLifetimeScope`はシーン上に固定配置されたGameObjectなので`LifetimeScope.Find<T>()`で解決できる（Awakeでの動的生成ではない）
 - `IWaveManagerDataStore`（`Assets/App/Script/Battle/Interface/DataStore/IWaveManagerDataStore.cs`）: `CurrentWave`, `IsWavePause`, `ElapsedTime`, `KillCount`, `OnWaveAdvanced`
+- `IGameStateDataStore`（`Assets/App/Script/Battle/Interface/DataStore/IGameStateDataStore.cs`）: `IsGameOver`（HP0でtrue）。`IPlayerStateDataStore`: `Health`（現在HP）。追加interfaceも`using`なしで自動解決される
 - Unityがcompile直後やPlay Mode遷移直後は一時的に応答できない（ドメインリロード中）ことがあるため、`Get-WaveState`は失敗時に2秒間隔で最大5回リトライする
 
 ### 手動調査（uLoopMCPツールを直接使う場合）
