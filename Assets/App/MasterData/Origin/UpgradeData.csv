@@ -27,3 +27,6 @@ id,NameKey,UpgradeType,PlayerUnlockType,Level,Value1,Value1ParameterType,Value2,
 26,$Rage,9,0,1,0,0,0,0,0,0,0,0,0,0,9
 27,$Rage,9,0,2,0,0,0,0,0,0,0,0,0,0,10
 28,$Rage,9,0,3,0,0,0,0,0,0,0,0,0,0,11
+29,$Barrier,10,0,1,0.05,1,0,0,0,0,0,0,0,0,
+30,$Barrier,10,0,2,0.2,1,0,0,0,0,0,0,0,0,
+31,$Barrier,10,0,3,0.5,1,0,0,0,0,0,0,0,0,

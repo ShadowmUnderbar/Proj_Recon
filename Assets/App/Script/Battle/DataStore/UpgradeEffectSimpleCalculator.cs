@@ -68,5 +68,33 @@ namespace App.Battle.DataStore
 
             return result;
         }
+
+        /// <summary>
+        /// 指定タイプの全アップグレードのうち Value1 の最大値を返す。
+        /// レベルが累積せず「最高レベルのみ採用」したい効果（バリア等）に使う。効果なし時は 0f。
+        /// </summary>
+        public float CalcMax(UpgradeType upgradeType)
+        {
+            var result = 0f;
+            foreach (var id in _upgradeSessionDataStore.AppliedUpgrades)
+            {
+                if (!_upgradeDatabase.TryGetUpgradeMasterData(id, out var data))
+                {
+                    continue;
+                }
+
+                if (data.UpgradeType != upgradeType)
+                {
+                    continue;
+                }
+
+                if (data.Value1.value > result)
+                {
+                    result = data.Value1.value;
+                }
+            }
+
+            return result;
+        }
     }
 }
