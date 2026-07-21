@@ -55,6 +55,8 @@ namespace App.Battle
                 .As<IBuffStateDataStore>();
             builder.Register<UpgradeEffectSimpleCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeEffectSimpleCalculatorDataStore>();
+            builder.Register<HealOnKillDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IHealOnKillDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()

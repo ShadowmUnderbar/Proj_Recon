@@ -70,6 +70,16 @@ namespace App.Battle.DataStore
             _onDamaged.OnNext(damage);
         }
 
+        public void Heal(float amount)
+        {
+            if (amount <= 0f)
+            {
+                return;
+            }
+
+            Health.Value = Mathf.Min(MaxHealth.Value, Health.Value + amount);
+        }
+
         public void SetUnlockCoreSkillType(UnlockCoreSkillType unlockCoreSkillType)
         {
             if (UnlockCoreSkillType >= unlockCoreSkillType)
