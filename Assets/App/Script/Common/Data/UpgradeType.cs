@@ -13,4 +13,5 @@ public enum UpgradeType
     Health = 8, // HP最大値
     GrantBuff = 9, // バフ付与（BuffId列で指定したバフを取得する） ※手動追加。GAS側スプレッドシートへの反映が必要
     Barrier = 10, // バリア（被弾を優先吸収し、無被弾7秒で時間回復する耐久値。Value1=最大HPに対する割合） ※手動追加。GAS側スプレッドシートへの反映が必要
+    BigMouse = 11, // ビッグマウス（マイナー枠のスポーンをValue1の確率で置換。Lv1/2=MinorRush、Lv3=CommonRush） ※手動追加。GAS側スプレッドシートへの反映が必要
 }

@@ -96,5 +96,33 @@ namespace App.Battle.DataStore
 
             return result;
         }
+
+        /// <summary>
+        /// 指定タイプで所持中の最高レベルを返す。効果なし時は 0。
+        /// レベルによって挙動が変わる効果（ビッグマウスのLv3など）の判定に使う。
+        /// </summary>
+        public int CalcMaxLevel(UpgradeType upgradeType)
+        {
+            var result = 0;
+            foreach (var id in _upgradeSessionDataStore.AppliedUpgrades)
+            {
+                if (!_upgradeDatabase.TryGetUpgradeMasterData(id, out var data))
+                {
+                    continue;
+                }
+
+                if (data.UpgradeType != upgradeType)
+                {
+                    continue;
+                }
+
+                if (data.Level > result)
+                {
+                    result = data.Level;
+                }
+            }
+
+            return result;
+        }
     }
 }
