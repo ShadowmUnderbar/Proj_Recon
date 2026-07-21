@@ -11,6 +11,13 @@ namespace App.Battle.Interface.DataStore
         Observable<Unit> OnSpawnBossEnemy { get; }
         Observable<Unit> OnSpawnIrregularEnemy { get; }
         Vector3 GetRandomSpawnPositionFast(Vector3 playerPosition);
+
+        /// <summary>
+        /// 指定方向（プレイヤーからの水平方向）付近の NavMesh 上の点を返す（陽動の方向寄せ用）。
+        /// 通常のスポーン距離リング上で、方向に軽いジッタを加えてサンプルする。
+        /// </summary>
+        Vector3 GetDirectionalSpawnPositionFast(Vector3 playerPosition, Vector3 direction);
+
         void ResetSpawnCycle();
     }
 }

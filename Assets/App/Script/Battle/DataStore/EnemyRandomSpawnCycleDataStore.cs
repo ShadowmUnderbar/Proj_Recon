@@ -131,5 +131,42 @@ namespace App.Battle.DataStore
             Debug.LogWarning("[EnemyRandomSpawnCycleDataStore] スポーン位置のNavMeshサンプルに失敗したため、プレイヤー位置にフォールバックします");
             return playerPosition;
         }
+
+        // 陽動の方向寄せで、指定方向にどれだけ角度の散らばりを許すか（±の振れ幅）
+        private float DirectionalSpawnJitterRad => 20f * Mathf.Deg2Rad;
+
+        public Vector3 GetDirectionalSpawnPositionFast(Vector3 playerPosition, Vector3 direction)
+        {
+            direction.y = 0f;
+            if (direction.sqrMagnitude < 0.0001f)
+            {
+                // 方向が定まらない場合は通常のランダムスポーンに委ねる
+                return GetRandomSpawnPositionFast(playerPosition);
+            }
+
+            var baseAngle = Mathf.Atan2(direction.z, direction.x);
+            for (var i = 0; i < MaxSampleRetryCount; i++)
+            {
+                var angle = baseAngle + Random.Range(-DirectionalSpawnJitterRad, DirectionalSpawnJitterRad);
+                var dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+
+                var distance = Random.Range(SpawnDistanceMin, SpawnDistanceMax);
+                var targetPos = playerPosition + dir * distance;
+
+                if (NavMesh.SamplePosition(targetPos, out var hit, 1.0f, NavMesh.AllAreas))
+                {
+                    return hit.position;
+                }
+            }
+
+            // 指定方向がNavMesh外だった場合は通常のフォールバックに合わせる
+            if (NavMesh.SamplePosition(playerPosition, out var fallbackHit, SpawnDistanceMax, NavMesh.AllAreas))
+            {
+                return fallbackHit.position;
+            }
+
+            Debug.LogWarning("[EnemyRandomSpawnCycleDataStore] 方向指定スポーン位置のNavMeshサンプルに失敗したため、プレイヤー位置にフォールバックします");
+            return playerPosition;
+        }
     }
 }
