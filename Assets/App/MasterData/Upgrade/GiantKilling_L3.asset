@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
   m_Name: GiantKilling_L3
   m_EditorClassIdentifier: 
-  _id: 34
+  _id: 58
   _nameKey: $GiantKilling
-  _upgradeType: 11
+  _upgradeType: 17
   _playerUnlockType: 0
   _level: 3
   _value1: 3

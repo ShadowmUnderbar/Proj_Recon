@@ -76,7 +76,7 @@ namespace App.Battle.UseCase
 
             // 撃破時回復（ジャイアントキリング）: 撃破した敵のランクに応じてプレイヤーを回復する。
             // 死亡演出の await より前に、敵データがまだ存在するうちに処理する。
-            if (_enemyDataStore.TryGetEnemyMasterData(enemyData.EnemyCode, out var deadEnemyMasterData))
+            if (_enemyDataStore.TryGetEnemyMasterData(enemyData.EnemyMasterDataId, out var deadEnemyMasterData))
             {
                 var healAmount = _healOnKillDataStore.GetHealAmount(deadEnemyMasterData.EnemyRankType);
                 _playerStateDataStore.Heal(healAmount);

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
   m_Name: ChokePoint_L3
   m_EditorClassIdentifier: 
-  _id: 34
+  _id: 49
   _nameKey: $ChokePoint
-  _upgradeType: 11
+  _upgradeType: 14
   _playerUnlockType: 0
   _level: 3
   _value1: 0.3
