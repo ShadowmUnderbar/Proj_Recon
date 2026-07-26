@@ -79,7 +79,7 @@ namespace App.Battle.DataStore
 
                 if (!_enemyDatabase.TryGetEnemyMasterData(enemy.SpawnEnemy.EnemyMasterDataId, out var enemyData))
                 {
-                    Debug.LogError($"EnemyDatabaseに該当するEnemyMasterDataが存在しません。EnemyCode:{enemy.SpawnEnemy.EnemyMasterDataId}");
+                    Debug.LogError($"EnemyDatabaseに該当するEnemyMasterDataが存在しません。EnemyMasterDataId:{enemy.SpawnEnemy.EnemyMasterDataId}");
                     return false;
                 }
 

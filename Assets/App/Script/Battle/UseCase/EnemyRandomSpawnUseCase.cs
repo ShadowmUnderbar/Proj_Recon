@@ -28,7 +28,7 @@ namespace App.Battle.UseCase
         // Lv3で「次の1体も同じ位置に出す」ためのフラグ
         private bool _forceClusterNextSpawn;
 
-        // ビッグマウス: マイナー枠を置き換える先の EnemyCode と、コモンラッシュ置換になる最低レベル
+        // ビッグマウス: マイナー枠を置き換える先の EnemyMasterDataId と、コモンラッシュ置換になる最低レベル
         private const string MinorRushEnemyId = "R-002";
         private const string CommonRushEnemyId = "R-001";
         private const int BigMouseCommonRushLevel = 3;
@@ -151,7 +151,7 @@ namespace App.Battle.UseCase
                 return true;
             }
 
-            Debug.LogWarning($"[EnemyRandomSpawnUseCase] ビッグマウスの置換先 EnemyCode '{enemyId}' が見つかりません");
+            Debug.LogWarning($"[EnemyRandomSpawnUseCase] ビッグマウスの置換先 EnemyMasterDataId '{enemyId}' が見つかりません");
             return false;
         }
 
