@@ -91,10 +91,11 @@ namespace App.Battle.UseCase
         }
 
         /// <summary>
-        /// チョークポイントを考慮してスポーン位置を決める。
+        /// チョークポイント・陽動を考慮してスポーン位置を決める。優先順位は チョークポイント > 陽動 > 通常。
         /// - Lv3で予約された「次の1体も同位置」なら直前位置をそのまま採用
-        /// - それ以外は寄せ確率（所持中の最高レベルの Value1）で直前位置の付近に寄せる
-        /// - どちらでもなければ通常のランダム位置
+        /// - チョークポイントの寄せ確率（所持中の最高レベルの Value1）で直前位置の付近に寄せる
+        /// - チョークポイントが不発かつ陽動アーム中なら、陽動の Value1 確率で撃破方向へ寄せる
+        /// - いずれも発動しなければ通常のランダム位置
         /// </summary>
         private Vector3 ResolveSpawnPosition(Vector3 playerPos)
         {
@@ -104,7 +105,7 @@ namespace App.Battle.UseCase
                 return _enemyRandomSpawnCycleDataStore.GetRandomSpawnPositionFast(playerPos);
             }
 
-            // Lv3の予約: 次の1体を直前と同じ位置に出す
+            // Lv3の予約: 次の1体を直前と同じ位置に出す（チョークポイント優先）
             if (_forceClusterNextSpawn)
             {
                 _forceClusterNextSpawn = false;
@@ -123,6 +124,19 @@ namespace App.Battle.UseCase
 
                 return _enemyRandomSpawnCycleDataStore.GetClusteredSpawnPositionFast(_lastSpawnPosition.Value,
                     ChokeClusterRadius);
+            }
+
+            // 陽動: アーム中はスポーンごとに Value1 の確率で撃破方向へ寄せ、発動できたらアームを解除する。
+            // （チョークポイントが発動しなかった場合のみ判定するため、チョークポイントを優先する）
+            if (_isDiversionArmed)
+            {
+                var diversionProbability = _upgradeEffectSimpleCalculatorDataStore.CalcMax(UpgradeType.Diversion);
+                if (diversionProbability > 0f && UnityEngine.Random.value < diversionProbability)
+                {
+                    _isDiversionArmed = false;
+                    return _enemyRandomSpawnCycleDataStore.GetDirectionalSpawnPositionFast(playerPos,
+                        _armedDiversionDirection);
+                }
             }
 
             return _enemyRandomSpawnCycleDataStore.GetRandomSpawnPositionFast(playerPos);
