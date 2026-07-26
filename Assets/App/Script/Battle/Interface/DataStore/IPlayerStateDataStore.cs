@@ -25,6 +25,9 @@ namespace App.Battle.Interface.DataStore
         /// <summary>プレイヤーにダメージを与える（HPを減らし OnDamaged を発火）</summary>
         void TakeDamage(float damage);
 
+        /// <summary>プレイヤーのHPを回復する（MaxHealth を上限にクランプ）</summary>
+        void Heal(float amount);
+
         void SetUnlockCoreSkillType(UnlockCoreSkillType unlockCoreSkillType);
     }
 }

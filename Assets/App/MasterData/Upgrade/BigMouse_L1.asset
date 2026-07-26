@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
   m_Name: BigMouse_L1
   m_EditorClassIdentifier: 
-  _id: 32
+  _id: 50
   _nameKey: $BigMouse
-  _upgradeType: 11
+  _upgradeType: 15
   _playerUnlockType: 0
   _level: 1
   _value1: 0.15

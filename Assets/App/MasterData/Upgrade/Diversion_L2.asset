@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
   m_Name: Diversion_L2
   m_EditorClassIdentifier: 
-  _id: 33
+  _id: 54
   _nameKey: $Diversion
-  _upgradeType: 11
+  _upgradeType: 16
   _playerUnlockType: 0
   _level: 2
   _value1: 0.2
