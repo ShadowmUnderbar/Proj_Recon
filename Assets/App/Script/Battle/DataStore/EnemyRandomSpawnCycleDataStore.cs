@@ -151,7 +151,8 @@ namespace App.Battle.DataStore
             // 半径内が全てNavMesh外の場合は origin をそのまま返す（origin は直前に採用済みのNavMesh上の点）
             return origin;
         }
-                // 陽動の方向寄せで、指定方向にどれだけ角度の散らばりを許すか（±の振れ幅）
+
+        // 陽動の方向寄せで、指定方向にどれだけ角度の散らばりを許すか（±の振れ幅）
         private float DirectionalSpawnJitterRad => 20f * Mathf.Deg2Rad;
 
         public Vector3 GetDirectionalSpawnPositionFast(Vector3 playerPosition, Vector3 direction)
