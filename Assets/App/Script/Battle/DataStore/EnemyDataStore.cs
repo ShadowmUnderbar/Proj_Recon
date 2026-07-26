@@ -77,9 +77,9 @@ namespace App.Battle.DataStore
 
                 var enemy = spawnTable.GetRandomSpawnEnemy(rankType);
 
-                if (!_enemyDatabase.TryGetEnemyMasterData(enemy.SpawnEnemy.EnemyCode, out var enemyData))
+                if (!_enemyDatabase.TryGetEnemyMasterData(enemy.SpawnEnemy.EnemyMasterDataId, out var enemyData))
                 {
-                    Debug.LogError($"EnemyDatabaseに該当するEnemyMasterDataが存在しません。EnemyCode:{enemy.SpawnEnemy.EnemyCode}");
+                    Debug.LogError($"EnemyDatabaseに該当するEnemyMasterDataが存在しません。EnemyCode:{enemy.SpawnEnemy.EnemyMasterDataId}");
                     return false;
                 }
 
@@ -89,13 +89,13 @@ namespace App.Battle.DataStore
                     return true;
                 }
 
-                if (IsOnceSpawned(enemy.SpawnEnemy.EnemyCode))
+                if (IsOnceSpawned(enemy.SpawnEnemy.EnemyMasterDataId))
                 {
                     // すでに一度出現している場合は再度取得を試みる
                     continue;
                 }
 
-                _onceSpawnedEnemyCodes.Add(enemy.SpawnEnemy.EnemyCode);
+                _onceSpawnedEnemyCodes.Add(enemy.SpawnEnemy.EnemyMasterDataId);
 
                 enemyMasterData = enemyData;
                 return true;
@@ -160,7 +160,7 @@ namespace App.Battle.DataStore
                 return;
             }
 
-            if (!TryGetEnemyMasterData(enemyData.EnemyCode, out var masterData))
+            if (!TryGetEnemyMasterData(enemyData.EnemyMasterDataId, out var masterData))
             {
                 return;
             }

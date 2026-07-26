@@ -44,7 +44,7 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            if (!_enemyDataStore.TryGetEnemyMasterData(enemyData.EnemyCode, out var enemyMasterData))
+            if (!_enemyDataStore.TryGetEnemyMasterData(enemyData.EnemyMasterDataId, out var enemyMasterData))
             {
                 return;
             }

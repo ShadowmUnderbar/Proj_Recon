@@ -11,10 +11,10 @@ namespace App.Common.Data.Database
 
         public EnemyMasterData[] EnemyMasterData => _enemyMasterDataList;
 
-        public bool TryGetEnemyMasterData(string enemyCode, out EnemyMasterData enemyMasterData)
+        public bool TryGetEnemyMasterData(string enemyMasterDataId, out EnemyMasterData enemyMasterData)
         {
             enemyMasterData =
-                _enemyMasterDataList.FirstOrDefault(enemyMasterData => enemyMasterData.EnemyCode == enemyCode);
+                _enemyMasterDataList.FirstOrDefault(enemyMasterData => enemyMasterData.EnemyMasterDataId == enemyMasterDataId);
             return enemyMasterData != null;
         }
     }

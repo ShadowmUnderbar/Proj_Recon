@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CommonRush
   m_EditorClassIdentifier: 
   _prefabPath: Assets/App/Prefub/Enemy/CommonRushEmemy.prefab
-  _enemyCode: CommonRush
+  _enemyMasterDataId: R-001
   _enemyRankType: 1
   _damage: 2
   _attackInterval: 0.5
