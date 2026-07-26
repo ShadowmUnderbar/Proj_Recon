@@ -132,7 +132,26 @@ namespace App.Battle.DataStore
             return playerPosition;
         }
 
-        // 陽動の方向寄せで、指定方向にどれだけ角度の散らばりを許すか（±の振れ幅）
+        public Vector3 GetClusteredSpawnPositionFast(Vector3 origin, float radius)
+        {
+            for (var i = 0; i < MaxSampleRetryCount; i++)
+            {
+                var angle = Random.Range(0f, Mathf.PI * 2f);
+                var dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+
+                var distance = Random.Range(0f, radius);
+                var targetPos = origin + dir * distance;
+
+                if (NavMesh.SamplePosition(targetPos, out var hit, 1.0f, NavMesh.AllAreas))
+                {
+                    return hit.position;
+                }
+            }
+
+            // 半径内が全てNavMesh外の場合は origin をそのまま返す（origin は直前に採用済みのNavMesh上の点）
+            return origin;
+        }
+                // 陽動の方向寄せで、指定方向にどれだけ角度の散らばりを許すか（±の振れ幅）
         private float DirectionalSpawnJitterRad => 20f * Mathf.Deg2Rad;
 
         public Vector3 GetDirectionalSpawnPositionFast(Vector3 playerPosition, Vector3 direction)

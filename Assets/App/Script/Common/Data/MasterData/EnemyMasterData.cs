@@ -11,8 +11,8 @@ namespace App.Common.Data.MasterData
 
         public string PrefabPath => _prefabPath;
 
-        [SerializeField] private string _enemyCode;
-        public string EnemyCode => _enemyCode;
+        [SerializeField] private string _enemyMasterDataId;
+        public string EnemyMasterDataId => _enemyMasterDataId;
         
         [SerializeField] private EnemyRankType _enemyRankType;
         public EnemyRankType EnemyRankType => _enemyRankType;

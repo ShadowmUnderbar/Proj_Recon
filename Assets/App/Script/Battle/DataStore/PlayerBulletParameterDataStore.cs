@@ -151,6 +151,14 @@ namespace App.Battle.DataStore
 
             damage *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.BulletDamage);
 
+            // フォーム別ダメージアップ（Normal/Waltz/Merge それぞれ該当フォームの弾にのみ乗算）
+            damage *= shotType switch
+            {
+                ShotType.Merge => _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.MergeDamage),
+                ShotType.Waltz => _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.WaltzDamage),
+                _ => _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.NormalDamage)
+            };
+
             // バフによる攻撃力倍率（爆発ダメージも弾ダメージを共用するため両方に効く）
             damage *= _buffStateDataStore.CalcMultiply(BuffEffectType.AttackPower);
 

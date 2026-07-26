@@ -13,7 +13,7 @@ namespace App.Battle.Interface.DataStore
 
         /// <summary>
         /// 指定タイプで所持中の最高レベルを返す。効果なし時は 0。
-        /// レベルによって挙動が変わる効果（陽動の撃破しきい値など）の判定に使う。
+        /// レベルによって挙動が変わる効果（チョークポイントのLv3など）の判定に使う。
         /// </summary>
         int CalcMaxLevel(UpgradeType upgradeType);
     }
