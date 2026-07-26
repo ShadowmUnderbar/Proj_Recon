@@ -17,6 +17,11 @@ namespace App.Battle.Interface.DataStore
         /// サンプルに失敗した場合は origin をそのまま返す。
         /// </summary>
         Vector3 GetClusteredSpawnPositionFast(Vector3 origin, float radius);
+        /// <summary>
+        /// 指定方向（プレイヤーからの水平方向）付近の NavMesh 上の点を返す（陽動の方向寄せ用）。
+        /// 通常のスポーン距離リング上で、方向に軽いジッタを加えてサンプルする。
+        /// </summary>
+        Vector3 GetDirectionalSpawnPositionFast(Vector3 playerPosition, Vector3 direction);
 
         void ResetSpawnCycle();
     }
