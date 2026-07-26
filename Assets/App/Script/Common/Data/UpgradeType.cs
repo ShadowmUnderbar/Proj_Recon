@@ -17,4 +17,5 @@ public enum UpgradeType
     WaltzDamage = 12, // ワルツ弾ダメージアップ（Waltzフォームのみに乗算） ※手動追加。GAS側スプレッドシートへの反映が必要
     MergeDamage = 13, // マージ弾ダメージアップ（Mergeフォームのみに乗算） ※手動追加。GAS側スプレッドシートへの反映が必要
     ChokePoint = 14, // チョークポイント（敵の出現位置を直前の敵の付近に寄せる。Value1=寄せ確率、Lv3で次の1体も同位置） ※手動追加。GAS側スプレッドシートへの反映が必要
+    BigMouse = 15, // ビッグマウス（マイナー枠のスポーンをValue1の確率で置換。Lv1/2=MinorRush、Lv3=CommonRush） ※手動追加。GAS側スプレッドシートへの反映が必要
 }

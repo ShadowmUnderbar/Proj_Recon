@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Shield
   m_EditorClassIdentifier: 
   _prefabPath: Assets/App/Prefub/Enemy/ShieldEmemy.prefab
-  _enemyCode: Shield
+  _enemyMasterDataId: SH-001
   _enemyRankType: 2
   _damage: 0
   _attackInterval: 3

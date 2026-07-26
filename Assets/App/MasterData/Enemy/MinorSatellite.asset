@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MinorSatellite
   m_EditorClassIdentifier: 
   _prefabPath: Assets/App/Prefub/Enemy/SatelliteEmemy.prefab
-  _enemyCode: MinorSatellite
+  _enemyMasterDataId: SA-002
   _enemyRankType: 2
   _damage: 1
   _attackInterval: 3.5
