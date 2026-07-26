@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Scout
   m_EditorClassIdentifier: 
   _prefabPath: Assets/App/Prefub/Enemy/ScoutEmemy.prefab
-  _enemyCode: Scout
+  _enemyMasterDataId: SC-001
   _enemyRankType: 2
   _damage: 20
   _attackInterval: 5

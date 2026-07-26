@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CommonOrbit
   m_EditorClassIdentifier: 
   _prefabPath: Assets/App/Prefub/Enemy/OrbitEmemy.prefab
-  _enemyCode: CommonOrbit
+  _enemyMasterDataId: O-001
   _enemyRankType: 1
   _damage: 1
   _attackInterval: 4.5

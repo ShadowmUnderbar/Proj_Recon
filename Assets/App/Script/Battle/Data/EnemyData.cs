@@ -8,7 +8,7 @@ namespace App.Battle.Data
         public EnemyData(int id, EnemyMasterData enemyMasterData, Pose pose)
         {
             Id = id;
-            EnemyCode = enemyMasterData.EnemyCode;
+            EnemyMasterDataId = enemyMasterData.EnemyMasterDataId;
             Pose = pose;
             Hp = enemyMasterData.Hp;
             BaseDamage = enemyMasterData.Damage;
@@ -21,7 +21,7 @@ namespace App.Battle.Data
         }
 
         public int Id { get; set; }
-        public string EnemyCode { get; set; }
+        public string EnemyMasterDataId { get; set; }
         public Pose Pose { get; set; }
         public float Hp { get; set; }
         public float BaseDamage { get; set; }

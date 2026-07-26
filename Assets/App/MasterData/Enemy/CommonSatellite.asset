@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CommonSatellite
   m_EditorClassIdentifier: 
   _prefabPath: Assets/App/Prefub/Enemy/SatelliteEmemy.prefab
-  _enemyCode: CommonSatellite
+  _enemyMasterDataId: SA-001
   _enemyRankType: 1
   _damage: 1
   _attackInterval: 5
