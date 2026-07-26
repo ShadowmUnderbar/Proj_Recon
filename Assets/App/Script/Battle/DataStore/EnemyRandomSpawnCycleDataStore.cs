@@ -131,5 +131,25 @@ namespace App.Battle.DataStore
             Debug.LogWarning("[EnemyRandomSpawnCycleDataStore] スポーン位置のNavMeshサンプルに失敗したため、プレイヤー位置にフォールバックします");
             return playerPosition;
         }
+
+        public Vector3 GetClusteredSpawnPositionFast(Vector3 origin, float radius)
+        {
+            for (var i = 0; i < MaxSampleRetryCount; i++)
+            {
+                var angle = Random.Range(0f, Mathf.PI * 2f);
+                var dir = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle));
+
+                var distance = Random.Range(0f, radius);
+                var targetPos = origin + dir * distance;
+
+                if (NavMesh.SamplePosition(targetPos, out var hit, 1.0f, NavMesh.AllAreas))
+                {
+                    return hit.position;
+                }
+            }
+
+            // 半径内が全てNavMesh外の場合は origin をそのまま返す（origin は直前に採用済みのNavMesh上の点）
+            return origin;
+        }
     }
 }
