@@ -17,6 +17,7 @@ namespace App.Battle.UseCase
         private readonly IBattleHitPresenter _battleHitPresenter;
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
+        private readonly IEnemyDataStore _enemyDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -25,13 +26,15 @@ namespace App.Battle.UseCase
             IBuffStateDataStore buffStateDataStore,
             IBattleHitPresenter battleHitPresenter,
             IPlayerStateDataStore playerStateDataStore,
-            IWaveManagerDataStore waveManagerDataStore
+            IWaveManagerDataStore waveManagerDataStore,
+            IEnemyDataStore enemyDataStore
         )
         {
             _buffStateDataStore = buffStateDataStore;
             _battleHitPresenter = battleHitPresenter;
             _playerStateDataStore = playerStateDataStore;
             _waveManagerDataStore = waveManagerDataStore;
+            _enemyDataStore = enemyDataStore;
         }
 
         public void Initialize()
@@ -50,6 +53,11 @@ namespace App.Battle.UseCase
             // 被弾を被弾条件バフ（レイジ等）へ通知する
             _playerStateDataStore.OnDamaged
                 .Subscribe(_buffStateDataStore.NotifyDamageTaken)
+                .AddTo(_disposable);
+
+            // 撃破フォームを撃破条件バフ（ドーパミン等）へ通知する
+            _enemyDataStore.OnEnemyDeadByHit
+                .Subscribe(hitData => _buffStateDataStore.NotifyKill(hitData.ShotType))
                 .AddTo(_disposable);
         }
 

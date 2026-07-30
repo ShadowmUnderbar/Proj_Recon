@@ -11,11 +11,19 @@ namespace App.Battle.DataStore
     public class PlayerStateDataStore : IPlayerStateDataStore, IInitializable
     {
         private readonly IPlayerBarrierDataStore _playerBarrierDataStore;
+        private readonly IBuffStateDataStore _buffStateDataStore;
+
+        // 軽減バフを適用しても最低これだけはダメージが通る（完全無敵化を防ぐ）
+        private const float MinDamage = 1f;
 
         [Inject]
-        public PlayerStateDataStore(IPlayerBarrierDataStore playerBarrierDataStore)
+        public PlayerStateDataStore(
+            IPlayerBarrierDataStore playerBarrierDataStore,
+            IBuffStateDataStore buffStateDataStore
+        )
         {
             _playerBarrierDataStore = playerBarrierDataStore;
+            _buffStateDataStore = buffStateDataStore;
         }
 
         public ReactiveProperty<Vector3> Position { get; } = new();
@@ -54,6 +62,10 @@ namespace App.Battle.DataStore
             {
                 return;
             }
+
+            // 被ダメージ軽減バフ（アドレナリン等）を適用する。
+            // 軽減後も最低 MinDamage は通す（元ダメージがそれ未満なら元の値のまま）
+            damage = Mathf.Min(damage, Mathf.Max(MinDamage, damage * _buffStateDataStore.CalcDamageTakenMultiply()));
 
             // バリアが残っていれば攻撃を全て吸収し、この攻撃ではHPを減らさない（超過分も破棄）。
             // 吸収できなかった（バリア0）ときだけHPを減らす。
