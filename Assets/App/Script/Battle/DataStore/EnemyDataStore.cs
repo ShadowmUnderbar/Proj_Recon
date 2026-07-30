@@ -27,6 +27,9 @@ namespace App.Battle.DataStore
         private readonly Subject<int> _onEnemyDead = new();
         public Observable<int> OnEnemyDead => _onEnemyDead;
 
+        private readonly Subject<HitData> _onEnemyDeadByHit = new();
+        public Observable<HitData> OnEnemyDeadByHit => _onEnemyDeadByHit;
+
         public List<EnemyData> Enemies => _spawnEnemyDataList.Values.ToList();
 
         private List<string> _onceSpawnedEnemyCodes = new();
@@ -190,6 +193,9 @@ namespace App.Battle.DataStore
             }
 
             _onEnemyDead.OnNext(hitData.DamagedId);
+
+            // 撃破の決め手となった命中情報（フォーム等）を参照したい購読者向けに、撃破と同時に流す
+            _onEnemyDeadByHit.OnNext(hitData);
         }
 
         public void UpdateEnemyPose(int id, Pose pose)

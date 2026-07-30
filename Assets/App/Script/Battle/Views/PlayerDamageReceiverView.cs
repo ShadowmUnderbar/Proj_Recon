@@ -33,7 +33,7 @@ namespace App.Battle.Views
         }
 
         public void OnHit(float damage, int attackerId, Vector3 attackCenter, out bool canPenetrable,
-            int penetrationIndex = 1)
+            int penetrationIndex = 1, ShotType? shotType = null)
         {
             _onDamaged.OnNext(damage);
 

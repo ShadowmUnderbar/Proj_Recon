@@ -12,6 +12,9 @@ namespace App.Battle.Interface.DataStore
         Observable<int> OnEnemyAdded { get; }
         Observable<int> OnEnemyRemoved { get; }
         Observable<int> OnEnemyDead { get; }
+
+        /// <summary>撃破の決め手となった命中情報を流す（撃破フォームを参照するバフの駆動に使う）</summary>
+        Observable<HitData> OnEnemyDeadByHit { get; }
         List<EnemyData> Enemies { get; }
 
         bool TryGetEnemyMasterData(string enemyCode, out EnemyMasterData enemyMasterData);

@@ -25,7 +25,7 @@ namespace App.Battle.Views
         public HitBoxType HitBoxType { get; private set; }
 
         public void OnHit(float damage, int attackerId, Vector3 attackCenter, out bool canPenetrable,
-            int penetrationIndex = 1)
+            int penetrationIndex = 1, ShotType? shotType = null)
         {
             var directionType = RelativeYawExtension.GetActorRelative(transform.ToPose(), attackCenter);
 
@@ -39,7 +39,8 @@ namespace App.Battle.Views
                 damage,
                 directionType,
                 hitDirection,
-                penetrationIndex
+                penetrationIndex,
+                shotType
             );
             _onHitObservable.OnNext(hitData);
 
