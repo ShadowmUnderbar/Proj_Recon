@@ -2,6 +2,7 @@ using System;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
+using App.Common.Data;
 using Cysharp.Threading.Tasks;
 using R3;
 using VContainer;
@@ -18,6 +19,7 @@ namespace App.Battle.UseCase
         private readonly IBuffStateDataStore _buffStateDataStore;
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IHealOnKillDataStore _healOnKillDataStore;
+        private readonly IAvalancheDataStore _avalancheDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -30,7 +32,8 @@ namespace App.Battle.UseCase
             IWaveManagerDataStore waveManagerDataStore,
             IBuffStateDataStore buffStateDataStore,
             IPlayerStateDataStore playerStateDataStore,
-            IHealOnKillDataStore healOnKillDataStore
+            IHealOnKillDataStore healOnKillDataStore,
+            IAvalancheDataStore avalancheDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
@@ -40,6 +43,7 @@ namespace App.Battle.UseCase
             _buffStateDataStore = buffStateDataStore;
             _playerStateDataStore = playerStateDataStore;
             _healOnKillDataStore = healOnKillDataStore;
+            _avalancheDataStore = avalancheDataStore;
         }
 
         public void Initialize()
@@ -63,6 +67,12 @@ namespace App.Battle.UseCase
 
             // 貫通ヒット数に応じたダメージ倍率（PenetrationCount条件バフ）を適用する
             hitData.Damage *= _buffStateDataStore.CalcPenetrationMultiply(hitData.PenetrationIndex);
+
+            // マージショットの命中を雪崩へ通知する（次発のクールダウンを短縮する）
+            if (hitData.ShotType == ShotType.Merge)
+            {
+                _avalancheDataStore.NotifyMergeHit();
+            }
 
             _enemyDataStore.Damage(hitData);
         }

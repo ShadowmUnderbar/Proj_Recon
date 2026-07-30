@@ -45,6 +45,10 @@ namespace App.Battle
             builder.Register<EnemyDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IEnemyDataStore>();
             builder.Register<EnemyRandomSpawnCycleDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IEnemyRandomSpawnCycleDataStore>();
+            builder.Register<PeaceMakerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPeaceMakerDataStore>();
+            builder.Register<AvalancheDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IAvalancheDataStore>();
             builder.Register<PlayerBulletParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBulletParameterDataStore>();
             builder.Register<PlayerDodgeParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()

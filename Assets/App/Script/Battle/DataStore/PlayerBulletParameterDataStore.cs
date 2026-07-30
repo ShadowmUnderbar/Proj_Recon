@@ -14,6 +14,8 @@ namespace App.Battle.DataStore
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly IBuffStateDataStore _buffStateDataStore;
+        private readonly IPeaceMakerDataStore _peaceMakerDataStore;
+        private readonly IAvalancheDataStore _avalancheDataStore;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -23,13 +25,17 @@ namespace App.Battle.DataStore
             IPlayerSettingDataStore playerSettingDataStore,
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
             IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
-            IBuffStateDataStore buffStateDataStore
+            IBuffStateDataStore buffStateDataStore,
+            IPeaceMakerDataStore peaceMakerDataStore,
+            IAvalancheDataStore avalancheDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
             _buffStateDataStore = buffStateDataStore;
+            _peaceMakerDataStore = peaceMakerDataStore;
+            _avalancheDataStore = avalancheDataStore;
         }
 
         public void Tick()
@@ -62,6 +68,14 @@ namespace App.Battle.DataStore
                 ShotType.Waltz => BasePlayerParameter.WaltzFireRateMagnification,
                 _ => 1f
             };
+
+            // フォーム別の連射補正（ピースメイカー: 連続ノーマルショット / 雪崩: 直前マージの命中）。
+            // 倍率取得は状態更新より先に行う（この1発に適用される倍率で確定させる）
+            coolDown *= _peaceMakerDataStore.GetCoolDownMultiplier(shotType);
+            coolDown *= _avalancheDataStore.GetCoolDownMultiplier(shotType);
+
+            _peaceMakerDataStore.NotifyShot(shotType);
+            _avalancheDataStore.NotifyShot(shotType);
 
             if (handType == HandType.Left)
             {
