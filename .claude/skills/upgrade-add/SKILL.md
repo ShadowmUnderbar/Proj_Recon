@@ -56,7 +56,7 @@ Googleスプレッドシート（正本）
 13:Value5 14:Value5ParameterType 15:BuffId（任意列。省略可 / GrantBuff時のみ使用）
 ```
 
-- **実際に使われるのは `Value1` のみ**（`Value2`〜`Value5` は現状どの計算も参照していない。将来用の予約列）
+- **`Value1`〜`Value3` が使用中**（`HealOnKill` は Value2、`PeaceMaker` は Value2/Value3、`Avalanche` は Value2 を参照する。`Value4`/`Value5` は未使用の予約列）。汎用の `CalcMultiply/CalcAdd/CalcMax` は `Value1` しか見ないため、複数Valueを使う効果は専用DataStoreで `TryGetHighestLevelUpgrade` から読む
 - `id` は連番の整数（文字列扱い）。`NameKey` は `$` + PascalCase のローカライズキー（例 `$BaseDamageUp`）
 - 生成アセット名は `NameKey` から `$` を除き `_L{Level}` を付与（例 `BaseDamageUp_L1.asset`）
 - `MinColumnCount=15`。BuffId列が無い行も許容される
@@ -75,6 +75,8 @@ Googleスプレッドシート（正本）
 | `FireRate` | `PlayerBulletParameterDataStore.cs` `coolDown *= CalcMultiply(FireRate)` |
 | `BombRange` | `PlayerBulletParameterDataStore.cs` `explosive *= CalcMultiply(BombRange)` |
 | `GrantBuff` | `ShopUseCase.OnUpgradeSelected`（Calculator非経由。下記パターンC） |
+| `PeaceMaker` | `PeaceMakerDataStore` → `PlayerBulletParameterDataStore.SetCoolDownTime`（`TryGetHighestLevelUpgrade` で最高レベルのみ採用。Value1=連続ノーマルショット数 / Value2=強化CD倍率 / Value3=ペナルティCD倍率） |
+| `Avalanche` | `AvalancheDataStore` → `PlayerBulletParameterDataStore.SetCoolDownTime`（Value1=通常CD倍率 / Value2=直前マージ命中時のCD倍率。命中通知は `BattleHitUseCase.NotifyMergeHit`） |
 
 > ⚠️ **未接続タイプ問題**: `HitRange` / `DodgeDistance` / `DodgeCount` / `DodgeCooldown` / `Health` は enum・CSVには存在するが**どこからも Calc されておらず、効果が出ない**。特に `Health` はCSVに `$Health` 行があってもHP最大値に反映されない（`PlayerStateDataStore.Initialize` が `BasePlayerParameter.Health` を直接使うだけ）。**新タイプ追加＝消費側コードもセットで書く**ことを絶対に忘れない。
 

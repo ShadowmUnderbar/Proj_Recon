@@ -20,4 +20,6 @@ public enum UpgradeType
     BigMouse = 15, // ビッグマウス
     Diversion = 16, // 陽動
     HealOnKill = 17, // 撃破時回復
+    PeaceMaker = 18, // ピースメイカー
+    Avalanche = 19, // 雪崩
 }

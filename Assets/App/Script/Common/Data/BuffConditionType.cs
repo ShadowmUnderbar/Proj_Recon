@@ -10,4 +10,6 @@ public enum BuffConditionType
     HitDifferentEnemy = 5, // 直前と異なる敵に命中でスタック増加・同一敵でリセット
     PenetrationCount = 6, // 1発の弾がN体貫通するごとにダメージ倍率上昇
     OnDamaged = 7, // 被弾するとダメージ量×倍率だけ効果時間が延長
+    KillWithDifferentForm = 8, // 直前と異なるフォームでの撃破でスタック増加・同一フォームでリセット
+    HpLossScaling = 9, // HP減少割合に比例して効果が増加（常時発動）
 }

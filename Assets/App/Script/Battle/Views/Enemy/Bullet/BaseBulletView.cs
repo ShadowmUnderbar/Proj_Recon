@@ -178,7 +178,7 @@ namespace App.Battle.Views.Enemy.Bullet
 
             // 同一弾内で何体目のヒットか（1始まり）。PenetrationCount条件バフの倍率計算に使う
             hitBox.OnHit(BulletData.Damage, _attackerId, transform.position, out var canPenetrable,
-                _hitTargetIds.Count);
+                _hitTargetIds.Count, BulletData.ShotType);
 
             if (_focusTargetId == hitBox.Id)
             {

@@ -7,13 +7,14 @@ namespace App.Battle.Data
     public class HitData
     {
         public HitData(int damagedId, float damage, HitDirectionType hitDirectionType,
-            Vector3 hitDirection = default, int penetrationIndex = 1)
+            Vector3 hitDirection = default, int penetrationIndex = 1, ShotType? shotType = null)
         {
             DamagedId = damagedId;
             Damage = damage;
             HitDirectionType = hitDirectionType;
             HitDirection = hitDirection;
             PenetrationIndex = penetrationIndex;
+            ShotType = shotType;
         }
 
         public int DamagedId { get; set; }
@@ -31,5 +32,12 @@ namespace App.Battle.Data
         /// 貫通しない攻撃は常に1。PenetrationCount条件バフのダメージ倍率計算に使う。
         /// </summary>
         public int PenetrationIndex { get; set; }
+
+        /// <summary>
+        /// この命中を発生させたプレイヤーの射撃フォーム。
+        /// 射撃以外（回避の突進ダメージ・敵の攻撃）は null。
+        /// フォームを参照するバフ・アップグレード（ドーパミン／雪崩）の判定に使う。
+        /// </summary>
+        public ShotType? ShotType { get; set; }
     }
 }

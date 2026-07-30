@@ -32,20 +32,38 @@ namespace App.Battle.DataStore
             // HitDifferentEnemy条件: 直前に命中した敵ID（-1=未命中）。同一敵の連続命中でリセット判定に使う
             public int LastHitEnemyId = -1;
 
+            // KillWithDifferentForm条件: 次の撃破まで適用する倍率（1=補正なし）
+            public float KillFormMultiplier = 1f;
+
+            // KillWithDifferentForm条件: 直前の撃破フォーム（null=未撃破）
+            public ShotType? LastKillShotType;
+
+            // KillWithDifferentForm条件: 2つ前の撃破フォーム（null=未撃破）
+            public ShotType? PreviousKillShotType;
+
             public bool IsActive => Master.ConditionType switch
             {
                 BuffConditionType.HitCount => RemainingTime > 0f,
                 BuffConditionType.HpBelow => IsConditionActive,
                 BuffConditionType.HitDifferentEnemy => StackMultiplier > 1f,
                 BuffConditionType.OnDamaged => RemainingTime > 0f,
+                BuffConditionType.KillWithDifferentForm => KillFormMultiplier > 1f,
+                // HP減少割合に比例する効果は常時発動（軽減量の算出側でHP割合を参照する）
+                BuffConditionType.HpLossScaling => true,
                 _ => false
             };
 
             // アクティブ時に適用する効果倍率。スタック型は累積倍率、それ以外はマスターの固定倍率
-            public float EffectMultiplier => Master.ConditionType == BuffConditionType.HitDifferentEnemy
-                ? StackMultiplier
-                : Master.EffectValue;
+            public float EffectMultiplier => Master.ConditionType switch
+            {
+                BuffConditionType.HitDifferentEnemy => StackMultiplier,
+                BuffConditionType.KillWithDifferentForm => KillFormMultiplier,
+                _ => Master.EffectValue
+            };
         }
+
+        // 被ダメージ軽減率の上限（軽減しきってダメージが完全に無効化されるのを防ぐ）
+        private const float MaxDamageReductionRate = 0.9f;
 
         private readonly List<BuffState> _buffStates = new();
 
@@ -118,6 +136,47 @@ namespace App.Battle.DataStore
             }
         }
 
+        public void NotifyKill(ShotType? shotType)
+        {
+            // 射撃以外（回避の突進など）の撃破はフォーム履歴に含めない
+            if (!shotType.HasValue)
+            {
+                return;
+            }
+
+            foreach (var state in _buffStates)
+            {
+                if (state.Master.ConditionType != BuffConditionType.KillWithDifferentForm)
+                {
+                    continue;
+                }
+
+                // 直前の撃破と異なるフォームか（履歴が無い初回は成立させない）
+                var isDifferentFromLast = state.LastKillShotType.HasValue &&
+                                          state.LastKillShotType.Value != shotType.Value;
+
+                // 2つ前の撃破とも異なるフォームか
+                var isDifferentFromPrevious = state.PreviousKillShotType.HasValue &&
+                                              state.PreviousKillShotType.Value != shotType.Value;
+
+                if (!isDifferentFromLast)
+                {
+                    // 直前と同じフォーム（または初回）なら補正なしに戻す
+                    state.KillFormMultiplier = 1f;
+                }
+                else
+                {
+                    // 2つ前とも異なれば上位倍率(ConditionValue)、直前のみ異なれば通常倍率(EffectValue)
+                    state.KillFormMultiplier = isDifferentFromPrevious
+                        ? Mathf.Max(state.Master.ConditionValue, state.Master.EffectValue)
+                        : state.Master.EffectValue;
+                }
+
+                state.PreviousKillShotType = state.LastKillShotType;
+                state.LastKillShotType = shotType;
+            }
+        }
+
         public void NotifyDamageTaken(float damage)
         {
             foreach (var state in _buffStates)
@@ -158,6 +217,31 @@ namespace App.Battle.DataStore
                 }
 
                 result *= state.EffectMultiplier;
+            }
+
+            return result;
+        }
+
+        public float CalcDamageTakenMultiply()
+        {
+            var result = 1f;
+            foreach (var state in _buffStates)
+            {
+                if (state.Master.EffectType != BuffEffectType.DamageReduction || !state.IsActive)
+                {
+                    continue;
+                }
+
+                if (state.Master.ConditionType != BuffConditionType.HpLossScaling)
+                {
+                    continue;
+                }
+
+                // HP減少割合 × EffectValue を軽減率とする（上限 MaxDamageReductionRate でクランプ）
+                // 例: EffectValue=1.0 でHPが半分まで減っていれば軽減率0.5＝被ダメージ半減
+                var lossRatio = Mathf.Clamp01(1f - _currentHealthRatio);
+                var reduction = Mathf.Clamp(lossRatio * state.Master.EffectValue, 0f, MaxDamageReductionRate);
+                result *= 1f - reduction;
             }
 
             return result;

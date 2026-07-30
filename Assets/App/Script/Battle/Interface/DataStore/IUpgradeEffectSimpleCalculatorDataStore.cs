@@ -1,3 +1,5 @@
+using App.Common.Data.MasterData;
+
 namespace App.Battle.Interface.DataStore
 {
     public interface IUpgradeEffectSimpleCalculatorDataStore
@@ -16,5 +18,11 @@ namespace App.Battle.Interface.DataStore
         /// レベルによって挙動が変わる効果（チョークポイントのLv3など）の判定に使う。
         /// </summary>
         int CalcMaxLevel(UpgradeType upgradeType);
+
+        /// <summary>
+        /// 指定タイプで所持中の最高レベルのマスターデータを返す。未所持なら false。
+        /// レベルが累積せず、複数のValueを参照したい効果（ピースメイカー・雪崩等）に使う。
+        /// </summary>
+        bool TryGetHighestLevelUpgrade(UpgradeType upgradeType, out UpgradeMasterData upgradeMasterData);
     }
 }
