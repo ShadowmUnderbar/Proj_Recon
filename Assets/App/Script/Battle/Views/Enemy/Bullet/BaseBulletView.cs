@@ -176,9 +176,10 @@ namespace App.Battle.Views.Enemy.Bullet
 
             _hitTargetIds.Add(hitBox.Id);
 
-            // 同一弾内で何体目のヒットか（1始まり）。PenetrationCount条件バフの倍率計算に使う
+            // 同一弾内で何体目のヒットか（1始まり）。PenetrationCount条件バフの倍率計算に使う。
+            // エイム状態とフォーカス対象一致はキリングコールの条件判定に使う
             hitBox.OnHit(BulletData.Damage, _attackerId, transform.position, out var canPenetrable,
-                _hitTargetIds.Count, BulletData.ShotType);
+                _hitTargetIds.Count, BulletData.ShotType, BulletData.FocusType, _focusTargetId == hitBox.Id);
 
             if (_focusTargetId == hitBox.Id)
             {
