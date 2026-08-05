@@ -61,6 +61,8 @@ namespace App.Battle
                 .As<IUpgradeEffectSimpleCalculatorDataStore>();
             builder.Register<HealOnKillDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IHealOnKillDataStore>();
+            builder.Register<CriticalHitDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ICriticalHitDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()

@@ -20,6 +20,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IHealOnKillDataStore _healOnKillDataStore;
         private readonly IAvalancheDataStore _avalancheDataStore;
+        private readonly ICriticalHitDataStore _criticalHitDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -33,7 +34,8 @@ namespace App.Battle.UseCase
             IBuffStateDataStore buffStateDataStore,
             IPlayerStateDataStore playerStateDataStore,
             IHealOnKillDataStore healOnKillDataStore,
-            IAvalancheDataStore avalancheDataStore
+            IAvalancheDataStore avalancheDataStore,
+            ICriticalHitDataStore criticalHitDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
@@ -44,6 +46,7 @@ namespace App.Battle.UseCase
             _playerStateDataStore = playerStateDataStore;
             _healOnKillDataStore = healOnKillDataStore;
             _avalancheDataStore = avalancheDataStore;
+            _criticalHitDataStore = criticalHitDataStore;
         }
 
         public void Initialize()
@@ -67,6 +70,9 @@ namespace App.Battle.UseCase
 
             // 貫通ヒット数に応じたダメージ倍率（PenetrationCount条件バフ）を適用する
             hitData.Damage *= _buffStateDataStore.CalcPenetrationMultiply(hitData.PenetrationIndex);
+
+            // クリティカルヒット（ラッキーチャンス・キリングコール・ターンテーブル）を命中ごとに抽選する
+            hitData.Damage *= _criticalHitDataStore.GetDamageMultiplier(hitData);
 
             // マージショットの命中を雪崩へ通知する（次発のクールダウンを短縮する）
             if (hitData.ShotType == ShotType.Merge)
