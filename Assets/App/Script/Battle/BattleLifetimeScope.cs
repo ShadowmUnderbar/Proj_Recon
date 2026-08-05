@@ -63,6 +63,12 @@ namespace App.Battle
                 .As<IHealOnKillDataStore>();
             builder.Register<CriticalHitDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ICriticalHitDataStore>();
+            builder.Register<SnakeEyesDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ISnakeEyesDataStore>();
+            builder.Register<MedusaDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IMedusaDataStore>();
+            builder.Register<MeanMugDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IMeanMugDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -90,6 +96,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerShotUseCase>();
             builder.RegisterEntryPoint<EnemySpawnUseCase>();
             builder.RegisterEntryPoint<EnemyControlUseCase>();
+            builder.RegisterEntryPoint<PlayerGazeUseCase>();
             builder.RegisterEntryPoint<BattleHitUseCase>();
             builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();

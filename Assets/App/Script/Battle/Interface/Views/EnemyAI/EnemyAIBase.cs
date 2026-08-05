@@ -11,6 +11,13 @@ namespace App.Battle.Interface.EnemyAI
         public int EnemyId { get; private set; }
         protected bool CanAttack { get; set; } = true;
         protected bool IsPause { get; set; } = false;
+
+        /// <summary>スタン中か（メデューサ）。移動・行動抽選・攻撃をすべて停止する</summary>
+        protected bool IsStun { get; private set; } = false;
+
+        // 移動速度と行動抽選速度に掛かる倍率（スネークアイズ）
+        private float _speedMultiplier = 1f;
+
         protected EnemyData EnemyData;
         protected NavMeshAgent Agent;
         protected Transform PlayerTransform;
@@ -33,8 +40,7 @@ namespace App.Battle.Interface.EnemyAI
         {
             EnemyId = enemyId;
             EnemyData = enemyData;
-            Agent.speed = enemyData.IdleSpeed;
-            Agent.acceleration = enemyData.IdleSpeed * 2f;
+            ApplyAgentSpeed(enemyData.IdleSpeed);
             Agent.angularSpeed = 360f;
             Agent.updateRotation = false;
 
@@ -64,14 +70,39 @@ namespace App.Battle.Interface.EnemyAI
 
         protected virtual void OnUpdateIdleState()
         {
-            Agent.speed = EnemyData.IdleSpeed;
-            Agent.acceleration = EnemyData.IdleSpeed * 2f;
+            ApplyAgentSpeed(EnemyData.IdleSpeed);
         }
 
         protected virtual void OnUpdateBattleState()
         {
-            Agent.speed = EnemyData.BattleSpeed;
-            Agent.acceleration = EnemyData.BattleSpeed * 2f;
+            ApplyAgentSpeed(EnemyData.BattleSpeed);
+        }
+
+        /// <summary>
+        /// 基礎速度に速度倍率を掛けてNavMeshAgentへ反映する。
+        /// </summary>
+        private void ApplyAgentSpeed(float baseSpeed)
+        {
+            if (Agent == null)
+            {
+                return;
+            }
+
+            Agent.speed = baseSpeed * _speedMultiplier;
+            Agent.acceleration = baseSpeed * 2f * _speedMultiplier;
+        }
+
+        /// <summary>
+        /// 現在のステートに応じた基礎速度へ速度倍率を再適用する。
+        /// </summary>
+        private void ApplyCurrentAgentSpeed()
+        {
+            if (EnemyData == null)
+            {
+                return;
+            }
+
+            ApplyAgentSpeed(State.Value == EnemyAIState.Battle ? EnemyData.BattleSpeed : EnemyData.IdleSpeed);
         }
 
         protected virtual void OnUpdateDeadState()
@@ -85,9 +116,16 @@ namespace App.Battle.Interface.EnemyAI
                 return;
             }
 
+            // スタン中は行動・行動抽選を一切行わない（死亡演出だけは進める）
+            if (IsStun && State.Value != EnemyAIState.Dead)
+            {
+                return;
+            }
+
             if (CanAttack)
             {
-                LastAttackTime += Time.deltaTime;
+                // 速度倍率は行動抽選の進行速度にも掛かる
+                LastAttackTime += Time.deltaTime * _speedMultiplier;
             }
 
             switch (State.Value)
@@ -205,17 +243,51 @@ namespace App.Battle.Interface.EnemyAI
         public virtual void SetPause(bool isPause)
         {
             IsPause = isPause;
+            ApplyMovementBlock();
+        }
 
+        /// <summary>
+        /// 移動・行動抽選の速度倍率を設定する（スネークアイズ）。
+        /// </summary>
+        public virtual void SetSpeedMultiplier(float multiplier)
+        {
+            _speedMultiplier = Mathf.Max(0f, multiplier);
+            ApplyCurrentAgentSpeed();
+        }
+
+        /// <summary>
+        /// スタン状態を設定する（メデューサ）。
+        /// スタン開始時は進行中の行動抽選をキャンセルしてその場で停止する。
+        /// </summary>
+        public virtual void SetStun(bool isStun)
+        {
+            IsStun = isStun;
+
+            if (isStun)
+            {
+                // 直前の行動抽選をキャンセルする（解除後は抽選をやり直す）
+                LastAttackTime = 0f;
+            }
+
+            ApplyMovementBlock();
+        }
+
+        /// <summary>
+        /// ポーズ・スタンいずれかの状態に応じてエージェントの移動を停止/再開する。
+        /// </summary>
+        private void ApplyMovementBlock()
+        {
             // NavMesh未配置のエージェントにisStoppedを設定するとエラーログが出る（SetAgentDestinationと同じガード）。
-            // 論理ポーズ状態(IsPause)は先に更新済みなので、配置後のAI更新はIsPauseに従う
+            // 論理状態(IsPause/IsStun)は先に更新済みなので、配置後のAI更新はそちらに従う
             if (Agent == null || !Agent.isOnNavMesh)
             {
                 return;
             }
 
-            Agent.isStopped = isPause;
+            var isBlocked = IsPause || IsStun;
+            Agent.isStopped = isBlocked;
 
-            if (isPause)
+            if (isBlocked)
             {
                 Agent.velocity = Vector3.zero;
             }
