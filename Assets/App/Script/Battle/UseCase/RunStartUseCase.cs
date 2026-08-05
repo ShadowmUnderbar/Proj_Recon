@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
+using App.Common.Data;
 using App.Common.Data.Database;
 using App.Common.Data.MasterData;
 using App.Common.Interface;
 using R3;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -57,6 +60,9 @@ namespace App.Battle.UseCase
                 .Subscribe(_ => StartRun())
                 .AddTo(_disposable);
 
+            // デバッグ用: エディタで選択したアップグレードを最初から所持させる
+            ApplyDebugStartUpgrades();
+
             // ラン開始時はゲームを止めてセット選択を待つ
             _runStartDataStore.SetSelecting(true);
             _waveManagerDataStore.SetWavePause(true);
@@ -79,13 +85,27 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            // スロットのIDを解決し、まず全てPreload（AppliedUpgradesを揃えてから副作用を適用する）
+            PreloadUpgrades(_metaProgressionDataStore.GetSlotUpgradeIds(slotIndex), warnOnMissing: false);
+
+            StartRun();
+        }
+
+        /// <summary>
+        /// IDのアップグレードを所持済み（Preload）扱いにし、付与副作用まで適用する。
+        /// AppliedUpgradesを先に揃えてから副作用を適用する必要があるため、2周に分けている。
+        /// </summary>
+        private List<UpgradeMasterData> PreloadUpgrades(IEnumerable<string> upgradeIds, bool warnOnMissing)
+        {
             var upgrades = new List<UpgradeMasterData>();
-            foreach (var id in _metaProgressionDataStore.GetSlotUpgradeIds(slotIndex))
+            foreach (var id in upgradeIds)
             {
                 if (_upgradeDatabase.TryGetUpgradeMasterData(id, out var data))
                 {
                     upgrades.Add(data);
+                }
+                else if (warnOnMissing)
+                {
+                    Debug.LogWarning($"[RunStartUseCase] アップグレードID \"{id}\" が UpgradeDatabase に見つかりません");
                 }
             }
 
@@ -100,7 +120,27 @@ namespace App.Battle.UseCase
                 _upgradeSideEffectApplier.Apply(upgrade);
             }
 
-            StartRun();
+            return upgrades;
+        }
+
+        /// <summary>
+        /// デバッグウィンドウ（App/デバッグ: 開始時アップグレード）で選択されたアップグレードを付与する。
+        /// 製品ビルドでは <see cref="DebugConfig.StartUpgradeIds"/> が常に空なので何も起きない。
+        /// </summary>
+        private void ApplyDebugStartUpgrades()
+        {
+            var ids = DebugConfig.StartUpgradeIds;
+            if (ids.Count == 0)
+            {
+                return;
+            }
+
+            var upgrades = PreloadUpgrades(ids, warnOnMissing: true);
+            if (upgrades.Count > 0)
+            {
+                var names = string.Join(", ", upgrades.Select(u => $"{u.NameKey}Lv{u.Level}"));
+                Debug.Log($"[RunStartUseCase] デバッグ用アップグレードを {upgrades.Count} 件付与しました: {names}");
+            }
         }
 
         private void StartRun()
