@@ -56,7 +56,7 @@ Googleスプレッドシート（正本）
 13:Value5 14:Value5ParameterType 15:BuffId（任意列。省略可 / GrantBuff時のみ使用）
 ```
 
-- **`Value1`〜`Value3` が使用中**（`HealOnKill` は Value2、`PeaceMaker` は Value2/Value3、`Avalanche` は Value2 を参照する。`Value4`/`Value5` は未使用の予約列）。汎用の `CalcMultiply/CalcAdd/CalcMax` は `Value1` しか見ないため、複数Valueを使う効果は専用DataStoreで `TryGetHighestLevelUpgrade` から読む
+- **`Value1`〜`Value3` が使用中**（`HealOnKill` は Value2、`PeaceMaker` は Value2/Value3、`Avalanche` は Value2、注視系の `SnakeEyes`/`Medusa`/`MeanMug` は Value2=注視半径・`SnakeEyes` のみ Value3=解除猶予秒 を参照する。`Value4`/`Value5` は未使用の予約列）。汎用の `CalcMultiply/CalcAdd/CalcMax` は `Value1` しか見ないため、複数Valueを使う効果は専用DataStoreで `TryGetHighestLevelUpgrade` から読む
 - `id` は連番の整数（文字列扱い）。`NameKey` は `$` + PascalCase のローカライズキー（例 `$BaseDamageUp`）
 - 生成アセット名は `NameKey` から `$` を除き `_L{Level}` を付与（例 `BaseDamageUp_L1.asset`）
 - `MinColumnCount=15`。BuffId列が無い行も許容される
@@ -77,6 +77,13 @@ Googleスプレッドシート（正本）
 | `GrantBuff` | `ShopUseCase.OnUpgradeSelected`（Calculator非経由。下記パターンC） |
 | `PeaceMaker` | `PeaceMakerDataStore` → `PlayerBulletParameterDataStore.SetCoolDownTime`（`TryGetHighestLevelUpgrade` で最高レベルのみ採用。Value1=連続ノーマルショット数 / Value2=強化CD倍率 / Value3=ペナルティCD倍率） |
 | `Avalanche` | `AvalancheDataStore` → `PlayerBulletParameterDataStore.SetCoolDownTime`（Value1=通常CD倍率 / Value2=直前マージ命中時のCD倍率。命中通知は `BattleHitUseCase.NotifyMergeHit`） |
+| `LuckyChance` / `KillingCall` / `TurnTable` | `CriticalHitDataStore` → `BattleHitUseCase.OnHit`（3種の**クリティカル確率を合算**し、100%ごとに1段確定＋端数を抽選。1段=ダメージ+100%。いずれも `CalcMax` で最高レベルのみ採用。キリングコールは `HitData.FocusType`/`IsFocusTarget`/`PenetrationIndex==1` で条件判定、ターンテーブルは `IPlayerStateDataStore` のHP減少割合を参照） |
+| `SnakeEyes` | `SnakeEyesDataStore` → `PlayerGazeUseCase` → `IEnemyPresenter.SetSpeedMultiplier` → `EnemyAIBase`（Value1=速度倍率 / Value2=注視半径 / Value3=解除猶予秒） |
+| `Medusa` | `MedusaDataStore` → `PlayerGazeUseCase` → `IEnemyPresenter.SetStun` → `EnemyAIBase`（Value1=スタン秒 / Value2=注視半径。Major/Boss/Irregular のみ・敵ごとに1度） |
+| `MeanMug` | `MeanMugDataStore` → `BattleHitUseCase.OnHit`（Value1=被ダメージ倍率 / Value2=注視半径。注視状態の更新は `PlayerGazeUseCase`） |
+
+> 📌 **注視（視界中央）系の共通基盤**: `IBattlePlayerView.TryGetGazePose`（`Camera.main` をキャッシュ）→ `IEnemyStoreView.GetGazeEnemies`（`EnemyLayer` への SphereCast、バッファ使い回し）→ `PlayerGazeUseCase`（毎フレーム3種を更新。未所持ならレイキャストしない／敵消滅時に状態破棄）。
+> **PCモード（見下ろしカメラ）では半径2〜3mの判定にほぼ敵が入らず発動しない**（カメラが上空約18mからほぼ真下を向いているため）。VR前提の仕様なので、PCで検証したい場合は半径を大きくして確認する。
 
 > ⚠️ **未接続タイプ問題**: `HitRange` / `DodgeDistance` / `DodgeCount` / `DodgeCooldown` / `Health` は enum・CSVには存在するが**どこからも Calc されておらず、効果が出ない**。特に `Health` はCSVに `$Health` 行があってもHP最大値に反映されない（`PlayerStateDataStore.Initialize` が `BasePlayerParameter.Health` を直接使うだけ）。**新タイプ追加＝消費側コードもセットで書く**ことを絶対に忘れない。
 
