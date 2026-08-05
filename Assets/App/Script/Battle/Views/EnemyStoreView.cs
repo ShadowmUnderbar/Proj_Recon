@@ -24,6 +24,10 @@ namespace App.Battle.Views
         private readonly RaycastHit[] _hits = new RaycastHit[10];
         private readonly List<int> _rayCastEnemyIds = new();
 
+        // 注視判定用（毎フレーム呼ばれるためバッファを使い回す）
+        private readonly RaycastHit[] _gazeHits = new RaycastHit[20];
+        private readonly List<int> _gazeEnemyIds = new();
+
         private bool _isPause;
 
         [Inject]
@@ -123,6 +127,53 @@ namespace App.Battle.Views
             }
 
             return _rayCastEnemyIds.ToArray();
+        }
+
+        public IReadOnlyList<int> GetGazeEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
+        {
+            _gazeEnemyIds.Clear();
+
+            var count = Physics.SphereCastNonAlloc(origin, radius, direction.normalized, _gazeHits, distance,
+                LayerMasks.EnemyLayer);
+
+            for (var i = 0; i < count; i++)
+            {
+                var hitBox = _gazeHits[i].collider.GetComponent<HitBoxView>();
+                if (hitBox == null)
+                {
+                    continue;
+                }
+
+                // 1体の敵が複数のヒットボックスを持つため重複を除く
+                if (_gazeEnemyIds.Contains(hitBox.Id))
+                {
+                    continue;
+                }
+
+                _gazeEnemyIds.Add(hitBox.Id);
+            }
+
+            return _gazeEnemyIds;
+        }
+
+        public void SetSpeedMultiplier(int enemyId, float multiplier)
+        {
+            if (!_enemies.TryGetValue(enemyId, out var enemyView))
+            {
+                return;
+            }
+
+            enemyView.SetSpeedMultiplier(multiplier);
+        }
+
+        public void SetStun(int enemyId, bool isStun)
+        {
+            if (!_enemies.TryGetValue(enemyId, out var enemyView))
+            {
+                return;
+            }
+
+            enemyView.SetStun(isStun);
         }
 
         public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)

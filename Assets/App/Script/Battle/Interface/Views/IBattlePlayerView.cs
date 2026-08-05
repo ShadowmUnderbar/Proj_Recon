@@ -21,6 +21,11 @@ namespace App.Battle.Interface
         ReactiveProperty<Pose> LeftHandPose { get; }
         ReactiveProperty<Pose> RightHandPose { get; }
 
+        /// <summary>
+        /// 注視判定の基準になるカメラ（VRではHMD）のPoseを返す。カメラが無ければ false。
+        /// </summary>
+        bool TryGetGazePose(out Pose pose);
+
         void IsFocusLeft(bool isFocus);
         void IsFocusRight(bool isFocus);
 

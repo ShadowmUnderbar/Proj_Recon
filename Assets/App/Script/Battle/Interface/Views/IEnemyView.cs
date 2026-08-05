@@ -18,5 +18,11 @@ namespace App.Battle.Interface
         void SetPlayerTransform(Transform playerTransform);
         void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2);
         void SetPause(bool isPause);
+
+        /// <summary>移動・行動抽選の速度倍率を設定する（スネークアイズ）</summary>
+        void SetSpeedMultiplier(float multiplier);
+
+        /// <summary>スタン状態を設定する（メデューサ）</summary>
+        void SetStun(bool isStun);
     }
 }

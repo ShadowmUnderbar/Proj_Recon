@@ -30,6 +30,9 @@ namespace App.Battle.Views
 
         // 被弾受け（子のコライダーに載る PlayerDamageReceiverView）をAwakeで取得
         private PlayerDamageReceiverView _damageReceiver;
+
+        // 注視判定の基準カメラ（VRではHMD）。初回アクセス時に取得してキャッシュする
+        private Camera _gazeCamera;
         public Observable<float> OnDamaged => _damageReceiver.OnDamaged;
         public Observable<int> OnFocusLeft => _playerTopDownAimListView.OnFocusLeft;
         public Observable<int> OnFocusRight => _playerTopDownAimListView.OnFocusRight;
@@ -146,6 +149,24 @@ namespace App.Battle.Views
         public void SetHandEnableRay(HandType handType, bool enable)
         {
             _handForwardRayViews[handType == HandType.Left ? 0 : 1].SetEnable(enable);
+        }
+
+        public bool TryGetGazePose(out Pose pose)
+        {
+            // 毎フレーム参照されるためカメラはキャッシュする（シーン切り替えで破棄されたら再取得）
+            if (_gazeCamera == null)
+            {
+                _gazeCamera = Camera.main;
+            }
+
+            if (_gazeCamera == null)
+            {
+                pose = default;
+                return false;
+            }
+
+            pose = _gazeCamera.transform.ToPose();
+            return true;
         }
 
         public void MouseAim(Vector2 mousePos)

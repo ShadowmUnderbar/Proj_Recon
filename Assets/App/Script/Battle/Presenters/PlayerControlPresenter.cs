@@ -29,6 +29,11 @@ namespace App.Battle.Presenters
             _playerView = playerView;
         }
 
+        public bool TryGetGazePose(out Pose pose)
+        {
+            return _playerView.TryGetGazePose(out pose);
+        }
+
         public void Move(Vector2 moveV2)
         {
             _playerView.Move(moveV2);

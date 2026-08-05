@@ -22,4 +22,10 @@ public enum UpgradeType
     HealOnKill = 17, // 撃破時回復
     PeaceMaker = 18, // ピースメイカー
     Avalanche = 19, // 雪崩
+    LuckyChance = 20, // ラッキーチャンス
+    KillingCall = 21, // キリングコール
+    TurnTable = 22, // ターンテーブル
+    SnakeEyes = 23, // スネークアイズ
+    Medusa = 24, // メデューサ
+    MeanMug = 25, // ガン飛ばし
 }

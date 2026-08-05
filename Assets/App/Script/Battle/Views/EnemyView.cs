@@ -93,6 +93,26 @@ namespace App.Battle.Views
             EnemyAI.SetPlayerAimDirection(aimDir1, aimDir2);
         }
 
+        public void SetSpeedMultiplier(float multiplier)
+        {
+            if (EnemyAI == null)
+            {
+                return;
+            }
+
+            EnemyAI.SetSpeedMultiplier(multiplier);
+        }
+
+        public void SetStun(bool isStun)
+        {
+            if (EnemyAI == null)
+            {
+                return;
+            }
+
+            EnemyAI.SetStun(isStun);
+        }
+
         public void SetPause(bool isPause)
         {
             _isPause = isPause;

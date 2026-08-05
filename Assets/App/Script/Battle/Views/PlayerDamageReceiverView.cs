@@ -33,7 +33,8 @@ namespace App.Battle.Views
         }
 
         public void OnHit(float damage, int attackerId, Vector3 attackCenter, out bool canPenetrable,
-            int penetrationIndex = 1, ShotType? shotType = null)
+            int penetrationIndex = 1, ShotType? shotType = null, AimFocusType focusType = AimFocusType.NotFocus,
+            bool isFocusTarget = false)
         {
             _onDamaged.OnNext(damage);
 

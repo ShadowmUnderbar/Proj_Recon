@@ -15,6 +15,11 @@ namespace App.Battle.Interface
         ReactiveProperty<Pose> RightHandPose { get; }
         Transform PlayerTransform { get; }
 
+        /// <summary>
+        /// 注視判定の基準になるカメラ（VRではHMD）のPoseを返す。カメラが無ければ false。
+        /// </summary>
+        bool TryGetGazePose(out Pose pose);
+
         void Move(Vector2 moveV2);
         void SetMoveAnimation(Vector2 dir);
         void SetModelFacing(Vector3 dir);

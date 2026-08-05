@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using App.Battle.Interface;
 using App.Battle.Data;
 using App.Common.Data;
@@ -40,6 +41,21 @@ namespace App.Battle.Presenters
         public int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
         {
             return _enemyStoreView.GetDodgeHitEnemies(playerPosition, direction, distance);
+        }
+
+        public IReadOnlyList<int> GetGazeEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
+        {
+            return _enemyStoreView.GetGazeEnemies(origin, direction, radius, distance);
+        }
+
+        public void SetSpeedMultiplier(int enemyId, float multiplier)
+        {
+            _enemyStoreView.SetSpeedMultiplier(enemyId, multiplier);
+        }
+
+        public void SetStun(int enemyId, bool isStun)
+        {
+            _enemyStoreView.SetStun(enemyId, isStun);
         }
 
         public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)
