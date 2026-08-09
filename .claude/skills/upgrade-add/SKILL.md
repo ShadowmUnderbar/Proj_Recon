@@ -74,7 +74,12 @@ Googleスプレッドシート（正本）
 | `BulletDamage` | `PlayerBulletParameterDataStore.cs` `damage *= CalcMultiply(BulletDamage)` |
 | `FireRate` | `PlayerBulletParameterDataStore.cs` `coolDown *= CalcMultiply(FireRate)` |
 | `BombRange` | `PlayerBulletParameterDataStore.cs` `explosive *= CalcMultiply(BombRange)` |
-| `GrantBuff` | `ShopUseCase.OnUpgradeSelected`（Calculator非経由。下記パターンC） |
+| `HitRange` | `PlayerBulletParameterDataStore.GetBulletParameter` `bullet.Size *= CalcMultiply(HitRange)`（**非フォーカス弾のみ**。`BulletData.Size` は見た目スケールと SphereCast 判定を兼ねる） |
+| `NormalDamage` / `WaltzDamage` / `MergeDamage` | `PlayerBulletParameterDataStore.GetBulletDamage`（`ShotType` に応じて該当フォームの弾にのみ乗算） |
+| `Barrier` | `UpgradeSideEffectApplier.Apply` → `PlayerBarrierDataStore.GrantFull`（獲得時／セット読込時に最大HP×Value1 のバリアを満タン付与。Calculator非経由） |
+| `GrantBuff` | `UpgradeSideEffectApplier.Apply` → `BuffStateDataStore.AddBuff`（Calculator非経由。下記パターンC） |
+| `ChokePoint` / `BigMouse` / `Diversion` | `EnemyRandomSpawnUseCase`（スポーン挙動を変える系。抽選位置・湧き方に介入する） |
+| `HealOnKill` | `HealOnKillDataStore`（撃破時回復。Value2 併用） |
 | `PeaceMaker` | `PeaceMakerDataStore` → `PlayerBulletParameterDataStore.SetCoolDownTime`（`TryGetHighestLevelUpgrade` で最高レベルのみ採用。Value1=連続ノーマルショット数 / Value2=強化CD倍率 / Value3=ペナルティCD倍率） |
 | `Avalanche` | `AvalancheDataStore` → `PlayerBulletParameterDataStore.SetCoolDownTime`（Value1=通常CD倍率 / Value2=直前マージ命中時のCD倍率。命中通知は `BattleHitUseCase.NotifyMergeHit`） |
 | `LuckyChance` / `KillingCall` / `TurnTable` | `CriticalHitDataStore` → `BattleHitUseCase.OnHit`（3種の**クリティカル確率を合算**し、100%ごとに1段確定＋端数を抽選。1段=ダメージ+100%。いずれも `CalcMax` で最高レベルのみ採用。キリングコールは `HitData.FocusType`/`IsFocusTarget`/`PenetrationIndex==1` で条件判定、ターンテーブルは `IPlayerStateDataStore` のHP減少割合を参照） |
@@ -91,7 +96,7 @@ Googleスプレッドシート（正本）
 > 📌 **注視（視界中央）系の共通基盤**: `IBattlePlayerView.TryGetGazePose`（`Camera.main` をキャッシュ）→ `IEnemyStoreView.GetGazeEnemies`（`EnemyLayer` への SphereCast、バッファ使い回し）→ `PlayerGazeUseCase`（毎フレーム3種を更新。未所持ならレイキャストしない／敵消滅時に状態破棄）。
 > **PCモード（見下ろしカメラ）では半径2〜3mの判定にほぼ敵が入らず発動しない**（カメラが上空約18mからほぼ真下を向いているため）。VR前提の仕様なので、PCで検証したい場合は半径を大きくして確認する。
 
-> ⚠️ **未接続タイプ問題**: `HitRange` / `DodgeDistance` / `DodgeCount` / `DodgeCooldown` / `Health` は enum・CSVには存在するが**どこからも Calc されておらず、効果が出ない**。特に `Health` はCSVに `$Health` 行があってもHP最大値に反映されない（`PlayerStateDataStore.Initialize` が `BasePlayerParameter.Health` を直接使うだけ）。**新タイプ追加＝消費側コードもセットで書く**ことを絶対に忘れない。
+> ⚠️ **未接続タイプ問題**: `DodgeDistance` / `DodgeCount` / `DodgeCooldown` / `Health` は enum・CSVには存在するが**どこからも Calc されておらず、効果が出ない**。特に `Health` はCSVに `$Health` 行があってもHP最大値に反映されない（`PlayerStateDataStore.Initialize` が `BasePlayerParameter.Health` を直接使うだけ）。**新タイプ追加＝消費側コードもセットで書く**ことを絶対に忘れない。
 
 いずれも基礎値は静的クラス `BasePlayerParameter`（`Assets/App/Script/Battle/Data/BasePlayerParamater.cs`）。乗算補正として重なる。
 
