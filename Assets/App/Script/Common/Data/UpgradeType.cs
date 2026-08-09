@@ -32,4 +32,6 @@ public enum UpgradeType
     DamageNode = 27, // ダメージ・ノード
     CareNode = 28, // ケア・ノード
     EmergencyNode = 29, // エマージェンシー・ノード
+    Appraisal = 30, // 目利き
+    Fixation = 31, // 執着
 }

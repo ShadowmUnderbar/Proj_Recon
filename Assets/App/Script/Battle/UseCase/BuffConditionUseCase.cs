@@ -18,6 +18,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
+        private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -27,7 +28,8 @@ namespace App.Battle.UseCase
             IBattleHitPresenter battleHitPresenter,
             IPlayerStateDataStore playerStateDataStore,
             IWaveManagerDataStore waveManagerDataStore,
-            IEnemyDataStore enemyDataStore
+            IEnemyDataStore enemyDataStore,
+            IPlayerDodgeParameterDataStore playerDodgeParameterDataStore
         )
         {
             _buffStateDataStore = buffStateDataStore;
@@ -35,6 +37,7 @@ namespace App.Battle.UseCase
             _playerStateDataStore = playerStateDataStore;
             _waveManagerDataStore = waveManagerDataStore;
             _enemyDataStore = enemyDataStore;
+            _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
         }
 
         public void Initialize()
@@ -58,6 +61,12 @@ namespace App.Battle.UseCase
             // 撃破フォームを撃破条件バフ（ドーパミン等）へ通知する
             _enemyDataStore.OnEnemyDeadByHit
                 .Subscribe(hitData => _buffStateDataStore.NotifyKill(hitData.ShotType))
+                .AddTo(_disposable);
+
+            // 回避成立を回避条件バフ（カウンターステップ等）へ通知する
+            // ウェーブ間ポーズ中は回避自体が成立しないため、ここでのポーズ判定は不要
+            _playerDodgeParameterDataStore.OnDodge
+                .Subscribe(_ => _buffStateDataStore.NotifyDodge())
                 .AddTo(_disposable);
         }
 

@@ -112,10 +112,11 @@ return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave
 ### ショップUIの階層パス（`Resolve-ShopIfOpen`が使用）
 `ShopView`プレハブは`BattleLifetimeScope`が実行時にインスタンス化するが、**`ShopCanvas`は初回表示時に`WorldSpaceUICanvasView`によってMainCamera配下へ再ペアレントされる**（VRハンドレイ/PCマウス両対応のWorld Space化）。クリック対象のパスはカメラ配下を指定すること：
 ```
-BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0～4
+BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0～11
 BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/NextWaveButton
 ```
 `BattleLifetimeScope/ShopView(Clone)/...`配下を指定すると対象が見つからずクリックが空振りし、ショップから遷移できない（2026-07-19に実際に起きた不具合。プレイヤープレハブやカメラ構成を変えた場合はこのパスも要更新）。
+候補ボタンは`UpgradeButtons`の`GridLayoutGroup`（横4列×縦3行=最大12件）に並ぶ。通常は5件だが、アップグレード「目利き」を取得していると最大7件まで増える（`ShopUseCase.GetUpgradeChoiceCount`）。表示数に関わらず`UpgradeButton0`は常に存在するため、`Resolve-ShopIfOpen`の変更は不要。
 `simulate-mouse-ui`の`--target-path`+`--bypass-raycast true`でスクリーンショット無しにクリックできる。アップグレード選択後は**選択したボタンだけ**が非表示になり、他の候補と`NextWaveButton`は表示されたまま残る（`ShopView.HideUpgradeButton(index)`の動作。残った候補ボタンは押しても反応しない＝1ウェーブ1回制限はUseCase側で担保）。
 
 ## このスキルを拡張するタイミング

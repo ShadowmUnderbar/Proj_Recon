@@ -21,6 +21,9 @@ namespace App.Battle.Interface.DataStore
         /// <param name="damage">被弾したダメージ量</param>
         void NotifyDamageTaken(float damage);
 
+        /// <summary>回避が成立したことを通知する（AfterDodge条件の効果時間をDurationでリフレッシュ）</summary>
+        void NotifyDodge();
+
         /// <summary>現在のHP割合（0〜1）を通知する（HpBelow条件の判定）</summary>
         void SetHealthRatio(float healthRatio);
 
