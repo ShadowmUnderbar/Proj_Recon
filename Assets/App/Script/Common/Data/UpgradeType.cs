@@ -28,4 +28,8 @@ public enum UpgradeType
     SnakeEyes = 23, // スネークアイズ
     Medusa = 24, // メデューサ
     MeanMug = 25, // ガン飛ばし
+    DependencyNode = 26, // 依存ノード
+    DamageNode = 27, // ダメージ・ノード
+    CareNode = 28, // ケア・ノード
+    EmergencyNode = 29, // エマージェンシー・ノード
 }

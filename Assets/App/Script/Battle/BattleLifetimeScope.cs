@@ -69,6 +69,14 @@ namespace App.Battle
                 .As<IMedusaDataStore>();
             builder.Register<MeanMugDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IMeanMugDataStore>();
+            builder.Register<DependencyNodeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IDependencyNodeDataStore>();
+            builder.Register<DamageNodeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IDamageNodeDataStore>();
+            builder.Register<CareNodeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ICareNodeDataStore>();
+            builder.Register<EmergencyNodeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IEmergencyNodeDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -104,6 +112,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<WaveManagerUseCase>();
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
+            builder.RegisterEntryPoint<CareNodeUseCase>();
             builder.RegisterEntryPoint<GameOverUseCase>();
             builder.RegisterEntryPoint<RunStartUseCase>();
 

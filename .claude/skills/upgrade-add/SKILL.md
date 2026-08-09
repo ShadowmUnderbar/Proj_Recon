@@ -81,6 +81,10 @@ Googleスプレッドシート（正本）
 | `SnakeEyes` | `SnakeEyesDataStore` → `PlayerGazeUseCase` → `IEnemyPresenter.SetSpeedMultiplier` → `EnemyAIBase`（Value1=速度倍率 / Value2=注視半径 / Value3=解除猶予秒） |
 | `Medusa` | `MedusaDataStore` → `PlayerGazeUseCase` → `IEnemyPresenter.SetStun` → `EnemyAIBase`（Value1=スタン秒 / Value2=注視半径。Major/Boss/Irregular のみ・敵ごとに1度） |
 | `MeanMug` | `MeanMugDataStore` → `BattleHitUseCase.OnHit`（Value1=被ダメージ倍率 / Value2=注視半径。注視状態の更新は `PlayerGazeUseCase`） |
+| `DependencyNode` | `DependencyNodeDataStore`（効果なし。α・β・γの3行を別NameKeyで持ち、**有効な種類数**を他ノード系へ提供する。無効化は実行時状態のみでセーブ内容に影響しない） |
+| `DamageNode` | `DamageNodeDataStore` → `PlayerBulletParameterDataStore.GetBulletDamage`（Value1=依存ノード1種あたりの加算率 / Value2=依存ノード0種時のデメリット倍率） |
+| `CareNode` | `CareNodeDataStore` → `CareNodeUseCase`（1秒ごと。Value1=依存ノード1種あたりの毎秒回復割合 / Value2=依存ノード0種時の毎秒ダメージ割合 / Value3=その最低ダメージ量。HPは1未満にならない） |
+| `EmergencyNode` | `EmergencyNodeDataStore` → `PlayerStateDataStore.TakeDamage`（致死ダメージを無効化し、依存ノードを1つ（α→β→γ）無効化して最大HP×Value1 まで回復） |
 
 > 📌 **注視（視界中央）系の共通基盤**: `IBattlePlayerView.TryGetGazePose`（`Camera.main` をキャッシュ）→ `IEnemyStoreView.GetGazeEnemies`（`EnemyLayer` への SphereCast、バッファ使い回し）→ `PlayerGazeUseCase`（毎フレーム3種を更新。未所持ならレイキャストしない／敵消滅時に状態破棄）。
 > **PCモード（見下ろしカメラ）では半径2〜3mの判定にほぼ敵が入らず発動しない**（カメラが上空約18mからほぼ真下を向いているため）。VR前提の仕様なので、PCで検証したい場合は半径を大きくして確認する。
