@@ -23,24 +23,28 @@ body:
     id: upgrade_type
     attributes:
       label: 効果カテゴリ（UpgradeType）
-      description: 既存カテゴリを選ぶとコード変更不要（データのみ）。新規カテゴリは効果適用コードの追加が必要。GrantBuffは条件付きバフを付与する型。
+      description: |
+        「データのみ」の項目を選べばコード変更不要で追加できる。それ以外は効果適用コードの実装が必要。
+        既存の専用アップグレード（レベル追加のみ可能）: ChokePoint / BigMouse / Diversion / HealOnKill / PeaceMaker / Avalanche / LuckyChance / KillingCall / TurnTable / SnakeEyes / Medusa / MeanMug / DependencyNode / DamageNode / CareNode / EmergencyNode / Appraisal / Fixation
       options:
-        - "BulletDamage（ダメージアップ・既存）"
-        - "FireRate（連射速度アップ・既存）"
-        - "BombRange（爆破サイズ・既存）"
-        - "GrantBuff（条件付きバフ付与・既存の仕組み）"
-        - "HitRange（判定サイズ・enumはあるが効果未接続）"
-        - "Health（HP最大値・enumはあるが効果未接続）"
-        - "DodgeDistance/DodgeCount/DodgeCooldown（回避系・enumはあるが効果未接続）"
-        - "新規カテゴリを作る（下の自由記述に詳細を書く）"
+        - "BulletDamage（全弾ダメージアップ・データのみ）"
+        - "NormalDamage / WaltzDamage / MergeDamage（フォーム別ダメージアップ・データのみ）"
+        - "FireRate（連射速度アップ・データのみ）"
+        - "HitRange（非フォーカス弾の判定サイズ・データのみ）"
+        - "BombRange（マージ弾の爆破サイズ・データのみ）"
+        - "Barrier（獲得時に最大HP×倍率のバリアを付与・データのみ）"
+        - "GrantBuff（条件付きバフ付与・データのみ／新規の条件・効果を使う場合はコード実装が必要）"
+        - "既存の専用アップグレードにレベル追加（対象名を下の自由記述に書く・データのみ）"
+        - "DodgeDistance / DodgeCount / DodgeCooldown / Health（enumはあるが効果未接続・コード実装が必要）"
+        - "新規カテゴリを作る（下の自由記述に詳細を書く・コード実装が必要）"
     validations:
       required: true
 
   - type: textarea
     id: levels
     attributes:
-      label: レベルごとの効果値（Value1）
-      description: "1行 = 1レベル。`Lv{番号}=値` の形式で。倍率系は1.0基準の乗算値、加算系はそのまま。実際に使われるのは Value1 のみ。"
+      label: レベルごとの効果値
+      description: "1行 = 1レベル。`Lv{番号}=値` の形式で。倍率系は1.0基準の乗算値、加算系はそのまま。汎用カテゴリ（BulletDamage等）は Value1 のみ使う。専用アップグレードは Value2 / Value3 も使うものがあるので、その場合は `Lv1=1.2, 3.0` のようにカンマ区切りで並べる。"
       placeholder: |
         Lv1=1.1
         Lv2=1.2
@@ -68,7 +72,11 @@ body:
     id: grant_buff
     attributes:
       label: GrantBuffの場合のバフ内容
-      description: "効果カテゴリが GrantBuff のときのみ記入。既存BuffIdを使うなら番号、新規バフなら『条件（例: 10ヒットで）× 効果（例: 5秒間 攻撃力1.1倍）』を書く。現状の実装済み条件は HitCount / HpBelow、効果は AttackPower のみ（buff-add スキル参照）。"
+      description: |
+        効果カテゴリが GrantBuff のときのみ記入。既存BuffIdを使うなら番号、新規バフなら『条件（例: 10ヒットで）× 効果（例: 5秒間 攻撃力1.1倍）』を書く。
+        実装済みの条件: HpBelow（HP割合N未満） / AfterDodge（回避直後N秒） / HitCount（ヒット数N到達） / HitDifferentEnemy（別の敵に連続命中でスタック） / PenetrationCount（N体貫通ごとに上昇） / OnDamaged（被弾で効果時間延長） / KillWithDifferentForm（別フォームで連続撃破でスタック） / HpLossScaling（HP減少割合に比例・常時発動）
+        実装済みの効果: AttackPower（攻撃力倍率） / FireRate（連射速度倍率・スタック加算） / DamageReduction（被ダメージ軽減率）
+        ※ HpAbove（HP割合N以上）は enum にあるが未実装。これ以外の条件・効果もコード実装が必要（buff-add スキル参照）。
       placeholder: "新規バフ: 10ヒットするたびに5秒間 攻撃力1.1倍"
     validations:
       required: false
@@ -76,8 +84,8 @@ body:
   - type: textarea
     id: intent
     attributes:
-      label: 効果の意図・補足（新規カテゴリの場合は必須）
-      description: "新規カテゴリの場合は『どのプレイヤーパラメータに乗算/加算するか』を書く（例: 移動速度に乗算）。効果を反映する消費側コードの追加先の手がかりになる。"
+      label: 効果の意図・補足（新規カテゴリ／既存専用アップグレードの場合は必須）
+      description: "新規カテゴリの場合は『どのプレイヤーパラメータに乗算/加算するか』を書く（例: 移動速度に乗算）。効果を反映する消費側コードの追加先の手がかりになる。既存の専用アップグレードにレベル追加する場合は、対象の名前（例: メデューサ / Medusa）をここに書く。"
       placeholder: "移動速度に乗算補正をかけたい。PlayerMoveParameter系のDataStoreに CalcMultiply(MoveSpeed) を追加してほしい。"
     validations:
       required: false
