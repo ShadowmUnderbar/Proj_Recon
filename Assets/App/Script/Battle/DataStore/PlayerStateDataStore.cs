@@ -12,6 +12,7 @@ namespace App.Battle.DataStore
     {
         private readonly IPlayerBarrierDataStore _playerBarrierDataStore;
         private readonly IBuffStateDataStore _buffStateDataStore;
+        private readonly IEmergencyNodeDataStore _emergencyNodeDataStore;
 
         // 軽減バフを適用しても最低これだけはダメージが通る（完全無敵化を防ぐ）
         private const float MinDamage = 1f;
@@ -19,11 +20,13 @@ namespace App.Battle.DataStore
         [Inject]
         public PlayerStateDataStore(
             IPlayerBarrierDataStore playerBarrierDataStore,
-            IBuffStateDataStore buffStateDataStore
+            IBuffStateDataStore buffStateDataStore,
+            IEmergencyNodeDataStore emergencyNodeDataStore
         )
         {
             _playerBarrierDataStore = playerBarrierDataStore;
             _buffStateDataStore = buffStateDataStore;
+            _emergencyNodeDataStore = emergencyNodeDataStore;
         }
 
         public ReactiveProperty<Vector3> Position { get; } = new();
@@ -71,7 +74,15 @@ namespace App.Battle.DataStore
             // 吸収できなかった（バリア0）ときだけHPを減らす。
             if (!_playerBarrierDataStore.TryAbsorb(damage))
             {
-                Health.Value = Mathf.Max(0f, Health.Value - damage);
+                // 致死ダメージはエマージェンシー・ノードで無効化を試みる（依存ノードを1つ消費して全回復）
+                if (damage >= Health.Value && _emergencyNodeDataStore.TryActivate(out var healRatio))
+                {
+                    Health.Value = Mathf.Min(MaxHealth.Value, MaxHealth.Value * healRatio);
+                }
+                else
+                {
+                    Health.Value = Mathf.Max(0f, Health.Value - damage);
+                }
             }
 
             // 吸収の有無に関わらず被弾を通知してバリアの回復待機タイマーをリセットする

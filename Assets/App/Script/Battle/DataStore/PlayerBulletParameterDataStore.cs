@@ -16,6 +16,7 @@ namespace App.Battle.DataStore
         private readonly IBuffStateDataStore _buffStateDataStore;
         private readonly IPeaceMakerDataStore _peaceMakerDataStore;
         private readonly IAvalancheDataStore _avalancheDataStore;
+        private readonly IDamageNodeDataStore _damageNodeDataStore;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -27,7 +28,8 @@ namespace App.Battle.DataStore
             IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
             IBuffStateDataStore buffStateDataStore,
             IPeaceMakerDataStore peaceMakerDataStore,
-            IAvalancheDataStore avalancheDataStore
+            IAvalancheDataStore avalancheDataStore,
+            IDamageNodeDataStore damageNodeDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -36,6 +38,7 @@ namespace App.Battle.DataStore
             _buffStateDataStore = buffStateDataStore;
             _peaceMakerDataStore = peaceMakerDataStore;
             _avalancheDataStore = avalancheDataStore;
+            _damageNodeDataStore = damageNodeDataStore;
         }
 
         public void Tick()
@@ -164,6 +167,9 @@ namespace App.Battle.DataStore
             };
 
             damage *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.BulletDamage);
+
+            // ダメージ・ノード（有効な依存ノードの種類数で倍率が変動。未所持なら1倍）
+            damage *= _damageNodeDataStore.GetDamageMultiplier();
 
             // フォーム別ダメージアップ（Normal/Waltz/Merge それぞれ該当フォームの弾にのみ乗算）
             damage *= shotType switch
