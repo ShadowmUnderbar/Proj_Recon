@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
+using App.Common.Data;
 using App.Common.Data.MasterData;
 using R3;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -16,13 +18,17 @@ namespace App.Battle.UseCase
     /// </summary>
     public class ShopUseCase : IInitializable, IDisposable
     {
-        // ショップに並べるアップグレードの抽選数
-        private const int UpgradeChoiceCount = 5;
+        // ショップに並べるアップグレードの基本抽選数（目利きで加算される）
+        private const int BaseUpgradeChoiceCount = 5;
+
+        // 目利きによる加算後の上限。ShopView.prefab のボタン数（4列×3行のグリッド）と一致させること
+        private const int MaxUpgradeChoiceCount = 12;
 
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IUpgradeLotteryDataStore _upgradeLotteryDataStore;
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
         private readonly UpgradeSideEffectApplier _upgradeSideEffectApplier;
+        private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly IShopPresenter _shopPresenter;
 
         private readonly CompositeDisposable _disposable = new();
@@ -35,6 +41,7 @@ namespace App.Battle.UseCase
             IUpgradeLotteryDataStore upgradeLotteryDataStore,
             IUpgradeSessionDataStore upgradeSessionDataStore,
             UpgradeSideEffectApplier upgradeSideEffectApplier,
+            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
             IShopPresenter shopPresenter
         )
         {
@@ -42,6 +49,7 @@ namespace App.Battle.UseCase
             _upgradeLotteryDataStore = upgradeLotteryDataStore;
             _upgradeSessionDataStore = upgradeSessionDataStore;
             _upgradeSideEffectApplier = upgradeSideEffectApplier;
+            _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
             _shopPresenter = shopPresenter;
         }
 
@@ -64,8 +72,17 @@ namespace App.Battle.UseCase
         private void OpenShop()
         {
             // 出現可能なアップグレードから抽選（候補ゼロならボタンはView側で全非表示になる）
-            _currentCandidates = _upgradeLotteryDataStore.DrawUpgrades(UpgradeChoiceCount);
+            _currentCandidates = _upgradeLotteryDataStore.DrawUpgrades(GetUpgradeChoiceCount());
             _shopPresenter.Open(_currentCandidates);
+        }
+
+        /// <summary>
+        /// 今回のショップに並べる候補数。目利きは累積せず最高レベルのみ採用し、View のボタン数を超えないようにする
+        /// </summary>
+        private int GetUpgradeChoiceCount()
+        {
+            var extraCount = Mathf.RoundToInt(_upgradeEffectSimpleCalculatorDataStore.CalcMax(UpgradeType.Appraisal));
+            return Mathf.Min(BaseUpgradeChoiceCount + extraCount, MaxUpgradeChoiceCount);
         }
 
         private void OnUpgradeSelected(int index)

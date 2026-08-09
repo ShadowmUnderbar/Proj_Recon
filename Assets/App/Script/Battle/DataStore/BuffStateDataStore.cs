@@ -20,7 +20,7 @@ namespace App.Battle.DataStore
             // HitCount条件: 次の発動に向けたヒット蓄積数
             public int HitCount;
 
-            // HitCount条件: 残り効果時間（秒）。0以下なら非アクティブ
+            // HitCount / OnDamaged / AfterDodge条件: 残り効果時間（秒）。0以下なら非アクティブ
             public float RemainingTime;
 
             // HpBelow条件: 条件成立中フラグ
@@ -47,6 +47,7 @@ namespace App.Battle.DataStore
                 BuffConditionType.HpBelow => IsConditionActive,
                 BuffConditionType.HitDifferentEnemy => StackMultiplier > 1f,
                 BuffConditionType.OnDamaged => RemainingTime > 0f,
+                BuffConditionType.AfterDodge => RemainingTime > 0f,
                 BuffConditionType.KillWithDifferentForm => KillFormMultiplier > 1f,
                 // HP減少割合に比例する効果は常時発動（軽減量の算出側でHP割合を参照する）
                 BuffConditionType.HpLossScaling => true,
@@ -188,6 +189,20 @@ namespace App.Battle.DataStore
 
                 // 被弾ダメージ量 × レベル倍率(ConditionValue) だけ効果時間を延長（被弾のたびに累積）
                 state.RemainingTime += damage * state.Master.ConditionValue;
+            }
+        }
+
+        public void NotifyDodge()
+        {
+            foreach (var state in _buffStates)
+            {
+                if (state.Master.ConditionType != BuffConditionType.AfterDodge)
+                {
+                    continue;
+                }
+
+                // 回避のたびに効果時間をリフレッシュ（スタックはしない）
+                state.RemainingTime = state.Master.Duration;
             }
         }
 

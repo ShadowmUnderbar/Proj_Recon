@@ -9,6 +9,10 @@ namespace App.Battle.Interface.DataStore
         float DodgeDamage { get; }
         bool CanDodge { get; }
         float DodgeRange { get; }
+
+        /// <summary>回避が成立した瞬間に発火する（AfterDodge条件バフの起動に使う）</summary>
+        Observable<Unit> OnDodge { get; }
+
         void SetCoolDownTime();
     }
 }
