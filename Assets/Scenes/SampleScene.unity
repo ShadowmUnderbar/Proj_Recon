@@ -169,6 +169,8 @@ MonoBehaviour:
   _gameOverView: {fileID: 2521413792756983357, guid: d2b7af2b77a1a8948b99f80d9bb01e37, type: 3}
   _runStartView: {fileID: 3004351885307919908, guid: 8ebf5f0ac3c8ed04cb74f5e38f38685f, type: 3}
   _waveConfig: {fileID: 11400000, guid: 59d998123a56c164e8af04f7758af639, type: 2}
+  _streamerCameraView: {fileID: 2502214490595356515, guid: 845639cd75498d24d9ca347c81c38cb3, type: 3}
+  _streamerCameraTriggerConfig: {fileID: 11400000, guid: fbd42e5c1d1fea24486e558b5a17babd, type: 2}
 --- !u!4 &175168502
 Transform:
   m_ObjectHideFlags: 0
@@ -597,6 +599,7 @@ MonoBehaviour:
   _enemySpawnDatabase: {fileID: 11400000, guid: f9b5961c17d333a438c79cb9285f564b, type: 2}
   _upgradeDatabase: {fileID: 11400000, guid: d9aef8c097885ae43a58b8faae724e81, type: 2}
   _buffDatabase: {fileID: 11400000, guid: 151c973fef82b9749b1aa9286ecd29de, type: 2}
+  _streamerModeConfig: {fileID: 11400000, guid: 48652d6077c903549a4d8fa114ea2a4f, type: 2}
 --- !u!4 &1576992900
 Transform:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Presenters;
 using App.Battle.UseCase;
@@ -28,6 +29,8 @@ namespace App.Battle
         [SerializeField] private GameOverView _gameOverView;
         [SerializeField] private RunStartView _runStartView;
         [SerializeField] private WaveConfig _waveConfig;
+        [SerializeField] private StreamerCameraView _streamerCameraView;
+        [SerializeField] private StreamerCameraTriggerConfig _streamerCameraTriggerConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -87,6 +90,8 @@ namespace App.Battle
                 .As<IGameStateDataStore>();
             builder.Register<RunStartDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IRunStartDataStore>();
+            builder.Register<StreamerCameraDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IStreamerCameraDataStore>();
 
             #endregion
 
@@ -94,6 +99,9 @@ namespace App.Battle
 
             // アップグレード付与副作用の共通処理（ShopUseCase・RunStartUseCaseが利用）
             builder.Register<UpgradeSideEffectApplier>(Lifetime.Singleton);
+
+            // 配信用カメラのフレーミング計算（StreamerCameraViewが利用）
+            builder.Register<StreamerCameraFramingCalculator>(Lifetime.Singleton);
 
             #endregion
 
@@ -115,6 +123,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<CareNodeUseCase>();
             builder.RegisterEntryPoint<GameOverUseCase>();
             builder.RegisterEntryPoint<RunStartUseCase>();
+            builder.RegisterEntryPoint<StreamerCameraUseCase>();
 
             #endregion
 
@@ -133,6 +142,8 @@ namespace App.Battle
                 .As<IGameOverPresenter>();
             builder.Register<RunStartPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IRunStartPresenter>();
+            builder.Register<StreamerCameraPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IStreamerCameraPresenter>();
 
             #endregion
 
@@ -149,6 +160,10 @@ namespace App.Battle
 
             builder.RegisterComponentInNewPrefab(_runStartView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IRunStartView>();
+
+            // 配信用カメラ。ストリーマーモード無効時はView側で自身を無効化する
+            builder.RegisterComponentInNewPrefab(_streamerCameraView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<IStreamerCameraView>();
 
             #endregion
 
@@ -190,6 +205,7 @@ namespace App.Battle
                 .AsImplementedInterfaces().As<IBulletStoreView>();
 
             builder.RegisterInstance(_waveConfig);
+            builder.RegisterInstance(_streamerCameraTriggerConfig);
 
             #endregion
         }
