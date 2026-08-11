@@ -30,6 +30,9 @@ namespace App.Battle.DataStore
         private readonly Subject<HitData> _onEnemyDeadByHit = new();
         public Observable<HitData> OnEnemyDeadByHit => _onEnemyDeadByHit;
 
+        private readonly Subject<int> _onEnemyDamaged = new();
+        public Observable<int> OnEnemyDamaged => _onEnemyDamaged;
+
         public List<EnemyData> Enemies => _spawnEnemyDataList.Values.ToList();
 
         private List<string> _onceSpawnedEnemyCodes = new();
@@ -194,6 +197,10 @@ namespace App.Battle.DataStore
             }
 
             enemyData.Hp -= damage;
+
+            // 撃破に至らない命中も流す（複数体同時ヒットの演出判定などに使う）
+            _onEnemyDamaged.OnNext(hitData.DamagedId);
+
             if (enemyData.Hp > 0)
             {
                 return;
