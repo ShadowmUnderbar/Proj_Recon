@@ -15,6 +15,9 @@ namespace App.Battle.Interface.DataStore
 
         /// <summary>撃破の決め手となった命中情報を流す（撃破フォームを参照するバフの駆動に使う）</summary>
         Observable<HitData> OnEnemyDeadByHit { get; }
+
+        /// <summary>ダメージが通った敵のIDを流す（撃破に至らない命中も含む）</summary>
+        Observable<int> OnEnemyDamaged { get; }
         List<EnemyData> Enemies { get; }
 
         bool TryGetEnemyMasterData(string enemyCode, out EnemyMasterData enemyMasterData);
