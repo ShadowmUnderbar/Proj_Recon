@@ -164,6 +164,13 @@ namespace App.Battle.DataStore
                 return;
             }
 
+            // 撃破済みの敵への追撃（マージの爆風や同フレームの別弾）は無視する。
+            // 撃破演出の完了まで敵データが残るため、ガードが無いとOnEnemyDeadが二重発火する
+            if (enemyData.IsDead)
+            {
+                return;
+            }
+
             if (!TryGetEnemyMasterData(enemyData.EnemyMasterDataId, out var masterData))
             {
                 return;
@@ -191,6 +198,8 @@ namespace App.Battle.DataStore
             {
                 return;
             }
+
+            enemyData.IsDead = true;
 
             _onEnemyDead.OnNext(hitData.DamagedId);
 
