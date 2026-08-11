@@ -36,14 +36,18 @@ namespace App.Battle.Data
 
         #region Waltz
 
-        public static float WaltzDamageMagnification => 0.15f;
+        // 片手1ストリーム基準で、両手発射のノーマルショット（26.7DPS）の約0.83倍（22.2DPS）になる倍率。
+        // 左右で別方向を狙う仕様のため、単体火力は最下位だが左右合計の面制圧力で差別化する
+        public static float WaltzDamageMagnification => 0.5f;
         public static float WaltzFireRateMagnification => 0.3f;
 
         #endregion
 
         #region Merge
 
-        public static float MergeDamageMagnification => 2f;
+        // 利き手のみの1ストリーム基準で、両手発射のノーマルショット（26.7DPS）の約1.33倍（35.6DPS）になる倍率。
+        // 両手を寄せる必要がありアキンボを捨てる代償として、単体火力を最上位に置く
+        public static float MergeDamageMagnification => 4f;
         public static float MergeFireRateMagnification => 1.5f;
         public static float MergeBulletSpeed => 40f;
         public static float MergeExplosiveScale => 2f;
