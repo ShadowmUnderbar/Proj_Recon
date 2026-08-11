@@ -24,6 +24,11 @@ namespace App.Battle.Views.Enemy.Bullet
         private readonly List<int> _hitTargetIds = new();
         private readonly RaycastHit[] _instantHitBuffer = new RaycastHit[10];
 
+        // 爆風の範囲内判定用バッファと、爆風内で既にダメージを与えた対象のId。
+        // 1体が複数のヒットボックスを持つため、Id単位で重複を除外する
+        private readonly Collider[] _explosiveHitBuffer = new Collider[32];
+        private readonly List<int> _explosiveHitTargetIds = new();
+
         // 即着弾のヒット結果を距離昇順に並べるための比較子（毎ショットのアロケーション回避のため共有）
         private static readonly IComparer<RaycastHit> _hitDistanceComparer =
             Comparer<RaycastHit>.Create((a, b) => a.distance.CompareTo(b.distance));
@@ -42,6 +47,7 @@ namespace App.Battle.Views.Enemy.Bullet
         private int _hitCount = 0;
         private int _focusTargetId = 0;
         private int _attackerId = 0;
+        private bool _isExploded = false;
         protected Transform TargetTransform;
 
         public virtual void Spawn(int attackerId, Pose pose, BulletData bulletData, int focusTargetId,
@@ -201,8 +207,78 @@ namespace App.Battle.Views.Enemy.Bullet
             }
         }
 
+        /// <summary>
+        /// 着弾地点の周囲に爆風ダメージを与える。
+        /// 直撃した敵にも重複して入る（直撃 = 弾ダメージ + 爆風ダメージ）。
+        /// </summary>
+        private void ExplosiveProcess()
+        {
+            if (_isExploded)
+            {
+                return;
+            }
+
+            if (BulletData.Explosive <= 0f || BulletData.ExplosiveDamage <= 0f)
+            {
+                return;
+            }
+
+            _isExploded = true;
+
+            var origin = transform.position;
+
+            // ヒットボックスがトリガーコライダーの場合も拾うため、明示的にCollideを指定する
+            var hitCount = Physics.OverlapSphereNonAlloc(
+                origin,
+                BulletData.Explosive,
+                _explosiveHitBuffer,
+                Physics.AllLayers,
+                QueryTriggerInteraction.Collide);
+
+            _explosiveHitTargetIds.Clear();
+
+            for (var i = 0; i < hitCount; i++)
+            {
+                var col = _explosiveHitBuffer[i];
+
+                if (col.gameObject.layer == _shooterLayer)
+                {
+                    continue;
+                }
+
+                if (col.gameObject.CompareTag(TagConstants.Bullet))
+                {
+                    continue;
+                }
+
+                if (!col.TryGetComponent<IHitBoxView>(out var hitBox))
+                {
+                    continue;
+                }
+
+                if (hitBox.Id == _attackerId)
+                {
+                    continue;
+                }
+
+                if (_explosiveHitTargetIds.Contains(hitBox.Id))
+                {
+                    continue;
+                }
+
+                _explosiveHitTargetIds.Add(hitBox.Id);
+
+                // 爆風は貫通しないため貫通順は常に1体目扱い、フォーカス対象扱いもしない
+                hitBox.OnHit(BulletData.ExplosiveDamage, _attackerId, origin, out _, 1,
+                    BulletData.ShotType, BulletData.FocusType);
+            }
+        }
+
         private async UniTask HitAfterProcess()
         {
+            // 曳光弾の後処理より先に爆風を発生させる（_trailRendererがnullの弾でも爆風は必要）
+            ExplosiveProcess();
+
             if (_trailRenderer == null)
             {
                 return;

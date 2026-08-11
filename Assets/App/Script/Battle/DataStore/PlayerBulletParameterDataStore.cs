@@ -136,14 +136,17 @@ namespace App.Battle.DataStore
 
         public BulletData GetBulletData(ShotType shotType, AimFocusType focusType)
         {
+            var damage = GetBulletDamage(shotType, focusType);
+
             var bullet = new BulletData
             {
                 ShotType = shotType,
                 FocusType = focusType,
                 Speed = shotType == ShotType.Merge ? BasePlayerParameter.MergeBulletSpeed : 0, //プレイヤーは即着弾
-                Damage = GetBulletDamage(shotType, focusType),
+                Damage = damage,
                 Penetration = GetBulletPenetration(shotType, focusType),
-                Explosive = GetBulletExplosive(shotType, focusType)
+                Explosive = GetBulletExplosive(shotType, focusType),
+                ExplosiveDamage = GetBulletExplosiveDamage(shotType, damage)
             };
 
             // 非フォーカス時のみ、弾サイズ（＝当たり判定サイズ）に HitRange 強化を乗算する。
@@ -179,7 +182,7 @@ namespace App.Battle.DataStore
                 _ => _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.NormalDamage)
             };
 
-            // バフによる攻撃力倍率（爆発ダメージも弾ダメージを共用するため両方に効く）
+            // バフによる攻撃力倍率（爆風ダメージは弾ダメージから算出するため爆風にも効く）
             damage *= _buffStateDataStore.CalcMultiply(BuffEffectType.AttackPower);
 
             damage *= focusType == AimFocusType.Focus ? BasePlayerParameter.LongFocusDamageMagnification : 1f;
@@ -204,6 +207,18 @@ namespace App.Battle.DataStore
 
             explosive *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.BombRange);
             return explosive;
+        }
+
+        // 爆風ダメージは弾ダメージに割合を乗じて算出する。
+        // 弾ダメージ側の強化・バフ・フォーカス倍率がそのまま爆風にも反映される
+        private float GetBulletExplosiveDamage(ShotType shotType, float bulletDamage)
+        {
+            if (shotType != ShotType.Merge)
+            {
+                return 0f;
+            }
+
+            return bulletDamage * BasePlayerParameter.MergeExplosiveDamageRate;
         }
     }
 }

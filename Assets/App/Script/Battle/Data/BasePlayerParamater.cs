@@ -45,12 +45,16 @@ namespace App.Battle.Data
 
         #region Merge
 
-        // 利き手のみの1ストリーム基準で、両手発射のノーマルショット（26.7DPS）の約1.33倍（35.6DPS）になる倍率。
+        // 利き手のみの1ストリーム基準で、弾ダメージ(8.0)＋爆風ダメージ(8.0)の合計16.0により、
+        // 両手発射のノーマルショット（26.7DPS）の約1.33倍（35.6DPS）になる。
         // 両手を寄せる必要がありアキンボを捨てる代償として、単体火力を最上位に置く
-        public static float MergeDamageMagnification => 4f;
+        public static float MergeDamageMagnification => 2f;
         public static float MergeFireRateMagnification => 1.5f;
         public static float MergeBulletSpeed => 40f;
         public static float MergeExplosiveScale => 2f;
+
+        // 爆風ダメージの弾ダメージに対する割合。弾ダメージ側の強化・バフがそのまま爆風にも反映される
+        public static float MergeExplosiveDamageRate => 1f;
 
         #endregion
 
