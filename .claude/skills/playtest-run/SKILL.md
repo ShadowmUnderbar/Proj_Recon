@@ -1,15 +1,19 @@
 ---
 name: playtest-run
-description: "RECONのバトルシーンを自動プレイし、ウェーブ進行・ショップ操作を通してDebug.LogError/例外を検出する。Tools/Playtest/run-playtest.ps1（またはUnity Editorの Tools > Playtest Runner ウィンドウ）で実行する。テストラン実行そのものだけでなく、フロー拡張（シナリオ追加、対象ウェーブ数変更、新規チェック項目追加、新規DataStoreの観測追加など）を行う際もこのスキルを更新して使うこと。"
+description: "RECONのバトルシーンを自動プレイし、ウェーブ進行・ショップ操作を通してDebug.LogError/例外を検出する（テストラン）。あわせて、カメラ演出・エフェクトが仕様どおりに動いたかをTransformや設定値の実測で検証する（プローブ）。Tools/Playtest/run-playtest.ps1 / probe-effect.ps1（またはUnity Editorの Tools > Playtest Runner ウィンドウ）で実行する。実行そのものだけでなく、フロー拡張（シナリオ追加、対象ウェーブ数変更、新規チェック項目追加、新規DataStoreの観測追加）や、新しい演出を追加してその挙動を数値で検証したいときもこのスキルを更新して使うこと。"
 ---
 
 # 自動プレイテストラン（playtest-run）
 
-RECONのバトルフロー（ウェーブ進行→ショップ→次ウェーブ…）を自動プレイし、その間に発生した `Debug.LogError` / 例外を検出する。
+用途は2つある。
 
-- **実行本体**: `Tools/Playtest/run-playtest.ps1`（PowerShellスクリプト、uLoopMCPのCLI(`uloop`)を直接叩く。Claudeの対話操作なしで単体実行できる）
-- **手軽な起動**: Unity Editorの `Tools > Playtest Runner` メニューからEditorWindowを開き、シナリオとウェーブ数を選んで「テストラン実行」ボタンを押すだけでよい（`Assets/App/Script/Editor/TestRun/PlaytestRunnerWindow.cs`）
+1. **テストラン**: バトルフロー（ウェーブ進行→ショップ→次ウェーブ…）を自動プレイし、その間に発生した `Debug.LogError` / 例外を検出する
+2. **プローブ**: カメラ演出・エフェクトを実際に発火させ、Transformやカメラ設定の**実測値**が仕様どおりかを検証する（後述の「演出の数値検証」）
+
+- **実行本体**: `Tools/Playtest/run-playtest.ps1`（テストラン）/ `Tools/Playtest/probe-effect.ps1`（プローブ）。どちらもPowerShellスクリプトで、uLoopMCPのCLI(`uloop`)を直接叩く。Claudeの対話操作なしで単体実行できる
+- **手軽な起動**: Unity Editorの `Tools > Playtest Runner` メニューからEditorWindowを開き、シナリオ＋ウェーブ数を選んで「テストラン実行」、またはプローブを選んで「プローブ実行」を押すだけでよい（`Assets/App/Script/Editor/TestRun/PlaytestRunnerWindow.cs`）
 - **テストシチュエーションの追加**: `Tools/Playtest/Scenarios/*.ps1` に新しいファイルを1つ追加するだけでよい（後述）。Editor拡張のドロップダウンにも自動で反映される
+- **演出の検証項目の追加**: `Tools/Playtest/Probes/*.ps1` に新しいファイルを1つ追加するだけでよい（後述）。こちらもドロップダウンに自動反映される
 - 新規のUnity C#コードは自動化基盤としては追加していない（Editor拡張はツール専用で、DataStore/UseCaseなどゲーム本体のアーキテクチャには一切関与しない）。ウェーブ状態の読み取りは既存のDataStoreを`execute-dynamic-code`から読むだけ
 
 CIの恒久テストではなく、**開発中の調査ループ**（自動プレイ→エラー確認→修正→再実行）として使う。
@@ -45,7 +49,9 @@ Unity Editorで `Tools > Playtest Runner` を開き、シナリオ（`FixedFlow`
 ### スクリプト構成
 - `Tools/Playtest/PlaytestCommon.ps1`: 共通ヘルパー（`Invoke-Uloop`＝uloop CLIラッパー、`Get-WaveState`＝ウェーブ状態取得、`Resolve-ShopIfOpen`＝ショップ自動選択、`Get-NewErrors`＝エラー取得、`Write-PlaytestReport`＝レポート出力）
 - `Tools/Playtest/Scenarios/*.ps1`: シナリオ本体。各ファイルは`PlaytestScenarioStep`関数を1つ定義するだけでよい（詳細は後述）
-- `Tools/Playtest/run-playtest.ps1`: ランナー本体。compile→clear-console→Play→（状態観測→シナリオ実行 or ショップ処理→エラー確認）の繰り返し→Stop→レポート出力
+- `Tools/Playtest/run-playtest.ps1`: テストランのランナー本体。compile→clear-console→Play→（状態観測→シナリオ実行 or ショップ処理→エラー確認）の繰り返し→Stop→レポート出力
+- `Tools/Playtest/probe-effect.ps1`: プローブのランナー本体。compile→clear-console→ProbePrepare→Play→ラン開始ゲート解除→ProbeRun→エラー確認→Stop→ProbeCleanup→レポート出力
+- `Tools/Playtest/Probes/*.ps1`: プローブ本体。`ProbeRun`（必須）/`ProbePrepare`/`ProbeCleanup`（任意）を定義する（詳細は後述）
 - `Assets/App/Script/Editor/TestRun/PlaytestRunnerWindow.cs`: 上記スクリプトをUnity Editorから起動するEditorWindow。`Tools/Playtest/Scenarios/`をスキャンしてシナリオ一覧を動的生成する
 
 ### 新しいテストシチュエーションを追加する
@@ -58,6 +64,59 @@ function PlaytestScenarioStep {
 }
 ```
 既存の`FixedFlow.ps1`（決め打ち移動+発射）・`RandomDrill.ps1`（移動/発射/フォーム/フォーカス/回避をサイクルごとに変える）を参考にする。ショップでのアップグレード選択・次ウェーブ操作は`PlaytestCommon.ps1`の`Resolve-ShopIfOpen`が共通処理として自動で行う（アップグレードを1つ選択=常に最初の候補`UpgradeButton0`→`NextWaveButton`押下→ポーズ解除を確認できるまで最大3回リトライ、解除されなければthrow）。
+
+## 演出の数値検証（プローブ）
+
+カメラ演出やエフェクトは、スクリーンショットの目視では「何か動いた」ことしか分からない。プローブは**演出を実際に発火させ、TransformやCameraの値を読んで期待値と突き合わせる**。カメラ・エフェクト系の演出を追加したら、まずこれで検証する。
+
+```powershell
+& "Tools/Playtest/probe-effect.ps1" -Probe StreamerCameraShot
+```
+終了コード0=全項目OK、1=検証NGまたはエラー検出、2=プローブ指定ミス。結果は`Tools/Playtest/Reports/probe_*.json`に保存される（最大10件、`.gitignore`済み）。
+
+### 検証の組み立て方（実証済みのパターン）
+
+演出は数フレームで終わってしまうので、**中間状態を観測できる長尺のパラメータで発火させる**のが要点。ScriptableObjectの演出データを`ScriptableObject.CreateInstance`＋`SerializedObject`でメモリ上に組み立て、`_holdDuration`だけ極端に長くして発火すれば、好きなタイミングで測れる（アセットは汚さない）。
+
+1. **発火前のベースラインを測る**（例: 配信カメラがプレイヤーカメラと完全一致しているか）
+2. **長尺パラメータで発火**し、ブレンドイン完了を`Start-Sleep`で待つ
+3. **中間状態を測る**（位置・回転・視野角・注視方向の内積など）
+4. **期待値はPowerShell側で独立に計算**して突き合わせる。ゲーム側の計算クラスをそのまま呼ぶと同じ実装を比較するだけになり検証にならない
+5. **時間経過で変化する演出は2回測って差分を見る**（回り込み・スクロール等）
+6. **キャンセル/完走させて元の状態へ戻り切ったか**を測る（位置差0・回転差0・再生中フラグが下りる）
+
+### 新しいプローブを追加する
+
+`Tools/Playtest/Probes/`に新規`.ps1`を1つ追加する。ランナー側とEditor拡張の変更は不要。
+
+```powershell
+function ProbePrepare {   # 任意。Play前に走る。設定フラグの有効化など
+    # Play中に変えても間に合わない設定はここで仕込み、元の値を $Global:... に退避する
+}
+
+function ProbeRun {       # 必須。Play中に走る。ここで発火・測定・検証する
+}
+
+function ProbeCleanup {   # 任意。Stop後に必ず走る（失敗時も）。ProbePrepareで変えた設定を戻す
+}
+```
+
+利用できる共通ヘルパー（`PlaytestCommon.ps1`）:
+
+| ヘルパー | 用途 |
+|---|---|
+| `Invoke-UnityCode -Snippet <C#>` | C#スニペットをUnityで実行し`Result`文字列を返す（BOM無しUTF-8で渡す処理・リトライ込み） |
+| `Invoke-UnityJson -Snippet <C#>` | 同じくJSON文字列を返す前提でオブジェクト化する |
+| `Assert-ProbeValue -Name -Actual -Expected [-Tolerance]` | 数値を許容誤差付きで比較して記録する（既定 0.001） |
+| `Assert-ProbeTrue -Name -Condition [-Detail]` | 真偽を検証して記録する |
+
+C#スニペットはPowerShellの**単一引用符ヒアストリング**（`@'` … `'@`）に書くこと。二重引用符だとC#の`$"..."`補間がPowerShellに食われる。値を差し込みたい場合は`__PLACEHOLDER__`を置いて`.Replace()`する（`Probes/StreamerCameraShot.ps1`の`ProbeCleanup`が実例）。
+
+**`$foo.Count` はハッシュテーブルを返す関数の戻り値に直接使わないこと。** PowerShellは1要素の配列を戻り値でアンロールするため、検証NGが1件のとき`(Get-ProbeFailures).Count`がハッシュテーブルのキー数（6）を返す。呼び出し側で必ず`@(...)`で配列化する（実際に件数が6件と誤表示された既知の落とし穴）。
+
+### 既存のプローブ
+
+- `StreamerCameraShot` — ストリーマーモードの配信用カメラ。追従一致・自動フレーミング距離・注視方向・Orbitの回り込み・プレイヤー視点への非干渉・復帰を20項目で検証する。`ProbePrepare`で`StreamerModeConfig`を一時的に有効化（PCモードでも動くよう`_vrOnly`を外す）し、`ProbeCleanup`で元の値へ必ず戻す
 
 ### 状態観測の仕組み（`Get-WaveState`の内部）
 `execute-dynamic-code`で以下のC#スニペットを実行し、`currentWave`/`isWavePause`/`elapsed`/`kill`/`isGameOver`/`playerHealth`をJSON文字列で取得している。
@@ -124,6 +183,8 @@ BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/NextWaveBut
 以下のいずれかに該当したら、このファイル（`SKILL.md`）と関連スクリプトを更新すること。個別のClaude会話の中だけで済ませず、次回以降も再利用できるように反映する。
 
 - **新しいテストシチュエーションを増やす** → `Tools/Playtest/Scenarios/`に新規`.ps1`を追加（このファイルの「新しいテストシチュエーションを追加する」節を参照）。SKILL.md側の変更は基本不要
+- **新しいカメラ演出・エフェクトを追加した** → `Tools/Playtest/Probes/`に新規`.ps1`を追加し、「既存のプローブ」の一覧に1行足す（「演出の数値検証」節を参照）。演出は目視では検証にならないので、必ず数値で押さえる
+- **プローブ共通の道具が足りない** → `PlaytestCommon.ps1`の「演出の数値検証」セクションにヘルパーを追加し、上の表を更新
 - **ショップの選択ロジックを増やす**（例: 常に同じ候補ではなく、状況に応じて選ぶ）→ `PlaytestCommon.ps1`の`Resolve-ShopIfOpen`を拡張
 - **新しい状態観測が必要になる**（例: プレイヤーのHP減少/ゲームオーバー判定が実装された、ウェーブ数UIが追加された）→ `Get-WaveState`のC#スニペットに新しいDataStore/プロパティを追加し、「前提・制約」セクションの記述を更新
 - **検知基準を広げる**（例: ソフトロック検知、見た目異常チェックを追加する）→ `run-playtest.ps1`のエラー確認部分に新しいチェックを追記し、「前提・制約」の検知基準の記述も更新

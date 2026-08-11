@@ -127,6 +127,105 @@ function Get-NewErrors {
     return $found
 }
 
+# ===== 演出の数値検証（probe-effect.ps1 が使う） =====
+
+function Invoke-UnityCode {
+    # 任意のC#スニペットをUnity上で実行し、Result文字列を返す。
+    # BOM付きで渡すと先頭のusingがCS1001等で壊れるため、必ずBOM無しUTF-8で書き出す
+    param(
+        [Parameter(Mandatory)] [string]$Snippet,
+        [int]$MaxAttempts = 5
+    )
+    $snippetPath = Join-Path ([System.IO.Path]::GetTempPath()) 'playtest-probe-snippet.csx'
+    [System.IO.File]::WriteAllText($snippetPath, $Snippet, (New-Object System.Text.UTF8Encoding($false)))
+
+    $result = $null
+    for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+        $result = Invoke-Uloop -Command 'execute-dynamic-code' -Params @{ 'code-file' = $snippetPath }
+        if ($result.Success) { return $result.Result }
+        Start-Sleep -Seconds 3
+    }
+    throw "スニペットの実行に失敗しました: $($result.ErrorMessage) $($result.DiagnosticsSummary)"
+}
+
+function Invoke-UnityJson {
+    # スニペットがJSON文字列を返す前提でオブジェクト化する
+    param([Parameter(Mandatory)] [string]$Snippet)
+    return (Invoke-UnityCode -Snippet $Snippet) | ConvertFrom-Json
+}
+
+$Global:ProbeChecks = @()
+
+function Reset-ProbeChecks {
+    $Global:ProbeChecks = @()
+}
+
+function Assert-ProbeValue {
+    # 数値を許容誤差付きで比較する。演出は補間が絡むため完全一致ではなく許容誤差で見る
+    param(
+        [Parameter(Mandatory)] [string]$Name,
+        [Parameter(Mandatory)] [double]$Actual,
+        [Parameter(Mandatory)] [double]$Expected,
+        [double]$Tolerance = 0.001
+    )
+    $diff = [Math]::Abs($Actual - $Expected)
+    $passed = $diff -le $Tolerance
+    $Global:ProbeChecks += [ordered]@{
+        name = $Name; actual = $Actual; expected = $Expected; tolerance = $Tolerance
+        diff = [Math]::Round($diff, 5); passed = $passed
+    }
+    $mark = if ($passed) { '  OK' } else { '  NG' }
+    Write-Host "$mark $Name : actual=$Actual expected=$Expected (許容 $Tolerance / 差 $([Math]::Round($diff, 5)))"
+    return $passed
+}
+
+function Assert-ProbeTrue {
+    param(
+        [Parameter(Mandatory)] [string]$Name,
+        [Parameter(Mandatory)] [bool]$Condition,
+        [string]$Detail = ''
+    )
+    $Global:ProbeChecks += [ordered]@{
+        name = $Name; actual = $Condition; expected = $true; passed = $Condition; detail = $Detail
+    }
+    $mark = if ($Condition) { '  OK' } else { '  NG' }
+    Write-Host "$mark $Name $Detail"
+    return $Condition
+}
+
+function Get-ProbeFailures {
+    return @($Global:ProbeChecks | Where-Object { -not $_.passed })
+}
+
+function Write-ProbeReport {
+    param(
+        [Parameter(Mandatory)] [string]$Probe,
+        [Parameter(Mandatory)] [bool]$Success,
+        [array]$Checks = @(),
+        [array]$Errors = @()
+    )
+    $reportsDir = Join-Path $PSScriptRoot 'Reports'
+    if (-not (Test-Path $reportsDir)) { New-Item -ItemType Directory -Path $reportsDir | Out-Null }
+
+    $timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
+    $report = [ordered]@{
+        timestamp = $timestamp
+        probe     = $Probe
+        success   = $Success
+        checks    = $Checks
+        errors    = $Errors
+    }
+    $reportPath = Join-Path $reportsDir "probe_$timestamp.json"
+    $report | ConvertTo-Json -Depth 10 | Set-Content -Path $reportPath -Encoding utf8
+
+    $existing = Get-ChildItem -Path $reportsDir -Filter 'probe_*.json' | Sort-Object LastWriteTime
+    $excess = $existing.Count - 10
+    if ($excess -gt 0) {
+        $existing | Select-Object -First $excess | Remove-Item -Force
+    }
+    return $reportPath
+}
+
 function Write-PlaytestReport {
     param(
         [Parameter(Mandatory)] [string]$Scenario,
