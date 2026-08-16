@@ -60,6 +60,8 @@ namespace App.Battle
                 .As<IParryingDaggerDataStore>();
             builder.Register<ElectricShockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IElectricShockDataStore>();
+            builder.Register<ExtraConflictDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IExtraConflictDataStore>();
             builder.Register<UpgradeSessionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeSessionDataStore>();
             builder.Register<BuffStateDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
