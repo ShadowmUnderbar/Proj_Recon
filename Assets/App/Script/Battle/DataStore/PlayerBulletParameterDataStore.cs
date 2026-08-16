@@ -17,7 +17,7 @@ namespace App.Battle.DataStore
         private readonly IPeaceMakerDataStore _peaceMakerDataStore;
         private readonly IAvalancheDataStore _avalancheDataStore;
         private readonly IDamageNodeDataStore _damageNodeDataStore;
-        private readonly IExtraConflictDataStore _extraConflictDataStore;
+        private readonly IShotConflictDataStore _shotConflictDataStore;
 
         // パリィ弾がワルツ／マージのフォーム強化を引き継ぐようになる継承フォーム数
         private const int WaltzInheritLevel = 2;
@@ -35,7 +35,7 @@ namespace App.Battle.DataStore
             IPeaceMakerDataStore peaceMakerDataStore,
             IAvalancheDataStore avalancheDataStore,
             IDamageNodeDataStore damageNodeDataStore,
-            IExtraConflictDataStore extraConflictDataStore
+            IShotConflictDataStore shotConflictDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -45,7 +45,7 @@ namespace App.Battle.DataStore
             _peaceMakerDataStore = peaceMakerDataStore;
             _avalancheDataStore = avalancheDataStore;
             _damageNodeDataStore = damageNodeDataStore;
-            _extraConflictDataStore = extraConflictDataStore;
+            _shotConflictDataStore = shotConflictDataStore;
         }
 
         public void Tick()
@@ -79,8 +79,8 @@ namespace App.Battle.DataStore
                 _ => 1f
             };
 
-            // エクスコンフリクト（ワルツ・マージ・フォーカス封印と引き換えの連射強化）
-            coolDown *= _extraConflictDataStore.GetCoolDownMultiplier();
+            // コンフリクト系（射撃手段の封印と引き換えの連射強化）
+            coolDown *= _shotConflictDataStore.GetCoolDownMultiplier();
 
             // フォーム別の連射補正（ピースメイカー: 連続ノーマルショット / 雪崩: 直前マージの命中）。
             // 倍率取得は状態更新より先に行う（この1発に適用される倍率で確定させる）
@@ -102,14 +102,15 @@ namespace App.Battle.DataStore
 
         public bool CanShot(HandType handType, ShotType shotType)
         {
-            // エクスコンフリクトで封印されたフォームは発射できない
-            if (_extraConflictDataStore.IsShotTypeLocked(shotType))
+            // コンフリクト系で封印されたフォームは発射できない
+            if (_shotConflictDataStore.IsShotTypeLocked(shotType))
             {
                 return false;
             }
 
+            // 二丁拳銃が未解放、またはコンフリクト系で封印されている間は利き手でしか撃てない
             if (DebugConfig.IsVRMode &&
-                !_coreSkillUnlockDataStore.IsUnLockAkimbo &&
+                (!_coreSkillUnlockDataStore.IsUnLockAkimbo || _shotConflictDataStore.IsAkimboLocked) &&
                 _playerSettingDataStore.NonDominantHand == handType)
             {
                 return false;
@@ -222,8 +223,8 @@ namespace App.Battle.DataStore
 
             damage *= focusType == AimFocusType.Focus ? BasePlayerParameter.LongFocusDamageMagnification : 1f;
 
-            // エクスコンフリクト（ワルツ・マージ・フォーカス封印と引き換えのダメージ強化）
-            damage *= _extraConflictDataStore.GetDamageMultiplier();
+            // コンフリクト系（射撃手段の封印と引き換えのダメージ強化）
+            damage *= _shotConflictDataStore.GetDamageMultiplier();
 
             return damage;
         }

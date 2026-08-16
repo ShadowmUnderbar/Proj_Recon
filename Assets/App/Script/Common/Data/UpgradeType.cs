@@ -37,4 +37,7 @@ public enum UpgradeType
     ParryingDagger = 32, // パリングダガー
     ElectricShock = 33, // 感電
     ExtraConflict = 34, // エクスコンフリクト
+    FocusConflict = 35, // フォーカスコンフリクト
+    MergeConflict = 36, // マージコンフリクト
+    WaltzConflict = 37, // ワルツコンフリクト
 }

@@ -21,6 +21,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
+        private readonly IShotConflictDataStore _shotConflictDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -33,7 +34,8 @@ namespace App.Battle.UseCase
             IPlayerBulletParameterDataStore playerBulletParameterDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputDataStore gameInputDataStore,
-            IWaveManagerDataStore waveManagerDataStore
+            IWaveManagerDataStore waveManagerDataStore,
+            IShotConflictDataStore shotConflictDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -44,6 +46,7 @@ namespace App.Battle.UseCase
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
             _waveManagerDataStore = waveManagerDataStore;
+            _shotConflictDataStore = shotConflictDataStore;
         }
 
         public void Initialize()
@@ -74,7 +77,8 @@ namespace App.Battle.UseCase
             _playerControlPresenter.SetHandRayColor(dominantHand, ThemeColors.GetRayColor(shotType, rightFocusType));
             _playerControlPresenter.SetAimRayColor(dominantHand, ThemeColors.GetRayColor(shotType, rightFocusType));
 
-            if (!_coreSkillUnlockDataStore.IsUnLockAkimbo)
+            // 二丁拳銃が未解放、またはコンフリクト系で封印されている間は非利き手のレイを消す
+            if (!_coreSkillUnlockDataStore.IsUnLockAkimbo || _shotConflictDataStore.IsAkimboLocked)
             {
                 _playerControlPresenter.SetAimEnableRay(nonDominantHand, false);
                 _playerControlPresenter.SetHandEnableRay(nonDominantHand, false);

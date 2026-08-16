@@ -11,7 +11,7 @@ namespace App.Battle.DataStore
     {
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
-        private readonly IExtraConflictDataStore _extraConflictDataStore;
+        private readonly IShotConflictDataStore _shotConflictDataStore;
 
         public ReactiveProperty<int> FocusLeftTargetId { get; } = new(-1);
         public ReactiveProperty<int> FocusRightTargetId { get; } = new(-1);
@@ -28,12 +28,12 @@ namespace App.Battle.DataStore
         public PlayerFocusDataStore(
             IPlayerStateDataStore playerStateDataStore,
             IEnemyDataStore enemyDataStore,
-            IExtraConflictDataStore extraConflictDataStore
+            IShotConflictDataStore shotConflictDataStore
         )
         {
             _playerStateDataStore = playerStateDataStore;
             _enemyDataStore = enemyDataStore;
-            _extraConflictDataStore = extraConflictDataStore;
+            _shotConflictDataStore = shotConflictDataStore;
         }
 
         public void Initialize()
@@ -46,9 +46,9 @@ namespace App.Battle.DataStore
 
         public void Tick()
         {
-            // エクスコンフリクトでフォーカスが封印されている間は、狙いも状態も持たせない。
+            // コンフリクト系でフォーカスが封印されている間は、狙いも状態も持たせない。
             // 対象の取得自体は PlayerAimUseCase 側で止めており、ここは取りこぼしの保険
-            if (_extraConflictDataStore.IsFocusLocked)
+            if (_shotConflictDataStore.IsFocusLocked)
             {
                 if (FocusLeftTargetId.Value != -1 || FocusRightTargetId.Value != -1 ||
                     LeftFocusType.Value != AimFocusType.NotFocus || RightFocusType.Value != AimFocusType.NotFocus)
