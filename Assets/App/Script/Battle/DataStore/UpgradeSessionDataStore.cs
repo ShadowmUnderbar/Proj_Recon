@@ -1,12 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using App.Battle.Interface.DataStore;
 using App.Common.Data.MasterData;
+using R3;
 using VContainer;
 
 namespace App.Battle.DataStore
 {
-    public class UpgradeSessionDataStore : IUpgradeSessionDataStore
+    public class UpgradeSessionDataStore : IUpgradeSessionDataStore, IDisposable
     {
         // 所持している全アップグレード（読込分＋新規獲得分）
         private readonly List<string> _appliedUpgrades = new();
@@ -15,6 +17,9 @@ namespace App.Battle.DataStore
         private readonly HashSet<string> _preloadedIds = new();
 
         public IReadOnlyList<string> AppliedUpgrades => _appliedUpgrades;
+
+        private readonly Subject<Unit> _onChanged = new();
+        public Observable<Unit> OnChanged => _onChanged;
 
         public IReadOnlyList<string> NewlyAcquiredUpgrades =>
             _appliedUpgrades.Where(id => !_preloadedIds.Contains(id)).ToList();
@@ -30,6 +35,7 @@ namespace App.Battle.DataStore
             }
 
             _appliedUpgrades.Add(upgradeData.Id);
+            _onChanged.OnNext(Unit.Default);
         }
 
         public void Preload(UpgradeMasterData upgradeData)
@@ -41,12 +47,19 @@ namespace App.Battle.DataStore
 
             _appliedUpgrades.Add(upgradeData.Id);
             _preloadedIds.Add(upgradeData.Id);
+            _onChanged.OnNext(Unit.Default);
         }
 
         public void Reset()
         {
             _appliedUpgrades.Clear();
             _preloadedIds.Clear();
+            _onChanged.OnNext(Unit.Default);
+        }
+
+        public void Dispose()
+        {
+            _onChanged.Dispose();
         }
     }
 }

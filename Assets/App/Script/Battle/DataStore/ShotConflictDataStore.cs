@@ -1,6 +1,9 @@
+using System;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
+using R3;
 using VContainer;
+using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
@@ -8,8 +11,9 @@ namespace App.Battle.DataStore
     /// コンフリクト系アップグレードの実行時状態。
     /// 何を封印するかは種別ごとに固定で、強化量は Value1（ダメージ倍率）・Value2（クールダウン倍率）で持つ。
     /// 複数所持した場合、封印は重ね掛けされ、倍率は掛け合わせる。
+    /// 判定は毎フレーム参照されるため、所持内容が変わったときだけ再計算して保持する。
     /// </summary>
-    public class ShotConflictDataStore : IShotConflictDataStore
+    public class ShotConflictDataStore : IShotConflictDataStore, IInitializable, IDisposable
     {
         /// <summary>コンフリクト1種が何を封印するかの定義</summary>
         private readonly struct ConflictDefinition
@@ -43,111 +47,89 @@ namespace App.Battle.DataStore
         };
 
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
+        private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
+
+        private readonly CompositeDisposable _disposables = new();
+
+        private bool _isWaltzLocked;
+        private bool _isMergeLocked;
+        private float _damageMultiplier = 1f;
+        private float _coolDownMultiplier = 1f;
 
         [Inject]
         public ShotConflictDataStore(
-            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore
+            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
+            IUpgradeSessionDataStore upgradeSessionDataStore
         )
         {
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
+            _upgradeSessionDataStore = upgradeSessionDataStore;
         }
 
-        public bool IsFocusLocked
+        public bool IsFocusLocked { get; private set; }
+
+        public bool IsAkimboLocked { get; private set; }
+
+        public void Initialize()
         {
-            get
-            {
-                foreach (var definition in Definitions)
-                {
-                    if (definition.LockFocus && IsOwned(definition.UpgradeType))
-                    {
-                        return true;
-                    }
-                }
+            Recalculate();
 
-                return false;
-            }
-        }
-
-        public bool IsAkimboLocked
-        {
-            get
-            {
-                foreach (var definition in Definitions)
-                {
-                    if (definition.LockAkimbo && IsOwned(definition.UpgradeType))
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
+            _upgradeSessionDataStore.OnChanged
+                .Subscribe(_ => Recalculate())
+                .AddTo(_disposables);
         }
 
         public bool IsShotTypeLocked(ShotType shotType)
         {
-            if (shotType == ShotType.Normal)
+            // 未知のフォームを封印扱いにしないため、明示的に列挙する
+            return shotType switch
             {
-                return false;
-            }
-
-            foreach (var definition in Definitions)
-            {
-                // 未知のフォームを封印扱いにしないため、明示的に列挙する
-                var locksThisShot = shotType switch
-                {
-                    ShotType.Waltz => definition.LockWaltz,
-                    ShotType.Merge => definition.LockMerge,
-                    _ => false,
-                };
-
-                if (locksThisShot && IsOwned(definition.UpgradeType))
-                {
-                    return true;
-                }
-            }
-
-            return false;
+                ShotType.Waltz => _isWaltzLocked,
+                ShotType.Merge => _isMergeLocked,
+                _ => false,
+            };
         }
 
         public float GetDamageMultiplier()
         {
-            var multiplier = 1f;
-
-            foreach (var definition in Definitions)
-            {
-                if (TryGetUpgrade(definition.UpgradeType, out var upgrade))
-                {
-                    multiplier *= upgrade.Value1.value;
-                }
-            }
-
-            return multiplier;
+            return _damageMultiplier;
         }
 
         public float GetCoolDownMultiplier()
         {
-            var multiplier = 1f;
+            return _coolDownMultiplier;
+        }
+
+        private void Recalculate()
+        {
+            _isWaltzLocked = false;
+            _isMergeLocked = false;
+            IsFocusLocked = false;
+            IsAkimboLocked = false;
+            _damageMultiplier = 1f;
+            _coolDownMultiplier = 1f;
 
             foreach (var definition in Definitions)
             {
-                if (TryGetUpgrade(definition.UpgradeType, out var upgrade))
+                if (!_upgradeEffectSimpleCalculatorDataStore
+                        .TryGetHighestLevelUpgrade(definition.UpgradeType, out var upgrade))
                 {
-                    multiplier *= upgrade.Value2.value;
+                    continue;
                 }
+
+                _isWaltzLocked |= definition.LockWaltz;
+                _isMergeLocked |= definition.LockMerge;
+                IsFocusLocked |= definition.LockFocus;
+                IsAkimboLocked |= definition.LockAkimbo;
+
+                _damageMultiplier *= upgrade.Value1.value;
+                _coolDownMultiplier *= upgrade.Value2.value;
             }
-
-            return multiplier;
         }
 
-        private bool IsOwned(UpgradeType upgradeType)
+        public void Dispose()
         {
-            return _upgradeEffectSimpleCalculatorDataStore.TryGetHighestLevelUpgrade(upgradeType, out _);
-        }
-
-        private bool TryGetUpgrade(UpgradeType upgradeType, out Common.Data.MasterData.UpgradeMasterData upgrade)
-        {
-            return _upgradeEffectSimpleCalculatorDataStore.TryGetHighestLevelUpgrade(upgradeType, out upgrade);
+            _disposables.Dispose();
         }
     }
 }

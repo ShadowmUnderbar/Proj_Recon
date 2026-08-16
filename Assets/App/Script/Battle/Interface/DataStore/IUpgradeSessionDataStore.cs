@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using App.Common.Data.MasterData;
+using R3;
 
 namespace App.Battle.Interface.DataStore
 {
@@ -7,6 +8,12 @@ namespace App.Battle.Interface.DataStore
     {
         /// <summary>このランで所持している全アップグレードID（読込分＋新規獲得分）。効果計算・抽選除外に使う</summary>
         IReadOnlyList<string> AppliedUpgrades { get; }
+
+        /// <summary>
+        /// 所持アップグレードが変化したときに発火する。
+        /// 毎フレーム走査したくない効果のキャッシュ更新や、取得直後の表示更新に使う。
+        /// </summary>
+        Observable<Unit> OnChanged { get; }
 
         /// <summary>このランで新たに獲得したアップグレードID（セット読込で最初から持っていた分は含まない）。メタ保存の対象</summary>
         IReadOnlyList<string> NewlyAcquiredUpgrades { get; }
