@@ -176,6 +176,16 @@ namespace App.Battle.Views
             enemyView.SetStun(isStun);
         }
 
+        public void PlayHitFeedback(int enemyId, Vector3 hitDirection)
+        {
+            if (!_enemies.TryGetValue(enemyId, out var enemyView))
+            {
+                return;
+            }
+
+            enemyView.PlayHitFeedback(hitDirection);
+        }
+
         public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)
         {
             foreach (var enemy in _enemies.Values)

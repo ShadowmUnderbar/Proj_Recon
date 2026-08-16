@@ -58,6 +58,8 @@ namespace App.Battle
                 .As<IPlayerDodgeParameterDataStore>();
             builder.Register<ParryingDaggerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IParryingDaggerDataStore>();
+            builder.Register<ElectricShockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IElectricShockDataStore>();
             builder.Register<UpgradeSessionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeSessionDataStore>();
             builder.Register<BuffStateDataStore>(Lifetime.Singleton).AsImplementedInterfaces()

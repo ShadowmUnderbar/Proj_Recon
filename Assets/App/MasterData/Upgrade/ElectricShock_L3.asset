@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
+  m_Name: ElectricShock_L3
+  m_EditorClassIdentifier: 
+  _id: 108
+  _nameKey: $ElectricShock
+  _upgradeType: 33
+  _playerUnlockType: 3
+  _level: 3
+  _value1: 1
+  _value1ParameterType: 1
+  _value2: 0.5
+  _value2ParameterType: 1
+  _value3: 3
+  _value3ParameterType: 1
+  _value4: 0
+  _value4ParameterType: 0
+  _value5: 0
+  _value5ParameterType: 0
+  _buffId: 

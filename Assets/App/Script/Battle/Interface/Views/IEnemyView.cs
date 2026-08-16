@@ -24,5 +24,8 @@ namespace App.Battle.Interface
 
         /// <summary>スタン状態を設定する（メデューサ）</summary>
         void SetStun(bool isStun);
+
+        /// <summary>被弾の傾き演出を再生する（hitDirection はダメージ源→敵の水平方向）</summary>
+        void PlayHitFeedback(Vector3 hitDirection);
     }
 }

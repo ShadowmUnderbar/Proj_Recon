@@ -58,6 +58,11 @@ namespace App.Battle.Presenters
             _enemyStoreView.SetStun(enemyId, isStun);
         }
 
+        public void PlayHitFeedback(int enemyId, Vector3 hitDirection)
+        {
+            _enemyStoreView.PlayHitFeedback(enemyId, hitDirection);
+        }
+
         public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)
         {
             _enemyStoreView.SetPlayerAimDirection(aimDir1, aimDir2);
