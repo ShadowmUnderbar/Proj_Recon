@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
+using App.Framework.Utilities.Extensions;
+using UnityEngine;
 using Cysharp.Threading.Tasks;
 using R3;
 using VContainer;
@@ -22,8 +25,12 @@ namespace App.Battle.UseCase
         private readonly IAvalancheDataStore _avalancheDataStore;
         private readonly IMeanMugDataStore _meanMugDataStore;
         private readonly ICriticalHitDataStore _criticalHitDataStore;
+        private readonly IElectricShockDataStore _electricShockDataStore;
 
         private readonly CompositeDisposable _disposable = new();
+
+        // 感電の伝播先。DataStore側のバッファは次の命中で詰め直されるため、適用前にここへ複製する
+        private readonly List<int> _electricShockTargets = new();
 
         [Inject]
         public BattleHitUseCase
@@ -37,7 +44,8 @@ namespace App.Battle.UseCase
             IHealOnKillDataStore healOnKillDataStore,
             IAvalancheDataStore avalancheDataStore,
             IMeanMugDataStore meanMugDataStore,
-            ICriticalHitDataStore criticalHitDataStore
+            ICriticalHitDataStore criticalHitDataStore,
+            IElectricShockDataStore electricShockDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
@@ -50,6 +58,7 @@ namespace App.Battle.UseCase
             _avalancheDataStore = avalancheDataStore;
             _meanMugDataStore = meanMugDataStore;
             _criticalHitDataStore = criticalHitDataStore;
+            _electricShockDataStore = electricShockDataStore;
         }
 
         public void Initialize()
@@ -86,7 +95,50 @@ namespace App.Battle.UseCase
                 _avalancheDataStore.NotifyMergeHit();
             }
 
+            // 感電: ワルツ命中時に周囲の敵へダメージを伝播させる。
+            // 本命中で対象が撃破される前に伝播先を確定させる（撃破演出中の敵を巻き込まないため）
+            var hasChain = _electricShockDataStore.TryGetChain(hitData, out var chain);
+
             _enemyDataStore.Damage(hitData);
+
+            if (hasChain)
+            {
+                ApplyElectricShockChain(chain);
+            }
+        }
+
+        /// <summary>
+        /// 感電の伝播ダメージを与える。
+        /// ShotTypeは渡さない（射撃そのものではないため、フォーム条件のバフを二重に駆動させない）。
+        /// </summary>
+        private void ApplyElectricShockChain(ElectricShockChain chain)
+        {
+            // Damage() は購読者を同期的に走らせるため、その中で伝播先バッファが詰め直されても
+            // 取りこぼさないよう、適用前に複製しておく
+            _electricShockTargets.Clear();
+            _electricShockTargets.AddRange(chain.TargetEnemyIds);
+
+            for (var i = 0; i < _electricShockTargets.Count; i++)
+            {
+                var enemyId = _electricShockTargets[i];
+
+                if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData))
+                {
+                    continue;
+                }
+
+                var directionType = RelativeYawExtension.GetActorRelative(enemyData.Pose, chain.Center);
+
+                // 伝播の水平方向（命中した敵→伝播先）。傾き演出の向きに使う
+                var hitDirection = enemyData.Pose.position - chain.Center;
+                hitDirection.y = 0f;
+                hitDirection = hitDirection.sqrMagnitude > 0f ? hitDirection.normalized : Vector3.zero;
+
+                _enemyDataStore.Damage(new HitData(enemyId, chain.Damage, directionType, hitDirection));
+
+                // 弾のヒットボックスを経由しないため、被弾の傾き演出は明示的に再生する
+                _enemyPresenter.PlayHitFeedback(enemyId, hitDirection);
+            }
         }
 
         private async UniTask OnEnemyDead(int enemyId)

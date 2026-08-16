@@ -35,4 +35,5 @@ public enum UpgradeType
     Appraisal = 30, // 目利き
     Fixation = 31, // 執着
     ParryingDagger = 32, // パリングダガー
+    ElectricShock = 33, // 感電
 }

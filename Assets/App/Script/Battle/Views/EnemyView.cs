@@ -103,6 +103,16 @@ namespace App.Battle.Views
             EnemyAI.SetSpeedMultiplier(multiplier);
         }
 
+        public void PlayHitFeedback(Vector3 hitDirection)
+        {
+            if (_hitFeedback == null)
+            {
+                return;
+            }
+
+            _hitFeedback.Play(hitDirection);
+        }
+
         public void SetStun(bool isStun)
         {
             if (EnemyAI == null)
