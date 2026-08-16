@@ -184,8 +184,9 @@ namespace App.Battle.Views.Enemy.Bullet
 
             // 同一弾内で何体目のヒットか（1始まり）。PenetrationCount条件バフの倍率計算に使う。
             // エイム状態とフォーカス対象一致はキリングコールの条件判定に使う
+            // isProjectile: 弾の直撃であることを伝える（回避中のパリィ対象の判定に使う）
             hitBox.OnHit(BulletData.Damage, _attackerId, transform.position, out var canPenetrable,
-                _hitTargetIds.Count, BulletData.ShotType, BulletData.FocusType, _focusTargetId == hitBox.Id);
+                _hitTargetIds.Count, BulletData.ShotType, BulletData.FocusType, _focusTargetId == hitBox.Id, true);
 
             if (_focusTargetId == hitBox.Id)
             {

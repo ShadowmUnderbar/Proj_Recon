@@ -64,6 +64,11 @@ namespace App.Battle.Presenters
             _playerView.Shot(handType, bulletData, focusTargetId);
         }
 
+        public void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition)
+        {
+            _playerView.ShotToward(handType, bulletData, focusTargetId, targetPosition);
+        }
+
         public void Aim()
         {
             _playerView.Aim();

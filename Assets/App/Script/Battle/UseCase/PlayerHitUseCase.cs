@@ -1,4 +1,5 @@
 using System;
+using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using R3;
@@ -41,7 +42,7 @@ namespace App.Battle.UseCase
                 .AddTo(_disposable);
         }
 
-        private void OnDamaged(float damage)
+        private void OnDamaged(PlayerDamagedData damagedData)
         {
             // ウェーブ間ポーズ中は無敵（敵側と同基準でダメージを通さない）
             if (_waveManagerDataStore.IsWavePause.Value)
@@ -54,11 +55,11 @@ namespace App.Battle.UseCase
             // 回避中の被弾をトリガーにした処理（カウンター・演出等）を発火できるようにする
             if (_playerDodgeParameterDataStore.IsDodging.CurrentValue)
             {
-                _playerDodgeParameterDataStore.NotifyDamageBlocked(damage);
+                _playerDodgeParameterDataStore.NotifyDamageBlocked(damagedData);
                 return;
             }
 
-            _playerStateDataStore.TakeDamage(damage);
+            _playerStateDataStore.TakeDamage(damagedData.Damage);
         }
 
         public void Dispose()

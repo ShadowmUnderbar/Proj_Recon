@@ -29,5 +29,21 @@ namespace App.Battle.Views
             _bulletViews.Add(Time.time, bullet);
             bullet.Spawn(BasePlayerParameter.PlayerId, transform.ToPose(), bulletData, focusTargetId);
         }
+
+        public void SpawnBulletToward(BulletData bulletData, int focusTargetId, Vector3 targetPosition)
+        {
+            var bullet = _playerBulletFactory.Instantiate(null);
+
+            // 発射位置は通常の射撃と同じ（手元）で、向きだけ対象へ向ける
+            var pose = transform.ToPose();
+            var direction = targetPosition - pose.position;
+
+            if (direction.sqrMagnitude > 0f)
+            {
+                pose.rotation = Quaternion.LookRotation(direction.normalized);
+            }
+
+            bullet.Spawn(BasePlayerParameter.PlayerId, pose, bulletData, focusTargetId);
+        }
     }
 }

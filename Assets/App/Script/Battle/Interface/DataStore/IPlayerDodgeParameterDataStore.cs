@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using R3;
 using UnityEngine;
 
@@ -22,10 +23,10 @@ namespace App.Battle.Interface.DataStore
 
         /// <summary>
         /// 回避中に攻撃を受け、そのダメージを無効化した瞬間に発火する。
-        /// 流れる値は「無効化しなければ受けていたダメージ量」。
-        /// ジャスト回避演出やカウンター等をここに繋げる。
+        /// 流れる値は無効化しなければ受けていた攻撃の内容（ダメージ量・攻撃者・弾か否か）。
+        /// パリングダガーやジャスト回避演出をここに繋げる。
         /// </summary>
-        Observable<float> OnDamagedDuringDodge { get; }
+        Observable<PlayerDamagedData> OnDamagedDuringDodge { get; }
 
         void SetCoolDownTime();
 
@@ -39,6 +40,6 @@ namespace App.Battle.Interface.DataStore
         bool TryAdvanceDodge(float deltaTime, out Vector3 position);
 
         /// <summary>回避中の被弾を無効化したことを通知する（OnDamagedDuringDodge を発火）</summary>
-        void NotifyDamageBlocked(float damage);
+        void NotifyDamageBlocked(PlayerDamagedData damagedData);
     }
 }

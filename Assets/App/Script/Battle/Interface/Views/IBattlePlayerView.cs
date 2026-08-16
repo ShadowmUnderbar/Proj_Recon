@@ -10,8 +10,8 @@ namespace App.Battle.Interface
         Transform PlayerTransform { get; }
         Observable<HitData> OnHit { get; }
 
-        /// <summary>被弾したダメージ量を流す（被弾受けコンポーネント由来）</summary>
-        Observable<float> OnDamaged { get; }
+        /// <summary>被弾内容を流す（被弾受けコンポーネント由来）</summary>
+        Observable<PlayerDamagedData> OnDamaged { get; }
 
         Observable<int> OnFocusLeft { get; }
         Observable<int> OnFocusRight { get; }
@@ -40,6 +40,10 @@ namespace App.Battle.Interface
         void SetHandRayColor(HandType handType, Color color);
         void SetHandEnableRay(HandType handType, bool enable);
         void Shot(HandType handType, BulletData bulletData, int focusTargetId);
+
+        /// <summary>指定座標へ向けて弾を発射する（パリィのように狙いと無関係な方向へ撃つ用）</summary>
+        void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition);
+
         void Blitz(Vector3 startPos, Transform playerPos);
     }
 }
