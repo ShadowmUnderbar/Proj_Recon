@@ -27,6 +27,7 @@ namespace App.Battle.UseCase
         private readonly UpgradeSideEffectApplier _upgradeSideEffectApplier;
         private readonly UpgradeDatabase _upgradeDatabase;
         private readonly IRunStartPresenter _runStartPresenter;
+        private readonly IPlayerStateDataStore _playerStateDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -38,7 +39,8 @@ namespace App.Battle.UseCase
             IUpgradeSessionDataStore upgradeSessionDataStore,
             UpgradeSideEffectApplier upgradeSideEffectApplier,
             UpgradeDatabase upgradeDatabase,
-            IRunStartPresenter runStartPresenter
+            IRunStartPresenter runStartPresenter,
+            IPlayerStateDataStore playerStateDataStore
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -48,6 +50,7 @@ namespace App.Battle.UseCase
             _upgradeSideEffectApplier = upgradeSideEffectApplier;
             _upgradeDatabase = upgradeDatabase;
             _runStartPresenter = runStartPresenter;
+            _playerStateDataStore = playerStateDataStore;
         }
 
         public void Initialize()
@@ -113,6 +116,10 @@ namespace App.Battle.UseCase
             {
                 _upgradeSessionDataStore.Preload(upgrade);
             }
+
+            // バリアは最大HPを基準に張るため、副作用の適用前にHP強化を確定させる。
+            // 個別のApply任せだとセット内のID順でバリア量が変わってしまう
+            _playerStateDataStore.RefreshMaxHealth();
 
             // 付与副作用（GrantBuff起動・バリア満タン付与）はPreload後にまとめて適用する
             foreach (var upgrade in upgrades)

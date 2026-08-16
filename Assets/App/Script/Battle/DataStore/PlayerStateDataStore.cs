@@ -13,6 +13,7 @@ namespace App.Battle.DataStore
         private readonly IPlayerBarrierDataStore _playerBarrierDataStore;
         private readonly IBuffStateDataStore _buffStateDataStore;
         private readonly IEmergencyNodeDataStore _emergencyNodeDataStore;
+        private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
 
         // 軽減バフを適用しても最低これだけはダメージが通る（完全無敵化を防ぐ）
         private const float MinDamage = 1f;
@@ -21,12 +22,14 @@ namespace App.Battle.DataStore
         public PlayerStateDataStore(
             IPlayerBarrierDataStore playerBarrierDataStore,
             IBuffStateDataStore buffStateDataStore,
-            IEmergencyNodeDataStore emergencyNodeDataStore
+            IEmergencyNodeDataStore emergencyNodeDataStore,
+            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore
         )
         {
             _playerBarrierDataStore = playerBarrierDataStore;
             _buffStateDataStore = buffStateDataStore;
             _emergencyNodeDataStore = emergencyNodeDataStore;
+            _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
         }
 
         public ReactiveProperty<Vector3> Position { get; } = new();
@@ -52,6 +55,27 @@ namespace App.Battle.DataStore
             Position.Value = Vector3.zero;
             Health.Value = BasePlayerParameter.Health;
             MaxHealth.Value = BasePlayerParameter.Health;
+
+            // 所持中のHP強化を反映した値に揃える。
+            // シーン開始時点では未所持なので通常は基礎値のままで、実際の反映は
+            // アップグレード獲得時（UpgradeSideEffectApplier）とセット読込時（RunStartUseCase）に行われる
+            RefreshMaxHealth();
+        }
+
+        public void RefreshMaxHealth()
+        {
+            var newMaxHealth = BasePlayerParameter.Health *
+                               _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.Health);
+
+            var increased = newMaxHealth - MaxHealth.Value;
+
+            MaxHealth.Value = newMaxHealth;
+
+            // 最大HPが増えた分は現在HPにも加算する（取得した瞬間に体力が増える手応えを出す）。
+            // 減った場合（デバッグ等での再計算）は上限でクランプするだけ
+            Health.Value = increased > 0f
+                ? Mathf.Min(newMaxHealth, Health.Value + increased)
+                : Mathf.Min(Health.Value, newMaxHealth);
         }
 
         public void Move(Vector2 moveV2, float speed)
