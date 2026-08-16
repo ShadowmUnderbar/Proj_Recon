@@ -17,6 +17,7 @@ namespace App.Battle.DataStore
         private readonly IPeaceMakerDataStore _peaceMakerDataStore;
         private readonly IAvalancheDataStore _avalancheDataStore;
         private readonly IDamageNodeDataStore _damageNodeDataStore;
+        private readonly IExtraConflictDataStore _extraConflictDataStore;
 
         // パリィ弾がワルツ／マージのフォーム強化を引き継ぐようになる継承フォーム数
         private const int WaltzInheritLevel = 2;
@@ -33,7 +34,8 @@ namespace App.Battle.DataStore
             IBuffStateDataStore buffStateDataStore,
             IPeaceMakerDataStore peaceMakerDataStore,
             IAvalancheDataStore avalancheDataStore,
-            IDamageNodeDataStore damageNodeDataStore
+            IDamageNodeDataStore damageNodeDataStore,
+            IExtraConflictDataStore extraConflictDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -43,6 +45,7 @@ namespace App.Battle.DataStore
             _peaceMakerDataStore = peaceMakerDataStore;
             _avalancheDataStore = avalancheDataStore;
             _damageNodeDataStore = damageNodeDataStore;
+            _extraConflictDataStore = extraConflictDataStore;
         }
 
         public void Tick()
@@ -76,6 +79,9 @@ namespace App.Battle.DataStore
                 _ => 1f
             };
 
+            // エクスコンフリクト（ワルツ・マージ・フォーカス封印と引き換えの連射強化）
+            coolDown *= _extraConflictDataStore.GetCoolDownMultiplier();
+
             // フォーム別の連射補正（ピースメイカー: 連続ノーマルショット / 雪崩: 直前マージの命中）。
             // 倍率取得は状態更新より先に行う（この1発に適用される倍率で確定させる）
             coolDown *= _peaceMakerDataStore.GetCoolDownMultiplier(shotType);
@@ -96,6 +102,12 @@ namespace App.Battle.DataStore
 
         public bool CanShot(HandType handType, ShotType shotType)
         {
+            // エクスコンフリクトで封印されたフォームは発射できない
+            if (_extraConflictDataStore.IsShotTypeLocked(shotType))
+            {
+                return false;
+            }
+
             if (DebugConfig.IsVRMode &&
                 !_coreSkillUnlockDataStore.IsUnLockAkimbo &&
                 _playerSettingDataStore.NonDominantHand == handType)
@@ -209,6 +221,9 @@ namespace App.Battle.DataStore
             damage *= _buffStateDataStore.CalcMultiply(BuffEffectType.AttackPower);
 
             damage *= focusType == AimFocusType.Focus ? BasePlayerParameter.LongFocusDamageMagnification : 1f;
+
+            // エクスコンフリクト（ワルツ・マージ・フォーカス封印と引き換えのダメージ強化）
+            damage *= _extraConflictDataStore.GetDamageMultiplier();
 
             return damage;
         }

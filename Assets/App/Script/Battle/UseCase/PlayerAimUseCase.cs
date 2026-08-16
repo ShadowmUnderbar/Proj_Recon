@@ -15,6 +15,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerFocusDataStore _playerFocusDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
+        private readonly IExtraConflictDataStore _extraConflictDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -23,13 +24,15 @@ namespace App.Battle.UseCase
             IPlayerAimDataStore playerAimDataStore,
             IPlayerFocusDataStore playerFocusDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputDataStore gameInputDataStore
+            IGameInputDataStore gameInputDataStore,
+            IExtraConflictDataStore extraConflictDataStore
         )
         {
             _playerAimDataStore = playerAimDataStore;
             _playerFocusDataStore = playerFocusDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
+            _extraConflictDataStore = extraConflictDataStore;
         }
 
         public void Initialize()
@@ -55,17 +58,25 @@ namespace App.Battle.UseCase
                 .Subscribe(x => _playerAimDataStore.RightHandPose.Value = x)
                 .AddTo(_disposables);
 
+            // 封印中はエイムのスナップ自体を止める（フォーカス対象を掴ませない）
             _gameInputDataStore.IsFocusLeft
-                .Subscribe(x => _playerControlPresenter.IsFocusLeft(x))
+                .Subscribe(x => _playerControlPresenter.IsFocusLeft(x && !_extraConflictDataStore.IsFocusLocked))
                 .AddTo(_disposables);
 
             _gameInputDataStore.IsFocusRight
-                .Subscribe(x => _playerControlPresenter.IsFocusRight(x))
+                .Subscribe(x => _playerControlPresenter.IsFocusRight(x && !_extraConflictDataStore.IsFocusLocked))
                 .AddTo(_disposables);
         }
 
         private void UpdateOnFocus(int id, bool isLeft)
         {
+            // エクスコンフリクトでフォーカスが封印されている間は対象を掴まない。
+            // ここで弾く必要がある（Tickでの解除は同フレーム内にこの通知で上書きされてしまう）
+            if (_extraConflictDataStore.IsFocusLocked)
+            {
+                id = -1;
+            }
+
             if (isLeft)
             {
                 _playerFocusDataStore.FocusLeftTargetId.Value = id;
