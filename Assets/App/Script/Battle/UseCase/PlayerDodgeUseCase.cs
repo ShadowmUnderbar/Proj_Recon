@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
@@ -28,6 +29,9 @@ namespace App.Battle.UseCase
         private readonly IWaveManagerDataStore _waveManagerDataStore;
 
         private readonly CompositeDisposable _disposables = new();
+
+        // 1回の回避中にBlitzのダメージを与えた敵ID（同じ敵への多重ヒットを防ぐ）
+        private readonly HashSet<int> _blitzHitEnemyIds = new();
 
         [Inject]
         public PlayerDodgeUseCase(
@@ -99,11 +103,11 @@ namespace App.Battle.UseCase
                 moveTarget = hit.point;
             }
 
-            Blitz(playerPosition, dodgeDirection, moveTarget);
-
             _playerControlPresenter.Blitz(_playerStateDataStore.Position.Value, _playerStateDataStore.PlayerTransform);
 
             // 瞬間移動ではなく、Tickで一定時間かけて直線移動させる
+            // Blitzのダメージも移動に合わせてTickで順次与える
+            _blitzHitEnemyIds.Clear();
             _playerDodgeParameterDataStore.StartDodge(playerPosition, moveTarget);
         }
 
@@ -115,24 +119,39 @@ namespace App.Battle.UseCase
                 return;
             }
 
+            var previousPosition = _playerStateDataStore.Position.Value;
+
             if (!_playerDodgeParameterDataStore.TryAdvanceDodge(Time.deltaTime, out var position))
             {
                 return;
             }
 
             _playerStateDataStore.Position.Value = position;
+
+            // このフレームで通過した区間だけを判定し、すり抜けた敵に順番にダメージを与える
+            Blitz(previousPosition, position);
         }
 
-        private void Blitz(Vector3 playerPosition, Vector3 dodgeDirection, Vector3 moveTarget)
+        /// <summary>
+        /// 回避で通過した区間 from→to にいる敵へダメージを与える。
+        /// 同一の回避中に同じ敵へ複数回ダメージが入らないよう、命中済みIDを保持する。
+        /// </summary>
+        private void Blitz(Vector3 from, Vector3 to)
         {
             if (!_coreSkillUnlockDataStore.IsUnLockBlitz)
             {
                 return;
             }
 
-            var beforePosition = _playerStateDataStore.Position.Value;
-            var moveDistance = Vector3.Distance(moveTarget, playerPosition);
-            var enemyHits = _enemyPresenter.GetDodgeHitEnemies(playerPosition, dodgeDirection.normalized, moveDistance);
+            var moveVector = to - from;
+            var moveDistance = moveVector.magnitude;
+
+            if (moveDistance <= 0f)
+            {
+                return;
+            }
+
+            var enemyHits = _enemyPresenter.GetDodgeHitEnemies(from, moveVector.normalized, moveDistance);
 
             if (enemyHits is null or { Length: <= 0 })
             {
@@ -143,12 +162,17 @@ namespace App.Battle.UseCase
 
             foreach (var enemyId in enemyHits)
             {
+                if (!_blitzHitEnemyIds.Add(enemyId))
+                {
+                    continue;
+                }
+
                 if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData))
                 {
                     continue;
                 }
 
-                var directionType = RelativeYawExtension.GetActorRelative(enemyData.Pose, beforePosition);
+                var directionType = RelativeYawExtension.GetActorRelative(enemyData.Pose, from);
                 var hitData = new HitData(enemyId, damage, directionType);
 
                 _enemyDataStore.Damage(hitData);
