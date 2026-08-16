@@ -16,6 +16,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
+        private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -24,9 +25,11 @@ namespace App.Battle.UseCase
             IPlayerStateDataStore playerStateDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputDataStore gameInputDataStore,
-            IWaveManagerDataStore waveManagerDataStore
+            IWaveManagerDataStore waveManagerDataStore,
+            IPlayerDodgeParameterDataStore playerDodgeParameterDataStore
         )
         {
+            _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
             _playerStateDataStore = playerStateDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
@@ -49,6 +52,13 @@ namespace App.Battle.UseCase
             if (_waveManagerDataStore.IsWavePause.Value)
             {
                 _playerControlPresenter.SetMoveAnimation(Vector2.zero);
+                return;
+            }
+
+            // 回避の直線移動中は通常移動を止める（入力分が加算されて回避距離がぶれるのを防ぐ）
+            if (_playerDodgeParameterDataStore.IsDodging.CurrentValue)
+            {
+                _playerControlPresenter.SetMoveAnimation(_gameInputDataStore.V2LeftAxis);
                 return;
             }
 

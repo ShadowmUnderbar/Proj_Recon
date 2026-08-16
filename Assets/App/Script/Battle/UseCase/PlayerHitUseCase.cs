@@ -16,6 +16,7 @@ namespace App.Battle.UseCase
         private readonly IBattlePlayerView _battlePlayerView;
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
+        private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -23,12 +24,14 @@ namespace App.Battle.UseCase
         public PlayerHitUseCase(
             IBattlePlayerView battlePlayerView,
             IPlayerStateDataStore playerStateDataStore,
-            IWaveManagerDataStore waveManagerDataStore
+            IWaveManagerDataStore waveManagerDataStore,
+            IPlayerDodgeParameterDataStore playerDodgeParameterDataStore
         )
         {
             _battlePlayerView = battlePlayerView;
             _playerStateDataStore = playerStateDataStore;
             _waveManagerDataStore = waveManagerDataStore;
+            _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
         }
 
         public void Initialize()
@@ -43,6 +46,15 @@ namespace App.Battle.UseCase
             // ウェーブ間ポーズ中は無敵（敵側と同基準でダメージを通さない）
             if (_waveManagerDataStore.IsWavePause.Value)
             {
+                return;
+            }
+
+            // 回避の直線移動中はダメージを無効化する。
+            // HPもバリアも減らさない代わりに、無効化した事実をOnDamagedDuringDodgeとして流し、
+            // 回避中の被弾をトリガーにした処理（カウンター・演出等）を発火できるようにする
+            if (_playerDodgeParameterDataStore.IsDodging.CurrentValue)
+            {
+                _playerDodgeParameterDataStore.NotifyDamageBlocked(damage);
                 return;
             }
 

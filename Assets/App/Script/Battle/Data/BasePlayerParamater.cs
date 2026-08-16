@@ -65,6 +65,10 @@ namespace App.Battle.Data
         public static int DodgeCount => 2;
         public static float DodgeCooldown => 3f;
 
+        // 回避の移動にかける時間（秒）。DodgeRange をこの時間で直線移動する。
+        // 0以下にすると従来どおりの瞬間移動になる
+        public static float DodgeDuration => 0.15f;
+
         #endregion
     }
 }

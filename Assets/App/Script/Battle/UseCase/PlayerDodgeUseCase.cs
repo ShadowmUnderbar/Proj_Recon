@@ -11,7 +11,12 @@ using VContainer.Unity;
 
 namespace App.Battle.UseCase
 {
-    public class PlayerDodgeUseCase : IInitializable, IDisposable
+    /// <summary>
+    /// 回避入力を受けて、プレイヤーを一定距離だけ直線で素早く移動させる。
+    /// 移動中は <see cref="IPlayerDodgeParameterDataStore.IsDodging"/> が true になり、
+    /// 被弾は <see cref="PlayerHitUseCase"/> 側で無効化される。
+    /// </summary>
+    public class PlayerDodgeUseCase : IInitializable, ITickable, IDisposable
     {
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
@@ -68,6 +73,12 @@ namespace App.Battle.UseCase
                 return;
             }
 
+            // 回避移動中の再入力は無視する（移動が上書きされて距離が狂うのを防ぐ）
+            if (_playerDodgeParameterDataStore.IsDodging.CurrentValue)
+            {
+                return;
+            }
+
             if (!_playerDodgeParameterDataStore.CanDodge)
             {
                 return;
@@ -91,7 +102,25 @@ namespace App.Battle.UseCase
             Blitz(playerPosition, dodgeDirection, moveTarget);
 
             _playerControlPresenter.Blitz(_playerStateDataStore.Position.Value, _playerStateDataStore.PlayerTransform);
-            _playerStateDataStore.Position.Value = moveTarget;
+
+            // 瞬間移動ではなく、Tickで一定時間かけて直線移動させる
+            _playerDodgeParameterDataStore.StartDodge(playerPosition, moveTarget);
+        }
+
+        public void Tick()
+        {
+            // ウェーブ間ポーズ中は回避移動も止める（再開時に残り距離を移動する）
+            if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
+            if (!_playerDodgeParameterDataStore.TryAdvanceDodge(Time.deltaTime, out var position))
+            {
+                return;
+            }
+
+            _playerStateDataStore.Position.Value = position;
         }
 
         private void Blitz(Vector3 playerPosition, Vector3 dodgeDirection, Vector3 moveTarget)
