@@ -15,7 +15,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerFocusDataStore _playerFocusDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
-        private readonly IExtraConflictDataStore _extraConflictDataStore;
+        private readonly IShotConflictDataStore _shotConflictDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -25,14 +25,14 @@ namespace App.Battle.UseCase
             IPlayerFocusDataStore playerFocusDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputDataStore gameInputDataStore,
-            IExtraConflictDataStore extraConflictDataStore
+            IShotConflictDataStore shotConflictDataStore
         )
         {
             _playerAimDataStore = playerAimDataStore;
             _playerFocusDataStore = playerFocusDataStore;
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
-            _extraConflictDataStore = extraConflictDataStore;
+            _shotConflictDataStore = shotConflictDataStore;
         }
 
         public void Initialize()
@@ -60,19 +60,19 @@ namespace App.Battle.UseCase
 
             // 封印中はエイムのスナップ自体を止める（フォーカス対象を掴ませない）
             _gameInputDataStore.IsFocusLeft
-                .Subscribe(x => _playerControlPresenter.IsFocusLeft(x && !_extraConflictDataStore.IsFocusLocked))
+                .Subscribe(x => _playerControlPresenter.IsFocusLeft(x && !_shotConflictDataStore.IsFocusLocked))
                 .AddTo(_disposables);
 
             _gameInputDataStore.IsFocusRight
-                .Subscribe(x => _playerControlPresenter.IsFocusRight(x && !_extraConflictDataStore.IsFocusLocked))
+                .Subscribe(x => _playerControlPresenter.IsFocusRight(x && !_shotConflictDataStore.IsFocusLocked))
                 .AddTo(_disposables);
         }
 
         private void UpdateOnFocus(int id, bool isLeft)
         {
-            // エクスコンフリクトでフォーカスが封印されている間は対象を掴まない。
+            // コンフリクト系でフォーカスが封印されている間は対象を掴まない。
             // ここで弾く必要がある（Tickでの解除は同フレーム内にこの通知で上書きされてしまう）
-            if (_extraConflictDataStore.IsFocusLocked)
+            if (_shotConflictDataStore.IsFocusLocked)
             {
                 id = -1;
             }

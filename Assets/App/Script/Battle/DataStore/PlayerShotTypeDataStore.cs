@@ -14,7 +14,7 @@ namespace App.Battle.DataStore
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IGameInputDataStore _gameInputDataStore;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
-        private readonly IExtraConflictDataStore _extraConflictDataStore;
+        private readonly IShotConflictDataStore _shotConflictDataStore;
 
         public ReactiveProperty<ShotType> ShotType { get; } = new();
 
@@ -27,14 +27,14 @@ namespace App.Battle.DataStore
             IPlayerStateDataStore playerStateDataStore,
             IGameInputDataStore gameInputDataStore,
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
-            IExtraConflictDataStore extraConflictDataStore
+            IShotConflictDataStore shotConflictDataStore
         )
         {
             _playerAimDataStore = playerAimDataStore;
             _playerStateDataStore = playerStateDataStore;
             _gameInputDataStore = gameInputDataStore;
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
-            _extraConflictDataStore = extraConflictDataStore;
+            _shotConflictDataStore = shotConflictDataStore;
         }
 
         public void Initialize()
@@ -58,7 +58,7 @@ namespace App.Battle.DataStore
         {
             if (IsMerge() &&
                 _coreSkillUnlockDataStore.IsUnLockMerge &&
-                !_extraConflictDataStore.IsShotTypeLocked(Common.Data.ShotType.Merge))
+                !_shotConflictDataStore.IsShotTypeLocked(Common.Data.ShotType.Merge))
             {
                 ShotType.Value = Common.Data.ShotType.Merge;
                 return;
@@ -66,7 +66,7 @@ namespace App.Battle.DataStore
 
             if (IsWaltz() &&
                 _coreSkillUnlockDataStore.IsUnLockWaltz &&
-                !_extraConflictDataStore.IsShotTypeLocked(Common.Data.ShotType.Waltz))
+                !_shotConflictDataStore.IsShotTypeLocked(Common.Data.ShotType.Waltz))
             {
                 ShotType.Value = Common.Data.ShotType.Waltz;
                 return;
@@ -79,14 +79,14 @@ namespace App.Battle.DataStore
         {
             // PCモードはキーを押した時だけ書き換える方式のため、
             // 封印されたフォームのまま固定されると発射できなくなる。先にノーマルへ戻す
-            if (_extraConflictDataStore.IsShotTypeLocked(ShotType.Value))
+            if (_shotConflictDataStore.IsShotTypeLocked(ShotType.Value))
             {
                 ShotType.Value = Common.Data.ShotType.Normal;
             }
 
             if (_gameInputDataStore.DebugMerge.Value &&
                 _coreSkillUnlockDataStore.IsUnLockMerge &&
-                !_extraConflictDataStore.IsShotTypeLocked(Common.Data.ShotType.Merge))
+                !_shotConflictDataStore.IsShotTypeLocked(Common.Data.ShotType.Merge))
             {
                 ShotType.Value = Common.Data.ShotType.Merge;
                 return;
@@ -94,7 +94,7 @@ namespace App.Battle.DataStore
 
             if (_gameInputDataStore.DebugWaltz.Value &&
                 _coreSkillUnlockDataStore.IsUnLockWaltz &&
-                !_extraConflictDataStore.IsShotTypeLocked(Common.Data.ShotType.Waltz))
+                !_shotConflictDataStore.IsShotTypeLocked(Common.Data.ShotType.Waltz))
             {
                 ShotType.Value = Common.Data.ShotType.Waltz;
                 return;
