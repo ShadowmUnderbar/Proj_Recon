@@ -14,10 +14,10 @@ namespace App.Battle.Views
     public class PlayerDamageReceiverView : MonoBehaviour, IHitBoxView
     {
         private readonly Subject<HitData> _onHitObservable = new();
-        private readonly Subject<float> _onDamaged = new();
+        private readonly Subject<PlayerDamagedData> _onDamaged = new();
 
-        /// <summary>被弾したダメージ量を流す（レイジ等の被弾条件バフ・HP減少に使う）</summary>
-        public Observable<float> OnDamaged => _onDamaged;
+        /// <summary>被弾内容を流す（レイジ等の被弾条件バフ・HP減少・回避中のパリィに使う）</summary>
+        public Observable<PlayerDamagedData> OnDamaged => _onDamaged;
 
         public Observable<HitData> OnHitObservable => _onHitObservable;
 
@@ -34,9 +34,9 @@ namespace App.Battle.Views
 
         public void OnHit(float damage, int attackerId, Vector3 attackCenter, out bool canPenetrable,
             int penetrationIndex = 1, ShotType? shotType = null, AimFocusType focusType = AimFocusType.NotFocus,
-            bool isFocusTarget = false)
+            bool isFocusTarget = false, bool isProjectile = false)
         {
-            _onDamaged.OnNext(damage);
+            _onDamaged.OnNext(new PlayerDamagedData(damage, attackerId, isProjectile));
 
             // 演出等での購読余地を残すためHitDataも流す（方向は使わないのでデフォルト）
             _onHitObservable.OnNext(new HitData(Id, damage, HitDirectionType.None));

@@ -111,6 +111,17 @@ namespace App.Battle.Views
             _rightShotView.SpawnBullet(bulletData, focusTargetId);
         }
 
+        public void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition)
+        {
+            if (handType == HandType.Left)
+            {
+                _leftShotView.SpawnBulletToward(bulletData, focusTargetId, targetPosition);
+                return;
+            }
+
+            _rightShotView.SpawnBulletToward(bulletData, focusTargetId, targetPosition);
+        }
+
         public void IsFocusLeft(bool isFocus)
         {
             _leftTopDown.IsFocus = isFocus;

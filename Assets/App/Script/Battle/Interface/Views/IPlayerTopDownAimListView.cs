@@ -1,4 +1,4 @@
-﻿using App.Common.Data;
+using App.Common.Data;
 using R3;
 using UnityEngine;
 
@@ -25,5 +25,6 @@ namespace App.Battle.Interface
         void SetEnableRay(HandType handType, bool enable);
         void Aim();
         void Shot(HandType handType, BulletData bulletData, int focusTargetId);
+        void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition);
     }
 }

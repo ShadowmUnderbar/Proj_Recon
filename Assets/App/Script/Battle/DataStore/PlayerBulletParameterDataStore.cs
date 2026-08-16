@@ -18,6 +18,10 @@ namespace App.Battle.DataStore
         private readonly IAvalancheDataStore _avalancheDataStore;
         private readonly IDamageNodeDataStore _damageNodeDataStore;
 
+        // パリィ弾がワルツ／マージのフォーム強化を引き継ぐようになる継承フォーム数
+        private const int WaltzInheritLevel = 2;
+        private const int MergeInheritLevel = 3;
+
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
 
@@ -154,6 +158,25 @@ namespace App.Battle.DataStore
             if (focusType == AimFocusType.NotFocus)
             {
                 bullet.Size *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.HitRange);
+            }
+
+            return bullet;
+        }
+
+        public BulletData GetParryBulletData(int inheritedFormCount)
+        {
+            // 基礎性能は「撃ってきた相手へのフォーカスショット」。
+            // ノーマル弾のフォーカス射撃なので、この時点でノーマル(Lv1)分の強化は含まれている
+            var bullet = GetBulletData(ShotType.Normal, AimFocusType.Focus);
+
+            if (inheritedFormCount >= WaltzInheritLevel)
+            {
+                bullet.Damage *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.WaltzDamage);
+            }
+
+            if (inheritedFormCount >= MergeInheritLevel)
+            {
+                bullet.Damage *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.MergeDamage);
             }
 
             return bullet;

@@ -91,6 +91,7 @@ Googleスプレッドシート（正本）
 | `CareNode` | `CareNodeDataStore` → `CareNodeUseCase`（1秒ごと。Value1=依存ノード1種あたりの毎秒回復割合 / Value2=依存ノード0種時の毎秒ダメージ割合 / Value3=その最低ダメージ量。HPは1未満にならない） |
 | `EmergencyNode` | `EmergencyNodeDataStore` → `PlayerStateDataStore.TakeDamage`（致死ダメージを無効化し、依存ノードを1つ（α→β→γ）無効化して最大HP×Value1 まで回復） |
 | `Appraisal` | `ShopUseCase.GetUpgradeChoiceCount`（ショップの抽選数に加算。`CalcMax` で最高レベルのみ採用。上限 `MaxUpgradeChoiceCount`=12 は `ShopView.prefab` のボタン数と一致させること） |
+| `ParryingDagger` | `ParryingDaggerDataStore` → `ParryingDaggerUseCase`（回避中に無効化した敵弾を撃ってきた相手へ撃ち返す。Value1=引き継ぐフォーム数 1=ノーマル/2=+ワルツ/3=+マージ。`TryGetHighestLevelUpgrade` で最高レベルのみ採用。パリィ弾は `PlayerBulletParameterDataStore.GetParryBulletData` が生成する即着弾のフォーカスショット） |
 | `Fixation` | `UpgradeLotteryDataStore.DrawUpgrades`（取得済みと同じ `NameKey` の候補の抽選重みを `1 + Value1` 倍にする。`CalcMax` で最高レベルのみ採用） |
 
 > 📌 **注視（視界中央）系の共通基盤**: `IBattlePlayerView.TryGetGazePose`（`Camera.main` をキャッシュ）→ `IEnemyStoreView.GetGazeEnemies`（`EnemyLayer` への SphereCast、バッファ使い回し）→ `PlayerGazeUseCase`（毎フレーム3種を更新。未所持ならレイキャストしない／敵消滅時に状態破棄）。

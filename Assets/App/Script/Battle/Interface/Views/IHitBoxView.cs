@@ -16,7 +16,9 @@ namespace App.Battle.Interface
         /// <param name="shotType">命中を発生させたプレイヤーの射撃フォーム。射撃以外の攻撃は省略可（null）</param>
         /// <param name="focusType">命中を発生させた弾のエイム状態。射撃以外の攻撃は省略可（NotFocus）</param>
         /// <param name="isFocusTarget">命中先がその弾のフォーカス対象そのものか</param>
+        /// <param name="isProjectile">弾の直撃による命中か（近接攻撃・爆風は false）。パリィ可否の判定に使う</param>
         void OnHit(float damage, int attackerId, Vector3 attackCenter, out bool canPenetrable, int penetrationIndex = 1,
-            ShotType? shotType = null, AimFocusType focusType = AimFocusType.NotFocus, bool isFocusTarget = false);
+            ShotType? shotType = null, AimFocusType focusType = AimFocusType.NotFocus, bool isFocusTarget = false,
+            bool isProjectile = false);
     }
 }

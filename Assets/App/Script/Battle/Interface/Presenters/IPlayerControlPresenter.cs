@@ -30,6 +30,9 @@ namespace App.Battle.Interface
         void SetHandEnableRay(HandType handType, bool enable);
         void SetAimEnableRay(HandType handType, bool enable);
         void Shot(HandType handType, BulletData bulletData, int focusTargetId);
+
+        /// <summary>指定座標へ向けて弾を発射する（パリィのように狙いと無関係な方向へ撃つ用）</summary>
+        void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition);
         void MouseAim(Vector2 mousePos);
         void IsFocusRight(bool isFocus);
         void IsFocusLeft(bool isFocus);

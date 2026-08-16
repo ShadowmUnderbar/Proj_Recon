@@ -33,7 +33,7 @@ namespace App.Battle.Views
 
         // 注視判定の基準カメラ（VRではHMD）。初回アクセス時に取得してキャッシュする
         private Camera _gazeCamera;
-        public Observable<float> OnDamaged => _damageReceiver.OnDamaged;
+        public Observable<PlayerDamagedData> OnDamaged => _damageReceiver.OnDamaged;
         public Observable<int> OnFocusLeft => _playerTopDownAimListView.OnFocusLeft;
         public Observable<int> OnFocusRight => _playerTopDownAimListView.OnFocusRight;
 
@@ -191,6 +191,11 @@ namespace App.Battle.Views
         public void Shot(HandType handType, BulletData bulletData, int focusTargetId)
         {
             _playerTopDownAimListView.Shot(handType, bulletData, focusTargetId);
+        }
+
+        public void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition)
+        {
+            _playerTopDownAimListView.ShotToward(handType, bulletData, focusTargetId, targetPosition);
         }
 
         public void Blitz(Vector3 startPos, Transform playerPos)

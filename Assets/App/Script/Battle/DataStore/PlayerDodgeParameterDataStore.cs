@@ -19,8 +19,8 @@ namespace App.Battle.DataStore
         private readonly Subject<Unit> _onDodge = new();
         public Observable<Unit> OnDodge => _onDodge;
 
-        private readonly Subject<float> _onDamagedDuringDodge = new();
-        public Observable<float> OnDamagedDuringDodge => _onDamagedDuringDodge;
+        private readonly Subject<PlayerDamagedData> _onDamagedDuringDodge = new();
+        public Observable<PlayerDamagedData> OnDamagedDuringDodge => _onDamagedDuringDodge;
 
         private readonly ReactiveProperty<bool> _isDodging = new(false);
         public ReadOnlyReactiveProperty<bool> IsDodging => _isDodging;
@@ -79,14 +79,14 @@ namespace App.Battle.DataStore
             return true;
         }
 
-        public void NotifyDamageBlocked(float damage)
+        public void NotifyDamageBlocked(PlayerDamagedData damagedData)
         {
             if (!_isDodging.Value)
             {
                 return;
             }
 
-            _onDamagedDuringDodge.OnNext(damage);
+            _onDamagedDuringDodge.OnNext(damagedData);
         }
 
         public void Tick()
