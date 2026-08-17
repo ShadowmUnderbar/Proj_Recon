@@ -2379,7 +2379,7 @@ RectTransform:
   m_GameObject: {fileID: 6387705865141550541}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.001, y: 0.001, z: 0.001}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4266839231018198365}
@@ -2484,9 +2484,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec0fa33b9fe892e49b5cc570c1d01c96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _localPosition: {x: 0, y: 0, z: 1.2}
-  _localEulerAngles: {x: 0, y: 0, z: 0}
+  _distance: 1.5
+  _verticalOffset: -0.1
   _localScale: 0.001
+  _followStartAngle: 25
+  _followStopAngle: 3
+  _followStartDistance: 0.5
+  _followStopDistance: 0.05
+  _followSpeed: 3
+  _nonVrLocalPosition: {x: 0, y: 0, z: 1.2}
 --- !u!1 &6692224474463409599
 GameObject:
   m_ObjectHideFlags: 0
