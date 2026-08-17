@@ -24,6 +24,9 @@ namespace App.Battle.Views
 
         private HandForwardRayView[] _handForwardRayViews;
 
+        // VR向けUI操作用のハンドレイ（各コントローラの子にある）
+        private VrUiRayView[] _vrUiRayViews;
+
         public Transform PlayerTransform => transform;
         public Observable<HitData> OnHit => _onHit;
         private readonly Subject<HitData> _onHit = new();
@@ -85,6 +88,13 @@ namespace App.Battle.Views
             {
                 _controllers[0].GetComponent<HandForwardRayView>(),
                 _controllers[1].GetComponent<HandForwardRayView>()
+            };
+
+            // 非アクティブなレイも拾えるようincludeInactive指定で取得する
+            _vrUiRayViews = new[]
+            {
+                _controllers[0].GetComponentInChildren<VrUiRayView>(true),
+                _controllers[1].GetComponentInChildren<VrUiRayView>(true)
             };
         }
 
@@ -149,6 +159,24 @@ namespace App.Battle.Views
         public void SetHandEnableRay(HandType handType, bool enable)
         {
             _handForwardRayViews[handType == HandType.Left ? 0 : 1].SetEnable(enable);
+        }
+
+        public void SetUiRayEnable(bool enable)
+        {
+            if (_vrUiRayViews == null)
+            {
+                return;
+            }
+
+            foreach (var rayView in _vrUiRayViews)
+            {
+                if (rayView == null)
+                {
+                    continue;
+                }
+
+                rayView.SetEnable(enable);
+            }
         }
 
         public bool TryGetGazePose(out Pose pose)

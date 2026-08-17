@@ -39,6 +39,10 @@ namespace App.Battle.Interface
         void SetAimEnableRay(HandType handType, bool enable);
         void SetHandRayColor(HandType handType, Color color);
         void SetHandEnableRay(HandType handType, bool enable);
+
+        /// <summary>VR向けUI操作用のハンドレイ（両手）をまとめて切り替える</summary>
+        void SetUiRayEnable(bool enable);
+
         void Shot(HandType handType, BulletData bulletData, int focusTargetId);
 
         /// <summary>指定座標へ向けて弾を発射する（パリィのように狙いと無関係な方向へ撃つ用）</summary>

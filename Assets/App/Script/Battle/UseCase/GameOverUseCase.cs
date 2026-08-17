@@ -20,6 +20,7 @@ namespace App.Battle.UseCase
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
         private readonly IMetaProgressionDataStore _metaProgressionDataStore;
         private readonly IGameOverPresenter _gameOverPresenter;
+        private readonly IPlayerControlPresenter _playerControlPresenter;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -30,7 +31,8 @@ namespace App.Battle.UseCase
             IGameStateDataStore gameStateDataStore,
             IUpgradeSessionDataStore upgradeSessionDataStore,
             IMetaProgressionDataStore metaProgressionDataStore,
-            IGameOverPresenter gameOverPresenter
+            IGameOverPresenter gameOverPresenter,
+            IPlayerControlPresenter playerControlPresenter
         )
         {
             _playerStateDataStore = playerStateDataStore;
@@ -39,6 +41,7 @@ namespace App.Battle.UseCase
             _upgradeSessionDataStore = upgradeSessionDataStore;
             _metaProgressionDataStore = metaProgressionDataStore;
             _gameOverPresenter = gameOverPresenter;
+            _playerControlPresenter = playerControlPresenter;
         }
 
         public void Initialize()
@@ -78,6 +81,9 @@ namespace App.Battle.UseCase
 
             RefreshAllSlotLabels();
 
+            // UI表示中だけボタン選択用のハンドレイを出す
+            _playerControlPresenter.SetUiRayEnable(true);
+
             if (acquiredCount == 0)
             {
                 _gameOverPresenter.SetStatus("このランで新たに獲得したアップグレードはありません");
@@ -116,6 +122,7 @@ namespace App.Battle.UseCase
         private void CloseGameOver()
         {
             _gameOverPresenter.Hide();
+            _playerControlPresenter.SetUiRayEnable(false);
         }
 
         private void RefreshAllSlotLabels()

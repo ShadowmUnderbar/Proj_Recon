@@ -43,13 +43,13 @@ return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave
     throw "ウェーブ状態の取得に失敗しました: $($result.ErrorMessage)"
 }
 
-# ShopCanvasはWorldSpaceUICanvasViewによって実行時にMainCamera配下へ再ペアレントされる（VR/PC両対応のWorld Space化）。
-# そのためShopView(Clone)配下ではなくカメラ配下のパスを指定する必要がある
-$Global:PlaytestShopUpgradeButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0'
-$Global:PlaytestShopNextWaveButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/NextWaveButton'
+# VrUiFollowCanvasViewはカメラへ再ペアレントせず、ワールド座標で遅延追従する（VR向けの酔い対策）。
+# そのため各UIプレハブのインスタンス配下のパスを指定する
+$Global:PlaytestShopUpgradeButtonPath = 'BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0'
+$Global:PlaytestShopNextWaveButtonPath = 'BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/NextWaveButton'
 
-# ゲームオーバー画面のスロット0保存ボタン。ShopCanvasと同様にWorldSpaceUICanvasViewでカメラ配下へ再ペアレントされる
-$Global:PlaytestGameOverSlotButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/GameOverCanvas/Panel/SlotButtons/SlotButton0'
+# ゲームオーバー画面のスロット0保存ボタン
+$Global:PlaytestGameOverSlotButtonPath = 'BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel/SlotButtons/SlotButton0'
 
 function Invoke-GameOverSlotSave {
     # ゲームオーバー画面のスロット0保存ボタンを押し、アップグレードセット保存フローを疎通させる（ベストエフォート）
@@ -59,8 +59,8 @@ function Invoke-GameOverSlotSave {
     Start-Sleep -Milliseconds 500
 }
 
-# ラン開始時のセット選択UIの「使わずに開始」ボタン。カメラ配下へ再ペアレントされる
-$Global:PlaytestRunStartButtonPath = 'BattleLifetimeScope/Player(Clone)/Camera/MainCamera/RunStartCanvas/Panel/SlotButtons/StartWithoutLoadButton'
+# ラン開始時のセット選択UIの「使わずに開始」ボタン
+$Global:PlaytestRunStartButtonPath = 'BattleLifetimeScope/RunStartView(Clone)/RunStartCanvas/Panel/SlotButtons/StartWithoutLoadButton'
 
 function Resolve-RunStartIfSelecting {
     # ラン開始のセット選択中なら「使わずに開始」を押してランを始める（プレイテストはセット読込せず開始）

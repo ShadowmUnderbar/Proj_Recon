@@ -30,6 +30,7 @@ namespace App.Battle.UseCase
         private readonly UpgradeSideEffectApplier _upgradeSideEffectApplier;
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly IShopPresenter _shopPresenter;
+        private readonly IPlayerControlPresenter _playerControlPresenter;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -42,7 +43,8 @@ namespace App.Battle.UseCase
             IUpgradeSessionDataStore upgradeSessionDataStore,
             UpgradeSideEffectApplier upgradeSideEffectApplier,
             IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
-            IShopPresenter shopPresenter
+            IShopPresenter shopPresenter,
+            IPlayerControlPresenter playerControlPresenter
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -51,6 +53,7 @@ namespace App.Battle.UseCase
             _upgradeSideEffectApplier = upgradeSideEffectApplier;
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
             _shopPresenter = shopPresenter;
+            _playerControlPresenter = playerControlPresenter;
         }
 
         public void Initialize()
@@ -74,6 +77,9 @@ namespace App.Battle.UseCase
             // 出現可能なアップグレードから抽選（候補ゼロならボタンはView側で全非表示になる）
             _currentCandidates = _upgradeLotteryDataStore.DrawUpgrades(GetUpgradeChoiceCount());
             _shopPresenter.Open(_currentCandidates);
+
+            // UI表示中だけボタン選択用のハンドレイを出す
+            _playerControlPresenter.SetUiRayEnable(true);
         }
 
         /// <summary>
@@ -108,6 +114,7 @@ namespace App.Battle.UseCase
         {
             _currentCandidates = null;
             _shopPresenter.Close();
+            _playerControlPresenter.SetUiRayEnable(false);
 
             // ポーズ解除で次ウェーブ再開（時間計測・スポーン・撃破カウントが再始動）
             _waveManagerDataStore.SetWavePause(false);

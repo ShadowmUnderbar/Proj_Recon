@@ -169,12 +169,12 @@ return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave
 移動・発射の座標や継続時間に厳密な乱数生成は不要（Claude自身が呼び出しごとに値を変えれば十分）。1回のドリルで移動キー・発射座標・フォーム・フォーカスの組み合わせを変え続けることが目的。ウェーブ1〜3クリア+ショップ2回+フォーム全種切替+フォーカス切替+回避を含む形で検証済み、エラーなしで完走した。
 
 ### ショップUIの階層パス（`Resolve-ShopIfOpen`が使用）
-`ShopView`プレハブは`BattleLifetimeScope`が実行時にインスタンス化するが、**`ShopCanvas`は初回表示時に`WorldSpaceUICanvasView`によってMainCamera配下へ再ペアレントされる**（VRハンドレイ/PCマウス両対応のWorld Space化）。クリック対象のパスはカメラ配下を指定すること：
+`ShopView`プレハブは`BattleLifetimeScope`が実行時にインスタンス化する。**`ShopCanvas`は`VrUiFollowCanvasView`によってワールド座標でカメラ正面へ遅延追従する（再ペアレントはしない）**ため、クリック対象のパスはプレハブインスタンス配下を指定すること：
 ```
-BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0～11
-BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/Panel/NextWaveButton
+BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0～11
+BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/NextWaveButton
 ```
-`BattleLifetimeScope/ShopView(Clone)/...`配下を指定すると対象が見つからずクリックが空振りし、ショップから遷移できない（2026-07-19に実際に起きた不具合。プレイヤープレハブやカメラ構成を変えた場合はこのパスも要更新）。
+以前（`WorldSpaceUICanvasView`時代）は`MainCamera`配下へ再ペアレントされていたため、`BattleLifetimeScope/Player(Clone)/Camera/MainCamera/ShopCanvas/...`を指定していた。UIの追従方式を変えた場合はこのパスも要更新（過去に空振りでショップから遷移できない不具合が発生している）。
 候補ボタンは`UpgradeButtons`の`GridLayoutGroup`（横4列×縦3行=最大12件）に並ぶ。通常は5件だが、アップグレード「目利き」を取得していると最大7件まで増える（`ShopUseCase.GetUpgradeChoiceCount`）。表示数に関わらず`UpgradeButton0`は常に存在するため、`Resolve-ShopIfOpen`の変更は不要。
 `simulate-mouse-ui`の`--target-path`+`--bypass-raycast true`でスクリーンショット無しにクリックできる。アップグレード選択後は**選択したボタンだけ**が非表示になり、他の候補と`NextWaveButton`は表示されたまま残る（`ShopView.HideUpgradeButton(index)`の動作。残った候補ボタンは押しても反応しない＝1ウェーブ1回制限はUseCase側で担保）。
 
