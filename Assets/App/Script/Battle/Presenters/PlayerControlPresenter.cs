@@ -94,6 +94,11 @@ namespace App.Battle.Presenters
             _playerView.SetHandEnableRay(handType, enable);
         }
 
+        public void SetUiRayEnable(bool enable)
+        {
+            _playerView.SetUiRayEnable(enable);
+        }
+
         public void IsFocusRight(bool isFocus)
         {
             _playerView.IsFocusRight(isFocus);

@@ -28,6 +28,7 @@ namespace App.Battle.UseCase
         private readonly UpgradeDatabase _upgradeDatabase;
         private readonly IRunStartPresenter _runStartPresenter;
         private readonly IPlayerStateDataStore _playerStateDataStore;
+        private readonly IPlayerControlPresenter _playerControlPresenter;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -40,7 +41,8 @@ namespace App.Battle.UseCase
             UpgradeSideEffectApplier upgradeSideEffectApplier,
             UpgradeDatabase upgradeDatabase,
             IRunStartPresenter runStartPresenter,
-            IPlayerStateDataStore playerStateDataStore
+            IPlayerStateDataStore playerStateDataStore,
+            IPlayerControlPresenter playerControlPresenter
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -51,6 +53,7 @@ namespace App.Battle.UseCase
             _upgradeDatabase = upgradeDatabase;
             _runStartPresenter = runStartPresenter;
             _playerStateDataStore = playerStateDataStore;
+            _playerControlPresenter = playerControlPresenter;
         }
 
         public void Initialize()
@@ -72,6 +75,9 @@ namespace App.Battle.UseCase
 
             _runStartPresenter.Show("セット選択\nスロットを選ぶと最初から装備で開始 / 使わずに開始も可");
             RefreshAllSlotLabels();
+
+            // UI表示中だけボタン選択用のハンドレイを出す
+            _playerControlPresenter.SetUiRayEnable(true);
         }
 
         private void OnSlotSelected(int slotIndex)
@@ -153,6 +159,7 @@ namespace App.Battle.UseCase
         private void StartRun()
         {
             _runStartPresenter.Hide();
+            _playerControlPresenter.SetUiRayEnable(false);
             _runStartDataStore.SetSelecting(false);
 
             // ポーズ解除でウェーブ1を開始（時間計測・スポーンが始動）
