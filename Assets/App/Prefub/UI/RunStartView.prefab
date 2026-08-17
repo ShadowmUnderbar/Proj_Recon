@@ -124,6 +124,7 @@ MonoBehaviour:
   _followStartDistance: 0.5
   _followStopDistance: 0.05
   _followSpeed: 3
+  _snapDistance: 1
   _nonVrLocalPosition: {x: 0, y: 0, z: 1.2}
 --- !u!114 &973606255889481367
 MonoBehaviour:

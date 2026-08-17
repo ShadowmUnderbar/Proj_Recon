@@ -42,8 +42,14 @@ namespace App.Common.Views
         [SerializeField, Tooltip("追従の速さ。大きいほど速く正面へ戻る")]
         private float _followSpeed = 3f;
 
+        [SerializeField, Tooltip("この距離[m]以上ずれたら補間せず即座に正面へ置き直す（トラッキング開始時の飛び対策）")]
+        private float _snapDistance = 1f;
+
         [SerializeField, Tooltip("非VR時のカメラ相対位置[m]。見下ろしカメラでも画面内に収まるようにする")]
         private Vector3 _nonVrLocalPosition = new(0f, 0f, 1.2f);
+
+        /// <summary>方向ベクトルが実質ゼロかを判定するしきい値。Mathf.Epsilonでは小さすぎて機能しない</summary>
+        private const float DirectionEpsilon = 1e-6f;
 
         private Canvas _canvas;
         private Camera _targetCamera;
@@ -83,15 +89,19 @@ namespace App.Common.Views
 
             var forward = GetHorizontalForward(cameraTransform);
             var targetPosition = cameraTransform.position + forward * _distance + Vector3.up * _verticalOffset;
+            var positionGap = GetPositionGap(cameraTransform);
 
-            if (!_isPlaced)
+            // 初回配置に加え、XRトラッキング開始時のようにカメラが大きく飛んだ場合も置き直す。
+            // 補間で追わせると、UIが視界を横切って滑っていく見え方になってしまう
+            if (!_isPlaced || positionGap > _snapDistance)
             {
                 ApplyPose(targetPosition, cameraTransform.position);
                 _isPlaced = true;
+                _isFollowing = false;
                 return;
             }
 
-            UpdateFollowState(cameraTransform, forward);
+            UpdateFollowState(cameraTransform, forward, positionGap);
 
             if (!_isFollowing)
             {
@@ -117,22 +127,18 @@ namespace App.Common.Views
         /// <summary>
         /// 追従の開始・終了を判定する。開始と終了で別のしきい値を使い、境界での振動を防ぐ
         /// </summary>
-        private void UpdateFollowState(Transform cameraTransform, Vector3 forward)
+        private void UpdateFollowState(Transform cameraTransform, Vector3 forward, float positionGap)
         {
             var toUi = transform.position - cameraTransform.position;
             toUi.y = 0f;
 
-            // 真上・真下を向いた場合など水平成分が消えたときは判定を据え置く
-            if (toUi.sqrMagnitude <= Mathf.Epsilon)
+            // カメラの真上・真下にUIが来て水平成分が消えたときは、角度が求まらないので判定を据え置く
+            if (toUi.sqrMagnitude <= DirectionEpsilon)
             {
                 return;
             }
 
             var angle = Vector3.Angle(forward, toUi.normalized);
-            var horizontalDistance = toUi.magnitude;
-            var distanceGap = Mathf.Abs(horizontalDistance - _distance);
-            var heightGap = Mathf.Abs(transform.position.y - (cameraTransform.position.y + _verticalOffset));
-            var positionGap = Mathf.Max(distanceGap, heightGap);
 
             if (_isFollowing)
             {
@@ -143,13 +149,25 @@ namespace App.Common.Views
             _isFollowing = angle > _followStartAngle || positionGap > _followStartDistance;
         }
 
+        /// <summary>UIの現在位置と定位置（カメラ正面の既定距離・高さ）とのずれ[m]</summary>
+        private float GetPositionGap(Transform cameraTransform)
+        {
+            var toUi = transform.position - cameraTransform.position;
+            toUi.y = 0f;
+
+            var distanceGap = Mathf.Abs(toUi.magnitude - _distance);
+            var heightGap = Mathf.Abs(transform.position.y - (cameraTransform.position.y + _verticalOffset));
+
+            return Mathf.Max(distanceGap, heightGap);
+        }
+
         /// <summary>指定位置へ移動し、カメラの方を向く（Canvasの表面がカメラ側を向く）</summary>
         private void ApplyPose(Vector3 position, Vector3 cameraPosition)
         {
             var lookDirection = position - cameraPosition;
             lookDirection.y = 0f;
 
-            var rotation = lookDirection.sqrMagnitude > Mathf.Epsilon
+            var rotation = lookDirection.sqrMagnitude > DirectionEpsilon
                 ? Quaternion.LookRotation(lookDirection.normalized, Vector3.up)
                 : transform.rotation;
 
@@ -163,7 +181,9 @@ namespace App.Common.Views
             var forward = cameraTransform.forward;
             forward.y = 0f;
 
-            if (forward.sqrMagnitude > Mathf.Epsilon)
+            // ほぼ真上・真下を向くと水平成分が数値誤差レベルまで縮み、向きが不安定に反転するため
+            // Mathf.Epsilonではなく実用的なしきい値で判定する
+            if (forward.sqrMagnitude > DirectionEpsilon)
             {
                 return forward.normalized;
             }
@@ -172,7 +192,7 @@ namespace App.Common.Views
             var fallback = -cameraTransform.up * Mathf.Sign(cameraTransform.forward.y);
             fallback.y = 0f;
 
-            return fallback.sqrMagnitude > Mathf.Epsilon ? fallback.normalized : transform.forward;
+            return fallback.sqrMagnitude > DirectionEpsilon ? fallback.normalized : transform.forward;
         }
 
         /// <summary>描画・レイキャストの基準カメラ。破棄されている場合は取得し直す</summary>

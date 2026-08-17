@@ -2492,6 +2492,7 @@ MonoBehaviour:
   _followStartDistance: 0.5
   _followStopDistance: 0.05
   _followSpeed: 3
+  _snapDistance: 1
   _nonVrLocalPosition: {x: 0, y: 0, z: 1.2}
 --- !u!1 &6692224474463409599
 GameObject:
