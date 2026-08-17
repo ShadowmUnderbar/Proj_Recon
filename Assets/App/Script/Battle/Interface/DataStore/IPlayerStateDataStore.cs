@@ -25,6 +25,12 @@ namespace App.Battle.Interface.DataStore
         /// <summary>プレイヤーにダメージを与える（HPを減らし OnDamaged を発火）</summary>
         void TakeDamage(float damage);
 
+        /// <summary>
+        /// 所持中のHP最大値アップを反映して MaxHealth を再計算する。
+        /// 増えた分は現在HPにも加算する。アップグレード獲得時・セット読込時に呼ぶ。
+        /// </summary>
+        void RefreshMaxHealth();
+
         /// <summary>プレイヤーのHPを回復する（MaxHealth を上限にクランプ）</summary>
         void Heal(float amount);
 

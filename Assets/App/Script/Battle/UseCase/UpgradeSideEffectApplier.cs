@@ -48,6 +48,13 @@ namespace App.Battle.UseCase
                 }
             }
 
+            // HP最大値型: 最大HPを再計算する（増えた分は現在HPにも入る）。
+            // バリア付与より先に行い、強化後の最大HPを基準にバリアが張られるようにする
+            if (upgrade.UpgradeType == UpgradeType.Health)
+            {
+                _playerStateDataStore.RefreshMaxHealth();
+            }
+
             // バリア型: 最大HP×倍率で満タン付与
             if (upgrade.UpgradeType == UpgradeType.Barrier)
             {

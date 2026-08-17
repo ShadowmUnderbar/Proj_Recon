@@ -16,6 +16,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
         private readonly IShotConflictDataStore _shotConflictDataStore;
+        private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -25,7 +26,8 @@ namespace App.Battle.UseCase
             IPlayerFocusDataStore playerFocusDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputDataStore gameInputDataStore,
-            IShotConflictDataStore shotConflictDataStore
+            IShotConflictDataStore shotConflictDataStore,
+            IUpgradeSessionDataStore upgradeSessionDataStore
         )
         {
             _playerAimDataStore = playerAimDataStore;
@@ -33,6 +35,7 @@ namespace App.Battle.UseCase
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
             _shotConflictDataStore = shotConflictDataStore;
+            _upgradeSessionDataStore = upgradeSessionDataStore;
         }
 
         public void Initialize()
@@ -58,14 +61,28 @@ namespace App.Battle.UseCase
                 .Subscribe(x => _playerAimDataStore.RightHandPose.Value = x)
                 .AddTo(_disposables);
 
-            // 封印中はエイムのスナップ自体を止める（フォーカス対象を掴ませない）
+            // 封印中はエイムのスナップ自体を止める（フォーカス対象を掴ませない）。
+            // 入力の変化だけでなく所持アップグレードの変化でも押し直す。
+            // フォーカス入力を押しっぱなしのまま封印されると、入力イベントが来ずスナップが残ってしまうため
             _gameInputDataStore.IsFocusLeft
-                .Subscribe(x => _playerControlPresenter.IsFocusLeft(x && !_shotConflictDataStore.IsFocusLocked))
+                .Subscribe(_ => UpdateFocusInput())
                 .AddTo(_disposables);
 
             _gameInputDataStore.IsFocusRight
-                .Subscribe(x => _playerControlPresenter.IsFocusRight(x && !_shotConflictDataStore.IsFocusLocked))
+                .Subscribe(_ => UpdateFocusInput())
                 .AddTo(_disposables);
+
+            _upgradeSessionDataStore.OnChanged
+                .Subscribe(_ => UpdateFocusInput())
+                .AddTo(_disposables);
+        }
+
+        private void UpdateFocusInput()
+        {
+            var isFocusLocked = _shotConflictDataStore.IsFocusLocked;
+
+            _playerControlPresenter.IsFocusLeft(_gameInputDataStore.IsFocusLeft.Value && !isFocusLocked);
+            _playerControlPresenter.IsFocusRight(_gameInputDataStore.IsFocusRight.Value && !isFocusLocked);
         }
 
         private void UpdateOnFocus(int id, bool isLeft)

@@ -22,6 +22,7 @@ namespace App.Battle.UseCase
         private readonly IGameInputDataStore _gameInputDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IShotConflictDataStore _shotConflictDataStore;
+        private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -35,7 +36,8 @@ namespace App.Battle.UseCase
             IPlayerControlPresenter playerControlPresenter,
             IGameInputDataStore gameInputDataStore,
             IWaveManagerDataStore waveManagerDataStore,
-            IShotConflictDataStore shotConflictDataStore
+            IShotConflictDataStore shotConflictDataStore,
+            IUpgradeSessionDataStore upgradeSessionDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -47,6 +49,7 @@ namespace App.Battle.UseCase
             _gameInputDataStore = gameInputDataStore;
             _waveManagerDataStore = waveManagerDataStore;
             _shotConflictDataStore = shotConflictDataStore;
+            _upgradeSessionDataStore = upgradeSessionDataStore;
         }
 
         public void Initialize()
@@ -63,6 +66,12 @@ namespace App.Battle.UseCase
                 .DistinctUntilChanged()
                 .Subscribe(_ => OnUpdateShotType())
                 .AddTo(_disposable);
+
+            // アップグレード取得で二丁拳銃が封印されてもフォーム・フォーカスは変化しないため、
+            // 所持内容の変化そのものを購読してレイ表示を更新する
+            _upgradeSessionDataStore.OnChanged
+                .Subscribe(_ => OnUpdateShotType())
+                .AddTo(_disposable);
         }
 
         private void OnUpdateShotType()
@@ -77,8 +86,11 @@ namespace App.Battle.UseCase
             _playerControlPresenter.SetHandRayColor(dominantHand, ThemeColors.GetRayColor(shotType, rightFocusType));
             _playerControlPresenter.SetAimRayColor(dominantHand, ThemeColors.GetRayColor(shotType, rightFocusType));
 
-            // 二丁拳銃が未解放、またはコンフリクト系で封印されている間は非利き手のレイを消す
-            if (!_coreSkillUnlockDataStore.IsUnLockAkimbo || _shotConflictDataStore.IsAkimboLocked)
+            // 二丁拳銃が未解放、またはコンフリクト系で封印されている間は非利き手のレイを消す。
+            // 封印はVRモードの発射制限（CanShot）と同条件にする（PCモードは二丁拳銃の概念自体が無い）
+            var isAkimboSealed = DebugConfig.IsVRMode && _shotConflictDataStore.IsAkimboLocked;
+
+            if (!_coreSkillUnlockDataStore.IsUnLockAkimbo || isAkimboSealed)
             {
                 _playerControlPresenter.SetAimEnableRay(nonDominantHand, false);
                 _playerControlPresenter.SetHandEnableRay(nonDominantHand, false);
