@@ -31,6 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6715272043728934180}
+  - {fileID: 2505563299343526687}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8191605006265629756
@@ -73,6 +74,7 @@ MonoBehaviour:
   - {fileID: 8474736026307507125}
   - {fileID: 355608269007723521}
   _nextWaveButton: {fileID: 3267749770751901559}
+  _upgradeCardBoardView: {fileID: 1089500882415681085}
 --- !u!1 &447118685556760873
 GameObject:
   m_ObjectHideFlags: 0
@@ -1473,6 +1475,64 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Upgrade
+--- !u!1 &3531297629602720674
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2505563299343526687}
+  - component: {fileID: 1089500882415681085}
+  m_Layer: 0
+  m_Name: UpgradeCardBoard
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2505563299343526687
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3531297629602720674}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5341313354758903110}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1089500882415681085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3531297629602720674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37b173f2abc24c141a6d56b641c8d361, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cardPrefab: {fileID: 7616037995001214442, guid: 506deb99f4ecb2d4797b7e2a8f00288a, type: 3}
+  _distance: 0.9
+  _pitchAngle: 30
+  _columnCount: 5
+  _cardSpacing: {x: 0.18, y: 0.26}
+  _cardFacingRotation: {x: 0, y: 180, z: 0}
+  _holdScale: 1.2
+  _wristRollMultiplier: 2
+  _followSpeed: 18
+  _directGrabDistance: 0.12
+  _rayGrabDistance: 5
+  _cardLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &3721443451190031052
 GameObject:
   m_ObjectHideFlags: 0

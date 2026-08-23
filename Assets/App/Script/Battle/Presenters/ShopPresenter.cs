@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using App.Battle.Data;
 using App.Battle.Interface;
 using App.Common.Data.MasterData;
 using R3;
@@ -29,6 +30,11 @@ namespace App.Battle.Presenters
         public void HideUpgradeButton(int index)
         {
             _shopView.HideUpgradeButton(index);
+        }
+
+        public void UpdateHandInput(in ShopHandInput input)
+        {
+            _shopView.UpdateHandInput(input);
         }
 
         public void Close()

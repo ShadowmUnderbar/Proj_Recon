@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
+using App.Common.Interface;
 using App.Common.Data.MasterData;
 using R3;
 using UnityEngine;
@@ -14,9 +16,11 @@ namespace App.Battle.UseCase
     /// <summary>
     /// ウェーブ間ショップの制御（仮組み）
     /// ウェーブ突破（OnWaveAdvanced）でショップを開き、アップグレード選択を1回受け付け、
-    /// 「次のウェーブへ」でショップを閉じてウェーブを再開する
+    /// 「次のウェーブへ」でショップを閉じてウェーブを再開する。
+    ///
+    /// ショップを開いている間は、3Dカードの掴み・確定判定に使う手の姿勢とボタン入力を毎フレームViewへ流す
     /// </summary>
-    public class ShopUseCase : IInitializable, IDisposable
+    public class ShopUseCase : IInitializable, ITickable, IDisposable
     {
         // ショップに並べるアップグレードの基本抽選数（目利きで加算される）
         private const int BaseUpgradeChoiceCount = 5;
@@ -31,10 +35,14 @@ namespace App.Battle.UseCase
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly IShopPresenter _shopPresenter;
         private readonly IPlayerControlPresenter _playerControlPresenter;
+        private readonly IGameInputDataStore _gameInputDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
         private IReadOnlyList<UpgradeMasterData> _currentCandidates;
+
+        /// <summary>ショップを開いている間だけ手の入力をViewへ流す</summary>
+        private bool _isShopOpen;
 
         [Inject]
         public ShopUseCase(
@@ -44,7 +52,8 @@ namespace App.Battle.UseCase
             UpgradeSideEffectApplier upgradeSideEffectApplier,
             IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
             IShopPresenter shopPresenter,
-            IPlayerControlPresenter playerControlPresenter
+            IPlayerControlPresenter playerControlPresenter,
+            IGameInputDataStore gameInputDataStore
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -54,6 +63,7 @@ namespace App.Battle.UseCase
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
             _shopPresenter = shopPresenter;
             _playerControlPresenter = playerControlPresenter;
+            _gameInputDataStore = gameInputDataStore;
         }
 
         public void Initialize()
@@ -77,6 +87,10 @@ namespace App.Battle.UseCase
             // 出現可能なアップグレードから抽選（候補ゼロならボタンはView側で全非表示になる）
             _currentCandidates = _upgradeLotteryDataStore.DrawUpgrades(GetUpgradeChoiceCount());
             _shopPresenter.Open(_currentCandidates);
+            _isShopOpen = true;
+
+            // ショップ中はグラブ・トリガーをカード操作に使うため、フォーカスの切り替えは止める
+            _gameInputDataStore.SetFocusInputEnable(false);
 
             // UI表示中だけボタン選択用のハンドレイを出す
             _playerControlPresenter.SetUiRayEnable(true);
@@ -110,9 +124,34 @@ namespace App.Battle.UseCase
             _shopPresenter.HideUpgradeButton(index);
         }
 
+        /// <summary>
+        /// 掴み用の入力をViewへ送る。カードを使わない場合（非VR）はView側で無視される
+        /// </summary>
+        public void Tick()
+        {
+            if (!_isShopOpen)
+            {
+                return;
+            }
+
+            _shopPresenter.UpdateHandInput(new ShopHandInput(
+                HandType.Left,
+                _playerControlPresenter.LeftHandPose.Value,
+                _gameInputDataStore.IsGrabLeft.Value,
+                _gameInputDataStore.IsLeftTrigger.Value));
+
+            _shopPresenter.UpdateHandInput(new ShopHandInput(
+                HandType.Right,
+                _playerControlPresenter.RightHandPose.Value,
+                _gameInputDataStore.IsGrabRight.Value,
+                _gameInputDataStore.IsRightTrigger.Value));
+        }
+
         private void StartNextWave()
         {
+            _isShopOpen = false;
             _currentCandidates = null;
+            _gameInputDataStore.SetFocusInputEnable(true);
             _shopPresenter.Close();
             _playerControlPresenter.SetUiRayEnable(false);
 
@@ -122,6 +161,8 @@ namespace App.Battle.UseCase
 
         public void Dispose()
         {
+            // ショップを開いたままシーンが終わってもフォーカス入力が止まりっぱなしにならないようにする
+            _gameInputDataStore.SetFocusInputEnable(true);
             _disposable?.Dispose();
         }
     }

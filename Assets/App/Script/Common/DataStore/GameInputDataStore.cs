@@ -30,6 +30,8 @@ namespace App.Common.DataStore
         public ReactiveProperty<bool> IsLeftTrigger { get; } = new();
         public ReactiveProperty<bool> IsFocusRight { get; } = new();
         public ReactiveProperty<bool> IsFocusLeft { get; } = new();
+        public ReactiveProperty<bool> IsGrabRight { get; } = new();
+        public ReactiveProperty<bool> IsGrabLeft { get; } = new();
         public Vector2 V2RightAxis { get; set; }
         public Vector2 V2LeftAxis { get; set; }
         public ReactiveProperty<bool> IsAButton { get; } = new();
@@ -44,18 +46,45 @@ namespace App.Common.DataStore
         public ReactiveProperty<bool> DebugMerge { get; } = new();
         public Vector2 MouseInputPosition { get; private set; }
 
+        private bool _isFocusInputEnabled = true;
+
+        /// <summary>
+        /// フォーカス入力を受け付けるかどうか。アップグレードカードの掴みでグラブを長押しする間は、
+        /// フォーカスが意図せず切り替わってしまうため止める
+        /// </summary>
+        public void SetFocusInputEnable(bool enable)
+        {
+            _isFocusInputEnabled = enable;
+
+            if (enable)
+            {
+                return;
+            }
+
+            // 止めるときは非フォーカスへ揃え、再開後の状態が入力に依らず決まるようにする
+            IsFocusRight.Value = false;
+            IsFocusLeft.Value = false;
+        }
+
         public void Tick()
         {
             IsRightTrigger.Value = Input.Main.UseRight.inProgress;
             IsLeftTrigger.Value = Input.Main.UseLeft.inProgress;
 
-            if (_saveDataStore.SaveData.IsSwitchableFocus)
+            // グラブは通常フォーカス切替に使うが、UI（アップグレードカード）の掴み判定でも参照するため素の状態も公開する
+            IsGrabRight.Value = Input.Main.GrabRight.inProgress;
+            IsGrabLeft.Value = Input.Main.GrabLeft.inProgress;
+
+            if (_isFocusInputEnabled)
             {
-                SwitchFocus();
-            }
-            else
-            {
-                HoldFocus();
+                if (_saveDataStore.SaveData.IsSwitchableFocus)
+                {
+                    SwitchFocus();
+                }
+                else
+                {
+                    HoldFocus();
+                }
             }
 
             IsAButton.Value = Input.Main.RightPrimary.inProgress;
