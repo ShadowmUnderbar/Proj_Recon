@@ -4,11 +4,18 @@ using UnityEngine;
 namespace App.Common.Views
 {
     /// <summary>
-    /// VR向けWorldSpace UIのCanvasを、カメラ（VRではHMD）の視線方向へ遅延追従させる。
-    /// 配置する向きは<see cref="_pitchAngle"/>で指定でき、0なら正面、正の値なら視線より下側に置ける。
+    /// VR向けWorldSpace UIのCanvasを、カメラ（VRではHMD）の向きへ遅延追従させる。
+    /// 配置する向きは<see cref="_pitchAngle"/>で指定でき、0なら正面、90なら真下に置ける。
     /// 本作は基本的にカメラが下向きのため既定では下側へ配置し、UIによっては正面寄りに調整できるようにしている。
+    ///
+    /// 追従の基準は「首が横を向いたか（ヨー）」と「頭が移動したか」の2つだけで判定する。
+    /// 首の上下（ピッチ）は追従の対象にしない。俯角90付近ではUIがほぼ真下に来るため、
+    /// カメラ前方の水平成分をそのままヨー基準にすると、真下付近で水平成分が消えて向きが反転してしまう。
+    /// そこでカメラ前方を俯角ぶん上へ戻した方向をヨー基準にし、指定した俯角で頭を向けているときに
+    /// もっとも安定するようにしている（俯角0なら従来どおりカメラ前方の水平成分と一致する）。
+    ///
     /// 表示された瞬間は定位置へスナップし、以降は視点が少し動いた程度では位置を固定したままにする。
-    /// しきい値を超えて視点が動いた（または大きく移動した）ときだけ、定位置へ向かってゆっくり追従する。
+    /// しきい値を超えて首が回った（または大きく移動した）ときだけ、定位置へ向かってゆっくり追従する。
     /// カメラに固定親子付けするとUIが顔に貼り付いて酔いやすいため、ワールド座標で追従させている。
     ///
     /// 非VR（PC）ではカメラが真上から見下ろす固定アングルのため、遅延追従は行わず
@@ -23,19 +30,19 @@ namespace App.Common.Views
         [SerializeField, Tooltip("カメラからUIまでの距離[m]")]
         private float _distance = 1.5f;
 
-        [SerializeField, Range(-80f, 80f), Tooltip("UIを配置する俯角[deg]。0で視線の正面、正の値で下側、負の値で上側に配置する")]
+        [SerializeField, Range(-180f, 180f), Tooltip("UIを配置する俯角[deg]。0で視線の正面、正の値で下側（90で真下）、負の値で上側に配置する")]
         private float _pitchAngle = 30f;
 
         [SerializeField, Tooltip("Canvasのスケール。1px＝何mかを表す")]
         private float _localScale = 0.001f;
 
-        [SerializeField, Tooltip("視線がこの角度[deg]を超えてUIからずれたら追従を開始する")]
+        [SerializeField, Tooltip("首の向き（ヨー）がこの角度[deg]を超えてUIからずれたら追従を開始する")]
         private float _followStartAngle = 25f;
 
         [SerializeField, Tooltip("追従を終了する角度[deg]。_followStartAngleより小さくすること")]
         private float _followStopAngle = 3f;
 
-        [SerializeField, Tooltip("UIの定位置からこの距離[m]を超えてカメラが移動したら追従を開始する")]
+        [SerializeField, Tooltip("UIを置いた時点の頭の位置からこの距離[m]を超えて移動したら追従を開始する")]
         private float _followStartDistance = 0.5f;
 
         [SerializeField, Tooltip("追従を終了する距離[m]。_followStartDistanceより小さくすること")]
@@ -44,7 +51,7 @@ namespace App.Common.Views
         [SerializeField, Tooltip("追従の速さ。大きいほど速く定位置へ戻る")]
         private float _followSpeed = 3f;
 
-        [SerializeField, Tooltip("この距離[m]以上ずれたら補間せず即座に定位置へ置き直す（トラッキング開始時の飛び対策）")]
+        [SerializeField, Tooltip("頭がこの距離[m]以上動いたら補間せず即座に定位置へ置き直す（トラッキング開始時の飛び対策）")]
         private float _snapDistance = 1f;
 
         [SerializeField, Tooltip("非VR時のカメラ相対位置[m]。見下ろしカメラでも画面内に収まるようにする")]
@@ -61,6 +68,12 @@ namespace App.Common.Views
 
         /// <summary>初回の配置（スナップ）が済んでいるか</summary>
         private bool _isPlaced;
+
+        /// <summary>UIを配置しているヨー方向（水平・正規化済み）。カメラのヨーに遅れて追いつく</summary>
+        private Vector3 _placedYawForward = Vector3.forward;
+
+        /// <summary>UIを配置した基準となる頭の位置。カメラの移動に遅れて追いつく</summary>
+        private Vector3 _placedHeadPosition;
 
         private void Awake()
         {
@@ -89,37 +102,34 @@ namespace App.Common.Views
                 return;
             }
 
-            var forward = GetHorizontalForward(cameraTransform);
-            var targetPosition = cameraTransform.position + GetPlacementDirection(forward) * _distance;
-            var positionGap = GetPositionGap(cameraTransform);
+            var headPosition = cameraTransform.position;
+            var yawReference = GetYawReference(cameraTransform);
+            var headMovement = Vector3.Distance(_placedHeadPosition, headPosition);
 
             // 初回配置に加え、XRトラッキング開始時のようにカメラが大きく飛んだ場合も置き直す。
             // 補間で追わせると、UIが視界を横切って滑っていく見え方になってしまう
-            if (!_isPlaced || positionGap > _snapDistance)
+            if (!_isPlaced || headMovement > _snapDistance)
             {
-                ApplyPose(targetPosition, cameraTransform.position);
+                _placedYawForward = yawReference;
+                _placedHeadPosition = headPosition;
                 _isPlaced = true;
                 _isFollowing = false;
+                ApplyPose();
                 return;
             }
 
-            UpdateFollowState(cameraTransform, forward, positionGap);
+            UpdateFollowState(Vector3.Angle(_placedYawForward, yawReference), headMovement);
 
-            if (!_isFollowing)
+            if (_isFollowing)
             {
-                return;
+                // 遅れて追いつく動き。フレームレートに依存しないよう指数補間を使う。
+                // ヨーと頭の位置だけを補間するので、カメラとUIの距離は常に_distanceに保たれる
+                var t = 1f - Mathf.Exp(-_followSpeed * Time.unscaledDeltaTime);
+                _placedYawForward = SlerpYaw(_placedYawForward, yawReference, t);
+                _placedHeadPosition = Vector3.Lerp(_placedHeadPosition, headPosition, t);
             }
 
-            // 遅れて追いつく動き。フレームレートに依存しないよう指数補間を使う
-            var t = 1f - Mathf.Exp(-_followSpeed * Time.unscaledDeltaTime);
-
-            // 位置を直線で補間するとカメラとの距離が縮んで顔の近くを横切ってしまうため、
-            // カメラからのオフセットを球面補間し、距離を保ったまま定位置へ回り込ませる
-            var currentOffset = transform.position - cameraTransform.position;
-            var targetOffset = targetPosition - cameraTransform.position;
-            var offset = Vector3.Slerp(currentOffset, targetOffset, t);
-
-            ApplyPose(cameraTransform.position + offset, cameraTransform.position);
+            ApplyPose();
         }
 
         /// <summary>
@@ -136,109 +146,70 @@ namespace App.Common.Views
         /// <summary>
         /// 追従の開始・終了を判定する。開始と終了で別のしきい値を使い、境界での振動を防ぐ
         /// </summary>
-        private void UpdateFollowState(Transform cameraTransform, Vector3 forward, float positionGap)
+        private void UpdateFollowState(float yawGap, float headMovement)
         {
-            var toUi = transform.position - cameraTransform.position;
-            toUi.y = 0f;
-
-            // カメラの真上・真下にUIが来て水平成分が消えたときは、角度が求まらないので判定を据え置く
-            if (toUi.sqrMagnitude <= DirectionEpsilon)
-            {
-                return;
-            }
-
-            var angle = Vector3.Angle(forward, toUi.normalized);
-
             if (_isFollowing)
             {
-                _isFollowing = angle > _followStopAngle || positionGap > _followStopDistance;
+                _isFollowing = yawGap > _followStopAngle || headMovement > _followStopDistance;
                 return;
             }
 
-            _isFollowing = angle > _followStartAngle || positionGap > _followStartDistance;
+            _isFollowing = yawGap > _followStartAngle || headMovement > _followStartDistance;
         }
 
         /// <summary>
-        /// 俯角ぶんだけ水平前方を倒した配置方向。0なら水平前方そのまま、正の値でカメラの下側を向く
+        /// ヨー方向の球面補間。真後ろ（180度）を向いたときは補間軸が定まらず結果が壊れるため、
+        /// 水平成分だけを取り出して正規化し直し、それでも定まらない場合は目標のヨーへ直接合わせる
         /// </summary>
-        private Vector3 GetPlacementDirection(Vector3 horizontalForward)
+        private static Vector3 SlerpYaw(Vector3 from, Vector3 to, float t)
         {
-            var right = Vector3.Cross(Vector3.up, horizontalForward);
+            var yaw = Vector3.Slerp(from, to, t);
+            yaw.y = 0f;
 
-            return Quaternion.AngleAxis(_pitchAngle, right) * horizontalForward;
-        }
-
-        /// <summary>UIの現在位置と定位置（カメラ視線方向の既定距離・俯角）とのずれ[m]</summary>
-        private float GetPositionGap(Transform cameraTransform)
-        {
-            var toUi = transform.position - cameraTransform.position;
-            toUi.y = 0f;
-
-            // 俯角ぶん傾けた配置では、定位置の水平距離と高さオフセットが距離の三角関数で決まる
-            var pitchRadian = _pitchAngle * Mathf.Deg2Rad;
-            var horizontalDistance = _distance * Mathf.Cos(pitchRadian);
-            var verticalOffset = -_distance * Mathf.Sin(pitchRadian);
-
-            var distanceGap = Mathf.Abs(toUi.magnitude - horizontalDistance);
-            var heightGap = Mathf.Abs(transform.position.y - (cameraTransform.position.y + verticalOffset));
-
-            return Mathf.Max(distanceGap, heightGap);
+            return yaw.sqrMagnitude > DirectionEpsilon ? yaw.normalized : to;
         }
 
         /// <summary>
-        /// 指定位置へ移動し、カメラの方を向く（Canvasの表面がカメラ側を向く）。
-        /// 俯角をつけた場合はUIも上向きに傾き、見下ろしたまま正対して読めるようにする
+        /// カメラのヨー基準となる水平方向。カメラ前方を俯角ぶん上へ戻してから水平成分を取り出すため、
+        /// 俯角90（真下配置）でも真下を向いた姿勢でもっとも安定し、向きが反転しない
         /// </summary>
-        private void ApplyPose(Vector3 position, Vector3 cameraPosition)
+        private Vector3 GetYawReference(Transform cameraTransform)
         {
-            var lookDirection = position - cameraPosition;
-            var rotation = GetLookRotation(lookDirection);
+            var reference = Quaternion.AngleAxis(-_pitchAngle, cameraTransform.right) * cameraTransform.forward;
+            reference.y = 0f;
 
-            transform.SetPositionAndRotation(position, rotation);
-            transform.localScale = Vector3.one * _localScale;
-        }
-
-        /// <summary>
-        /// 指定方向を向く回転。UIを傾けたときにロールが不安定になるのを避けるため、
-        /// ワールドの上方向ではなく配置方向から組み直した上方向を基準にする
-        /// </summary>
-        private Quaternion GetLookRotation(Vector3 lookDirection)
-        {
-            if (lookDirection.sqrMagnitude <= DirectionEpsilon)
+            if (reference.sqrMagnitude > DirectionEpsilon)
             {
-                return transform.rotation;
+                return reference.normalized;
             }
 
-            var forward = lookDirection.normalized;
-            var right = Vector3.Cross(Vector3.up, forward);
+            // 想定した俯角から90度近く外れて水平成分が消えたときは、直前のヨーを維持して反転を防ぐ
+            return _placedYawForward;
+        }
 
-            // 真上・真下を向くと右方向が求まらないので、その場合は現在の向きを維持する
+        /// <summary>
+        /// 配置しているヨーと頭の位置からUIの姿勢を作る。
+        /// 俯角ぶん傾けた分だけUIも傾き、指定した俯角で頭を向けたときに正対して読める
+        /// </summary>
+        private void ApplyPose()
+        {
+            var right = Vector3.Cross(Vector3.up, _placedYawForward);
+
             if (right.sqrMagnitude <= DirectionEpsilon)
             {
-                return transform.rotation;
+                return;
             }
 
-            return Quaternion.LookRotation(forward, Vector3.Cross(forward, right.normalized));
-        }
+            // 俯角ぶん配置方向とUIの上方向をまとめて倒す。上方向も一緒に倒すことで、
+            // 真下配置でもUIの上端が首の向いている方向を指し、上下逆さまにならない
+            var pitchRotation = Quaternion.AngleAxis(_pitchAngle, right.normalized);
+            var direction = pitchRotation * _placedYawForward;
+            var up = pitchRotation * Vector3.up;
 
-        /// <summary>カメラの前方から水平成分だけを取り出す。真上・真下を向いている場合はUIの向きを維持する</summary>
-        private Vector3 GetHorizontalForward(Transform cameraTransform)
-        {
-            var forward = cameraTransform.forward;
-            forward.y = 0f;
-
-            // ほぼ真上・真下を向くと水平成分が数値誤差レベルまで縮み、向きが不安定に反転するため
-            // Mathf.Epsilonではなく実用的なしきい値で判定する
-            if (forward.sqrMagnitude > DirectionEpsilon)
-            {
-                return forward.normalized;
-            }
-
-            // 見上げ・見下ろしで前方が失われたときは、頭の傾き（up）を代用して正面を決める
-            var fallback = -cameraTransform.up * Mathf.Sign(cameraTransform.forward.y);
-            fallback.y = 0f;
-
-            return fallback.sqrMagnitude > DirectionEpsilon ? fallback.normalized : transform.forward;
+            transform.SetPositionAndRotation(
+                _placedHeadPosition + direction * _distance,
+                Quaternion.LookRotation(direction, up));
+            transform.localScale = Vector3.one * _localScale;
         }
 
         /// <summary>描画・レイキャストの基準カメラ。破棄されている場合は取得し直す</summary>
