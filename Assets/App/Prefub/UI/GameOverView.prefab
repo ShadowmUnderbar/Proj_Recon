@@ -117,7 +117,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _distance: 1.5
-  _verticalOffset: -0.1
+  _pitchAngle: 30
   _localScale: 0.001
   _followStartAngle: 25
   _followStopAngle: 3
