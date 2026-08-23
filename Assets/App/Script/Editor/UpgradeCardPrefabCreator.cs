@@ -11,7 +11,8 @@ namespace App.Editor
     /// 本番のモデルが用意できるまでの仮モデルとして、板ポリ＋TextMeshProのカードプレハブを作り、
     /// ShopViewプレハブへカードボードを差し込んで参照まで繋ぐ。
     /// 本番モデルに差し替えるときは、生成されたカードプレハブの見た目部分だけを置き換えればよい
-    /// （<see cref="UpgradeCardView"/> の参照とコライダーを繋ぎ直すこと）
+    /// （<see cref="UpgradeCardView"/> のテキスト・枠・コライダーの参照に加え、
+    /// 左右の持ち手（グリップアンカー）も忘れずに繋ぎ直すこと）
     /// </summary>
     public static class UpgradeCardPrefabCreator
     {
@@ -90,10 +91,19 @@ namespace App.Editor
                     new Vector3(0f, -CardHeight * 0.16f, CardThickness * 0.8f),
                     0.012f);
 
+                // 持ち手はカードの左右の端に置く。実際の持ち位置・角度はこのTransformを動かして調整する。
+                // 表をプレイヤー側へ向ける（アンカーをY180にする）ため、ローカル-Xがプレイヤーから見た右端になる。
+                // 手前側の端を持たせて、カードが視界の外側ではなく内側へ伸びるようにしている
+                var rightGripAnchor = CreateGripAnchor(
+                    "GripAnchorRight", root.transform, new Vector3(-CardWidth * 0.5f, 0f, 0f));
+                var leftGripAnchor = CreateGripAnchor(
+                    "GripAnchorLeft", root.transform, new Vector3(CardWidth * 0.5f, 0f, 0f));
+
                 SetLayerRecursively(root, GetCardLayer());
 
                 var cardView = root.AddComponent<UpgradeCardView>();
                 AssignCardViewReferences(cardView, collider, frame, nameText, levelText, descriptionText);
+                AssignGripAnchors(cardView, rightGripAnchor, leftGripAnchor);
 
                 var saved = PrefabUtility.SaveAsPrefabAsset(root, CardPrefabPath);
                 return saved != null ? saved.GetComponent<UpgradeCardView>() : null;
@@ -120,6 +130,27 @@ namespace App.Editor
             serialized.FindProperty("_levelText").objectReferenceValue = levelText;
             serialized.FindProperty("_descriptionText").objectReferenceValue = descriptionText;
             serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void AssignGripAnchors(UpgradeCardView cardView, Transform right, Transform left)
+        {
+            var serialized = new SerializedObject(cardView);
+            serialized.FindProperty("_rightHandGripAnchor").objectReferenceValue = right;
+            serialized.FindProperty("_leftHandGripAnchor").objectReferenceValue = left;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        /// <summary>
+        /// 持ち手の基準。カードの表（+Z）がプレイヤー側を向くよう、手の前方とカードの裏を合わせた向きにしておく
+        /// </summary>
+        private static Transform CreateGripAnchor(string name, Transform parent, Vector3 localPosition)
+        {
+            var anchor = new GameObject(name).transform;
+            anchor.SetParent(parent, false);
+            anchor.localPosition = localPosition;
+            anchor.localRotation = Quaternion.Euler(0f, 180f, 0f);
+
+            return anchor;
         }
 
         /// <summary>ShopViewプレハブにカードボードを追加し、ShopViewから参照できるようにする</summary>

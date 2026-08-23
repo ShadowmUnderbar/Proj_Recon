@@ -1525,10 +1525,8 @@ MonoBehaviour:
   _columnCount: 5
   _cardSpacing: {x: 0.18, y: 0.26}
   _cardFacingRotation: {x: 0, y: 180, z: 0}
-  _holdPositionOffset: {x: 0, y: 0.02, z: 0.12}
-  _holdRotationOffset: {x: -20, y: 180, z: 0}
   _holdScale: 1.2
-  _mirrorOffsetForLeftHand: 1
+  _wristRollMultiplier: 2
   _followSpeed: 18
   _directGrabDistance: 0.12
   _rayGrabDistance: 5

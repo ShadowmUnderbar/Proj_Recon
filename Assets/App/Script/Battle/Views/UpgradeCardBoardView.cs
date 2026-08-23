@@ -39,17 +39,12 @@ namespace App.Battle.Views
         private Vector3 _cardFacingRotation = new(0f, 180f, 0f);
 
         [Header("持ったときの見え方")]
-        [SerializeField, Tooltip("手を基準にした位置オフセット[m]")]
-        private Vector3 _holdPositionOffset = new(0f, 0.02f, 0.12f);
-
-        [SerializeField, Tooltip("手を基準にした回転オフセット[deg]")]
-        private Vector3 _holdRotationOffset = new(-20f, 180f, 0f);
-
         [SerializeField, Tooltip("持っているときのカードの拡大率")]
         private float _holdScale = 1.2f;
 
-        [SerializeField, Tooltip("左手で持つときは位置・回転オフセットを左右反転する")]
-        private bool _mirrorOffsetForLeftHand = true;
+        [SerializeField, Range(1f, 5f),
+         Tooltip("手首のひねりの増幅率。1で手首どおり、大きいほど少ないひねりでカードが回る（裏面の確認用）")]
+        private float _wristRollMultiplier = 2f;
 
         [SerializeField, Tooltip("カードが手や定位置へ追いつく速さ。大きいほど速い")]
         private float _followSpeed = 18f;
@@ -211,7 +206,7 @@ namespace App.Battle.Views
                 if (hovered != null && input.IsGrabbing && !handState.PreviousGrabbing)
                 {
                     SetHovered(handState, null);
-                    handState.HeldCard = hovered;
+                    handState.Hold(hovered, pointingPose.rotation);
                     hovered.SetHighlight(CardHighlight.Held);
                 }
                 else
@@ -223,12 +218,14 @@ namespace App.Battle.Views
             {
                 // 手を離したら定位置へ戻す
                 handState.HeldCard.SetHighlight(CardHighlight.None);
-                handState.HeldCard = null;
+                handState.ReleaseHeld();
             }
             else
             {
-                handState.HeldCard.MoveTo(
-                    GetHoldPose(pointingPose, input.HandType), Vector3.one * _holdScale, _followSpeed);
+                var holdPose = handState.HeldCard.CalcHoldPose(
+                    ApplyWristRoll(pointingPose, handState), input.HandType);
+
+                handState.HeldCard.MoveTo(holdPose, Vector3.one * _holdScale, _followSpeed);
 
                 // 持っている状態でトリガーを引いた瞬間に確定する
                 if (input.IsConfirming && !handState.PreviousConfirming)
@@ -237,7 +234,7 @@ namespace App.Battle.Views
                 }
             }
 
-            handState.StoreButtonState();
+            handState.StoreFrameState(pointingPose.rotation);
         }
 
         /// <summary>コントローラの姿勢を、実際に指し示している向き（ハンドレイと同じ基準）へ直す</summary>
@@ -246,23 +243,58 @@ namespace App.Battle.Views
             return new Pose(handPose.position, handPose.rotation * PlatformHandRotation.PointingAdjustment);
         }
 
-        /// <summary>掴んだカードを置く姿勢。左手では必要に応じてオフセットを左右反転する</summary>
-        private Pose GetHoldPose(Pose pointingPose, HandType handType)
+        /// <summary>
+        /// 手首のひねりを増幅した手の姿勢。実際の手首は180度も回らないため、
+        /// そのままでは裏面を覗き込みにくいことへの対処として、ひねりぶんを上乗せする。
+        ///
+        /// ひねり量は毎フレームの差分を積み上げて求める。掴んだ瞬間からの絶対角で測ると
+        /// ±180度をまたいだところで角度が一周ぶん飛び、カードが跳ねてしまう
+        /// </summary>
+        private Pose ApplyWristRoll(Pose pointingPose, HandState handState)
         {
-            var isMirrored = _mirrorOffsetForLeftHand && handType == HandType.Left;
+            // 直前フレームからの回転のうち、手の前方軸まわりのひねりだけを取り出す
+            var frameRotation = Quaternion.Inverse(handState.PreviousPointingRotation) * pointingPose.rotation;
+            handState.AccumulateRoll(GetTwistAngle(frameRotation, Vector3.forward));
 
-            var positionOffset = isMirrored
-                ? new Vector3(-_holdPositionOffset.x, _holdPositionOffset.y, _holdPositionOffset.z)
-                : _holdPositionOffset;
+            if (_wristRollMultiplier <= 1f)
+            {
+                return pointingPose;
+            }
 
-            // 鏡像にするときはYZ平面での反転になるため、X軸まわり以外の回転の符号を反転する
-            var rotationOffset = isMirrored
-                ? new Vector3(_holdRotationOffset.x, -_holdRotationOffset.y, -_holdRotationOffset.z)
-                : _holdRotationOffset;
+            var extraAngle = handState.AccumulatedRoll * (_wristRollMultiplier - 1f);
 
+            // 測るときと同じ「手の前方」を軸に、増幅ぶんだけ余分に回す
             return new Pose(
-                pointingPose.position + pointingPose.rotation * positionOffset,
-                pointingPose.rotation * Quaternion.Euler(rotationOffset));
+                pointingPose.position,
+                pointingPose.rotation * Quaternion.AngleAxis(extraAngle, Vector3.forward));
+        }
+
+        /// <summary>
+        /// 回転のうち、指定軸まわりのひねり成分だけを角度[deg]で取り出す（スイング・ツイスト分解）。
+        /// 単純に上方向を投影する方法では、軸と直交する向きへ大きく倒したときにひねりと誤認してしまう
+        /// </summary>
+        private static float GetTwistAngle(Quaternion rotation, Vector3 axis)
+        {
+            var rotationAxis = new Vector3(rotation.x, rotation.y, rotation.z);
+            var projected = Vector3.Project(rotationAxis, axis);
+            var twist = new Quaternion(projected.x, projected.y, projected.z, rotation.w);
+
+            // ひねり成分が定まらない（軸と直交する向きへ180度回っている）場合は回さない
+            if (projected.sqrMagnitude + rotation.w * rotation.w <= DirectionEpsilon)
+            {
+                return 0f;
+            }
+
+            twist.Normalize();
+            twist.ToAngleAxis(out var angle, out var twistAxis);
+
+            if (angle > 180f)
+            {
+                angle -= 360f;
+            }
+
+            // ToAngleAxisは軸の向きを正規化して返すため、指定軸と逆向きなら符号を反転する
+            return Vector3.Dot(twistAxis, axis) < 0f ? -angle : angle;
         }
 
         /// <summary>
@@ -461,7 +493,13 @@ namespace App.Battle.Views
             public bool HasInput { get; private set; }
             public bool PreviousGrabbing { get; private set; }
             public bool PreviousConfirming { get; private set; }
-            public UpgradeCardView HeldCard { get; set; }
+            public UpgradeCardView HeldCard { get; private set; }
+
+            /// <summary>直前フレームの手の向き。ひねりの差分を測る基準にする</summary>
+            public Quaternion PreviousPointingRotation { get; private set; } = Quaternion.identity;
+
+            /// <summary>掴んでからの累計のひねり角[deg]</summary>
+            public float AccumulatedRoll { get; private set; }
 
             private UpgradeCardView _hoveredCard;
 
@@ -480,10 +518,31 @@ namespace App.Battle.Views
                 return previous;
             }
 
-            public void StoreButtonState()
+            /// <summary>カードを掴む。ひねりは掴んだ時点を0として測り直す</summary>
+            public void Hold(UpgradeCardView card, Quaternion pointingRotation)
+            {
+                HeldCard = card;
+                PreviousPointingRotation = pointingRotation;
+                AccumulatedRoll = 0f;
+            }
+
+            public void AccumulateRoll(float angle)
+            {
+                AccumulatedRoll += angle;
+            }
+
+            /// <summary>持っているカードを離す</summary>
+            public void ReleaseHeld()
+            {
+                HeldCard = null;
+            }
+
+            /// <summary>次フレームでの差分・押下エッジ判定のために、このフレームの状態を控える</summary>
+            public void StoreFrameState(Quaternion pointingRotation)
             {
                 PreviousGrabbing = Input.IsGrabbing;
                 PreviousConfirming = Input.IsConfirming;
+                PreviousPointingRotation = pointingRotation;
             }
 
             /// <summary>破棄されるカードを掴み・ホバー対象から外す</summary>
@@ -503,6 +562,8 @@ namespace App.Battle.Views
             public void Reset()
             {
                 HeldCard = null;
+                PreviousPointingRotation = Quaternion.identity;
+                AccumulatedRoll = 0f;
                 _hoveredCard = null;
                 HasInput = false;
                 PreviousGrabbing = false;
