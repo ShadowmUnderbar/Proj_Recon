@@ -7,6 +7,7 @@ namespace App.Battle.Views
     /// 回避時跳ね返し攻撃（カウンター）のレイ演出。
     /// 弾の曳光弾（<see cref="BulletTracerView"/>）とは挙動を独立して調整できるよう、
     /// プレハブもスクリプトも専用に分けている。
+    /// 生成した時点で最大の長さまで引き切った状態で表示し、伸びる過程は見せない。
     /// 保持時間・収縮速度・太さ倍率はプレハブのインスペクタで調整する。
     /// </summary>
     public class CounterTracerView : MonoBehaviour
@@ -34,11 +35,19 @@ namespace App.Battle.Views
             _lineRenderer.startWidth = lineWidth;
             _lineRenderer.endWidth = lineWidth;
 
+            // 発射地点から着弾地点までを一度に引く（伸びる演出は挟まない）
             _lineRenderer.positionCount = 2;
             _lineRenderer.SetPosition(0, startPos);
             _lineRenderer.SetPosition(1, endPos);
 
-            await UniTask.WaitForSeconds(_holdDuration);
+            // プレハブではLineRendererを無効にしてあり、座標を入れ切ってから表示する。
+            // これで生成直後の1フレームにプレハブ既定の短い線が描かれることがない
+            _lineRenderer.enabled = true;
+
+            if (_holdDuration > 0f)
+            {
+                await UniTask.WaitForSeconds(_holdDuration);
+            }
 
             // 収縮速度が未設定なら保持後にそのまま消す
             if (_retractSpeed <= 0f)
