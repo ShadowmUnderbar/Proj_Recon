@@ -16,9 +16,10 @@ namespace App.Battle.UseCase
     /// 回避中に接触した敵はその瞬間にスタンし、回避先＋一定距離の地点へイージングで吹き飛ばす。
     /// 敵弾・敵を1つ以上巻き込んでいた場合のみ、回避終了時に
     /// 「攻撃対象の検索（扇形＋直線）→ レイ演出 → フリーズ → ダメージ」を行う。
-    /// 接触した敵は扇形範囲外でも必ず攻撃対象に含め、ダメージ適用後にスタンを解除する。
+    /// 接触した敵は扇形範囲外でも必ず攻撃対象に含める。
+    /// スタンは「吹き飛ばしの移動時間＋フリーズ時間」で自動的に解除される。
     /// </summary>
-    public class DodgeCounterAttackUseCase : IInitializable, IDisposable
+    public class DodgeCounterAttackUseCase : IInitializable, ITickable, IDisposable
     {
 
         private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
@@ -35,9 +36,6 @@ namespace App.Battle.UseCase
         private readonly DodgeCounterAttackConfig _config;
 
         private readonly CompositeDisposable _disposable = new();
-
-        // スタンを解除する敵の作業リスト（解除中に接触記録が変わらないよう複製してから使う）
-        private readonly List<int> _stunnedEnemyIds = new();
 
         [Inject]
         public DodgeCounterAttackUseCase(
@@ -101,6 +99,17 @@ namespace App.Battle.UseCase
             _dodgeCounterAttackDataStore.RegisterEnemyContact(damagedData.AttackerId);
         }
 
+        public void Tick()
+        {
+            // 接触スタンの残り時間を進め、切れた敵から解除する
+            var expiredEnemyIds = _dodgeCounterAttackDataStore.UpdateStunTimers(Time.deltaTime);
+
+            for (var i = 0; i < expiredEnemyIds.Count; i++)
+            {
+                _enemyPresenter.SetStun(expiredEnemyIds[i], false);
+            }
+        }
+
         /// <summary>
         /// 回避中に接触した敵をスタンさせ、回避先＋一定距離の地点へ吹き飛ばす。
         /// ダメージは回避終了時にまとめて与えるため、ここでは与えない。
@@ -112,13 +121,18 @@ namespace App.Battle.UseCase
                 return;
             }
 
+            // 回避の終了に合わせて到着させるため、移動時間は接触時点の回避の残り時間にする
+            var knockBackDuration = _playerDodgeParameterDataStore.RemainingDodgeTime;
+
             _enemyPresenter.SetStun(enemyId, true);
+            _dodgeCounterAttackDataStore.RegisterStun(
+                enemyId, _dodgeCounterAttackDataStore.GetContactStunDuration(knockBackDuration));
 
             var destination = _dodgeCounterAttackDataStore.GetKnockBackPosition(
                 _playerDodgeParameterDataStore.DodgeTargetPosition,
                 _playerDodgeParameterDataStore.DodgeDirection);
 
-            _enemyPresenter.KnockBack(enemyId, destination, _config.KnockBackDuration);
+            _enemyPresenter.KnockBack(enemyId, destination, knockBackDuration);
         }
 
         private void OnDodgeEnd(DodgeEndData dodgeEndData)
@@ -126,7 +140,6 @@ namespace App.Battle.UseCase
             // ウェーブ間ポーズ中は敵へダメージを通さない（他の攻撃と同基準）
             if (_waveManagerDataStore.IsWavePause.Value)
             {
-                ReleaseContactStun();
                 _dodgeCounterAttackDataStore.ResetContacts();
                 return;
             }
@@ -135,7 +148,6 @@ namespace App.Battle.UseCase
             // （レイ演出も出さない）
             if (!_dodgeCounterAttackDataStore.HasContact)
             {
-                ReleaseContactStun();
                 _dodgeCounterAttackDataStore.ResetContacts();
                 return;
             }
@@ -183,9 +195,6 @@ namespace App.Battle.UseCase
                 Damage(lineTargetEnemyIds[i], origin, damage);
             }
 
-            // 5. 接触した敵のスタンを解除（ダメージ適用まで固めておく仕様）
-            ReleaseContactStun();
-
             // カウントは回避終了時点で確定。次の回避に備えてリセットする
             _dodgeCounterAttackDataStore.ResetContacts();
         }
@@ -221,23 +230,6 @@ namespace App.Battle.UseCase
             }
 
             return hit.distance;
-        }
-
-        /// <summary>
-        /// 接触時に付与したスタンを解除する。
-        /// 撃破済み・消滅済みの敵にも呼ぶが、その場合は何も起きない。
-        /// </summary>
-        private void ReleaseContactStun()
-        {
-            var contactedEnemyIds = _dodgeCounterAttackDataStore.ContactedEnemyIds;
-
-            _stunnedEnemyIds.Clear();
-            _stunnedEnemyIds.AddRange(contactedEnemyIds);
-
-            for (var i = 0; i < _stunnedEnemyIds.Count; i++)
-            {
-                _enemyPresenter.SetStun(_stunnedEnemyIds[i], false);
-            }
         }
 
         /// <summary>

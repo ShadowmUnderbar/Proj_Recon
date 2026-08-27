@@ -37,15 +37,13 @@ namespace App.Battle.Data
         [SerializeField, Tooltip("複数の敵を吹き飛ばすときに重ならないよう左右へずらす間隔（m）")]
         private float _knockBackSpacing = 1f;
 
-        [SerializeField, Tooltip("吹き飛ばしの移動時間（秒）。0以下なら瞬間移動")]
-        private float _knockBackDuration = 0.12f;
 
         [Header("接触判定")]
         [SerializeField, Tooltip("弾以外の被弾を接触と見なすプレイヤーからの距離（m）。遠方から届く爆風を接触扱いしないための上限")]
         private float _contactRange = 3f;
 
         [Header("演出")]
-        [SerializeField, Tooltip("攻撃時に敵・プレイヤー・弾を止める秒数（0以下なら止めない）")]
+        [SerializeField, Tooltip("攻撃時に敵・プレイヤー・弾を止める秒数（0以下なら止めない）。接触した敵のスタン時間にも足される")]
         private float _freezeDuration = 0.2f;
 
         [SerializeField, Tooltip("レイ演出の高さ（m）。回避終了地点・敵Poseの足元基準に対して胴体あたりを結ぶ")]
@@ -59,7 +57,6 @@ namespace App.Battle.Data
         public float DamagePerContact => _damagePerContact;
         public float KnockBackDistance => _knockBackDistance;
         public float KnockBackSpacing => _knockBackSpacing;
-        public float KnockBackDuration => _knockBackDuration;
         public float ContactRange => _contactRange;
         public float TracerHeight => _tracerHeight;
         public float FreezeDuration => _freezeDuration;

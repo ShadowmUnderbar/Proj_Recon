@@ -24,6 +24,12 @@ namespace App.Battle.Interface.DataStore
         /// <summary>今回の回避の方向（水平・正規化済み）</summary>
         Vector3 DodgeDirection { get; }
 
+        /// <summary>
+        /// 回避が終わるまでの残り時間（秒）。
+        /// 回避中に接触した敵を回避終了に合わせて運ぶための移動時間に使う。
+        /// </summary>
+        float RemainingDodgeTime { get; }
+
         /// <summary>回避が成立した瞬間に発火する（AfterDodge条件バフの起動に使う）</summary>
         Observable<Unit> OnDodge { get; }
 

@@ -85,6 +85,22 @@ namespace App.Battle.Interface.DataStore
         IReadOnlyList<int> GetLineTargetEnemyIds(IReadOnlyList<int> lineHitEnemyIds);
 
         /// <summary>
+        /// 接触した敵のスタン時間（秒）を返す。
+        /// 吹き飛ばしの移動時間とフリーズ時間の合計で、回避終了とフリーズ明けまで固まる長さになる。
+        /// </summary>
+        /// <param name="knockBackDuration">その敵の吹き飛ばしにかける時間（秒）</param>
+        float GetContactStunDuration(float knockBackDuration);
+
+        /// <summary>スタン中として時間を管理する敵を登録する（同じ敵は長い方の残り時間を採用）</summary>
+        void RegisterStun(int enemyId, float duration);
+
+        /// <summary>
+        /// スタンの残り時間を deltaTime 分進め、切れた敵のIdを返す。
+        /// 戻り値は呼び出しごとに再利用する内部リスト（次の呼び出しで上書きされる）。
+        /// </summary>
+        IReadOnlyList<int> UpdateStunTimers(float deltaTime);
+
+        /// <summary>
         /// 直近に接触した敵の吹き飛ばし先を返す。
         /// 回避先（dodgeTargetPosition）からさらに回避方向へ一定距離進んだ地点で、
         /// 複数体が重ならないよう接触順に応じて左右へずらす。

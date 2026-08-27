@@ -20,7 +20,6 @@ MonoBehaviour:
   _damagePerContact: 0.1
   _knockBackDistance: 3
   _knockBackSpacing: 1
-  _knockBackDuration: 0.12
   _contactRange: 3
   _freezeDuration: 0.2
   _tracerHeight: 1

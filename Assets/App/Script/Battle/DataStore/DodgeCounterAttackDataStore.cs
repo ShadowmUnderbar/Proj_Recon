@@ -41,6 +41,16 @@ namespace App.Battle.DataStore
         private readonly Subject<int> _onEnemyContacted = new();
         public Observable<int> OnEnemyContacted => _onEnemyContacted;
 
+        // 接触でスタンさせた敵Id → 残りスタン時間。接触記録とは独立して管理する
+        // （スタンは回避終了後のフリーズ明けまで続くため）
+        private readonly Dictionary<int, float> _stunRemainingTime = new();
+
+        // 残り時間が切れた敵Idの作業バッファ（辞書の列挙中に削除できないため）
+        private readonly List<int> _expiredStunEnemyIds = new();
+
+        // スタン継続中の敵Idの一時退避（辞書の列挙中に値を書き換えられないため）
+        private readonly List<int> _activeStunEnemyIds = new();
+
         [Inject]
         public DodgeCounterAttackDataStore(
             DodgeCounterAttackConfig config,
@@ -227,6 +237,64 @@ namespace App.Battle.DataStore
             }
 
             return _targetEnemyIds;
+        }
+
+        public float GetContactStunDuration(float knockBackDuration)
+        {
+            // 吹き飛ばしが終わってからフリーズが明けるまで固まったままにする
+            return Mathf.Max(0f, knockBackDuration) + Mathf.Max(0f, _config.FreezeDuration);
+        }
+
+        public void RegisterStun(int enemyId, float duration)
+        {
+            if (duration <= 0f)
+            {
+                return;
+            }
+
+            // 短い指定で上書きしないよう、残り時間の長い方を採用する
+            if (_stunRemainingTime.TryGetValue(enemyId, out var remaining))
+            {
+                duration = Mathf.Max(remaining, duration);
+            }
+
+            _stunRemainingTime[enemyId] = duration;
+        }
+
+        public IReadOnlyList<int> UpdateStunTimers(float deltaTime)
+        {
+            _expiredStunEnemyIds.Clear();
+
+            if (_stunRemainingTime.Count <= 0)
+            {
+                return _expiredStunEnemyIds;
+            }
+
+            foreach (var enemyId in _stunRemainingTime.Keys)
+            {
+                if (_stunRemainingTime[enemyId] - deltaTime > 0f)
+                {
+                    continue;
+                }
+
+                _expiredStunEnemyIds.Add(enemyId);
+            }
+
+            foreach (var enemyId in _expiredStunEnemyIds)
+            {
+                _stunRemainingTime.Remove(enemyId);
+            }
+
+            // 残っている敵の時間を進める（辞書の値の書き換えは列挙後に行う）
+            _activeStunEnemyIds.Clear();
+            _activeStunEnemyIds.AddRange(_stunRemainingTime.Keys);
+
+            foreach (var enemyId in _activeStunEnemyIds)
+            {
+                _stunRemainingTime[enemyId] -= deltaTime;
+            }
+
+            return _expiredStunEnemyIds;
         }
 
         public Vector3 GetKnockBackPosition(Vector3 dodgeTargetPosition, Vector3 direction)

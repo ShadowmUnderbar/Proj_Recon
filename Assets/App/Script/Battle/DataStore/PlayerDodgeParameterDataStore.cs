@@ -74,6 +74,8 @@ namespace App.Battle.DataStore
             }
         }
 
+        public float RemainingDodgeTime => Mathf.Max(0f, DodgeDuration - _dodgeElapsed);
+
         public void StartDodge(Vector3 start, Vector3 target)
         {
             _dodgeStartPosition = start;
