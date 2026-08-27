@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
 using UnityEngine;
@@ -27,6 +28,9 @@ namespace App.Battle.DataStore
 
         // 複数の敵を押し出すときに重ならないよう左右へずらす間隔（m）
         private const float PushSpacing = 1f;
+
+        // 遮蔽判定に使う高さ（m）。回避終了地点・敵Poseはいずれも足元基準のため胴体あたりで見通しを見る
+        private const float SightHeight = 1f;
 
         // 被弾を「接触」と見なすプレイヤーからの距離（m）。
         // 近接攻撃の間合いを想定した値で、遠方から届く爆風を接触扱いしないための上限
@@ -210,6 +214,7 @@ namespace App.Battle.DataStore
         /// <summary>
         /// origin を頂点・forward を中心軸とした扇形（半径 AttackRange / 左右 AttackHalfAngle）に
         /// targetPosition が入っているかを水平面で判定する。
+        /// 壁越しの敵は攻撃対象にしないため、範囲内でも見通しが遮られていれば false を返す。
         /// </summary>
         private static bool IsInAttackSector(Vector3 origin, Vector3 forward, Vector3 targetPosition)
         {
@@ -229,7 +234,23 @@ namespace App.Battle.DataStore
                 return true;
             }
 
-            return Vector3.Angle(forward, toTarget.normalized) <= AttackHalfAngle;
+            if (Vector3.Angle(forward, toTarget.normalized) > AttackHalfAngle)
+            {
+                return false;
+            }
+
+            return !IsSightBlocked(origin, targetPosition);
+        }
+
+        /// <summary>
+        /// 回避終了地点から対象への見通しが壁（フィールド）に遮られているかを返す。
+        /// </summary>
+        private static bool IsSightBlocked(Vector3 origin, Vector3 targetPosition)
+        {
+            var start = origin + Vector3.up * SightHeight;
+            var end = targetPosition + Vector3.up * SightHeight;
+
+            return Physics.Linecast(start, end, LayerMasks.FieldLayer);
         }
     }
 }
