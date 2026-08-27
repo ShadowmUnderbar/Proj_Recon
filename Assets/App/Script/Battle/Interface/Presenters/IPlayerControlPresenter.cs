@@ -37,6 +37,12 @@ namespace App.Battle.Interface
 
         /// <summary>指定座標へ向けて弾を発射する（パリィのように狙いと無関係な方向へ撃つ用）</summary>
         void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition);
+
+        /// <summary>
+        /// 即着弾のレイ演出（曳光弾）を再生する。
+        /// 射撃を伴わない攻撃（回避時跳ね返し攻撃）から、ノーマル弾と同じ見た目のレイを出すのに使う。
+        /// </summary>
+        void PlayShotTracer(Vector3 startPos, Vector3 endPos, float width);
         void MouseAim(Vector2 mousePos);
         void IsFocusRight(bool isFocus);
         void IsFocusLeft(bool isFocus);

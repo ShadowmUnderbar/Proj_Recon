@@ -25,6 +25,12 @@ namespace App.Battle.Interface.DataStore
         /// <summary>接触した敵を記録する（既に記録済みのIdは無視する）</summary>
         void RegisterEnemyContact(int enemyId);
 
+        /// <summary>
+        /// その敵が「接触」と見なせる距離にいるかを返す。
+        /// 爆風は遠方の敵からでも当たるため、被弾を接触として数える前にこれで絞る。
+        /// </summary>
+        bool IsWithinContactRange(int enemyId, Vector3 playerPosition);
+
         /// <summary>次の回避に備えて接触記録を破棄する</summary>
         void ResetContacts();
 
@@ -42,6 +48,11 @@ namespace App.Battle.Interface.DataStore
         /// 戻り値は呼び出しごとに再利用する内部リスト（次の呼び出しで上書きされる）。
         /// </summary>
         IReadOnlyList<int> GetTargetEnemyIds(Vector3 origin, Vector3 direction);
+
+        /// <summary>
+        /// レイ演出の太さ（ノーマル弾の当たり判定サイズ）を返す。
+        /// </summary>
+        float GetTracerWidth();
 
         /// <summary>
         /// 回避中に接触した敵の押し出し先を返す（回避終了地点から回避方向へ一定距離）。

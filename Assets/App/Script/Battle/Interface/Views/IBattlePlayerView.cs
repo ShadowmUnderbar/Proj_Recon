@@ -49,5 +49,14 @@ namespace App.Battle.Interface
         void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition);
 
         void Blitz(Vector3 startPos, Transform playerPos);
+
+        /// <summary>
+        /// 即着弾のレイ演出（曳光弾）を再生する。
+        /// 射撃を伴わない攻撃（回避時跳ね返し攻撃）から、ノーマル弾と同じ見た目のレイを出すのに使う。
+        /// </summary>
+        /// <param name="startPos">レイの発射地点</param>
+        /// <param name="endPos">レイの着弾地点</param>
+        /// <param name="width">レイの太さ（弾の当たり判定サイズと揃える）</param>
+        void PlayShotTracer(Vector3 startPos, Vector3 endPos, float width);
     }
 }

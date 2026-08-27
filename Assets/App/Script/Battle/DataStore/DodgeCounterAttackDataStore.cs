@@ -28,6 +28,10 @@ namespace App.Battle.DataStore
         // 複数の敵を押し出すときに重ならないよう左右へずらす間隔（m）
         private const float PushSpacing = 1f;
 
+        // 被弾を「接触」と見なすプレイヤーからの距離（m）。
+        // 近接攻撃の間合いを想定した値で、遠方から届く爆風を接触扱いしないための上限
+        private const float ContactRange = 3f;
+
         private readonly IPlayerBulletParameterDataStore _playerBulletParameterDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
 
@@ -78,6 +82,19 @@ namespace App.Battle.DataStore
             _contactedEnemyIds.Add(enemyId);
         }
 
+        public bool IsWithinContactRange(int enemyId, Vector3 playerPosition)
+        {
+            if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData))
+            {
+                return false;
+            }
+
+            var toEnemy = enemyData.Pose.position - playerPosition;
+            toEnemy.y = 0f;
+
+            return toEnemy.sqrMagnitude <= ContactRange * ContactRange;
+        }
+
         public void ResetContacts()
         {
             _contactedProjectileIds.Clear();
@@ -99,6 +116,12 @@ namespace App.Battle.DataStore
             damage += (ContactedProjectileCount + ContactedEnemyCount) * DamagePerContact;
 
             return damage;
+        }
+
+        public float GetTracerWidth()
+        {
+            // 見た目をノーマルショットのレイに揃える（HitRange強化も同じように反映される）
+            return _playerBulletParameterDataStore.GetBulletData(ShotType.Normal, AimFocusType.NotFocus).Size;
         }
 
         public IReadOnlyList<int> GetTargetEnemyIds(Vector3 origin, Vector3 direction)
