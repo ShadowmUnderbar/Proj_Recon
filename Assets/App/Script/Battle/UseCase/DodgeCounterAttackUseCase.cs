@@ -15,7 +15,7 @@ namespace App.Battle.UseCase
     /// 回避時跳ね返し攻撃。
     /// 回避中に接触した敵はその瞬間にスタンし、回避先＋一定距離の地点へイージングで吹き飛ばす。
     /// 敵弾・敵を1つ以上巻き込んでいた場合のみ、回避終了時に
-    /// 「攻撃対象の検索（扇形＋直線）→ レイ演出 → フリーズ → ダメージ」を行う。
+    /// 「攻撃対象の検索（扇形＋直線）→ レイ演出 → フリーズ → フリーズ解除後にダメージ」を行う。
     /// 接触した敵は扇形範囲外でも必ず攻撃対象に含める。
     /// スタンは「吹き飛ばしの移動時間＋フリーズ時間」で自動的に解除される。
     /// </summary>
@@ -36,6 +36,13 @@ namespace App.Battle.UseCase
         private readonly DodgeCounterAttackConfig _config;
 
         private readonly CompositeDisposable _disposable = new();
+
+        // フリーズ解除後に与えるダメージの持ち越し分。
+        // 対象IdはDataStore側の使い回しバッファを跨いで保持するため、ここへ複製する
+        private readonly List<int> _pendingDamageEnemyIds = new();
+        private bool _hasPendingDamage;
+        private float _pendingDamage;
+        private Vector3 _pendingDamageOrigin;
 
         [Inject]
         public DodgeCounterAttackUseCase(
@@ -73,6 +80,12 @@ namespace App.Battle.UseCase
 
             _dodgeCounterAttackDataStore.OnEnemyContacted
                 .Subscribe(OnEnemyContacted)
+                .AddTo(_disposable);
+
+            // ダメージはフリーズが明けてから与える
+            _freezeDataStore.IsFreezing
+                .Where(isFreezing => !isFreezing)
+                .Subscribe(_ => ApplyPendingDamage())
                 .AddTo(_disposable);
         }
 
@@ -184,19 +197,50 @@ namespace App.Battle.UseCase
             // 3. 敵・プレイヤー・弾をその場で止める（ヒットストップ）
             _freezeDataStore.Freeze(_config.FreezeDuration);
 
-            // 4. ダメージ処理
-            for (var i = 0; i < targetEnemyIds.Count; i++)
-            {
-                Damage(targetEnemyIds[i], origin, damage);
-            }
-
-            for (var i = 0; i < lineTargetEnemyIds.Count; i++)
-            {
-                Damage(lineTargetEnemyIds[i], origin, damage);
-            }
+            // 4. ダメージはフリーズ解除後に与えるため、対象と条件を持ち越す
+            _pendingDamageEnemyIds.Clear();
+            _pendingDamageEnemyIds.AddRange(targetEnemyIds);
+            _pendingDamageEnemyIds.AddRange(lineTargetEnemyIds);
+            _pendingDamage = damage;
+            _pendingDamageOrigin = origin;
+            _hasPendingDamage = true;
 
             // カウントは回避終了時点で確定。次の回避に備えてリセットする
             _dodgeCounterAttackDataStore.ResetContacts();
+
+            // フリーズしなかった場合（秒数が0以下）は解除通知が来ないため、その場で与える
+            if (!_freezeDataStore.IsFreezing.CurrentValue)
+            {
+                ApplyPendingDamage();
+            }
+        }
+
+        /// <summary>
+        /// フリーズ解除後に、持ち越したダメージを対象へ与える。
+        /// 対象が撃破済み・消滅済みなら <see cref="Damage"/> 側で弾かれる。
+        /// </summary>
+        private void ApplyPendingDamage()
+        {
+            if (!_hasPendingDamage)
+            {
+                return;
+            }
+
+            _hasPendingDamage = false;
+
+            // フリーズ中にウェーブ間ポーズへ入った場合は他の攻撃と同基準でダメージを通さない
+            if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                _pendingDamageEnemyIds.Clear();
+                return;
+            }
+
+            for (var i = 0; i < _pendingDamageEnemyIds.Count; i++)
+            {
+                Damage(_pendingDamageEnemyIds[i], _pendingDamageOrigin, _pendingDamage);
+            }
+
+            _pendingDamageEnemyIds.Clear();
         }
 
         /// <summary>
