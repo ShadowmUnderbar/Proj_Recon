@@ -14,13 +14,23 @@ namespace App.Battle.Interface
         void UnSpawn(int enemyId);
         UniTask Dead(int id);
         void AllDeadEnemies();
-        int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance);
+        /// <summary>
+        /// 回避で通過した区間にいる敵のIdを返す。
+        /// 戻り値は呼び出しごとに再利用する内部リスト（次の呼び出しで上書きされる）。
+        /// </summary>
+        IReadOnlyList<int> GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance);
 
         /// <summary>
         /// 視界中央から半径 radius のレイを飛ばし、捉えた敵のIDを返す。
         /// 戻り値は呼び出しごとに再利用する内部リスト（次の呼び出しで上書きされる）。
         /// </summary>
         IReadOnlyList<int> GetGazeEnemies(Vector3 origin, Vector3 direction, float radius, float distance);
+
+        /// <summary>
+        /// 指定半径の球を direction 方向へ distance だけ飛ばし、当たった敵のIdを返す（回避時跳ね返しの直線判定）。
+        /// 戻り値は呼び出しごとに再利用する内部リスト（次の呼び出しで上書きされる）。
+        /// </summary>
+        IReadOnlyList<int> GetLineHitEnemies(Vector3 origin, Vector3 direction, float radius, float distance);
 
         void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2);
         void SetPause(bool isPause);
@@ -30,6 +40,13 @@ namespace App.Battle.Interface
 
         /// <summary>敵をスタン状態にする（メデューサ）</summary>
         void SetStun(int enemyId, bool isStun);
+
+        /// <summary>
+        /// 敵を指定座標へイージングで移動させる（回避時跳ね返しの吹き飛ばし）。
+        /// 経路はNavMesh上に寄せるため、指定座標と完全に一致するとは限らない。
+        /// duration が0以下なら瞬間移動する。
+        /// </summary>
+        void KnockBack(int enemyId, Vector3 destination, float duration);
 
         /// <summary>被弾の傾き演出を再生する（hitDirection はダメージ源→敵の水平方向）</summary>
         void PlayHitFeedback(int enemyId, Vector3 hitDirection);

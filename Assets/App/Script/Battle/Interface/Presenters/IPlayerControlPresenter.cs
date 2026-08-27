@@ -37,6 +37,12 @@ namespace App.Battle.Interface
 
         /// <summary>指定座標へ向けて弾を発射する（パリィのように狙いと無関係な方向へ撃つ用）</summary>
         void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition);
+
+        /// <summary>
+        /// 回避時跳ね返し攻撃（カウンター）のレイ演出を再生する。
+        /// 見た目と挙動は専用プレハブ（CounterTracerView）側で調整する。
+        /// </summary>
+        void PlayCounterTracer(Vector3 startPos, Vector3 endPos, float width);
         void MouseAim(Vector2 mousePos);
         void IsFocusRight(bool isFocus);
         void IsFocusLeft(bool isFocus);

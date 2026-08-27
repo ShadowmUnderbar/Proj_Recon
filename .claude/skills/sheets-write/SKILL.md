@@ -31,6 +31,7 @@ node sheets-cli.mjs create-sheet BuffData --schema '["id,int","NameKey,string"]'
 node sheets-cli.mjs add-enum UpgradeType 9 "バフ付与" GrantBuff  # enumシートへ行追加
 node sheets-cli.mjs rename-sheet ConditionType BuffConditionType # シート名変更
 node sheets-cli.mjs delete-columns UpgradeData X:Z               # 列削除（単一なら "X"）
+node sheets-cli.mjs delete-rows UpgradeData 104:106              # 行削除（単一なら "104"。行番号はシート表示と同じ1始まり）
 ```
 
 ## シート構成の約束事（GASエクスポータと対応）

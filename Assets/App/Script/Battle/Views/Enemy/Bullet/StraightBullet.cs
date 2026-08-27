@@ -8,7 +8,7 @@ namespace App.Battle.Views.Enemy.Bullet
         {
             base.Update();
 
-            if (!CanHit)
+            if (!CanHit || IsPause)
             {
                 return;
             }

@@ -43,6 +43,9 @@ namespace App.Battle.Views.Enemy.Bullet
         }
 
         protected bool CanHit { get; private set; } = true;
+
+        /// <summary>フリーズでその場に止まっているか（移動を止める。当たり判定は生かしたまま）</summary>
+        protected bool IsPause { get; private set; }
         protected BulletData BulletData { get; private set; }
         private int _hitCount = 0;
         private int _focusTargetId = 0;
@@ -78,6 +81,14 @@ namespace App.Battle.Views.Enemy.Bullet
 
         protected virtual void Update()
         {
+        }
+
+        /// <summary>
+        /// その場で止める／再開する（フリーズ用）。移動だけを止め、当たり判定と寿命はそのまま。
+        /// </summary>
+        public void SetPause(bool isPause)
+        {
+            IsPause = isPause;
         }
 
         private void InstantHitCheck()
@@ -184,9 +195,11 @@ namespace App.Battle.Views.Enemy.Bullet
 
             // 同一弾内で何体目のヒットか（1始まり）。PenetrationCount条件バフの倍率計算に使う。
             // エイム状態とフォーカス対象一致はキリングコールの条件判定に使う
-            // isProjectile: 弾の直撃であることを伝える（回避中のパリィ対象の判定に使う）
+            // isProjectile: 弾の直撃であることを伝える（回避時跳ね返し攻撃の接触弾カウントに使う）
+            // projectileId: この弾を一意に識別するId（同じ弾を重複カウントしないために使う）
             hitBox.OnHit(BulletData.Damage, _attackerId, transform.position, out var canPenetrable,
-                _hitTargetIds.Count, BulletData.ShotType, BulletData.FocusType, _focusTargetId == hitBox.Id, true);
+                _hitTargetIds.Count, BulletData.ShotType, BulletData.FocusType, _focusTargetId == hitBox.Id, true,
+                gameObject.GetInstanceID());
 
             if (_focusTargetId == hitBox.Id)
             {

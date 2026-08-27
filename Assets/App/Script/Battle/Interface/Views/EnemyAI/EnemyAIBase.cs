@@ -1,4 +1,5 @@
 using App.Battle.Data;
+using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
 using UnityEngine.AI;
@@ -17,6 +18,12 @@ namespace App.Battle.Interface.EnemyAI
 
         // 移動速度と行動抽選速度に掛かる倍率（スネークアイズ）
         private float _speedMultiplier = 1f;
+
+        // ワープ先をNavMesh上へ寄せるときの探索半径（m）
+        private const float WarpSampleDistance = 2f;
+
+        // 進行中の吹き飛ばしを識別する番号（新しい吹き飛ばしが来たら古い方を打ち切る）
+        private int _knockBackId;
 
         protected EnemyData EnemyData;
         protected NavMeshAgent Agent;
@@ -122,7 +129,8 @@ namespace App.Battle.Interface.EnemyAI
                 return;
             }
 
-            if (CanAttack)
+            // 停止中は行動抽選も進めない（溜まった分で解除直後に一斉攻撃するのを防ぐ）
+            if (CanAttack && !IsPause)
             {
                 // 速度倍率は行動抽選の進行速度にも掛かる
                 LastAttackTime += Time.deltaTime * _speedMultiplier;
@@ -253,6 +261,89 @@ namespace App.Battle.Interface.EnemyAI
         {
             _speedMultiplier = Mathf.Max(0f, multiplier);
             ApplyCurrentAgentSpeed();
+        }
+
+        /// <summary>
+        /// 指定座標へイージングで移動する（回避時跳ね返しの吹き飛ばし）。
+        /// 停止中（フリーズ・ウェーブ間ポーズ）は移動を進めず、解除後に続きを進める。
+        /// </summary>
+        public virtual void KnockBack(Vector3 destination, float duration)
+        {
+            if (Agent == null)
+            {
+                return;
+            }
+
+            // 直前の吹き飛ばしが残っていても、常に最新の指定を優先する
+            _knockBackId++;
+
+            if (duration <= 0f)
+            {
+                WarpTo(destination);
+                return;
+            }
+
+            KnockBackAsync(destination, duration, _knockBackId).Forget();
+        }
+
+        private async UniTask KnockBackAsync(Vector3 destination, float duration, int knockBackId)
+        {
+            var start = transform.position;
+            var elapsed = 0f;
+            var token = this.GetCancellationTokenOnDestroy();
+
+            while (elapsed < duration)
+            {
+                await UniTask.Yield(token);
+
+                if (knockBackId != _knockBackId || Agent == null)
+                {
+                    return;
+                }
+
+                // 停止中は進めない（フリーズ中に動き続けないようにする）
+                if (IsPause)
+                {
+                    continue;
+                }
+
+                elapsed += Time.deltaTime;
+
+                // 立ち上がりが速く着地で減速するイージング
+                var t = Mathf.Clamp01(elapsed / duration);
+                var eased = 1f - Mathf.Pow(1f - t, 3f);
+
+                WarpTo(Vector3.Lerp(start, destination, eased));
+            }
+        }
+
+        /// <summary>
+        /// 指定座標へワープする（吹き飛ばしの1ステップ分の移動）。
+        /// NavMeshAgentは直接transformを動かすと経路が壊れるため Warp を使い、
+        /// 指定座標がNavMesh外の場合は最も近いNavMesh上の地点へ寄せる。
+        /// </summary>
+        public virtual void WarpTo(Vector3 position)
+        {
+            if (Agent == null)
+            {
+                return;
+            }
+
+            if (!NavMesh.SamplePosition(position, out var hit, WarpSampleDistance, NavMesh.AllAreas))
+            {
+                return;
+            }
+
+            var destination = hit.position;
+
+            // 壁の向こうへ飛ばさないよう、現在地から目的地までNavMesh上を辿り、
+            // 遮られた場合はその地点で止める
+            if (NavMesh.Raycast(transform.position, destination, out var navMeshHit, NavMesh.AllAreas))
+            {
+                destination = navMeshHit.position;
+            }
+
+            Agent.Warp(destination);
         }
 
         /// <summary>

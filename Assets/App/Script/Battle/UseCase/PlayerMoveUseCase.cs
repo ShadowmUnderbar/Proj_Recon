@@ -16,6 +16,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
+        private readonly IFreezeDataStore _freezeDataStore;
         private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
 
         private readonly CompositeDisposable _disposable = new();
@@ -26,6 +27,7 @@ namespace App.Battle.UseCase
             IPlayerControlPresenter playerControlPresenter,
             IGameInputDataStore gameInputDataStore,
             IWaveManagerDataStore waveManagerDataStore,
+            IFreezeDataStore freezeDataStore,
             IPlayerDodgeParameterDataStore playerDodgeParameterDataStore
         )
         {
@@ -34,6 +36,7 @@ namespace App.Battle.UseCase
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
             _waveManagerDataStore = waveManagerDataStore;
+            _freezeDataStore = freezeDataStore;
         }
 
         public void Initialize()
@@ -48,8 +51,9 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            // ウェーブ間ポーズ中は移動を停止（移動モーションも止める）
-            if (_waveManagerDataStore.IsWavePause.Value)
+            // ウェーブ間ポーズ中・フリーズ中は移動を停止（移動モーションも止める）
+            if (_waveManagerDataStore.IsWavePause.Value ||
+                _freezeDataStore.IsFreezing.CurrentValue)
             {
                 _playerControlPresenter.SetMoveAnimation(Vector2.zero);
                 return;

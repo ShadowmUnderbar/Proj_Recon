@@ -164,6 +164,7 @@ MonoBehaviour:
   _hitBoxStoreView: {fileID: 6914517933678794931, guid: c33fa19a77f4b3240ad67937a879edf4, type: 3}
   _blitzEffectView: {fileID: 8959355507770873111, guid: e83cca62039e1484ab7b3365492eebd3, type: 3}
   _bulletTracerView: {fileID: 6339585561139069309, guid: 964b455afa838134fb99f86b342abc46, type: 3}
+  _counterTracerView: {fileID: 3191562983013087647, guid: fd36cc9f31f41884290af1724c963594, type: 3}
   _bulletStoreView: {fileID: 1523574698354749414, guid: 0f61ec3ac4e34ed4a8d99b5609a2d29f, type: 3}
   _shopView: {fileID: 8191605006265629756, guid: d1135638dbbe412459fa19440d1e485f, type: 3}
   _gameOverView: {fileID: 2521413792756983357, guid: d2b7af2b77a1a8948b99f80d9bb01e37, type: 3}
@@ -171,6 +172,7 @@ MonoBehaviour:
   _waveConfig: {fileID: 11400000, guid: 59d998123a56c164e8af04f7758af639, type: 2}
   _streamerCameraView: {fileID: 2502214490595356515, guid: 845639cd75498d24d9ca347c81c38cb3, type: 3}
   _streamerCameraTriggerConfig: {fileID: 11400000, guid: fbd42e5c1d1fea24486e558b5a17babd, type: 2}
+  _dodgeCounterAttackConfig: {fileID: 11400000, guid: 28938c88d976b334b949dd8cc527b6fc, type: 2}
 --- !u!4 &175168502
 Transform:
   m_ObjectHideFlags: 0

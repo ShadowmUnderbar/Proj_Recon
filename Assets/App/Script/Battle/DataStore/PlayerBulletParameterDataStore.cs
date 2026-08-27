@@ -18,10 +18,7 @@ namespace App.Battle.DataStore
         private readonly IAvalancheDataStore _avalancheDataStore;
         private readonly IDamageNodeDataStore _damageNodeDataStore;
         private readonly IShotConflictDataStore _shotConflictDataStore;
-
-        // パリィ弾がワルツ／マージのフォーム強化を引き継ぐようになる継承フォーム数
-        private const int WaltzInheritLevel = 2;
-        private const int MergeInheritLevel = 3;
+        private readonly IFreezeDataStore _freezeDataStore;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -35,7 +32,8 @@ namespace App.Battle.DataStore
             IPeaceMakerDataStore peaceMakerDataStore,
             IAvalancheDataStore avalancheDataStore,
             IDamageNodeDataStore damageNodeDataStore,
-            IShotConflictDataStore shotConflictDataStore
+            IShotConflictDataStore shotConflictDataStore,
+            IFreezeDataStore freezeDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -46,10 +44,17 @@ namespace App.Battle.DataStore
             _avalancheDataStore = avalancheDataStore;
             _damageNodeDataStore = damageNodeDataStore;
             _shotConflictDataStore = shotConflictDataStore;
+            _freezeDataStore = freezeDataStore;
         }
 
         public void Tick()
         {
+            // フリーズ中は射撃そのものを止めるため、クールダウンの進行も止める
+            if (_freezeDataStore.IsFreezing.CurrentValue)
+            {
+                return;
+            }
+
             if (_leftShotCoolDown > 0)
             {
                 _leftShotCoolDown -= Time.deltaTime;
@@ -171,25 +176,6 @@ namespace App.Battle.DataStore
             if (focusType == AimFocusType.NotFocus)
             {
                 bullet.Size *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.HitRange);
-            }
-
-            return bullet;
-        }
-
-        public BulletData GetParryBulletData(int inheritedFormCount)
-        {
-            // 基礎性能は「撃ってきた相手へのフォーカスショット」。
-            // ノーマル弾のフォーカス射撃なので、この時点でノーマル(Lv1)分の強化は含まれている
-            var bullet = GetBulletData(ShotType.Normal, AimFocusType.Focus);
-
-            if (inheritedFormCount >= WaltzInheritLevel)
-            {
-                bullet.Damage *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.WaltzDamage);
-            }
-
-            if (inheritedFormCount >= MergeInheritLevel)
-            {
-                bullet.Damage *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.MergeDamage);
             }
 
             return bullet;
