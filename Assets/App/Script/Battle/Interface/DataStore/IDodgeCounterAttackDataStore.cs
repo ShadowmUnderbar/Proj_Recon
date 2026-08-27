@@ -54,6 +54,23 @@ namespace App.Battle.Interface.DataStore
         /// </summary>
         float GetTracerWidth();
 
+        /// <summary>直線判定（SphereCast）の射程（m）</summary>
+        float LineAttackDistance { get; }
+
+        /// <summary>
+        /// 直線判定（SphereCast）の半径を返す。
+        /// 基礎半径にノーマル／マージ／ワルツの当たり判定サイズ合計を足した値。
+        /// </summary>
+        float GetLineAttackRadius();
+
+        /// <summary>
+        /// 直線判定で当たった敵のうち、扇形範囲の対象と重複しないものだけを返す。
+        /// 撃破済みの敵と、同じ敵の重複も除外する。
+        /// <see cref="GetTargetEnemyIds"/> の後に呼ぶこと。
+        /// 戻り値は呼び出しごとに再利用する内部リスト（次の呼び出しで上書きされる）。
+        /// </summary>
+        IReadOnlyList<int> GetLineTargetEnemyIds(IReadOnlyList<int> lineHitEnemyIds);
+
         /// <summary>
         /// 回避中に接触した敵の押し出し先を返す（回避終了地点から回避方向へ一定距離）。
         /// 複数体を同じ座標へ重ねないよう、index / count に応じて左右へ等間隔にずらす。

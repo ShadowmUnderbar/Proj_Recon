@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: DodgeCounterAttackConfig
   m_EditorClassIdentifier: 
   _attackRange: 15
-  _attackHalfAngle: 10
+  _attackHalfAngle: 20
   _sightHeight: 1
+  _lineAttackDistance: 50
+  _lineAttackBaseRadius: 1
   _damagePerContact: 0.1
   _pushDistance: 2
   _pushSpacing: 1

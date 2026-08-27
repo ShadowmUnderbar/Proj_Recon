@@ -26,6 +26,12 @@ namespace App.Battle.Interface
         /// </summary>
         IReadOnlyList<int> GetGazeEnemies(Vector3 origin, Vector3 direction, float radius, float distance);
 
+        /// <summary>
+        /// 指定半径の球を direction 方向へ distance だけ飛ばし、当たった敵のIdを返す（回避時跳ね返しの直線判定）。
+        /// 戻り値は呼び出しごとに再利用する内部リスト（次の呼び出しで上書きされる）。
+        /// </summary>
+        IReadOnlyList<int> GetLineHitEnemies(Vector3 origin, Vector3 direction, float radius, float distance);
+
         void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2);
         void SetPause(bool isPause);
 

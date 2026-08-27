@@ -30,6 +30,12 @@ namespace App.Battle.DataStore
         // 攻撃対象の作業バッファ（毎回のアロケーションを避けるため使い回す）
         private readonly List<int> _targetEnemyIds = new();
 
+        // 扇形と直線で同じ敵を二重に攻撃しないための対象Id集合
+        private readonly HashSet<int> _targetEnemyIdSet = new();
+
+        // 直線判定の対象の作業バッファ
+        private readonly List<int> _lineTargetEnemyIds = new();
+
         [Inject]
         public DodgeCounterAttackDataStore(
             DodgeCounterAttackConfig config,
@@ -111,9 +117,48 @@ namespace App.Battle.DataStore
             return _playerBulletParameterDataStore.GetBulletData(ShotType.Normal, AimFocusType.NotFocus).Size;
         }
 
+        public float LineAttackDistance => _config.LineAttackDistance;
+
+        public float GetLineAttackRadius()
+        {
+            // ノーマル／マージ／ワルツの当たり判定サイズ合計に基礎半径を足す（HitRange強化も反映される）
+            var size =
+                _playerBulletParameterDataStore.GetBulletData(ShotType.Normal, AimFocusType.NotFocus).Size +
+                _playerBulletParameterDataStore.GetBulletData(ShotType.Merge, AimFocusType.NotFocus).Size +
+                _playerBulletParameterDataStore.GetBulletData(ShotType.Waltz, AimFocusType.NotFocus).Size;
+
+            return _config.LineAttackBaseRadius + size;
+        }
+
+        public IReadOnlyList<int> GetLineTargetEnemyIds(IReadOnlyList<int> lineHitEnemyIds)
+        {
+            _lineTargetEnemyIds.Clear();
+
+            for (var i = 0; i < lineHitEnemyIds.Count; i++)
+            {
+                var enemyId = lineHitEnemyIds[i];
+
+                if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData) || enemyData.IsDead)
+                {
+                    continue;
+                }
+
+                // 扇形範囲の対象（＝既に攻撃済み）と重複させない
+                if (!_targetEnemyIdSet.Add(enemyId))
+                {
+                    continue;
+                }
+
+                _lineTargetEnemyIds.Add(enemyId);
+            }
+
+            return _lineTargetEnemyIds;
+        }
+
         public IReadOnlyList<int> GetTargetEnemyIds(Vector3 origin, Vector3 direction)
         {
             _targetEnemyIds.Clear();
+            _targetEnemyIdSet.Clear();
 
             // 回避中に接触した敵は扇形範囲外でも必ず対象にする（撃破済みは除く）
             foreach (var enemyId in _contactedEnemyIds)
@@ -124,6 +169,11 @@ namespace App.Battle.DataStore
                 }
 
                 if (contactedEnemy.IsDead)
+                {
+                    continue;
+                }
+
+                if (!_targetEnemyIdSet.Add(enemyId))
                 {
                     continue;
                 }
@@ -162,6 +212,7 @@ namespace App.Battle.DataStore
                     continue;
                 }
 
+                _targetEnemyIdSet.Add(enemy.Id);
                 _targetEnemyIds.Add(enemy.Id);
             }
 

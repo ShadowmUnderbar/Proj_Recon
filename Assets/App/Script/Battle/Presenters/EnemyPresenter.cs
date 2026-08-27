@@ -48,6 +48,11 @@ namespace App.Battle.Presenters
             return _enemyStoreView.GetGazeEnemies(origin, direction, radius, distance);
         }
 
+        public IReadOnlyList<int> GetLineHitEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
+        {
+            return _enemyStoreView.GetLineHitEnemies(origin, direction, radius, distance);
+        }
+
         public void SetSpeedMultiplier(int enemyId, float multiplier)
         {
             _enemyStoreView.SetSpeedMultiplier(enemyId, multiplier);

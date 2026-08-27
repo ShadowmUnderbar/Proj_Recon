@@ -28,6 +28,10 @@ namespace App.Battle.Views
         private readonly RaycastHit[] _gazeHits = new RaycastHit[20];
         private readonly List<int> _gazeEnemyIds = new();
 
+        // 直線判定用（注視と同時に呼ばれてもバッファが混ざらないよう別に持つ）
+        private readonly RaycastHit[] _lineHits = new RaycastHit[32];
+        private readonly List<int> _lineEnemyIds = new();
+
         private bool _isPause;
 
         [Inject]
@@ -131,29 +135,44 @@ namespace App.Battle.Views
 
         public IReadOnlyList<int> GetGazeEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
         {
-            _gazeEnemyIds.Clear();
+            return SphereCastEnemyIds(origin, direction, radius, distance, _gazeHits, _gazeEnemyIds);
+        }
 
-            var count = Physics.SphereCastNonAlloc(origin, radius, direction.normalized, _gazeHits, distance,
+        public IReadOnlyList<int> GetLineHitEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
+        {
+            return SphereCastEnemyIds(origin, direction, radius, distance, _lineHits, _lineEnemyIds);
+        }
+
+        /// <summary>
+        /// 指定の球を direction 方向へ distance だけ飛ばし、当たった敵のIdを results に詰めて返す。
+        /// バッファは呼び出しごとに使い回すため、戻り値は次の呼び出しまでに使い切る。
+        /// </summary>
+        private static IReadOnlyList<int> SphereCastEnemyIds(Vector3 origin, Vector3 direction, float radius,
+            float distance, RaycastHit[] hits, List<int> results)
+        {
+            results.Clear();
+
+            var count = Physics.SphereCastNonAlloc(origin, radius, direction.normalized, hits, distance,
                 LayerMasks.EnemyLayer);
 
             for (var i = 0; i < count; i++)
             {
-                var hitBox = _gazeHits[i].collider.GetComponent<HitBoxView>();
+                var hitBox = hits[i].collider.GetComponent<HitBoxView>();
                 if (hitBox == null)
                 {
                     continue;
                 }
 
                 // 1体の敵が複数のヒットボックスを持つため重複を除く
-                if (_gazeEnemyIds.Contains(hitBox.Id))
+                if (results.Contains(hitBox.Id))
                 {
                     continue;
                 }
 
-                _gazeEnemyIds.Add(hitBox.Id);
+                results.Add(hitBox.Id);
             }
 
-            return _gazeEnemyIds;
+            return results;
         }
 
         public void SetSpeedMultiplier(int enemyId, float multiplier)

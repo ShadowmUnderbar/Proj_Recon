@@ -19,6 +19,13 @@ namespace App.Battle.Data
         [SerializeField, Tooltip("遮蔽判定を行う高さ（m）。回避終了地点・敵Poseは足元基準のため胴体あたりで見通しを見る")]
         private float _sightHeight = 1f;
 
+        [Header("直線判定（SphereCast）")]
+        [SerializeField, Tooltip("直線判定の射程（m）")]
+        private float _lineAttackDistance = 50f;
+
+        [SerializeField, Tooltip("直線判定の基礎半径（m）。実際の半径はこれに3フォームの当たり判定サイズ合計を足した値")]
+        private float _lineAttackBaseRadius = 1f;
+
         [Header("ダメージ")]
         [SerializeField, Tooltip("接触1件（敵弾・敵の区別なし）あたりのダメージ加算値")]
         private float _damagePerContact = 0.1f;
@@ -41,6 +48,8 @@ namespace App.Battle.Data
         public float AttackRange => _attackRange;
         public float AttackHalfAngle => _attackHalfAngle;
         public float SightHeight => _sightHeight;
+        public float LineAttackDistance => _lineAttackDistance;
+        public float LineAttackBaseRadius => _lineAttackBaseRadius;
         public float DamagePerContact => _damagePerContact;
         public float PushDistance => _pushDistance;
         public float PushSpacing => _pushSpacing;
