@@ -121,6 +121,11 @@ namespace App.Battle.Views
             }
 
             EnemyAI.WarpTo(position);
+
+            // 押し出し後の座標を即座に流す（同フレームで対象検索・ダメージ判定に使うため、
+            // UpdateでのPose更新を待たない）
+            Pose.Value = transform.ToPose();
+            transform.hasChanged = false;
         }
 
         public void SetStun(bool isStun)

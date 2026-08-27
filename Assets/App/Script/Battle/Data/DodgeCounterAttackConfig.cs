@@ -42,6 +42,9 @@ namespace App.Battle.Data
         private float _contactRange = 3f;
 
         [Header("演出")]
+        [SerializeField, Tooltip("攻撃時に敵・プレイヤー・弾を止める秒数（0以下なら止めない）")]
+        private float _freezeDuration = 0.2f;
+
         [SerializeField, Tooltip("レイ演出の高さ（m）。回避終了地点・敵Poseの足元基準に対して胴体あたりを結ぶ")]
         private float _tracerHeight = 1f;
 
@@ -55,5 +58,6 @@ namespace App.Battle.Data
         public float PushSpacing => _pushSpacing;
         public float ContactRange => _contactRange;
         public float TracerHeight => _tracerHeight;
+        public float FreezeDuration => _freezeDuration;
     }
 }

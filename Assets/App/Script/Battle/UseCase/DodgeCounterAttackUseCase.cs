@@ -13,9 +13,8 @@ namespace App.Battle.UseCase
 {
     /// <summary>
     /// 回避時跳ね返し攻撃。
-    /// 回避中に巻き込んだ敵弾・敵を数え、1つ以上巻き込んでいた場合のみ、
-    /// 回避終了時に終了地点から回避方向へ扇形の攻撃を発生させる。
-    /// あわせて回避方向へ直線（SphereCast）の判定も出し、扇形と重複しない敵を攻撃する。
+    /// 回避中に敵弾・敵を1つ以上巻き込んでいた場合のみ、回避終了時に
+    /// 「敵の押し出し → 攻撃対象の検索（扇形＋直線）→ レイ演出 → フリーズ → ダメージ」を行う。
     /// 回避中に接触した敵は回避方向へ押し出し、扇形範囲外でも必ず攻撃対象に含める。
     /// </summary>
     public class DodgeCounterAttackUseCase : IInitializable, IDisposable
@@ -28,6 +27,8 @@ namespace App.Battle.UseCase
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IPlayerStateDataStore _playerStateDataStore;
+
+        private readonly IFreezeDataStore _freezeDataStore;
 
         // レイ演出の高さなどの調整値
         private readonly DodgeCounterAttackConfig _config;
@@ -46,7 +47,8 @@ namespace App.Battle.UseCase
             IWaveManagerDataStore waveManagerDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IPlayerStateDataStore playerStateDataStore,
-            DodgeCounterAttackConfig config
+            DodgeCounterAttackConfig config,
+            IFreezeDataStore freezeDataStore
         )
         {
             _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
@@ -57,6 +59,7 @@ namespace App.Battle.UseCase
             _playerControlPresenter = playerControlPresenter;
             _playerStateDataStore = playerStateDataStore;
             _config = config;
+            _freezeDataStore = freezeDataStore;
         }
 
         public void Initialize()
@@ -110,60 +113,68 @@ namespace App.Battle.UseCase
                 return;
             }
 
+            // プレイヤーの回避先への移動は PlayerDodgeUseCase 側で確定済み。
+            // 以降は「敵の押し出し → 攻撃対象の検索 → レイ演出 → フリーズ → ダメージ」の順で処理する
             var origin = dodgeEndData.EndPosition;
             var direction = dodgeEndData.Direction;
 
             var damage = _dodgeCounterAttackDataStore.CalcDamage();
             var tracerWidth = _dodgeCounterAttackDataStore.GetTracerWidth();
-            var targetEnemyIds = _dodgeCounterAttackDataStore.GetTargetEnemyIds(origin, direction);
             var tracerHeight = Vector3.up * _config.TracerHeight;
 
-            // ダメージは押し出し前の座標で確定させる（押し出し直後は敵の座標がまだ更新されておらず、
-            // 弱点方向の判定と傾き演出の向きが押し出し前後で食い違うため）
+            // 1. 巻き込んだ敵を回避方向へ押し出す（以降の判定は押し出し後の座標で行う）
+            PushContactedEnemies(origin, direction);
+
+            // 2. 攻撃対象の検索（扇形＋直線。直線は扇形と重複しない敵のみ）
+            var targetEnemyIds = _dodgeCounterAttackDataStore.GetTargetEnemyIds(origin, direction);
+            var lineDistance = GetLineDistance(origin, direction);
+            var lineTargetEnemyIds = SearchLineTargets(origin, direction, lineDistance);
+
+            // 3. レイ演出（扇形の対象へは1体ずつ、直線は対象の有無に関わらず1本）
             for (var i = 0; i < targetEnemyIds.Count; i++)
             {
-                if (!Damage(targetEnemyIds[i], origin, damage, out var enemyPosition))
+                if (!_enemyDataStore.TryGetEnemyData(targetEnemyIds[i], out var enemyData))
                 {
                     continue;
                 }
 
-                // 扇形の対象へは1体ずつレイ演出を出す
-                PlayTracer(origin + tracerHeight, enemyPosition + tracerHeight, tracerWidth);
+                PlayTracer(origin + tracerHeight, enemyData.Pose.position + tracerHeight, tracerWidth);
             }
 
-            // 直線判定（対象の有無に関わらずレイ演出を出す）
-            LineAttack(origin, direction, damage, tracerWidth);
+            var lineTracerStart = origin + tracerHeight;
+            PlayTracer(lineTracerStart, lineTracerStart + direction * lineDistance, tracerWidth);
 
-            // 巻き込んだ敵は回避方向へ押し出す
-            PushContactedEnemies(origin, direction);
+            // 4. 敵・プレイヤー・弾をその場で止める（ヒットストップ）
+            _freezeDataStore.Freeze(_config.FreezeDuration);
+
+            // 5. ダメージ処理
+            for (var i = 0; i < targetEnemyIds.Count; i++)
+            {
+                Damage(targetEnemyIds[i], origin, damage);
+            }
+
+            for (var i = 0; i < lineTargetEnemyIds.Count; i++)
+            {
+                Damage(lineTargetEnemyIds[i], origin, damage);
+            }
 
             // カウントは回避終了時点で確定。次の回避に備えてリセットする
             _dodgeCounterAttackDataStore.ResetContacts();
         }
 
         /// <summary>
-        /// 回避方向へ直線（SphereCast）の判定を出し、扇形範囲と重複しない敵を攻撃する。
-        /// レイ演出は対象がいなくても必ず再生する。
+        /// 回避方向への直線（SphereCast）で、扇形範囲と重複しない攻撃対象を検索する。
         /// </summary>
-        private void LineAttack(Vector3 origin, Vector3 direction, float damage, float tracerWidth)
+        private IReadOnlyList<int> SearchLineTargets(Vector3 origin, Vector3 direction, float distance)
         {
             var radius = _dodgeCounterAttackDataStore.GetLineAttackRadius();
-            var distance = GetLineDistance(origin, direction);
 
             // 判定は足元ではなく胴体あたりの高さから飛ばす
             var castOrigin = origin + Vector3.up * _config.SightHeight;
 
             var lineHitEnemyIds = _enemyPresenter.GetLineHitEnemies(castOrigin, direction, radius, distance);
-            var lineTargetEnemyIds = _dodgeCounterAttackDataStore.GetLineTargetEnemyIds(lineHitEnemyIds);
 
-            for (var i = 0; i < lineTargetEnemyIds.Count; i++)
-            {
-                Damage(lineTargetEnemyIds[i], origin, damage, out _);
-            }
-
-            // 直線のレイ演出は1本だけ、当たった敵の有無に関わらず出す
-            var tracerStart = origin + Vector3.up * _config.TracerHeight;
-            PlayTracer(tracerStart, tracerStart + direction * distance, tracerWidth);
+            return _dodgeCounterAttackDataStore.GetLineTargetEnemyIds(lineHitEnemyIds);
         }
 
         /// <summary>
@@ -214,25 +225,20 @@ namespace App.Battle.UseCase
         }
 
         /// <summary>
-        /// 対象へダメージと被弾演出を与える。与えられた場合のみ true を返し、
-        /// レイ演出の着弾地点として敵の座標を out で返す。
+        /// 対象へダメージと被弾演出を与える。
         /// </summary>
-        private bool Damage(int enemyId, Vector3 origin, float damage, out Vector3 enemyPosition)
+        private void Damage(int enemyId, Vector3 origin, float damage)
         {
-            enemyPosition = origin;
-
             if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData))
             {
-                return false;
+                return;
             }
 
             // 撃破演出中の敵はダメージも演出も通さない（EnemyDataStore.Damage と同基準）
             if (enemyData.IsDead)
             {
-                return false;
+                return;
             }
-
-            enemyPosition = enemyData.Pose.position;
 
             var directionType = RelativeYawExtension.GetActorRelative(enemyData.Pose, origin);
 
@@ -246,8 +252,6 @@ namespace App.Battle.UseCase
 
             // 弾のヒットボックスを経由しないため、被弾の傾き演出は明示的に再生する
             _enemyPresenter.PlayHitFeedback(enemyId, hitDirection);
-
-            return true;
         }
 
         /// <summary>
