@@ -19,6 +19,12 @@ namespace App.Battle.Interface.DataStore
         /// <summary>回避中に接触した敵のId（回避終了時に押し出し、必ず攻撃対象に含める）</summary>
         IReadOnlyList<int> ContactedEnemyIds { get; }
 
+        /// <summary>
+        /// 回避中に敵弾・敵を1つ以上巻き込んだか。
+        /// これが false の回避では跳ね返し攻撃（扇形・直線とも）を発生させない。
+        /// </summary>
+        bool HasContact { get; }
+
         /// <summary>接触した敵弾を記録する（既に記録済みのIdは無視する）</summary>
         void RegisterProjectileContact(int projectileId);
 

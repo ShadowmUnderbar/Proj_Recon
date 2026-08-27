@@ -54,6 +54,8 @@ namespace App.Battle.DataStore
 
         public IReadOnlyList<int> ContactedEnemyIds => _contactedEnemyIds;
 
+        public bool HasContact => ContactedProjectileCount + ContactedEnemyCount > 0;
+
         public void RegisterProjectileContact(int projectileId)
         {
             // Idを持たない攻撃（弾以外）は識別できないためカウントしない

@@ -13,7 +13,8 @@ namespace App.Battle.UseCase
 {
     /// <summary>
     /// 回避時跳ね返し攻撃。
-    /// 回避中に巻き込んだ敵弾・敵を数え、回避終了時に終了地点から回避方向へ扇形の攻撃を発生させる。
+    /// 回避中に巻き込んだ敵弾・敵を数え、1つ以上巻き込んでいた場合のみ、
+    /// 回避終了時に終了地点から回避方向へ扇形の攻撃を発生させる。
     /// あわせて回避方向へ直線（SphereCast）の判定も出し、扇形と重複しない敵を攻撃する。
     /// 回避中に接触した敵は回避方向へ押し出し、扇形範囲外でも必ず攻撃対象に含める。
     /// </summary>
@@ -96,6 +97,14 @@ namespace App.Battle.UseCase
         {
             // ウェーブ間ポーズ中は敵へダメージを通さない（他の攻撃と同基準）
             if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                _dodgeCounterAttackDataStore.ResetContacts();
+                return;
+            }
+
+            // 敵弾・敵を1つも巻き込んでいない回避では、扇形・直線とも攻撃を発生させない
+            // （レイ演出も出さない）
+            if (!_dodgeCounterAttackDataStore.HasContact)
             {
                 _dodgeCounterAttackDataStore.ResetContacts();
                 return;
