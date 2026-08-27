@@ -38,6 +38,8 @@ namespace App.Battle
             #region DataStore
 
             // 登録順序がTick順序に影響するため、依存順に登録
+            builder.Register<FreezeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IFreezeDataStore>();
             builder.Register<PlayerStateDataStore>(Lifetime.Singleton)
                 .AsImplementedInterfaces().As<IPlayerStateDataStore>();
             builder.Register<PlayerFocusDataStore>(Lifetime.Singleton)
@@ -123,6 +125,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<BattleHitUseCase>();
             builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
+            builder.RegisterEntryPoint<FreezeUseCase>();
             builder.RegisterEntryPoint<DodgeCounterAttackUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();

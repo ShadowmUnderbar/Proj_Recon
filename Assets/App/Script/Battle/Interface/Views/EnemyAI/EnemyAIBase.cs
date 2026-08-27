@@ -125,7 +125,8 @@ namespace App.Battle.Interface.EnemyAI
                 return;
             }
 
-            if (CanAttack)
+            // 停止中は行動抽選も進めない（溜まった分で解除直後に一斉攻撃するのを防ぐ）
+            if (CanAttack && !IsPause)
             {
                 // 速度倍率は行動抽選の進行速度にも掛かる
                 LastAttackTime += Time.deltaTime * _speedMultiplier;

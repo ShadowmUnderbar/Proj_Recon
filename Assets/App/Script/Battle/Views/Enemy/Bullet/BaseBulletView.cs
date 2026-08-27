@@ -43,6 +43,9 @@ namespace App.Battle.Views.Enemy.Bullet
         }
 
         protected bool CanHit { get; private set; } = true;
+
+        /// <summary>フリーズでその場に止まっているか（移動を止める。当たり判定は生かしたまま）</summary>
+        protected bool IsPause { get; private set; }
         protected BulletData BulletData { get; private set; }
         private int _hitCount = 0;
         private int _focusTargetId = 0;
@@ -78,6 +81,14 @@ namespace App.Battle.Views.Enemy.Bullet
 
         protected virtual void Update()
         {
+        }
+
+        /// <summary>
+        /// その場で止める／再開する（フリーズ用）。移動だけを止め、当たり判定と寿命はそのまま。
+        /// </summary>
+        public void SetPause(bool isPause)
+        {
+            IsPause = isPause;
         }
 
         private void InstantHitCheck()

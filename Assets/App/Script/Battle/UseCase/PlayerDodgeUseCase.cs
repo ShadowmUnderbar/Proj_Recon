@@ -28,6 +28,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IDodgeCounterAttackDataStore _dodgeCounterAttackDataStore;
+        private readonly IFreezeDataStore _freezeDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -44,7 +45,8 @@ namespace App.Battle.UseCase
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IWaveManagerDataStore waveManagerDataStore,
-            IDodgeCounterAttackDataStore dodgeCounterAttackDataStore
+            IDodgeCounterAttackDataStore dodgeCounterAttackDataStore,
+            IFreezeDataStore freezeDataStore
         )
         {
             _playerStateDataStore = playerStateDataStore;
@@ -56,6 +58,7 @@ namespace App.Battle.UseCase
             _playerControlPresenter = playerControlPresenter;
             _waveManagerDataStore = waveManagerDataStore;
             _dodgeCounterAttackDataStore = dodgeCounterAttackDataStore;
+            _freezeDataStore = freezeDataStore;
         }
 
 
@@ -69,8 +72,9 @@ namespace App.Battle.UseCase
 
         private void OnDodge()
         {
-            // ウェーブ間ポーズ中は回避を停止（Blitzの直接ダメージも防ぐ）
-            if (_waveManagerDataStore.IsWavePause.Value)
+            // ウェーブ間ポーズ中・フリーズ中は回避を停止（Blitzの直接ダメージも防ぐ）
+            if (_waveManagerDataStore.IsWavePause.Value ||
+                _freezeDataStore.IsFreezing.CurrentValue)
             {
                 return;
             }
@@ -120,8 +124,9 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            // ウェーブ間ポーズ中は回避移動も止める（再開時に残り距離を移動する）
-            if (_waveManagerDataStore.IsWavePause.Value)
+            // ウェーブ間ポーズ中・フリーズ中は回避移動も止める（再開時に残り距離を移動する）
+            if (_waveManagerDataStore.IsWavePause.Value ||
+                _freezeDataStore.IsFreezing.CurrentValue)
             {
                 return;
             }

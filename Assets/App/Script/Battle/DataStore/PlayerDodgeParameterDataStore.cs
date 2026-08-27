@@ -3,12 +3,15 @@ using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using R3;
 using UnityEngine;
+using VContainer;
 using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
     public class PlayerDodgeParameterDataStore : IPlayerDodgeParameterDataStore, IInitializable, ITickable, IDisposable
     {
+        private readonly IFreezeDataStore _freezeDataStore;
+
         private float _dodgeCoolDown;
 
         // 回避の直線移動用の状態
@@ -37,6 +40,12 @@ namespace App.Battle.DataStore
         public float DodgeRange => BasePlayerParameter.DodgeRange;
 
         public float DodgeDuration => BasePlayerParameter.DodgeDuration;
+
+        [Inject]
+        public PlayerDodgeParameterDataStore(IFreezeDataStore freezeDataStore)
+        {
+            _freezeDataStore = freezeDataStore;
+        }
 
         public void Initialize()
         {
@@ -111,6 +120,12 @@ namespace App.Battle.DataStore
 
         public void Tick()
         {
+            // フリーズ中は回避そのものを止めるため、クールダウンの回復も止める
+            if (_freezeDataStore.IsFreezing.CurrentValue)
+            {
+                return;
+            }
+
             if (DodgeCount.Value >= MaxDodgeCount.Value)
             {
                 return;

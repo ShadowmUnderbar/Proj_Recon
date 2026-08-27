@@ -18,6 +18,7 @@ namespace App.Battle.DataStore
         private readonly IAvalancheDataStore _avalancheDataStore;
         private readonly IDamageNodeDataStore _damageNodeDataStore;
         private readonly IShotConflictDataStore _shotConflictDataStore;
+        private readonly IFreezeDataStore _freezeDataStore;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -31,7 +32,8 @@ namespace App.Battle.DataStore
             IPeaceMakerDataStore peaceMakerDataStore,
             IAvalancheDataStore avalancheDataStore,
             IDamageNodeDataStore damageNodeDataStore,
-            IShotConflictDataStore shotConflictDataStore
+            IShotConflictDataStore shotConflictDataStore,
+            IFreezeDataStore freezeDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -42,10 +44,17 @@ namespace App.Battle.DataStore
             _avalancheDataStore = avalancheDataStore;
             _damageNodeDataStore = damageNodeDataStore;
             _shotConflictDataStore = shotConflictDataStore;
+            _freezeDataStore = freezeDataStore;
         }
 
         public void Tick()
         {
+            // フリーズ中は射撃そのものを止めるため、クールダウンの進行も止める
+            if (_freezeDataStore.IsFreezing.CurrentValue)
+            {
+                return;
+            }
+
             if (_leftShotCoolDown > 0)
             {
                 _leftShotCoolDown -= Time.deltaTime;
