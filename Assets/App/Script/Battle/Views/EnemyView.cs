@@ -113,6 +113,16 @@ namespace App.Battle.Views
             _hitFeedback.Play(hitDirection);
         }
 
+        public void Push(Vector3 position)
+        {
+            if (EnemyAI == null)
+            {
+                return;
+            }
+
+            EnemyAI.WarpTo(position);
+        }
+
         public void SetStun(bool isStun)
         {
             if (EnemyAI == null)

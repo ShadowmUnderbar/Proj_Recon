@@ -56,8 +56,8 @@ namespace App.Battle
                 .As<IPlayerBulletParameterDataStore>();
             builder.Register<PlayerDodgeParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerDodgeParameterDataStore>();
-            builder.Register<ParryingDaggerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
-                .As<IParryingDaggerDataStore>();
+            builder.Register<DodgeCounterAttackDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IDodgeCounterAttackDataStore>();
             builder.Register<ElectricShockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IElectricShockDataStore>();
             builder.Register<ShotConflictDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -122,7 +122,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<BattleHitUseCase>();
             builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
-            builder.RegisterEntryPoint<ParryingDaggerUseCase>();
+            builder.RegisterEntryPoint<DodgeCounterAttackUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
             builder.RegisterEntryPoint<ShopUseCase>();

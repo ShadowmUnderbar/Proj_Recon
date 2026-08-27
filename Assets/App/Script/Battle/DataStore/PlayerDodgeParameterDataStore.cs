@@ -22,6 +22,9 @@ namespace App.Battle.DataStore
         private readonly Subject<PlayerDamagedData> _onDamagedDuringDodge = new();
         public Observable<PlayerDamagedData> OnDamagedDuringDodge => _onDamagedDuringDodge;
 
+        private readonly Subject<DodgeEndData> _onDodgeEnd = new();
+        public Observable<DodgeEndData> OnDodgeEnd => _onDodgeEnd;
+
         private readonly ReactiveProperty<bool> _isDodging = new(false);
         public ReadOnlyReactiveProperty<bool> IsDodging => _isDodging;
 
@@ -57,11 +60,12 @@ namespace App.Battle.DataStore
             _isDodging.Value = true;
         }
 
-        public bool TryAdvanceDodge(float deltaTime, out Vector3 position)
+        public bool TryAdvanceDodge(float deltaTime, out Vector3 position, out bool isFinished)
         {
             if (!_isDodging.Value)
             {
                 position = _dodgeTargetPosition;
+                isFinished = false;
                 return false;
             }
 
@@ -72,11 +76,27 @@ namespace App.Battle.DataStore
             {
                 position = _dodgeTargetPosition;
                 _isDodging.Value = false;
+                isFinished = true;
                 return true;
             }
 
             position = Vector3.Lerp(_dodgeStartPosition, _dodgeTargetPosition, _dodgeElapsed / DodgeDuration);
+            isFinished = false;
             return true;
+        }
+
+        public void NotifyDodgeEnd()
+        {
+            // 回避方向は水平のみ（開始地点と終了地点が一致した場合は通知しない）
+            var direction = _dodgeTargetPosition - _dodgeStartPosition;
+            direction.y = 0f;
+
+            if (direction.sqrMagnitude <= 0f)
+            {
+                return;
+            }
+
+            _onDodgeEnd.OnNext(new DodgeEndData(_dodgeTargetPosition, direction.normalized));
         }
 
         public void NotifyDamageBlocked(PlayerDamagedData damagedData)
@@ -110,6 +130,7 @@ namespace App.Battle.DataStore
         {
             _onDodge.Dispose();
             _onDamagedDuringDodge.Dispose();
+            _onDodgeEnd.Dispose();
             _isDodging.Dispose();
         }
     }

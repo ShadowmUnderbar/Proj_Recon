@@ -25,6 +25,12 @@ namespace App.Battle.Interface
         /// <summary>スタン状態を設定する（メデューサ）</summary>
         void SetStun(bool isStun);
 
+        /// <summary>
+        /// 指定座標へ押し出す（回避時跳ね返し攻撃）。
+        /// NavMesh上の最も近い地点へ移動させるため、指定座標と完全に一致するとは限らない。
+        /// </summary>
+        void Push(Vector3 position);
+
         /// <summary>被弾の傾き演出を再生する（hitDirection はダメージ源→敵の水平方向）</summary>
         void PlayHitFeedback(Vector3 hitDirection);
     }

@@ -103,17 +103,17 @@ namespace App.Battle.Views
             _enemies.Clear();
         }
 
-        public int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
+        public IReadOnlyList<int> GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
         {
+            _rayCastEnemyIds.Clear();
+
             var count = Physics.SphereCastNonAlloc(playerPosition, 0.5f, direction.normalized, _hits, distance,
                 LayerMasks.EnemyLayer);
 
             if (count <= 0)
             {
-                return null;
+                return _rayCastEnemyIds;
             }
-
-            _rayCastEnemyIds.Clear();
 
             for (var i = 0; i < count; i++)
             {
@@ -126,7 +126,7 @@ namespace App.Battle.Views
                 _rayCastEnemyIds.Add(enemy.Id);
             }
 
-            return _rayCastEnemyIds.ToArray();
+            return _rayCastEnemyIds;
         }
 
         public IReadOnlyList<int> GetGazeEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
@@ -174,6 +174,16 @@ namespace App.Battle.Views
             }
 
             enemyView.SetStun(isStun);
+        }
+
+        public void Push(int enemyId, Vector3 position)
+        {
+            if (!_enemies.TryGetValue(enemyId, out var enemyView))
+            {
+                return;
+            }
+
+            enemyView.Push(position);
         }
 
         public void PlayHitFeedback(int enemyId, Vector3 hitDirection)

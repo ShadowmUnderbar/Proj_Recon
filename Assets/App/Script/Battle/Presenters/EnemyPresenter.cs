@@ -38,7 +38,7 @@ namespace App.Battle.Presenters
             _enemyStoreView.AllDeadEnemies();
         }
 
-        public int[] GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
+        public IReadOnlyList<int> GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
         {
             return _enemyStoreView.GetDodgeHitEnemies(playerPosition, direction, distance);
         }
@@ -56,6 +56,11 @@ namespace App.Battle.Presenters
         public void SetStun(int enemyId, bool isStun)
         {
             _enemyStoreView.SetStun(enemyId, isStun);
+        }
+
+        public void Push(int enemyId, Vector3 position)
+        {
+            _enemyStoreView.Push(enemyId, position);
         }
 
         public void PlayHitFeedback(int enemyId, Vector3 hitDirection)

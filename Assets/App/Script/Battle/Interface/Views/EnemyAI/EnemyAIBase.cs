@@ -18,6 +18,9 @@ namespace App.Battle.Interface.EnemyAI
         // 移動速度と行動抽選速度に掛かる倍率（スネークアイズ）
         private float _speedMultiplier = 1f;
 
+        // ワープ先をNavMesh上へ寄せるときの探索半径（m）
+        private const float WarpSampleDistance = 2f;
+
         protected EnemyData EnemyData;
         protected NavMeshAgent Agent;
         protected Transform PlayerTransform;
@@ -253,6 +256,35 @@ namespace App.Battle.Interface.EnemyAI
         {
             _speedMultiplier = Mathf.Max(0f, multiplier);
             ApplyCurrentAgentSpeed();
+        }
+
+        /// <summary>
+        /// 指定座標へワープする（回避時跳ね返し攻撃で回避方向へ押し出す）。
+        /// NavMeshAgentは直接transformを動かすと経路が壊れるため Warp を使い、
+        /// 指定座標がNavMesh外の場合は最も近いNavMesh上の地点へ寄せる。
+        /// </summary>
+        public virtual void WarpTo(Vector3 position)
+        {
+            if (Agent == null)
+            {
+                return;
+            }
+
+            if (!NavMesh.SamplePosition(position, out var hit, WarpSampleDistance, NavMesh.AllAreas))
+            {
+                return;
+            }
+
+            var destination = hit.position;
+
+            // 壁の向こうへ飛ばさないよう、現在地から目的地までNavMesh上を辿り、
+            // 遮られた場合はその地点で止める
+            if (NavMesh.Raycast(transform.position, destination, out var navMeshHit, NavMesh.AllAreas))
+            {
+                destination = navMeshHit.position;
+            }
+
+            Agent.Warp(destination);
         }
 
         /// <summary>

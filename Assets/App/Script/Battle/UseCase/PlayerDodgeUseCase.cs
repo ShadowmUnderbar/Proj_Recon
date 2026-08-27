@@ -27,6 +27,7 @@ namespace App.Battle.UseCase
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
+        private readonly IDodgeCounterAttackDataStore _dodgeCounterAttackDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -42,7 +43,8 @@ namespace App.Battle.UseCase
             IEnemyPresenter enemyPresenter,
             ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IWaveManagerDataStore waveManagerDataStore
+            IWaveManagerDataStore waveManagerDataStore,
+            IDodgeCounterAttackDataStore dodgeCounterAttackDataStore
         )
         {
             _playerStateDataStore = playerStateDataStore;
@@ -53,6 +55,7 @@ namespace App.Battle.UseCase
             _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
             _playerControlPresenter = playerControlPresenter;
             _waveManagerDataStore = waveManagerDataStore;
+            _dodgeCounterAttackDataStore = dodgeCounterAttackDataStore;
         }
 
 
@@ -108,6 +111,10 @@ namespace App.Battle.UseCase
             // 瞬間移動ではなく、Tickで一定時間かけて直線移動させる
             // Blitzのダメージも移動に合わせてTickで順次与える
             _blitzHitEnemyIds.Clear();
+
+            // 前回の回避の接触記録が残らないよう、回避開始時にもリセットする
+            _dodgeCounterAttackDataStore.ResetContacts();
+
             _playerDodgeParameterDataStore.StartDodge(playerPosition, moveTarget);
         }
 
@@ -121,47 +128,77 @@ namespace App.Battle.UseCase
 
             var previousPosition = _playerStateDataStore.Position.Value;
 
-            if (!_playerDodgeParameterDataStore.TryAdvanceDodge(Time.deltaTime, out var position))
+            if (!_playerDodgeParameterDataStore.TryAdvanceDodge(Time.deltaTime, out var position,
+                    out var isFinished))
             {
                 return;
             }
 
             _playerStateDataStore.Position.Value = position;
 
-            // このフレームで通過した区間だけを判定し、すり抜けた敵に順番にダメージを与える
-            Blitz(previousPosition, position);
+            // このフレームで通過した区間だけを判定し、すり抜けた敵を拾う
+            var enemyHits = GetDodgeHitEnemies(previousPosition, position);
+
+            // 回避時跳ね返し攻撃の接触記録（Blitzの解放状況に関係なく毎回行う）
+            RegisterEnemyContacts(enemyHits);
+
+            // すり抜けた敵に順番にダメージを与える
+            Blitz(enemyHits, previousPosition);
+
+            if (!isFinished)
+            {
+                return;
+            }
+
+            // 到達フレームの接触記録まで済んだ後に回避終了を通知する（跳ね返し攻撃の発生点）
+            _playerDodgeParameterDataStore.NotifyDodgeEnd();
         }
 
         /// <summary>
-        /// 回避で通過した区間 from→to にいる敵へダメージを与える。
+        /// 回避で通過した区間 from→to にいる敵のIdを返す（いなければ空）。
+        /// 戻り値はPresenter側の使い回しリストなので、次の呼び出しまでに使い切る。
+        /// </summary>
+        private IReadOnlyList<int> GetDodgeHitEnemies(Vector3 from, Vector3 to)
+        {
+            var moveVector = to - from;
+            var moveDistance = moveVector.magnitude;
+
+            if (moveDistance <= 0f)
+            {
+                return Array.Empty<int>();
+            }
+
+            return _enemyPresenter.GetDodgeHitEnemies(from, moveVector.normalized, moveDistance);
+        }
+
+        /// <summary>
+        /// 回避で接触した敵を跳ね返し攻撃へ記録する（重複除外はDataStore側が行う）。
+        /// </summary>
+        private void RegisterEnemyContacts(IReadOnlyList<int> enemyHits)
+        {
+            for (var i = 0; i < enemyHits.Count; i++)
+            {
+                _dodgeCounterAttackDataStore.RegisterEnemyContact(enemyHits[i]);
+            }
+        }
+
+        /// <summary>
+        /// 回避で通過した区間にいた敵へダメージを与える。
         /// 同一の回避中に同じ敵へ複数回ダメージが入らないよう、命中済みIDを保持する。
         /// </summary>
-        private void Blitz(Vector3 from, Vector3 to)
+        private void Blitz(IReadOnlyList<int> enemyHits, Vector3 from)
         {
             if (!_coreSkillUnlockDataStore.IsUnLockBlitz)
             {
                 return;
             }
 
-            var moveVector = to - from;
-            var moveDistance = moveVector.magnitude;
-
-            if (moveDistance <= 0f)
-            {
-                return;
-            }
-
-            var enemyHits = _enemyPresenter.GetDodgeHitEnemies(from, moveVector.normalized, moveDistance);
-
-            if (enemyHits is null or { Length: <= 0 })
-            {
-                return;
-            }
-
             var damage = _playerDodgeParameterDataStore.DodgeDamage;
 
-            foreach (var enemyId in enemyHits)
+            for (var i = 0; i < enemyHits.Count; i++)
             {
+                var enemyId = enemyHits[i];
+
                 if (!_blitzHitEnemyIds.Add(enemyId))
                 {
                     continue;
