@@ -14,27 +14,8 @@ namespace App.Battle.DataStore
     /// </summary>
     public class DodgeCounterAttackDataStore : IDodgeCounterAttackDataStore
     {
-        // 通常対象の最大射程（m）
-        private const float AttackRange = 15f;
-
-        // 発射方向を中心とした左右の許容角度（度）。範囲は左右合計20度の扇形になる
-        private const float AttackHalfAngle = 10f;
-
-        // 接触1件（敵弾・敵の区別なし）あたりのダメージ加算値
-        private const float DamagePerContact = 0.1f;
-
-        // 接触した敵を回避終了地点から回避方向へ押し出す距離（m）
-        private const float PushDistance = 2f;
-
-        // 複数の敵を押し出すときに重ならないよう左右へずらす間隔（m）
-        private const float PushSpacing = 1f;
-
-        // 遮蔽判定に使う高さ（m）。回避終了地点・敵Poseはいずれも足元基準のため胴体あたりで見通しを見る
-        private const float SightHeight = 1f;
-
-        // 被弾を「接触」と見なすプレイヤーからの距離（m）。
-        // 近接攻撃の間合いを想定した値で、遠方から届く爆風を接触扱いしないための上限
-        private const float ContactRange = 3f;
+        // 攻撃範囲・ダメージ加算・押し出し・接触判定の調整値（インスペクタで調整する）
+        private readonly DodgeCounterAttackConfig _config;
 
         private readonly IPlayerBulletParameterDataStore _playerBulletParameterDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
@@ -51,10 +32,12 @@ namespace App.Battle.DataStore
 
         [Inject]
         public DodgeCounterAttackDataStore(
+            DodgeCounterAttackConfig config,
             IPlayerBulletParameterDataStore playerBulletParameterDataStore,
             IEnemyDataStore enemyDataStore
         )
         {
+            _config = config;
             _playerBulletParameterDataStore = playerBulletParameterDataStore;
             _enemyDataStore = enemyDataStore;
         }
@@ -96,7 +79,7 @@ namespace App.Battle.DataStore
             var toEnemy = enemyData.Pose.position - playerPosition;
             toEnemy.y = 0f;
 
-            return toEnemy.sqrMagnitude <= ContactRange * ContactRange;
+            return toEnemy.sqrMagnitude <= _config.ContactRange * _config.ContactRange;
         }
 
         public void ResetContacts()
@@ -117,7 +100,7 @@ namespace App.Battle.DataStore
                 _playerBulletParameterDataStore.GetBulletData(ShotType.Waltz, AimFocusType.NotFocus).Damage;
 
             // 巻き込んだ数だけ加算（仕様どおりの加算補正）
-            damage += (ContactedProjectileCount + ContactedEnemyCount) * DamagePerContact;
+            damage += (ContactedProjectileCount + ContactedEnemyCount) * _config.DamagePerContact;
 
             return damage;
         }
@@ -197,7 +180,7 @@ namespace App.Battle.DataStore
 
             forward.Normalize();
 
-            var pushPosition = origin + forward * PushDistance;
+            var pushPosition = origin + forward * _config.PushDistance;
 
             if (count <= 1)
             {
@@ -206,24 +189,24 @@ namespace App.Battle.DataStore
 
             // 同じ座標へ重ねると押し合いでジッターするため、回避方向に対して左右へ等間隔に散らす
             var right = Vector3.Cross(Vector3.up, forward);
-            var offset = (index - (count - 1) * 0.5f) * PushSpacing;
+            var offset = (index - (count - 1) * 0.5f) * _config.PushSpacing;
 
             return pushPosition + right * offset;
         }
 
         /// <summary>
-        /// origin を頂点・forward を中心軸とした扇形（半径 AttackRange / 左右 AttackHalfAngle）に
+        /// origin を頂点・forward を中心軸とした扇形（半径・左右角度はConfigの設定値）に
         /// targetPosition が入っているかを水平面で判定する。
         /// 壁越しの敵は攻撃対象にしないため、範囲内でも見通しが遮られていれば false を返す。
         /// </summary>
-        private static bool IsInAttackSector(Vector3 origin, Vector3 forward, Vector3 targetPosition)
+        private bool IsInAttackSector(Vector3 origin, Vector3 forward, Vector3 targetPosition)
         {
             var toTarget = targetPosition - origin;
             toTarget.y = 0f;
 
             var sqrDistance = toTarget.sqrMagnitude;
 
-            if (sqrDistance > AttackRange * AttackRange)
+            if (sqrDistance > _config.AttackRange * _config.AttackRange)
             {
                 return false;
             }
@@ -234,7 +217,7 @@ namespace App.Battle.DataStore
                 return true;
             }
 
-            if (Vector3.Angle(forward, toTarget.normalized) > AttackHalfAngle)
+            if (Vector3.Angle(forward, toTarget.normalized) > _config.AttackHalfAngle)
             {
                 return false;
             }
@@ -245,10 +228,10 @@ namespace App.Battle.DataStore
         /// <summary>
         /// 回避終了地点から対象への見通しが壁（フィールド）に遮られているかを返す。
         /// </summary>
-        private static bool IsSightBlocked(Vector3 origin, Vector3 targetPosition)
+        private bool IsSightBlocked(Vector3 origin, Vector3 targetPosition)
         {
-            var start = origin + Vector3.up * SightHeight;
-            var end = targetPosition + Vector3.up * SightHeight;
+            var start = origin + Vector3.up * _config.SightHeight;
+            var end = targetPosition + Vector3.up * _config.SightHeight;
 
             return Physics.Linecast(start, end, LayerMasks.FieldLayer);
         }

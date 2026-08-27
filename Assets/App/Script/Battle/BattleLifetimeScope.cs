@@ -31,6 +31,7 @@ namespace App.Battle
         [SerializeField] private WaveConfig _waveConfig;
         [SerializeField] private StreamerCameraView _streamerCameraView;
         [SerializeField] private StreamerCameraTriggerConfig _streamerCameraTriggerConfig;
+        [SerializeField] private DodgeCounterAttackConfig _dodgeCounterAttackConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -213,6 +214,7 @@ namespace App.Battle
 
             builder.RegisterInstance(_waveConfig);
             builder.RegisterInstance(_streamerCameraTriggerConfig);
+            builder.RegisterInstance(_dodgeCounterAttackConfig);
 
             #endregion
         }

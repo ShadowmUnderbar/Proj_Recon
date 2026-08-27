@@ -18,9 +18,6 @@ namespace App.Battle.UseCase
     /// </summary>
     public class DodgeCounterAttackUseCase : IInitializable, IDisposable
     {
-        // レイ演出の高さ（回避終了地点・敵Poseはいずれも足元基準のため胴体あたりを結ぶ）
-        private const float TracerHeight = 1f;
-
 
         private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
         private readonly IDodgeCounterAttackDataStore _dodgeCounterAttackDataStore;
@@ -29,6 +26,9 @@ namespace App.Battle.UseCase
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IPlayerStateDataStore _playerStateDataStore;
+
+        // レイ演出の高さなどの調整値
+        private readonly DodgeCounterAttackConfig _config;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -43,7 +43,8 @@ namespace App.Battle.UseCase
             IEnemyPresenter enemyPresenter,
             IWaveManagerDataStore waveManagerDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            IPlayerStateDataStore playerStateDataStore
+            IPlayerStateDataStore playerStateDataStore,
+            DodgeCounterAttackConfig config
         )
         {
             _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
@@ -53,6 +54,7 @@ namespace App.Battle.UseCase
             _waveManagerDataStore = waveManagerDataStore;
             _playerControlPresenter = playerControlPresenter;
             _playerStateDataStore = playerStateDataStore;
+            _config = config;
         }
 
         public void Initialize()
@@ -176,8 +178,8 @@ namespace App.Battle.UseCase
 
             // 回避終了地点から対象へ、ノーマル弾の即着弾と同じレイ演出を出す
             _playerControlPresenter.PlayShotTracer(
-                origin + Vector3.up * TracerHeight,
-                enemyData.Pose.position + Vector3.up * TracerHeight,
+                origin + Vector3.up * _config.TracerHeight,
+                enemyData.Pose.position + Vector3.up * _config.TracerHeight,
                 tracerWidth);
         }
 

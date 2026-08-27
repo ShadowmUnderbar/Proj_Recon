@@ -171,6 +171,7 @@ MonoBehaviour:
   _waveConfig: {fileID: 11400000, guid: 59d998123a56c164e8af04f7758af639, type: 2}
   _streamerCameraView: {fileID: 2502214490595356515, guid: 845639cd75498d24d9ca347c81c38cb3, type: 3}
   _streamerCameraTriggerConfig: {fileID: 11400000, guid: fbd42e5c1d1fea24486e558b5a17babd, type: 2}
+  _dodgeCounterAttackConfig: {fileID: 11400000, guid: 28938c88d976b334b949dd8cc527b6fc, type: 2}
 --- !u!4 &175168502
 Transform:
   m_ObjectHideFlags: 0
