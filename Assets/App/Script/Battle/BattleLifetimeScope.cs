@@ -213,6 +213,8 @@ namespace App.Battle
                 .As<ISimpleObjectFactory<BulletTracerView>>()
                 .WithParameter("prefab", _bulletTracerView);
 
+            builder.Register<TracerFreezeState>(Lifetime.Singleton).As<ITracerFreezeState>();
+
             builder.Register<SimpleObjectFactory<CounterTracerView, CounterTracerView>>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<CounterTracerView>>()
                 .WithParameter("prefab", _counterTracerView);

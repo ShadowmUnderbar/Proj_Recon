@@ -8,7 +8,7 @@ using VContainer.Unity;
 namespace App.Battle.UseCase
 {
     /// <summary>
-    /// フリーズの開始・解除に合わせて、敵と弾をその場で止める。
+    /// フリーズの開始・解除に合わせて、敵・弾・即着弾のレイ演出をその場で止める。
     /// プレイヤーの移動・回避・射撃は各UseCaseが入口で <see cref="IFreezeDataStore.IsFreezing"/> を見て止める。
     /// </summary>
     public class FreezeUseCase : IInitializable, IDisposable
@@ -17,6 +17,7 @@ namespace App.Battle.UseCase
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IBulletStoreView _bulletStoreView;
+        private readonly ITracerFreezeState _tracerFreezeState;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -25,13 +26,15 @@ namespace App.Battle.UseCase
             IFreezeDataStore freezeDataStore,
             IWaveManagerDataStore waveManagerDataStore,
             IEnemyPresenter enemyPresenter,
-            IBulletStoreView bulletStoreView
+            IBulletStoreView bulletStoreView,
+            ITracerFreezeState tracerFreezeState
         )
         {
             _freezeDataStore = freezeDataStore;
             _waveManagerDataStore = waveManagerDataStore;
             _enemyPresenter = enemyPresenter;
             _bulletStoreView = bulletStoreView;
+            _tracerFreezeState = tracerFreezeState;
         }
 
         public void Initialize()
@@ -47,6 +50,9 @@ namespace App.Battle.UseCase
             _enemyPresenter.SetPause(isFreezing || _waveManagerDataStore.IsWavePause.Value);
 
             _bulletStoreView.SetPause(isFreezing);
+
+            // 即着弾のレイ（曳光弾・カウンターのレイ）の保持・収縮も止める
+            _tracerFreezeState.SetFreezing(isFreezing);
         }
 
         public void Dispose()
