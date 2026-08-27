@@ -26,10 +26,10 @@ namespace App.Battle.Interface
         void SetStun(bool isStun);
 
         /// <summary>
-        /// 指定座標へ押し出す（回避時跳ね返し攻撃）。
-        /// NavMesh上の最も近い地点へ移動させるため、指定座標と完全に一致するとは限らない。
+        /// 指定座標へイージングで移動させる（回避時跳ね返しの吹き飛ばし）。
+        /// duration が0以下なら瞬間移動する。
         /// </summary>
-        void Push(Vector3 position);
+        void KnockBack(Vector3 destination, float duration);
 
         /// <summary>被弾の傾き演出を再生する（hitDirection はダメージ源→敵の水平方向）</summary>
         void PlayHitFeedback(Vector3 hitDirection);

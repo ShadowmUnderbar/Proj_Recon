@@ -63,9 +63,9 @@ namespace App.Battle.Presenters
             _enemyStoreView.SetStun(enemyId, isStun);
         }
 
-        public void Push(int enemyId, Vector3 position)
+        public void KnockBack(int enemyId, Vector3 destination, float duration)
         {
-            _enemyStoreView.Push(enemyId, position);
+            _enemyStoreView.KnockBack(enemyId, destination, duration);
         }
 
         public void PlayHitFeedback(int enemyId, Vector3 hitDirection)

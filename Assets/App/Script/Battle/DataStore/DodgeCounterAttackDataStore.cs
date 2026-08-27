@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
+using R3;
 using UnityEngine;
 using VContainer;
 
@@ -12,7 +14,7 @@ namespace App.Battle.DataStore
     /// 回避中に巻き込んだ敵弾・敵を記録し、回避終了時に「終了地点を頂点とした扇形範囲」への
     /// 攻撃対象・ダメージ・接触敵の押し出し先を算出する。
     /// </summary>
-    public class DodgeCounterAttackDataStore : IDodgeCounterAttackDataStore
+    public class DodgeCounterAttackDataStore : IDodgeCounterAttackDataStore, IDisposable
     {
         // 攻撃範囲・ダメージ加算・押し出し・接触判定の調整値（インスペクタで調整する）
         private readonly DodgeCounterAttackConfig _config;
@@ -35,6 +37,9 @@ namespace App.Battle.DataStore
 
         // 直線判定の対象の作業バッファ
         private readonly List<int> _lineTargetEnemyIds = new();
+
+        private readonly Subject<int> _onEnemyContacted = new();
+        public Observable<int> OnEnemyContacted => _onEnemyContacted;
 
         [Inject]
         public DodgeCounterAttackDataStore(
@@ -75,6 +80,9 @@ namespace App.Battle.DataStore
             }
 
             _contactedEnemyIds.Add(enemyId);
+
+            // 接触した瞬間のスタン・吹き飛ばしを起動する
+            _onEnemyContacted.OnNext(enemyId);
         }
 
         public bool IsWithinContactRange(int enemyId, Vector3 playerPosition)
@@ -221,30 +229,39 @@ namespace App.Battle.DataStore
             return _targetEnemyIds;
         }
 
-        public Vector3 GetPushPosition(Vector3 origin, Vector3 direction, int index, int count)
+        public Vector3 GetKnockBackPosition(Vector3 dodgeTargetPosition, Vector3 direction)
         {
             var forward = direction;
             forward.y = 0f;
 
             if (forward.sqrMagnitude <= 0f)
             {
-                return origin;
+                return dodgeTargetPosition;
             }
 
             forward.Normalize();
 
-            var pushPosition = origin + forward * _config.PushDistance;
+            var knockBackPosition = dodgeTargetPosition + forward * _config.KnockBackDistance;
 
-            if (count <= 1)
+            // 接触順（1体目は正面、以降は左右交互）にずらして同じ座標へ重ねない。
+            // 重ねると押し合いでジッターするため
+            var index = ContactedEnemyCount - 1;
+
+            if (index <= 0)
             {
-                return pushPosition;
+                return knockBackPosition;
             }
 
-            // 同じ座標へ重ねると押し合いでジッターするため、回避方向に対して左右へ等間隔に散らす
+            var step = (index + 1) / 2;
+            var sign = index % 2 == 1 ? 1f : -1f;
             var right = Vector3.Cross(Vector3.up, forward);
-            var offset = (index - (count - 1) * 0.5f) * _config.PushSpacing;
 
-            return pushPosition + right * offset;
+            return knockBackPosition + right * (sign * step * _config.KnockBackSpacing);
+        }
+
+        public void Dispose()
+        {
+            _onEnemyContacted.Dispose();
         }
 
         /// <summary>

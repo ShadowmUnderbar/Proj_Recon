@@ -13,9 +13,10 @@ namespace App.Battle.UseCase
 {
     /// <summary>
     /// 回避時跳ね返し攻撃。
-    /// 回避中に敵弾・敵を1つ以上巻き込んでいた場合のみ、回避終了時に
-    /// 「敵の押し出し → 攻撃対象の検索（扇形＋直線）→ レイ演出 → フリーズ → ダメージ」を行う。
-    /// 回避中に接触した敵は回避方向へ押し出し、扇形範囲外でも必ず攻撃対象に含める。
+    /// 回避中に接触した敵はその瞬間にスタンし、回避先＋一定距離の地点へイージングで吹き飛ばす。
+    /// 敵弾・敵を1つ以上巻き込んでいた場合のみ、回避終了時に
+    /// 「攻撃対象の検索（扇形＋直線）→ レイ演出 → フリーズ → ダメージ」を行う。
+    /// 接触した敵は扇形範囲外でも必ず攻撃対象に含め、ダメージ適用後にスタンを解除する。
     /// </summary>
     public class DodgeCounterAttackUseCase : IInitializable, IDisposable
     {
@@ -35,8 +36,8 @@ namespace App.Battle.UseCase
 
         private readonly CompositeDisposable _disposable = new();
 
-        // 押し出す敵の作業リスト（左右へ散らす位置を生存数基準で決めるため、先に絞ってから使う）
-        private readonly List<int> _pushTargetEnemyIds = new();
+        // スタンを解除する敵の作業リスト（解除中に接触記録が変わらないよう複製してから使う）
+        private readonly List<int> _stunnedEnemyIds = new();
 
         [Inject]
         public DodgeCounterAttackUseCase(
@@ -71,6 +72,10 @@ namespace App.Battle.UseCase
             _playerDodgeParameterDataStore.OnDodgeEnd
                 .Subscribe(OnDodgeEnd)
                 .AddTo(_disposable);
+
+            _dodgeCounterAttackDataStore.OnEnemyContacted
+                .Subscribe(OnEnemyContacted)
+                .AddTo(_disposable);
         }
 
         /// <summary>
@@ -96,11 +101,32 @@ namespace App.Battle.UseCase
             _dodgeCounterAttackDataStore.RegisterEnemyContact(damagedData.AttackerId);
         }
 
+        /// <summary>
+        /// 回避中に接触した敵をスタンさせ、回避先＋一定距離の地点へ吹き飛ばす。
+        /// ダメージは回避終了時にまとめて与えるため、ここでは与えない。
+        /// </summary>
+        private void OnEnemyContacted(int enemyId)
+        {
+            if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData) || enemyData.IsDead)
+            {
+                return;
+            }
+
+            _enemyPresenter.SetStun(enemyId, true);
+
+            var destination = _dodgeCounterAttackDataStore.GetKnockBackPosition(
+                _playerDodgeParameterDataStore.DodgeTargetPosition,
+                _playerDodgeParameterDataStore.DodgeDirection);
+
+            _enemyPresenter.KnockBack(enemyId, destination, _config.KnockBackDuration);
+        }
+
         private void OnDodgeEnd(DodgeEndData dodgeEndData)
         {
             // ウェーブ間ポーズ中は敵へダメージを通さない（他の攻撃と同基準）
             if (_waveManagerDataStore.IsWavePause.Value)
             {
+                ReleaseContactStun();
                 _dodgeCounterAttackDataStore.ResetContacts();
                 return;
             }
@@ -109,12 +135,14 @@ namespace App.Battle.UseCase
             // （レイ演出も出さない）
             if (!_dodgeCounterAttackDataStore.HasContact)
             {
+                ReleaseContactStun();
                 _dodgeCounterAttackDataStore.ResetContacts();
                 return;
             }
 
             // プレイヤーの回避先への移動は PlayerDodgeUseCase 側で確定済み。
-            // 以降は「敵の押し出し → 攻撃対象の検索 → レイ演出 → フリーズ → ダメージ」の順で処理する
+            // 接触した敵は接触時点でスタン＋吹き飛ばし済みなので、
+            // 以降は「攻撃対象の検索 → レイ演出 → フリーズ → ダメージ」の順で処理する
             var origin = dodgeEndData.EndPosition;
             var direction = dodgeEndData.Direction;
 
@@ -122,15 +150,12 @@ namespace App.Battle.UseCase
             var tracerWidth = _dodgeCounterAttackDataStore.GetTracerWidth();
             var tracerHeight = Vector3.up * _config.TracerHeight;
 
-            // 1. 巻き込んだ敵を回避方向へ押し出す（以降の判定は押し出し後の座標で行う）
-            PushContactedEnemies(origin, direction);
-
-            // 2. 攻撃対象の検索（扇形＋直線。直線は扇形と重複しない敵のみ）
+            // 1. 攻撃対象の検索（扇形＋直線。直線は扇形と重複しない敵のみ）
             var targetEnemyIds = _dodgeCounterAttackDataStore.GetTargetEnemyIds(origin, direction);
             var lineDistance = GetLineDistance(origin, direction);
             var lineTargetEnemyIds = SearchLineTargets(origin, direction, lineDistance);
 
-            // 3. レイ演出（扇形の対象へは1体ずつ、直線は対象の有無に関わらず1本）
+            // 2. レイ演出（扇形の対象へは1体ずつ、直線は対象の有無に関わらず1本）
             for (var i = 0; i < targetEnemyIds.Count; i++)
             {
                 if (!_enemyDataStore.TryGetEnemyData(targetEnemyIds[i], out var enemyData))
@@ -144,10 +169,10 @@ namespace App.Battle.UseCase
             var lineTracerStart = origin + tracerHeight;
             PlayTracer(lineTracerStart, lineTracerStart + direction * lineDistance, tracerWidth);
 
-            // 4. 敵・プレイヤー・弾をその場で止める（ヒットストップ）
+            // 3. 敵・プレイヤー・弾をその場で止める（ヒットストップ）
             _freezeDataStore.Freeze(_config.FreezeDuration);
 
-            // 5. ダメージ処理
+            // 4. ダメージ処理
             for (var i = 0; i < targetEnemyIds.Count; i++)
             {
                 Damage(targetEnemyIds[i], origin, damage);
@@ -157,6 +182,9 @@ namespace App.Battle.UseCase
             {
                 Damage(lineTargetEnemyIds[i], origin, damage);
             }
+
+            // 5. 接触した敵のスタンを解除（ダメージ適用まで固めておく仕様）
+            ReleaseContactStun();
 
             // カウントは回避終了時点で確定。次の回避に備えてリセットする
             _dodgeCounterAttackDataStore.ResetContacts();
@@ -195,32 +223,20 @@ namespace App.Battle.UseCase
             return hit.distance;
         }
 
-        private void PushContactedEnemies(Vector3 origin, Vector3 direction)
+        /// <summary>
+        /// 接触時に付与したスタンを解除する。
+        /// 撃破済み・消滅済みの敵にも呼ぶが、その場合は何も起きない。
+        /// </summary>
+        private void ReleaseContactStun()
         {
             var contactedEnemyIds = _dodgeCounterAttackDataStore.ContactedEnemyIds;
 
-            // 左右へ散らす位置は「実際に押し出す敵の数」を基準にしたいので、先に対象を絞る
-            _pushTargetEnemyIds.Clear();
+            _stunnedEnemyIds.Clear();
+            _stunnedEnemyIds.AddRange(contactedEnemyIds);
 
-            for (var i = 0; i < contactedEnemyIds.Count; i++)
+            for (var i = 0; i < _stunnedEnemyIds.Count; i++)
             {
-                var enemyId = contactedEnemyIds[i];
-
-                // 撃破演出中の敵は動かさない
-                if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData) || enemyData.IsDead)
-                {
-                    continue;
-                }
-
-                _pushTargetEnemyIds.Add(enemyId);
-            }
-
-            for (var i = 0; i < _pushTargetEnemyIds.Count; i++)
-            {
-                var pushPosition = _dodgeCounterAttackDataStore.GetPushPosition(
-                    origin, direction, i, _pushTargetEnemyIds.Count);
-
-                _enemyPresenter.Push(_pushTargetEnemyIds[i], pushPosition);
+                _enemyPresenter.SetStun(_stunnedEnemyIds[i], false);
             }
         }
 

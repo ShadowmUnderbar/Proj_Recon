@@ -61,6 +61,19 @@ namespace App.Battle.DataStore
             _onDodge.OnNext(Unit.Default);
         }
 
+        public Vector3 DodgeTargetPosition => _dodgeTargetPosition;
+
+        public Vector3 DodgeDirection
+        {
+            get
+            {
+                var direction = _dodgeTargetPosition - _dodgeStartPosition;
+                direction.y = 0f;
+
+                return direction.sqrMagnitude > 0f ? direction.normalized : Vector3.zero;
+            }
+        }
+
         public void StartDodge(Vector3 start, Vector3 target)
         {
             _dodgeStartPosition = start;
@@ -96,16 +109,15 @@ namespace App.Battle.DataStore
 
         public void NotifyDodgeEnd()
         {
-            // 回避方向は水平のみ（開始地点と終了地点が一致した場合は通知しない）
-            var direction = _dodgeTargetPosition - _dodgeStartPosition;
-            direction.y = 0f;
+            // 開始地点と終了地点が一致した場合は通知しない
+            var direction = DodgeDirection;
 
-            if (direction.sqrMagnitude <= 0f)
+            if (direction == Vector3.zero)
             {
                 return;
             }
 
-            _onDodgeEnd.OnNext(new DodgeEndData(_dodgeTargetPosition, direction.normalized));
+            _onDodgeEnd.OnNext(new DodgeEndData(_dodgeTargetPosition, direction));
         }
 
         public void NotifyDamageBlocked(PlayerDamagedData damagedData)

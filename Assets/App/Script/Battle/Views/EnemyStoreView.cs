@@ -195,14 +195,14 @@ namespace App.Battle.Views
             enemyView.SetStun(isStun);
         }
 
-        public void Push(int enemyId, Vector3 position)
+        public void KnockBack(int enemyId, Vector3 destination, float duration)
         {
             if (!_enemies.TryGetValue(enemyId, out var enemyView))
             {
                 return;
             }
 
-            enemyView.Push(position);
+            enemyView.KnockBack(destination, duration);
         }
 
         public void PlayHitFeedback(int enemyId, Vector3 hitDirection)

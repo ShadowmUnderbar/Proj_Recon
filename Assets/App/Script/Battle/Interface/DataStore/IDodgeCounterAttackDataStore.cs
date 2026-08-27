@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using R3;
 using UnityEngine;
 
 namespace App.Battle.Interface.DataStore
@@ -27,6 +28,12 @@ namespace App.Battle.Interface.DataStore
 
         /// <summary>接触した敵弾を記録する（既に記録済みのIdは無視する）</summary>
         void RegisterProjectileContact(int projectileId);
+
+        /// <summary>
+        /// 回避中に新しく敵へ接触した瞬間に、その敵のIdを流す。
+        /// スタン付与と吹き飛ばしの起動に使う（同じ敵では1回しか流れない）。
+        /// </summary>
+        Observable<int> OnEnemyContacted { get; }
 
         /// <summary>接触した敵を記録する（既に記録済みのIdは無視する）</summary>
         void RegisterEnemyContact(int enemyId);
@@ -78,11 +85,10 @@ namespace App.Battle.Interface.DataStore
         IReadOnlyList<int> GetLineTargetEnemyIds(IReadOnlyList<int> lineHitEnemyIds);
 
         /// <summary>
-        /// 回避中に接触した敵の押し出し先を返す（回避終了地点から回避方向へ一定距離）。
-        /// 複数体を同じ座標へ重ねないよう、index / count に応じて左右へ等間隔にずらす。
+        /// 直近に接触した敵の吹き飛ばし先を返す。
+        /// 回避先（dodgeTargetPosition）からさらに回避方向へ一定距離進んだ地点で、
+        /// 複数体が重ならないよう接触順に応じて左右へずらす。
         /// </summary>
-        /// <param name="index">押し出す敵の連番（0始まり）</param>
-        /// <param name="count">同時に押し出す敵の総数</param>
-        Vector3 GetPushPosition(Vector3 origin, Vector3 direction, int index, int count);
+        Vector3 GetKnockBackPosition(Vector3 dodgeTargetPosition, Vector3 direction);
     }
 }

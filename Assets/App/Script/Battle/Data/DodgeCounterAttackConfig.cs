@@ -30,12 +30,15 @@ namespace App.Battle.Data
         [SerializeField, Tooltip("接触1件（敵弾・敵の区別なし）あたりのダメージ加算値")]
         private float _damagePerContact = 0.1f;
 
-        [Header("押し出し")]
-        [SerializeField, Tooltip("接触した敵を回避終了地点から回避方向へ押し出す距離（m）")]
-        private float _pushDistance = 2f;
+        [Header("吹き飛ばし")]
+        [SerializeField, Tooltip("接触した敵を吹き飛ばす距離（m）。回避先からさらに回避方向へこの距離だけ進んだ地点へ運ぶ")]
+        private float _knockBackDistance = 3f;
 
-        [SerializeField, Tooltip("複数の敵を押し出すときに重ならないよう左右へずらす間隔（m）")]
-        private float _pushSpacing = 1f;
+        [SerializeField, Tooltip("複数の敵を吹き飛ばすときに重ならないよう左右へずらす間隔（m）")]
+        private float _knockBackSpacing = 1f;
+
+        [SerializeField, Tooltip("吹き飛ばしの移動時間（秒）。0以下なら瞬間移動")]
+        private float _knockBackDuration = 0.12f;
 
         [Header("接触判定")]
         [SerializeField, Tooltip("弾以外の被弾を接触と見なすプレイヤーからの距離（m）。遠方から届く爆風を接触扱いしないための上限")]
@@ -54,8 +57,9 @@ namespace App.Battle.Data
         public float LineAttackDistance => _lineAttackDistance;
         public float LineAttackBaseRadius => _lineAttackBaseRadius;
         public float DamagePerContact => _damagePerContact;
-        public float PushDistance => _pushDistance;
-        public float PushSpacing => _pushSpacing;
+        public float KnockBackDistance => _knockBackDistance;
+        public float KnockBackSpacing => _knockBackSpacing;
+        public float KnockBackDuration => _knockBackDuration;
         public float ContactRange => _contactRange;
         public float TracerHeight => _tracerHeight;
         public float FreezeDuration => _freezeDuration;

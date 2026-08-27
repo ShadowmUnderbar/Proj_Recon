@@ -18,6 +18,12 @@ namespace App.Battle.Interface.DataStore
         /// <summary>回避で移動している最中かどうか（trueの間は被弾を無効化する）</summary>
         ReadOnlyReactiveProperty<bool> IsDodging { get; }
 
+        /// <summary>今回の回避の到達地点（回避中に接触した敵を運ぶ基準に使う）</summary>
+        Vector3 DodgeTargetPosition { get; }
+
+        /// <summary>今回の回避の方向（水平・正規化済み）</summary>
+        Vector3 DodgeDirection { get; }
+
         /// <summary>回避が成立した瞬間に発火する（AfterDodge条件バフの起動に使う）</summary>
         Observable<Unit> OnDodge { get; }
 

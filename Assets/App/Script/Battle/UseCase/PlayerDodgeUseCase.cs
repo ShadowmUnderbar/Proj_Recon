@@ -4,7 +4,6 @@ using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using App.Common.Interface;
-using App.Framework.Utilities.Extensions;
 using R3;
 using UnityEngine;
 using VContainer;
@@ -16,15 +15,15 @@ namespace App.Battle.UseCase
     /// 回避入力を受けて、プレイヤーを一定距離だけ直線で素早く移動させる。
     /// 移動中は <see cref="IPlayerDodgeParameterDataStore.IsDodging"/> が true になり、
     /// 被弾は <see cref="PlayerHitUseCase"/> 側で無効化される。
+    /// 通過した敵は接触として記録し、スタン・吹き飛ばし・ダメージは
+    /// <see cref="DodgeCounterAttackUseCase"/> 側で扱う。
     /// </summary>
     public class PlayerDodgeUseCase : IInitializable, ITickable, IDisposable
     {
         private readonly IPlayerStateDataStore _playerStateDataStore;
-        private readonly IEnemyDataStore _enemyDataStore;
         private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
         private readonly IGameInputDataStore _gameInputUseCase;
         private readonly IEnemyPresenter _enemyPresenter;
-        private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IDodgeCounterAttackDataStore _dodgeCounterAttackDataStore;
@@ -32,17 +31,12 @@ namespace App.Battle.UseCase
 
         private readonly CompositeDisposable _disposables = new();
 
-        // 1回の回避中にBlitzのダメージを与えた敵ID（同じ敵への多重ヒットを防ぐ）
-        private readonly HashSet<int> _blitzHitEnemyIds = new();
-
         [Inject]
         public PlayerDodgeUseCase(
             IPlayerStateDataStore playerStateDataStore,
-            IEnemyDataStore enemyDataStore,
             IPlayerDodgeParameterDataStore playerDodgeParameterDataStore,
             IGameInputDataStore gameInputUseCase,
             IEnemyPresenter enemyPresenter,
-            ICoreSkillUnlockDataStore coreSkillUnlockDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IWaveManagerDataStore waveManagerDataStore,
             IDodgeCounterAttackDataStore dodgeCounterAttackDataStore,
@@ -50,11 +44,9 @@ namespace App.Battle.UseCase
         )
         {
             _playerStateDataStore = playerStateDataStore;
-            _enemyDataStore = enemyDataStore;
             _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
             _gameInputUseCase = gameInputUseCase;
             _enemyPresenter = enemyPresenter;
-            _coreSkillUnlockDataStore = coreSkillUnlockDataStore;
             _playerControlPresenter = playerControlPresenter;
             _waveManagerDataStore = waveManagerDataStore;
             _dodgeCounterAttackDataStore = dodgeCounterAttackDataStore;
@@ -113,8 +105,7 @@ namespace App.Battle.UseCase
             _playerControlPresenter.Blitz(_playerStateDataStore.Position.Value, _playerStateDataStore.PlayerTransform);
 
             // 瞬間移動ではなく、Tickで一定時間かけて直線移動させる
-            // Blitzのダメージも移動に合わせてTickで順次与える
-            _blitzHitEnemyIds.Clear();
+            // 通過した敵の接触判定も移動に合わせてTickで順次行う
 
             // 前回の回避の接触記録が残らないよう、回避開始時にもリセットする
             _dodgeCounterAttackDataStore.ResetContacts();
@@ -141,14 +132,9 @@ namespace App.Battle.UseCase
 
             _playerStateDataStore.Position.Value = position;
 
-            // このフレームで通過した区間だけを判定し、すり抜けた敵を拾う
-            var enemyHits = GetDodgeHitEnemies(previousPosition, position);
-
-            // 回避時跳ね返し攻撃の接触記録（Blitzの解放状況に関係なく毎回行う）
-            RegisterEnemyContacts(enemyHits);
-
-            // すり抜けた敵に順番にダメージを与える
-            Blitz(enemyHits, previousPosition);
+            // このフレームで通過した区間だけを判定し、すり抜けた敵を拾う。
+            // 接触した敵はその時点でスタン＋吹き飛ばしが走り、ダメージは回避終了時にまとめて入る
+            RegisterEnemyContacts(GetDodgeHitEnemies(previousPosition, position));
 
             if (!isFinished)
             {
@@ -184,40 +170,6 @@ namespace App.Battle.UseCase
             for (var i = 0; i < enemyHits.Count; i++)
             {
                 _dodgeCounterAttackDataStore.RegisterEnemyContact(enemyHits[i]);
-            }
-        }
-
-        /// <summary>
-        /// 回避で通過した区間にいた敵へダメージを与える。
-        /// 同一の回避中に同じ敵へ複数回ダメージが入らないよう、命中済みIDを保持する。
-        /// </summary>
-        private void Blitz(IReadOnlyList<int> enemyHits, Vector3 from)
-        {
-            if (!_coreSkillUnlockDataStore.IsUnLockBlitz)
-            {
-                return;
-            }
-
-            var damage = _playerDodgeParameterDataStore.DodgeDamage;
-
-            for (var i = 0; i < enemyHits.Count; i++)
-            {
-                var enemyId = enemyHits[i];
-
-                if (!_blitzHitEnemyIds.Add(enemyId))
-                {
-                    continue;
-                }
-
-                if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData))
-                {
-                    continue;
-                }
-
-                var directionType = RelativeYawExtension.GetActorRelative(enemyData.Pose, from);
-                var hitData = new HitData(enemyId, damage, directionType);
-
-                _enemyDataStore.Damage(hitData);
             }
         }
 

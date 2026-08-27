@@ -18,8 +18,9 @@ MonoBehaviour:
   _lineAttackDistance: 50
   _lineAttackBaseRadius: 1
   _damagePerContact: 0.1
-  _pushDistance: 3
-  _pushSpacing: 0.5
+  _knockBackDistance: 3
+  _knockBackSpacing: 1
+  _knockBackDuration: 0.12
   _contactRange: 3
   _freezeDuration: 0.2
   _tracerHeight: 1
