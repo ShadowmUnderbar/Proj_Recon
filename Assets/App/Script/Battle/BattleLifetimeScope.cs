@@ -24,6 +24,7 @@ namespace App.Battle
         [SerializeField] private HitBoxStoreView _hitBoxStoreView;
         [SerializeField] private BlitzEffectView _blitzEffectView;
         [SerializeField] private BulletTracerView _bulletTracerView;
+        [SerializeField] private CounterTracerView _counterTracerView;
         [SerializeField] private BulletStoreView _bulletStoreView;
         [SerializeField] private ShopView _shopView;
         [SerializeField] private GameOverView _gameOverView;
@@ -211,6 +212,10 @@ namespace App.Battle
             builder.Register<SimpleObjectFactory<BulletTracerView, BulletTracerView>>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<BulletTracerView>>()
                 .WithParameter("prefab", _bulletTracerView);
+
+            builder.Register<SimpleObjectFactory<CounterTracerView, CounterTracerView>>(Lifetime.Singleton)
+                .As<ISimpleObjectFactory<CounterTracerView>>()
+                .WithParameter("prefab", _counterTracerView);
 
             builder.RegisterComponentInNewPrefab(_bulletStoreView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IBulletStoreView>();

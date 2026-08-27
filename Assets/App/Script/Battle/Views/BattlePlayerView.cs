@@ -49,7 +49,7 @@ namespace App.Battle.Views
         private ISimpleObjectFactory<IPlayerAimMuzzleView> _aimFactory;
         private ISimpleObjectFactory<IPlayerShotView> _shotFactory;
         private ISimpleObjectFactory<BlitzEffectView> _blitzEffectView;
-        private ISimpleObjectFactory<BulletTracerView> _tracerFactory;
+        private ISimpleObjectFactory<CounterTracerView> _counterTracerFactory;
 
         public ReactiveProperty<Pose> LeftHandPose { get; } = new();
         public ReactiveProperty<Pose> RightHandPose { get; } = new();
@@ -60,14 +60,14 @@ namespace App.Battle.Views
             ISimpleObjectFactory<IPlayerAimMuzzleView> aimFactory,
             ISimpleObjectFactory<IPlayerShotView> shotFactory,
             ISimpleObjectFactory<BlitzEffectView> blitzEffectView,
-            ISimpleObjectFactory<BulletTracerView> tracerFactory
+            ISimpleObjectFactory<CounterTracerView> counterTracerFactory
         )
         {
             _topDownFactory = topDownFactory;
             _aimFactory = aimFactory;
             _shotFactory = shotFactory;
             _blitzEffectView = blitzEffectView;
-            _tracerFactory = tracerFactory;
+            _counterTracerFactory = counterTracerFactory;
 
             var aimViews = new List<IPlayerAimMuzzleView>();
             var shotViews = new List<IPlayerShotView>();
@@ -235,11 +235,11 @@ namespace App.Battle.Views
             effect.Play(startPos, playerPos).Forget();
         }
 
-        public void PlayShotTracer(Vector3 startPos, Vector3 endPos, float width)
+        public void PlayCounterTracer(Vector3 startPos, Vector3 endPos, float width)
         {
-            // マテリアルはプレハブ設定（プレイヤー弾と同じ）をそのまま使う
-            var tracer = _tracerFactory.Instantiate(null);
-            tracer.Play(startPos, endPos, null, width).Forget();
+            // 見た目・挙動は CounterTracerView プレハブ側で調整する
+            var tracer = _counterTracerFactory.Instantiate(null);
+            tracer.Play(startPos, endPos, width).Forget();
         }
 
         private void OnHitBullet(HitData hit)

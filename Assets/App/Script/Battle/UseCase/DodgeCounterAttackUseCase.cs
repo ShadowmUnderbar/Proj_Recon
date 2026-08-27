@@ -255,11 +255,11 @@ namespace App.Battle.UseCase
         }
 
         /// <summary>
-        /// ノーマル弾の即着弾と同じレイ演出を出す（座標は呼び出し側で高さを含めて渡す）。
+        /// カウンター専用のレイ演出を出す（座標は呼び出し側で高さを含めて渡す）。
         /// </summary>
         private void PlayTracer(Vector3 from, Vector3 to, float tracerWidth)
         {
-            _playerControlPresenter.PlayShotTracer(from, to, tracerWidth);
+            _playerControlPresenter.PlayCounterTracer(from, to, tracerWidth);
         }
 
         public void Dispose()

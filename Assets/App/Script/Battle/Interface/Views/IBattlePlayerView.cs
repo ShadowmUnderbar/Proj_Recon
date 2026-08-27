@@ -51,12 +51,12 @@ namespace App.Battle.Interface
         void Blitz(Vector3 startPos, Transform playerPos);
 
         /// <summary>
-        /// 即着弾のレイ演出（曳光弾）を再生する。
-        /// 射撃を伴わない攻撃（回避時跳ね返し攻撃）から、ノーマル弾と同じ見た目のレイを出すのに使う。
+        /// 回避時跳ね返し攻撃（カウンター）のレイ演出を再生する。
+        /// 見た目と挙動は専用プレハブ（CounterTracerView）側で調整する。
         /// </summary>
         /// <param name="startPos">レイの発射地点</param>
         /// <param name="endPos">レイの着弾地点</param>
-        /// <param name="width">レイの太さ（弾の当たり判定サイズと揃える）</param>
-        void PlayShotTracer(Vector3 startPos, Vector3 endPos, float width);
+        /// <param name="width">レイの基準の太さ（弾の当たり判定サイズ）</param>
+        void PlayCounterTracer(Vector3 startPos, Vector3 endPos, float width);
     }
 }
