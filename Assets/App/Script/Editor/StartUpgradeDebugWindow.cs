@@ -17,6 +17,9 @@ namespace App.Editor
     {
         private const string MenuName = "App/デバッグ: 開始時アップグレード";
 
+        /// <summary>付与するレベル。デバッグ用途では重ね取り相当の挙動を避け、常にLv1で始める。</summary>
+        private const int FixedLevel = 1;
+
         private UpgradeDatabase _database;
         private readonly HashSet<string> _selectedIds = new();
         private string _searchText = string.Empty;
@@ -55,6 +58,19 @@ namespace App.Editor
             {
                 _selectedIds.Add(id);
             }
+
+            // リストにはLv1のみを出すので、過去に保存されたLv2以上の選択は落としておく
+            // （リストに出ないIDが付与され続けると挙動が読めなくなるため）
+            if (_database == null)
+            {
+                return;
+            }
+
+            var selectableIds = GetSelectableUpgrades().Select(data => data.Id).ToHashSet();
+            if (_selectedIds.RemoveWhere(id => !selectableIds.Contains(id)) > 0)
+            {
+                SaveSelection();
+            }
         }
 
         private void SaveSelection()
@@ -91,7 +107,7 @@ namespace App.Editor
         {
             EditorGUILayout.HelpBox(
                 "チェックしたアップグレードを所持した状態でバトルを開始します（Editor実行時のみ）。\n" +
-                "同じアップグレードの複数レベルを選ぶと、ショップで重ね取りしたのと同じく効果が重複します。",
+                "同種のアップグレードは1行にまとめて表示し、付与レベルはLv1固定です。",
                 MessageType.Info);
 
             using (new EditorGUILayout.HorizontalScope())
@@ -155,7 +171,7 @@ namespace App.Editor
                 }
 
                 var isSelected = _selectedIds.Contains(data.Id);
-                var label = $"{TrimNameKey(data.NameKey)} Lv{data.Level}  (id:{data.Id})";
+                var label = $"{TrimNameKey(data.NameKey)} Lv{FixedLevel}  (id:{data.Id})";
 
                 var toggled = EditorGUILayout.ToggleLeft(label, isSelected);
                 if (toggled == isSelected)
@@ -176,13 +192,22 @@ namespace App.Editor
             }
         }
 
+        /// <summary>
+        /// 選択候補。同種（同UpgradeType・同NameKey）は1行だけにし、レベルはLv1に固定する。
+        /// </summary>
+        private IEnumerable<UpgradeMasterData> GetSelectableUpgrades()
+        {
+            return _database.UpgradeMasterData
+                .Where(data => data != null && data.Level == FixedLevel)
+                .GroupBy(data => (data.UpgradeType, data.NameKey))
+                .Select(group => group.First())
+                .OrderBy(data => data.UpgradeType)
+                .ThenBy(data => data.NameKey);
+        }
+
         private IEnumerable<UpgradeMasterData> GetFilteredUpgrades()
         {
-            var upgrades = _database.UpgradeMasterData
-                .Where(data => data != null)
-                .OrderBy(data => data.UpgradeType)
-                .ThenBy(data => data.NameKey)
-                .ThenBy(data => data.Level);
+            var upgrades = GetSelectableUpgrades();
 
             if (string.IsNullOrWhiteSpace(_searchText))
             {
