@@ -17,31 +17,31 @@ namespace App.Common.Views
         private static readonly int OriginId = Shader.PropertyToID("_CurvedWorldOrigin");
         private static readonly int ParamsId = Shader.PropertyToID("_CurvedWorldParams");
 
-        [SerializeField, Tooltip("曲率と地面グリッドの設定")]
+        [SerializeField, Tooltip("見える範囲・カメラ配置・地面グリッドの設定")]
         private CurvedWorldConfig _config;
 
         [SerializeField, Tooltip("カーブの中心にする対象。通常はプレイヤーの足元。未指定ならこのオブジェクト自身")]
         private Transform _origin;
 
         /// <summary>
-        /// 実行中の曲率。設定アセットの値を起点にして、実機調整はこちらだけを書き換える。
+        /// 実行中の「見渡せる距離」[m]。設定アセットの値を起点にして、実機調整はこちらだけを書き換える。
         /// アセットを直接書き換えると、Playを抜けたあとも値が残って意図しない差分になる。
         /// </summary>
-        private float _runtimeStrength;
+        private float _runtimeHorizonDistance;
 
         /// <summary>現在フレームの変位。HUDなど他のViewが同じ変位を参照するために公開する</summary>
         public CurvedWorldDisplacement Displacement { get; private set; }
 
         public CurvedWorldConfig Config => _config;
 
-        /// <summary>実行中の曲率。実機で調整した値を設定アセットへ書き戻すときに読む</summary>
-        public float RuntimeStrength => _runtimeStrength;
+        /// <summary>実行中の見渡せる距離[m]。実機で調整した値を設定アセットへ書き戻すときに読む</summary>
+        public float RuntimeHorizonDistance => _runtimeHorizonDistance;
 
         private Transform OriginTransform => _origin != null ? _origin : transform;
 
         private void OnEnable()
         {
-            _runtimeStrength = _config != null ? _config.Strength : 0f;
+            _runtimeHorizonDistance = _config != null ? _config.HorizonDistance : CurvedWorldConfig.MaxHorizonDistance;
             Apply();
         }
 
@@ -57,13 +57,13 @@ namespace App.Common.Views
             PushToShaders(Displacement);
         }
 
-        /// <summary>実行中の曲率を増減する。設定アセットには触れない</summary>
-        public void AdjustStrength(float delta)
+        /// <summary>実行中の見渡せる距離を増減する。設定アセットには触れない</summary>
+        public void AdjustHorizonDistance(float deltaMeters)
         {
-            _runtimeStrength = Mathf.Clamp(
-                _runtimeStrength + delta,
-                CurvedWorldConfig.MinStrength,
-                CurvedWorldConfig.MaxStrength);
+            _runtimeHorizonDistance = Mathf.Clamp(
+                _runtimeHorizonDistance + deltaMeters,
+                CurvedWorldConfig.MinHorizonDistance,
+                CurvedWorldConfig.MaxHorizonDistance);
         }
 
         private void Apply()
@@ -73,7 +73,10 @@ namespace App.Common.Views
                 return;
             }
 
-            var strength = _config.IsEnabled ? _runtimeStrength : CurvedWorldConfig.MinStrength;
+            var strength = _config.IsEnabled
+                ? CurvedWorldDisplacement.StrengthForHorizon(_config.CameraHeight, _runtimeHorizonDistance)
+                : 0f;
+
             Displacement = new CurvedWorldDisplacement(OriginTransform.position, strength);
             PushToShaders(Displacement);
         }

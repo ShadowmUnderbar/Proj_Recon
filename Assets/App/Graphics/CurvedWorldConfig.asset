@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: CurvedWorldConfig
   m_EditorClassIdentifier: 
   _isEnabled: 1
-  _strength: 0.01
-  _cullingDropMargin: 60
-  _strengthChangePerSecond: 0.002
-  _groundSize: 300
-  _groundDivisions: 120
+  _horizonDistance: 110
+  _cameraHeight: 42
+  _cameraBackOffset: 10
+  _cullingDropMargin: 140
+  _horizonChangePerSecond: 30
+  _groundSize: 900
+  _groundDivisions: 150

@@ -7,7 +7,7 @@ using UnityEngine.InputSystem.XR;
 namespace App.Common.Views
 {
     /// <summary>
-    /// 実機で曲率を振るためのプロトタイプ用コンポーネント。
+    /// 実機で見渡せる距離を振るためのプロトタイプ用コンポーネント。
     /// Quest向けのビルドは1回数分かかるため、値を変えるたびに焼き直していると
     /// 見え方の当たりを取る前に日が暮れる。
     /// 共有のInputActionsには手を入れず、デバイスを直接読んでいる。
@@ -28,14 +28,11 @@ namespace App.Common.Views
         private const string JoystickControlName = "joystick";
         private const string GripControlName = "gripPressed";
 
-        [SerializeField, Tooltip("曲率を書き換える対象")]
+        [SerializeField, Tooltip("見渡せる距離を書き換える対象")]
         private CurvedWorldView _curvedWorldView;
 
         [SerializeField, Tooltip("両手のグリップを握っている間だけ調整を受け付ける。通常プレイの操作と衝突させないため")]
         private bool _requireBothGrips = true;
-
-        [SerializeField, Min(0f), Tooltip("水平線までの距離をログに出すときに使うカメラ高さ[m]")]
-        private float _cameraHeightForLog = 18.6f;
 
         private float _nextLogTime;
 
@@ -58,14 +55,14 @@ namespace App.Common.Views
             }
 
             var config = _curvedWorldView.Config;
-            var changePerSecond = config != null ? config.StrengthChangePerSecond : 0f;
-            _curvedWorldView.AdjustStrength(input * changePerSecond * Time.deltaTime);
+            var changePerSecond = config != null ? config.HorizonChangePerSecond : 0f;
+            _curvedWorldView.AdjustHorizonDistance(input * changePerSecond * Time.deltaTime);
 
-            LogCurrentStrength();
+            LogCurrentHorizon();
         }
 
         /// <summary>実機ではadb logcatでこの値を読み、良い値をInspectorへ書き戻す</summary>
-        private void LogCurrentStrength()
+        private void LogCurrentHorizon()
         {
             if (Time.unscaledTime < _nextLogTime)
             {
@@ -73,8 +70,9 @@ namespace App.Common.Views
             }
 
             _nextLogTime = Time.unscaledTime + LogInterval;
-            var horizon = _curvedWorldView.Displacement.EstimateHorizonDistance(_cameraHeightForLog);
-            Debug.Log($"[CurvedWorldTunerView] 曲率={_curvedWorldView.RuntimeStrength:F4} 水平線={horizon:F1}m");
+            Debug.Log(
+                $"[CurvedWorldTunerView] 見える範囲={_curvedWorldView.RuntimeHorizonDistance:F0}m " +
+                $"曲率={_curvedWorldView.Displacement.Strength:F5}");
         }
 
         /// <summary>PCデバッグ用。PageUpで強く、PageDownで弱くする</summary>

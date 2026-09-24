@@ -61,12 +61,8 @@ namespace App.Common.Data
         /// <summary>水平線を距離 horizonDistance に置きたいときの曲率</summary>
         public static float StrengthForHorizon(float cameraHeight, float horizonDistance)
         {
-            if (horizonDistance <= Mathf.Epsilon)
-            {
-                return CurvedWorldConfig.MaxStrength;
-            }
-
-            return cameraHeight / (horizonDistance * horizonDistance);
+            var distance = Mathf.Max(horizonDistance, CurvedWorldConfig.MinHorizonDistance);
+            return Mathf.Max(cameraHeight, 0f) / (distance * distance);
         }
     }
 }

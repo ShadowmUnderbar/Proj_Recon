@@ -96,7 +96,7 @@ namespace App.Common.Views
                 };
             }
 
-            BuildGrid(_mesh, _config.GroundSize, _config.GroundDivisions);
+            BuildGrid(_mesh, _config.GroundSize, _config.GroundDivisions, _config.Strength);
             _meshFilter.sharedMesh = _mesh;
         }
 
@@ -106,7 +106,7 @@ namespace App.Common.Views
         /// 広げないと、まだ画面に映っている地面が元の高さのバウンズで判定され、
         /// フラスタムカリングに落ちて消える。
         /// </summary>
-        private static void BuildGrid(Mesh mesh, float size, int divisions)
+        private static void BuildGrid(Mesh mesh, float size, int divisions, float strength)
         {
             var verticesPerSide = divisions + 1;
             var vertexCount = verticesPerSide * verticesPerSide;
@@ -157,7 +157,7 @@ namespace App.Common.Views
             mesh.triangles = triangles;
             // カーブの中心はプレイヤーとともに動く。中心が地面の隅にあるときが最悪で、
             // 対角の隅までのXZ距離の2乗は size^2 * 2 になる
-            var worstDrop = CurvedWorldConfig.MaxStrength * size * size * 2f;
+            var worstDrop = strength * size * size * 2f;
             mesh.bounds = new Bounds(
                 new Vector3(0f, -worstDrop * 0.5f, 0f),
                 new Vector3(size, worstDrop, size));
