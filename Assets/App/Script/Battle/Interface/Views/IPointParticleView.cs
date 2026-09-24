@@ -8,7 +8,13 @@ namespace App.Battle.Interface
         /// <summary>回収済みか（回収済みの粒子は二重に加算しない）</summary>
         bool IsCollected { get; }
 
-        /// <summary>回収する。実際のポイント加算と破棄は PointParticleStoreView が次の更新でまとめて行う</summary>
-        void Collect();
+        /// <summary>弾が当たってプレイヤーへ吸い込まれている最中か</summary>
+        bool IsPulling { get; }
+
+        /// <summary>
+        /// 弾が当たったときの吸い込みを開始する。プレイヤーへ吸い込まれ切ってから回収される
+        /// （実際のポイント加算と破棄は PointParticleStoreView が行う）
+        /// </summary>
+        void StartPull();
     }
 }

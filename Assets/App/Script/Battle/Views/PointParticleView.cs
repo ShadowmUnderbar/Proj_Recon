@@ -30,6 +30,10 @@ namespace App.Battle.Views
         // 取得判定の半径（水平距離で判定する）。見た目の大きさと最小判定サイズの大きい方
         private float _collectRadius;
 
+        // 弾が当たってプレイヤーへ吸い込まれている最中の経過秒数と、吸い込み開始地点
+        private float _pullElapsed;
+        private Vector3 _pullStartPosition;
+
         // 色をインスタンス化せずに差し替えるためのブロック（粒子ごとにマテリアルを増やさない）
         private static MaterialPropertyBlock _propertyBlock;
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
@@ -38,7 +42,13 @@ namespace App.Battle.Views
         // プレハブのスフィアコライダーの既定半径（スケール1のときのワールド半径）
         private const float DefaultColliderRadius = 0.5f;
 
+        // 吸い込み時間の下限（0以下を設定されても即座に消えないようにする）
+        private const float MinPullDuration = 0.01f;
+
         public bool IsCollected { get; private set; }
+
+        /// <summary>弾が当たってプレイヤーへ吸い込まれている最中か</summary>
+        public bool IsPulling { get; private set; }
 
         /// <summary>この粒子を回収したときに得られるポイント</summary>
         public int Value { get; private set; }
@@ -88,6 +98,13 @@ namespace App.Battle.Views
                 return;
             }
 
+            // 弾で撃たれた粒子は、近づいたとき同様プレイヤーへ吸い込まれてから回収される
+            if (IsPulling)
+            {
+                PullToPlayer(deltaTime, playerCenter);
+                return;
+            }
+
             var toPlayer = playerCenter - transform.position;
 
             // 取得判定は高さを無視する（粒子はプレイヤーの高さへ寄っていく途中でも取れるようにする）
@@ -112,6 +129,41 @@ namespace App.Battle.Views
         public void Collect()
         {
             IsCollected = true;
+        }
+
+        /// <summary>
+        /// 弾が当たったときの吸い込みを開始する。回収は吸い込みが終わってから
+        /// </summary>
+        public void StartPull()
+        {
+            if (IsCollected || IsPulling)
+            {
+                return;
+            }
+
+            IsPulling = true;
+            _pullElapsed = 0f;
+            _pullStartPosition = transform.position;
+        }
+
+        /// <summary>
+        /// 吸い込みの更新。撃った距離に関わらず BulletPullDuration 秒で必ず回収されるよう、
+        /// 開始地点からプレイヤーまでを時間で補間する（プレイヤーが動いても追従する）
+        /// </summary>
+        private void PullToPlayer(float deltaTime, Vector3 playerCenter)
+        {
+            var duration = Mathf.Max(_config.BulletPullDuration, MinPullDuration);
+            _pullElapsed += deltaTime;
+
+            var progress = Mathf.Clamp01(_pullElapsed / duration);
+
+            // 近づくほど速くなる見た目にする（近接の吸い寄せと同じ加速感）
+            transform.position = Vector3.Lerp(_pullStartPosition, playerCenter, progress * progress);
+
+            if (progress >= 1f)
+            {
+                Collect();
+            }
         }
 
         private void MoveToPlayer(float deltaTime, Vector3 toPlayer)

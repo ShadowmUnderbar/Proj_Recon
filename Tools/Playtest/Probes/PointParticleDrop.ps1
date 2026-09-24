@@ -221,8 +221,41 @@ return $"{{\"pointBefore\":{pointDataStore.CurrentPoint.CurrentValue},\"particle
 
     Assert-ProbeValue -Name '弾の通過を試す粒子数' -Actual ([double]$shot.particleCount) -Expected 1 | Out-Null
 
-    # 弾速10m/sで3m先の粒子を通過する時間ぶん待つ
-    Start-Sleep -Milliseconds 600
+    # 弾速10m/sで3m先の粒子へ届く時間ぶん待つ（この時点では吸い込みが始まっているだけ）
+    Start-Sleep -Milliseconds 400
+
+    $pulling = Invoke-UnityJson -Snippet @'
+using System.Linq;
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Interface;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var storeView = scope.Container.Resolve<IPointParticleStoreView>() as MonoBehaviour;
+var playerView = scope.Container.Resolve<IBattlePlayerView>();
+
+var particle = storeView.transform.childCount > 0
+    ? storeView.transform.GetChild(storeView.transform.childCount - 1)
+    : null;
+
+if (particle == null)
+{
+    return "{\"exists\":false,\"isPulling\":false,\"distance\":0}";
+}
+
+var view = particle.GetComponent<IPointParticleView>();
+var distance = Vector3.Distance(particle.position, playerView.PlayerTransform.position);
+
+return $"{{\"exists\":true,\"isPulling\":{view.IsPulling.ToString().ToLower()},\"distance\":{distance}}}";
+'@
+
+    Assert-ProbeTrue -Name '弾が当たった粒子が吸い込み中になる' `
+        -Condition ([bool]$pulling.exists -and [bool]$pulling.isPulling) | Out-Null
+
+    # 吸い込みは BulletPullDuration(0.5秒) で必ず終わる
+    Start-Sleep -Milliseconds 700
 
     $passed = Invoke-UnityJson -Snippet @'
 using UnityEngine;
@@ -240,7 +273,7 @@ var bulletObject = GameObject.Find("ProbeBullet");
 return $"{{\"remain\":{storeView.transform.childCount},\"point\":{pointDataStore.CurrentPoint.CurrentValue},\"bulletAlive\":{(bulletObject != null).ToString().ToLower()}}}";
 '@
 
-    Assert-ProbeValue -Name '弾の通過後に残っている粒子数' -Actual ([double]$passed.remain) -Expected 0 | Out-Null
+    Assert-ProbeValue -Name '吸い込み完了後に残っている粒子数' -Actual ([double]$passed.remain) -Expected 0 | Out-Null
     Assert-ProbeValue -Name '弾の通過で増えたポイント' `
         -Actual ([double]$passed.point - [double]$shot.pointBefore) -Expected 100 | Out-Null
     Assert-ProbeTrue -Name '粒子を通過した弾が消えていない' -Condition ([bool]$passed.bulletAlive) `
@@ -313,13 +346,15 @@ bullet.Spawn(
     new BulletData { Speed = 0f, Damage = 1f, Size = 0.2f },
     -1);
 
-return $"{{\"pointBefore\":{pointBefore},\"collectedImmediately\":{particleView.IsCollected.ToString().ToLower()}}}";
+return $"{{\"pointBefore\":{pointBefore},\"pullStarted\":{particleView.IsPulling.ToString().ToLower()},\"collectedImmediately\":{particleView.IsCollected.ToString().ToLower()}}}";
 '@
 
-    Assert-ProbeTrue -Name '即着弾の判定で粒子が回収済みになる' -Condition ([bool]$instant.collectedImmediately) | Out-Null
+    Assert-ProbeTrue -Name '即着弾の判定で吸い込みが始まる' -Condition ([bool]$instant.pullStarted) | Out-Null
+    Assert-ProbeTrue -Name '即着弾でもその場では回収されない' -Condition (-not [bool]$instant.collectedImmediately) `
+        -Detail '(プレイヤーへ吸い込まれ切ってから回収される)' | Out-Null
 
-    # 回収の反映（PointParticleStoreView.Update）を1フレーム以上待つ
-    Start-Sleep -Milliseconds 400
+    # 吸い込み（0.5秒）と回収の反映を待つ
+    Start-Sleep -Milliseconds 800
 
     $instantResult = Invoke-UnityJson -Snippet @'
 using UnityEngine;

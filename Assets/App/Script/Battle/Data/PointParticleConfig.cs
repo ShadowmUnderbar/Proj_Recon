@@ -55,6 +55,9 @@ namespace App.Battle.Data
         [SerializeField, Tooltip("取得判定の最小の大きさ（直径m）。見た目が小さい単位の粒子でも取りこぼさないよう、弾の通過判定とプレイヤーの接触判定をこの大きさまで広げる")]
         private float _minHitSize = 0.5f;
 
+        [SerializeField, Tooltip("弾が当たった粒子がプレイヤーへ吸い込まれ切るまでの秒数。どれだけ遠くで撃ってもこの秒数で回収される")]
+        private float _bulletPullDuration = 0.5f;
+
         [SerializeField, Tooltip("回収・吸い寄せの基準にするプレイヤーの高さ（m）。プレイヤー座標は足元基準のため胴体あたりを狙う")]
         private float _playerCenterHeight = 1f;
 
@@ -72,6 +75,7 @@ namespace App.Battle.Data
         public float MagnetAcceleration => _magnetAcceleration;
         public float CollectDistance => _collectDistance;
         public float MinHitSize => _minHitSize;
+        public float BulletPullDuration => _bulletPullDuration;
         public float PlayerCenterHeight => _playerCenterHeight;
     }
 }
