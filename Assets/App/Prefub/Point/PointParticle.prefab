@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6804756073938474117}
   - component: {fileID: 2210691424677833176}
   - component: {fileID: 8605140445550053168}
-  m_Layer: 2
+  m_Layer: 8
   m_Name: PointParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

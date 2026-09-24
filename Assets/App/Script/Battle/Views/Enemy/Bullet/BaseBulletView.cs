@@ -100,12 +100,15 @@ namespace App.Battle.Views.Enemy.Bullet
             // 弾はまだ移動していないため、現在位置が発射地点
             var origin = transform.position;
 
+            // ポイント粒子は着弾判定に混ぜない（バッファを埋めて本来の対象を押し出すため）。
+            // 弾道上の粒子は CollectPointParticles で別に拾う
             var hitCount = Physics.SphereCastNonAlloc(
                 origin,
                 BulletData.Size * 0.5f,
                 transform.forward,
                 _instantHitBuffer,
-                Mathf.Infinity);
+                Mathf.Infinity,
+                Physics.DefaultRaycastLayers & ~LayerConstants.PointParticle);
 
             // トレーサーの着弾地点を算出（shooterレイヤー/弾タグを除外した最遠の有効ヒット）
             var maxHitDistance = -1f;

@@ -146,7 +146,7 @@ return $"{{\"remain\":{storeView.transform.childCount},\"point\":{pointDataStore
         -Actual ([double]$collected.point - [double]$drop.pointBefore) -Expected ([double]$drop.expectedTotal) | Out-Null
 
     # --- 4. プレイヤーの弾が通過しても弾は消えず、粒子だけが回収される ---
-    $shot = Invoke-UnityJson -Snippet @'
+    Invoke-UnityCode -Snippet @'
 using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
@@ -155,17 +155,13 @@ using App.Battle;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
-using App.Common.Data;
-using App.Framework.Utilities;
 
 var scope = LifetimeScope.Find<BattleLifetimeScope>();
 var waveDataStore = scope.Container.Resolve<IWaveManagerDataStore>();
 var enemyDataStore = scope.Container.Resolve<IEnemyDataStore>();
-var pointDataStore = scope.Container.Resolve<IPointDataStore>();
 var calculator = scope.Container.Resolve<IPointDropCalculatorDataStore>();
 var presenter = scope.Container.Resolve<IPointParticlePresenter>();
 var playerView = scope.Container.Resolve<IBattlePlayerView>();
-var bulletFactory = scope.Container.Resolve<ISimpleObjectFactory<IBulletView>>();
 
 // 敵や敵弾に邪魔されずに弾道を確かめるため、ウェーブを止めて敵を消しておく
 waveDataStore.SetWavePause(true);
@@ -177,11 +173,33 @@ calculator.Split(100, units);
 if (units.Count != 1) throw new System.Exception("100ポイントの分割が1個になりません: " + units.Count);
 
 var player = playerView.PlayerTransform;
-var spawnPosition = player.position + player.forward * 8f;
-presenter.Spawn(spawnPosition, units);
+presenter.Spawn(player.position + player.forward * 8f, units);
 
+return units[0].Value.ToString();
+'@ | Out-Null
+
+    # 生成した粒子のコライダーが物理エンジンへ反映されるまで1フレーム待ってから撃つ
+    Start-Sleep -Milliseconds 300
+
+    $shot = Invoke-UnityJson -Snippet @'
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Data;
+using App.Battle.Interface;
+using App.Battle.Interface.DataStore;
+using App.Common.Data;
+using App.Framework.Utilities;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var pointDataStore = scope.Container.Resolve<IPointDataStore>();
+var playerView = scope.Container.Resolve<IBattlePlayerView>();
+var bulletFactory = scope.Container.Resolve<ISimpleObjectFactory<IBulletView>>();
 var storeView = scope.Container.Resolve<IPointParticleStoreView>() as MonoBehaviour;
+
 var particle = storeView.transform.GetChild(storeView.transform.childCount - 1);
+var player = playerView.PlayerTransform;
 
 // 粒子と同じ高さの水平弾道にする（斜め撃ちだと銃口が地面に埋まって弾が即消えてしまう）
 var direction = player.forward;
@@ -196,7 +214,7 @@ bullet.Spawn(
     new BulletData { Speed = 10f, Damage = 1f, Size = 0.2f },
     -1);
 
-return $"{{\"pointBefore\":{pointDataStore.CurrentPoint.CurrentValue},\"particleCount\":{storeView.transform.childCount},\"unitValue\":{units[0].Value}}}";
+return $"{{\"pointBefore\":{pointDataStore.CurrentPoint.CurrentValue},\"particleCount\":{storeView.transform.childCount},\"unitValue\":100}}";
 '@
 
     Assert-ProbeValue -Name '弾の通過を試す粒子数' -Actual ([double]$shot.particleCount) -Expected 1 | Out-Null
@@ -222,7 +240,7 @@ return $"{{\"remain\":{storeView.transform.childCount},\"point\":{pointDataStore
 
     Assert-ProbeValue -Name '弾の通過後に残っている粒子数' -Actual ([double]$passed.remain) -Expected 0 | Out-Null
     Assert-ProbeValue -Name '弾の通過で増えたポイント' `
-        -Actual ([double]$passed.point - [double]$shot.pointBefore) -Expected ([double]$shot.unitValue) | Out-Null
+        -Actual ([double]$passed.point - [double]$shot.pointBefore) -Expected 100 | Out-Null
     Assert-ProbeTrue -Name '粒子を通過した弾が消えていない' -Condition ([bool]$passed.bulletAlive) `
         -Detail '(粒子で弾が止まると貫通仕様が壊れる)' | Out-Null
 

@@ -39,10 +39,11 @@ namespace App.Battle.Views
 
             for (var i = 0; i < units.Count; i++)
             {
-                var offset = Random.insideUnitSphere * _config.SpawnRadius;
-                var driftCenter = position + offset;
-                // 高さは撃破地点からの相対で決める（段差のある地形でも足元へ埋まらない・浮きすぎない）
-                driftCenter.y = position.y + Mathf.Clamp(offset.y, _config.MinHeight, _config.MaxHeight);
+                // 水平方向だけ散らし、高さは撃破地点からの相対で別に抽選する
+                // （散らし半径で高さを決めると上限に届かず、全ての粒子がほぼ同じ高さに並んでしまう）
+                var offset = Random.insideUnitCircle * _config.SpawnRadius;
+                var driftCenter = position + new Vector3(offset.x, 0f, offset.y);
+                driftCenter.y = position.y + Random.Range(_config.MinHeight, _config.MaxHeight);
 
                 // 生成後に座標を動かすと、同じフレームの物理クエリ（即着弾の弾など）に位置が反映されないため
                 // 最初から漂いの中心へ生成する

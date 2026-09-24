@@ -211,7 +211,8 @@ namespace App.Battle.Views
 
             var targetPos = new Vector3(mousePos.x, 0, mousePos.y);
 
-            if (Physics.Raycast(ray, out var hit, 100f))
+            // ポイント粒子を接地点として拾わないよう除外する（照準が漂う粒子に吸い付くのを防ぐ）
+            if (Physics.Raycast(ray, out var hit, 100f, Physics.DefaultRaycastLayers & ~LayerConstants.PointParticle))
             {
                 targetPos = hit.point;
             }
