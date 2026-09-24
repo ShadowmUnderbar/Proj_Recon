@@ -49,5 +49,14 @@ namespace App.Battle.Interface
         void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition);
 
         void Blitz(Vector3 startPos, Transform playerPos);
+
+        /// <summary>
+        /// 回避時跳ね返し攻撃（カウンター）のレイ演出を再生する。
+        /// 見た目と挙動は専用プレハブ（CounterTracerView）側で調整する。
+        /// </summary>
+        /// <param name="startPos">レイの発射地点</param>
+        /// <param name="endPos">レイの着弾地点</param>
+        /// <param name="width">レイの基準の太さ（弾の当たり判定サイズ）</param>
+        void PlayCounterTracer(Vector3 startPos, Vector3 endPos, float width);
     }
 }

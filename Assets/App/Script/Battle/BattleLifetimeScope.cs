@@ -24,6 +24,7 @@ namespace App.Battle
         [SerializeField] private HitBoxStoreView _hitBoxStoreView;
         [SerializeField] private BlitzEffectView _blitzEffectView;
         [SerializeField] private BulletTracerView _bulletTracerView;
+        [SerializeField] private CounterTracerView _counterTracerView;
         [SerializeField] private BulletStoreView _bulletStoreView;
         [SerializeField] private ShopView _shopView;
         [SerializeField] private GameOverView _gameOverView;
@@ -31,12 +32,15 @@ namespace App.Battle
         [SerializeField] private WaveConfig _waveConfig;
         [SerializeField] private StreamerCameraView _streamerCameraView;
         [SerializeField] private StreamerCameraTriggerConfig _streamerCameraTriggerConfig;
+        [SerializeField] private DodgeCounterAttackConfig _dodgeCounterAttackConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
             #region DataStore
 
             // 登録順序がTick順序に影響するため、依存順に登録
+            builder.Register<FreezeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IFreezeDataStore>();
             builder.Register<PlayerStateDataStore>(Lifetime.Singleton)
                 .AsImplementedInterfaces().As<IPlayerStateDataStore>();
             builder.Register<PlayerFocusDataStore>(Lifetime.Singleton)
@@ -56,8 +60,8 @@ namespace App.Battle
                 .As<IPlayerBulletParameterDataStore>();
             builder.Register<PlayerDodgeParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerDodgeParameterDataStore>();
-            builder.Register<ParryingDaggerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
-                .As<IParryingDaggerDataStore>();
+            builder.Register<DodgeCounterAttackDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IDodgeCounterAttackDataStore>();
             builder.Register<ElectricShockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IElectricShockDataStore>();
             builder.Register<ShotConflictDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -122,7 +126,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<BattleHitUseCase>();
             builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
-            builder.RegisterEntryPoint<ParryingDaggerUseCase>();
+            builder.RegisterEntryPoint<FreezeUseCase>();
+            builder.RegisterEntryPoint<DodgeCounterAttackUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
             builder.RegisterEntryPoint<ShopUseCase>();
@@ -208,11 +213,18 @@ namespace App.Battle
                 .As<ISimpleObjectFactory<BulletTracerView>>()
                 .WithParameter("prefab", _bulletTracerView);
 
+            builder.Register<TracerFreezeState>(Lifetime.Singleton).As<ITracerFreezeState>();
+
+            builder.Register<SimpleObjectFactory<CounterTracerView, CounterTracerView>>(Lifetime.Singleton)
+                .As<ISimpleObjectFactory<CounterTracerView>>()
+                .WithParameter("prefab", _counterTracerView);
+
             builder.RegisterComponentInNewPrefab(_bulletStoreView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IBulletStoreView>();
 
             builder.RegisterInstance(_waveConfig);
             builder.RegisterInstance(_streamerCameraTriggerConfig);
+            builder.RegisterInstance(_dodgeCounterAttackConfig);
 
             #endregion
         }

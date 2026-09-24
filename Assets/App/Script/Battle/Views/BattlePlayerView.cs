@@ -49,6 +49,7 @@ namespace App.Battle.Views
         private ISimpleObjectFactory<IPlayerAimMuzzleView> _aimFactory;
         private ISimpleObjectFactory<IPlayerShotView> _shotFactory;
         private ISimpleObjectFactory<BlitzEffectView> _blitzEffectView;
+        private ISimpleObjectFactory<CounterTracerView> _counterTracerFactory;
 
         public ReactiveProperty<Pose> LeftHandPose { get; } = new();
         public ReactiveProperty<Pose> RightHandPose { get; } = new();
@@ -58,13 +59,15 @@ namespace App.Battle.Views
             ISimpleObjectFactory<IPlayerTopDownAimView> topDownFactory,
             ISimpleObjectFactory<IPlayerAimMuzzleView> aimFactory,
             ISimpleObjectFactory<IPlayerShotView> shotFactory,
-            ISimpleObjectFactory<BlitzEffectView> blitzEffectView
+            ISimpleObjectFactory<BlitzEffectView> blitzEffectView,
+            ISimpleObjectFactory<CounterTracerView> counterTracerFactory
         )
         {
             _topDownFactory = topDownFactory;
             _aimFactory = aimFactory;
             _shotFactory = shotFactory;
             _blitzEffectView = blitzEffectView;
+            _counterTracerFactory = counterTracerFactory;
 
             var aimViews = new List<IPlayerAimMuzzleView>();
             var shotViews = new List<IPlayerShotView>();
@@ -230,6 +233,13 @@ namespace App.Battle.Views
         {
             var effect = _blitzEffectView.Instantiate(transform);
             effect.Play(startPos, playerPos).Forget();
+        }
+
+        public void PlayCounterTracer(Vector3 startPos, Vector3 endPos, float width)
+        {
+            // 見た目・挙動は CounterTracerView プレハブ側で調整する
+            var tracer = _counterTracerFactory.Instantiate(null);
+            tracer.Play(startPos, endPos, width).Forget();
         }
 
         private void OnHitBullet(HitData hit)

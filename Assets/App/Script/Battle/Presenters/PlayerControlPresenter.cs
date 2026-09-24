@@ -69,6 +69,11 @@ namespace App.Battle.Presenters
             _playerView.ShotToward(handType, bulletData, focusTargetId, targetPosition);
         }
 
+        public void PlayCounterTracer(Vector3 startPos, Vector3 endPos, float width)
+        {
+            _playerView.PlayCounterTracer(startPos, endPos, width);
+        }
+
         public void Aim()
         {
             _playerView.Aim();

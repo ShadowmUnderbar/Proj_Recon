@@ -26,7 +26,7 @@ namespace App.Battle.Views
 
         public void OnHit(float damage, int attackerId, Vector3 attackCenter, out bool canPenetrable,
             int penetrationIndex = 1, ShotType? shotType = null, AimFocusType focusType = AimFocusType.NotFocus,
-            bool isFocusTarget = false, bool isProjectile = false)
+            bool isFocusTarget = false, bool isProjectile = false, int projectileId = 0)
         {
             var directionType = RelativeYawExtension.GetActorRelative(transform.ToPose(), attackCenter);
 

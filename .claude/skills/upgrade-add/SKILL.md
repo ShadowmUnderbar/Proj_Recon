@@ -93,11 +93,12 @@ Googleスプレッドシート（正本）
 | `Appraisal` | `ShopUseCase.GetUpgradeChoiceCount`（ショップの抽選数に加算。`CalcMax` で最高レベルのみ採用。上限 `MaxUpgradeChoiceCount`=12 は `ShopView.prefab` のボタン数と一致させること） |
 | `ExtraConflict` / `FocusConflict` / `MergeConflict` / `WaltzConflict` | `ShotConflictDataStore` → `PlayerBulletParameterDataStore`（Value1=ダメージ倍率 / Value2=クールダウン倍率）＋ `PlayerShotTypeDataStore`・`PlayerAimUseCase`・`PlayerFocusDataStore`（該当の射撃手段を封印）。**封印対象は `ShotConflictDataStore.Definitions` の1行で定義する**ので、新しいコンフリクトを足すときは定義行とCSV行だけでよく消費側の変更は不要。封印は論理和・倍率は積で合成する（重複所持でデメリット無しに強化だけ得られる組み合わせは仕様として許容）。エクスコンフリクトは二丁拳銃も封印し、利き手のみの射撃になる。**フォーカス封印は書き込み元の `PlayerAimUseCase.UpdateOnFocus` で止める**こと（`PlayerFocusDataStore.Tick` での解除は同フレーム内に `OnFocus` 通知で上書きされる） |
 | `ElectricShock` | `ElectricShockDataStore` → `BattleHitUseCase.OnHit`（ワルツ命中時に命中先の周囲へダメージを伝播。Value1=レベルごとの半径倍率 / Value2=伝播ダメージ割合 / Value3=基礎半径m。半径は Value3 × `CalcMultiply(HitRange)` × Value1。伝播は `ShotType=null` で与えるためフォーム条件のバフを二重に駆動しない） |
-| `ParryingDagger` | `ParryingDaggerDataStore` → `ParryingDaggerUseCase`（回避中に無効化した敵弾を撃ってきた相手へ撃ち返す。Value1=引き継ぐフォーム数 1=ノーマル/2=+ワルツ/3=+マージ。`TryGetHighestLevelUpgrade` で最高レベルのみ採用。パリィ弾は `PlayerBulletParameterDataStore.GetParryBulletData` が生成する即着弾のフォーカスショット） |
 | `Fixation` | `UpgradeLotteryDataStore.DrawUpgrades`（取得済みと同じ `NameKey` の候補の抽選重みを `1 + Value1` 倍にする。`CalcMax` で最高レベルのみ採用） |
 
 > 📌 **注視（視界中央）系の共通基盤**: `IBattlePlayerView.TryGetGazePose`（`Camera.main` をキャッシュ）→ `IEnemyStoreView.GetGazeEnemies`（`EnemyLayer` への SphereCast、バッファ使い回し）→ `PlayerGazeUseCase`（毎フレーム3種を更新。未所持ならレイキャストしない／敵消滅時に状態破棄）。
 > **PCモード（見下ろしカメラ）では半径2〜3mの判定にほぼ敵が入らず発動しない**（カメラが上空約18mからほぼ真下を向いているため）。VR前提の仕様なので、PCで検証したい場合は半径を大きくして確認する。
+
+> 🗑 **廃止済み**: `ParryingDagger`（パリングダガー）はアップグレードとして廃止し、**回避時跳ね返し攻撃としてデフォルト機能へ移行**した（`DodgeCounterAttackDataStore` / `DodgeCounterAttackUseCase`）。enum・CSV行・アセット・スプレッドシート行のすべてを削除済みで、`UpgradeType` の 32 は欠番。同様に「アップグレードを廃止してデフォルト化」する場合は、enum削除（スプレッドシートのenumシート → `UpgradeType.cs`）・CSV行削除・`Upgrade/*.asset` 削除・`UpgradeDatabase.asset` のguid参照削除・消費側コードの置き換えをセットで行う（保存済みセットの参照は `TryGetUpgradeMasterData` が空振りするだけなので安全）。
 
 > ⚠️ **未接続タイプ問題**: `DodgeDistance` / `DodgeCount` / `DodgeCooldown` / `Health` は enum・CSVには存在するが**どこからも Calc されておらず、効果が出ない**。特に `Health` はCSVに `$Health` 行があってもHP最大値に反映されない（`PlayerStateDataStore.Initialize` が `BasePlayerParameter.Health` を直接使うだけ）。**新タイプ追加＝消費側コードもセットで書く**ことを絶対に忘れない。
 

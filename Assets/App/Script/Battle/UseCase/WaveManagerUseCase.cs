@@ -17,6 +17,7 @@ namespace App.Battle.UseCase
         private readonly IEnemyRandomSpawnCycleDataStore _enemyRandomSpawnCycleDataStore;
         private readonly IBulletStoreView _bulletStoreView;
         private readonly WaveConfig _waveConfig;
+        private readonly IFreezeDataStore _freezeDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -27,7 +28,8 @@ namespace App.Battle.UseCase
             IEnemyPresenter enemyPresenter,
             IEnemyRandomSpawnCycleDataStore enemyRandomSpawnCycleDataStore,
             IBulletStoreView bulletStoreView,
-            WaveConfig waveConfig
+            WaveConfig waveConfig,
+            IFreezeDataStore freezeDataStore
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -36,6 +38,7 @@ namespace App.Battle.UseCase
             _enemyRandomSpawnCycleDataStore = enemyRandomSpawnCycleDataStore;
             _bulletStoreView = bulletStoreView;
             _waveConfig = waveConfig;
+            _freezeDataStore = freezeDataStore;
         }
 
         public void Initialize()
@@ -112,7 +115,8 @@ namespace App.Battle.UseCase
 
         private void OnUpdateWavePause(bool isPause)
         {
-            _enemyPresenter.SetPause(isPause);
+            // 敵の停止はフリーズと共有の機構なので、フリーズ中の解除で動き出さないよう論理和で渡す
+            _enemyPresenter.SetPause(isPause || _freezeDataStore.IsFreezing.CurrentValue);
         }
 
         public void Dispose()

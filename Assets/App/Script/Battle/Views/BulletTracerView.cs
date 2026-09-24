@@ -1,5 +1,7 @@
+using App.Battle.Interface;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using VContainer;
 
 namespace App.Battle.Views
 {
@@ -7,6 +9,7 @@ namespace App.Battle.Views
     /// 即着弾（hitscan）の視覚表現。
     /// 発射地点から着弾地点へ一瞬でラインを引き、わずかに保持した後、
     /// 発射地点側からラインを収縮させて消す曳光弾風のエフェクト。
+    /// フリーズ中は保持時間・収縮のいずれも進めず、その場に止まる。
     /// </summary>
     public class BulletTracerView : MonoBehaviour
     {
@@ -17,6 +20,18 @@ namespace App.Battle.Views
 
         // 発射地点側からラインを収縮させて消す速度（ワールド単位/秒）。距離に依らず一定速度で消す
         private const float RetractSpeed = 200f;
+
+        // レイの進行を止めるかの共有状態（フリーズ）。DIされない経路で生成された場合はnull
+        private ITracerFreezeState _tracerFreezeState;
+
+        [Inject]
+        public void Construct(ITracerFreezeState tracerFreezeState)
+        {
+            _tracerFreezeState = tracerFreezeState;
+        }
+
+        // フリーズ中は時間を進めない
+        private float DeltaTime => _tracerFreezeState is { IsFreezing: true } ? 0f : Time.deltaTime;
 
         /// <summary>
         /// トレーサーを再生する。
@@ -43,18 +58,32 @@ namespace App.Battle.Views
             lineRenderer.SetPosition(1, endPos);
 
             // 一瞬保持
-            await UniTask.WaitForSeconds(HoldDuration);
+            await WaitAsync(HoldDuration);
 
             // 発射地点側の端点を一定速度で着弾地点へ寄せ、発射地点側から消していく
             var current = startPos;
             while (current != endPos)
             {
-                current = Vector3.MoveTowards(current, endPos, RetractSpeed * Time.deltaTime);
+                current = Vector3.MoveTowards(current, endPos, RetractSpeed * DeltaTime);
                 lineRenderer.SetPosition(0, current);
                 await UniTask.Yield();
             }
 
             Destroy(gameObject);
+        }
+
+        /// <summary>
+        /// duration 秒待つ。フリーズ中は経過時間を進めない。
+        /// </summary>
+        private async UniTask WaitAsync(float duration)
+        {
+            var elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                await UniTask.Yield();
+                elapsed += DeltaTime;
+            }
         }
     }
 }
