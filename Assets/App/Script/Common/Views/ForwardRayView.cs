@@ -34,11 +34,11 @@ namespace App.Common.Views
                 return;
             }
 
-            var ray = new Ray(transform.position, transform.forward);
+            var start = transform.position;
+            var end = start + transform.forward * GameParamData.RayMaxDistance;
 
-            _lineRenderer.SetPosition(0, transform.position);
-
-            _lineRenderer.SetPosition(1, transform.position + transform.forward * GameParamData.RayMaxDistance);
+            // カーブ有効時は途中に点を足す。2点のままだと両端しか沈まず、間が浮く
+            CurvedWorldLine.SetLine(_lineRenderer, start, end);
         }
 
         public void SetRayColor(Color color)

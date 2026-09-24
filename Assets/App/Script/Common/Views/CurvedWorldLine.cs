@@ -16,7 +16,15 @@ namespace App.Common.Views
     /// </summary>
     public static class CurvedWorldLine
     {
-        /// <summary>1本の線に置く点の上限。VRで毎フレーム更新するため、際限なく増やさない</summary>
+        /// <summary>
+        /// 1本の線に置く点の上限。VRで毎フレーム更新するため、際限なく増やさない。
+        ///
+        /// この上限に当たると許容たわみを超える。当たるのは
+        /// 「曲率を下限まで上げた状態」かつ「200m級の線」の組み合わせだけで、
+        /// そのときの刻みは200/63=3.2m、たわみは0.47m（許容0.1m）になる。
+        /// ただしその条件では線の遠端は数kmの深さへ沈んでいて画面に映らないため、
+        /// 見える範囲でのずれは実質もっと小さい。
+        /// </summary>
         private const int MaxPositionCount = 64;
 
         private static readonly int ParamsId = Shader.PropertyToID("_CurvedWorldParams");

@@ -1,3 +1,4 @@
+using App.Common.Views;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -15,14 +16,15 @@ namespace App.Battle.Views
         {
             startPos += OffsetPosition;
 
-            lineRenderer.SetPosition(0, startPos);
-            lineRenderer.SetPosition(1, startPos);
+            // 伸びていく直線部分。カーブ有効時はここだけ刻む。
+            // このあと追加される軌跡の点は毎フレーム打たれるので元から細かい
+            CurvedWorldLine.SetLine(lineRenderer, startPos, startPos);
 
             var time = 0f;
             while (time < StartDuration)
             {
-                lineRenderer.SetPosition(1,
-                    Vector3.Lerp(startPos, playerTransform.position + OffsetPosition, time / StartDuration));
+                var head = Vector3.Lerp(startPos, playerTransform.position + OffsetPosition, time / StartDuration);
+                CurvedWorldLine.SetLine(lineRenderer, startPos, head);
                 time += Time.deltaTime;
                 await UniTask.Yield();
             }
