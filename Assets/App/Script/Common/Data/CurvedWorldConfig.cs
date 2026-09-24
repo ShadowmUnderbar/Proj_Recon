@@ -40,6 +40,11 @@ namespace App.Common.Data
          Tooltip("レンダラーのバウンズを下へ広げる量[m]。水平線上の沈下量は見える範囲によらずカメラ高さに等しいので、その数倍を取っておけば足りる")]
         private float _cullingDropMargin = 140f;
 
+        [Header("線の分割")]
+        [SerializeField, Min(0.001f),
+         Tooltip("LineRendererを刻むときに許す、線の中央のたわみ[m]。2点だけの線は両端しか沈まず、間が弦のまま浮く")]
+        private float _maxLineSag = 0.1f;
+
         [Header("実機での調整")]
         [SerializeField, Min(0f), Tooltip("スティック1秒あたりの見える範囲の変化量[m]")]
         private float _horizonChangePerSecond = 30f;
@@ -69,5 +74,13 @@ namespace App.Common.Data
 
         /// <summary>カメラリグの、プレイヤー足元から見たローカル位置</summary>
         public Vector3 CameraLocalPosition => new(0f, _cameraHeight, -_cameraBackOffset);
+
+        /// <summary>
+        /// 線を刻むときに許すたわみ[m]。
+        /// これを実際の刻み間隔へ変換するのは CurvedWorldLine で、
+        /// そちらは設定値ではなく実行中の曲率を見る。
+        /// </summary>
+        public float MaxLineSag => _maxLineSag;
+
     }
 }

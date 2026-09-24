@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: CurvedWorldConfig
   m_EditorClassIdentifier: 
   _isEnabled: 1
-  _horizonDistance: 110
+  _horizonDistance: 230
   _cameraHeight: 42
   _cameraBackOffset: 10
   _cullingDropMargin: 140
+  _maxLineSag: 0.1
   _horizonChangePerSecond: 30
   _groundSize: 900
   _groundDivisions: 150

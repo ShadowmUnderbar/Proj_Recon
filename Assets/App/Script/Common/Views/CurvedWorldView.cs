@@ -54,7 +54,7 @@ namespace App.Common.Views
         {
             // 曲率0を配ってから止める。止めた瞬間に最後の値が残り続けるのを防ぐ
             Displacement = new CurvedWorldDisplacement(OriginTransform.position, 0f);
-            PushToShaders(Displacement);
+            PushToShaders(Displacement, 0f);
         }
 
         /// <summary>実行中の見渡せる距離を増減する。設定アセットには触れない</summary>
@@ -78,14 +78,19 @@ namespace App.Common.Views
                 : 0f;
 
             Displacement = new CurvedWorldDisplacement(OriginTransform.position, strength);
-            PushToShaders(Displacement);
+            PushToShaders(Displacement, _config.MaxLineSag);
         }
 
-        private static void PushToShaders(CurvedWorldDisplacement displacement)
+        /// <summary>
+        /// yには線の許容たわみを載せる。シェーダは読まないが、CurvedWorldLineが
+        /// 「いま実際に配られている曲率」から刻み間隔を出すのに要る。
+        /// 設定アセット側を読ませると、実機で曲率を振ったとき刻みが追随しない。
+        /// </summary>
+        private static void PushToShaders(CurvedWorldDisplacement displacement, float maxLineSag)
         {
             var origin = displacement.Origin;
             Shader.SetGlobalVector(OriginId, new Vector4(origin.x, origin.y, origin.z, 0f));
-            Shader.SetGlobalVector(ParamsId, new Vector4(displacement.Strength, 0f, 0f, 0f));
+            Shader.SetGlobalVector(ParamsId, new Vector4(displacement.Strength, maxLineSag, 0f, 0f));
         }
     }
 }

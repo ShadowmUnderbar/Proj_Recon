@@ -1,4 +1,5 @@
 using App.Battle.Interface;
+using App.Common.Views;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
@@ -14,6 +15,7 @@ namespace App.Battle.Views
     public class BulletTracerView : MonoBehaviour
     {
         [SerializeField] private LineRenderer lineRenderer;
+
 
         // 発射地点→着弾地点を引いた後、収縮を始めるまでの保持時間
         private const float HoldDuration = 0.05f;
@@ -52,10 +54,9 @@ namespace App.Battle.Views
             lineRenderer.startWidth = width;
             lineRenderer.endWidth = width;
 
-            // 即座に発射地点→着弾地点の直線を描画
-            lineRenderer.positionCount = 2;
-            lineRenderer.SetPosition(0, startPos);
-            lineRenderer.SetPosition(1, endPos);
+            // 即座に発射地点→着弾地点の直線を描画。
+            // カーブ有効時は途中に点を足す。2点のままだと両端しか沈まず、間が浮く
+            CurvedWorldLine.SetLine(lineRenderer, startPos, endPos);
 
             // 一瞬保持
             await WaitAsync(HoldDuration);
@@ -65,7 +66,8 @@ namespace App.Battle.Views
             while (current != endPos)
             {
                 current = Vector3.MoveTowards(current, endPos, RetractSpeed * DeltaTime);
-                lineRenderer.SetPosition(0, current);
+                // 収縮中は点の数を保つ。長さが縮むたびに減らすと内部バッファが作り直される
+                CurvedWorldLine.SetLinePositionsKeepingCount(lineRenderer, current, endPos);
                 await UniTask.Yield();
             }
 

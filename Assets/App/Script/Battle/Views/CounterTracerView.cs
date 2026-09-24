@@ -1,4 +1,5 @@
 using App.Battle.Interface;
+using App.Common.Views;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
@@ -26,6 +27,7 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("レイの太さ倍率（呼び出し側が渡す当たり判定サイズに掛ける）")]
         private float _widthMultiplier = 1f;
 
+
         // レイの進行を止めるかの共有状態（フリーズ）。DIされない経路で生成された場合はnull
         private ITracerFreezeState _tracerFreezeState;
 
@@ -50,10 +52,9 @@ namespace App.Battle.Views
             _lineRenderer.startWidth = lineWidth;
             _lineRenderer.endWidth = lineWidth;
 
-            // 発射地点から着弾地点までを一度に引く（伸びる演出は挟まない）
-            _lineRenderer.positionCount = 2;
-            _lineRenderer.SetPosition(0, startPos);
-            _lineRenderer.SetPosition(1, endPos);
+            // 発射地点から着弾地点までを一度に引く（伸びる演出は挟まない）。
+            // カーブ有効時は途中に点を足す。2点のままだと両端しか沈まず、間が浮く
+            CurvedWorldLine.SetLine(_lineRenderer, startPos, endPos);
 
             // プレハブではLineRendererを無効にしてあり、座標を入れ切ってから表示する。
             // これで生成直後の1フレームにプレハブ既定の短い線が描かれることがない
@@ -73,7 +74,8 @@ namespace App.Battle.Views
             while (current != endPos)
             {
                 current = Vector3.MoveTowards(current, endPos, _retractSpeed * DeltaTime);
-                _lineRenderer.SetPosition(0, current);
+                // 収縮中は点の数を保つ。長さが縮むたびに減らすと内部バッファが作り直される
+                CurvedWorldLine.SetLinePositionsKeepingCount(_lineRenderer, current, endPos);
                 await UniTask.Yield();
             }
 

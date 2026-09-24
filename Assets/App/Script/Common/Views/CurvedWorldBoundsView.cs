@@ -17,6 +17,9 @@ namespace App.Common.Views
         [SerializeField, Tooltip("対象のレンダラー。空なら自分以下のレンダラーをすべて対象にする")]
         private Renderer[] _renderers;
 
+        /// <summary>バウンズ換算でスケールを割るときの下限</summary>
+        private const float MinScaleForDivision = 0.0001f;
+
         /// <summary>広げる前のローカルバウンズ。再有効化のたびに積み増さないため元を覚えておく</summary>
         private readonly Dictionary<Renderer, Bounds> _originalBounds = new();
 
@@ -56,7 +59,10 @@ namespace App.Common.Views
                     _originalBounds.Add(target, bounds);
                 }
 
-                var drop = _config.CullingDropMargin / Mathf.Max(target.transform.lossyScale.y, Mathf.Epsilon);
+                // 絶対値を取り、現実的な下限で割る。スケール0やミラー配置の負値だと
+                // Mathf.Epsilon では商が無限大になり、Invalid AABB でカリングが壊れる
+                var scaleY = Mathf.Max(Mathf.Abs(target.transform.lossyScale.y), MinScaleForDivision);
+                var drop = _config.CullingDropMargin / scaleY;
 
                 // 下端だけを drop ぶん延ばす。中心も半分だけ下げないと上端まで一緒に伸びてしまう
                 bounds.center -= new Vector3(0f, drop * 0.5f, 0f);

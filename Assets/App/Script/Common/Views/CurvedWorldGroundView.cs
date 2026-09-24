@@ -20,12 +20,30 @@ namespace App.Common.Views
         [SerializeField, Tooltip("地面の大きさと分割数を持つ設定")]
         private CurvedWorldConfig _config;
 
+        private static readonly int ParamsId = Shader.PropertyToID("_CurvedWorldParams");
+
         private Mesh _mesh;
         private MeshFilter _meshFilter;
+
+        /// <summary>バウンズに反映済みの曲率。シェーダへ配られている値と食い違ったら取り直す</summary>
+        private float _appliedStrength = -1f;
 
         private void OnEnable()
         {
             Rebuild();
+        }
+
+        private void LateUpdate()
+        {
+            // 実機で曲率を振ったときに、バウンズだけ追随させる
+            var strength = Shader.GetGlobalVector(ParamsId).x;
+            if (Mathf.Approximately(strength, _appliedStrength))
+            {
+                return;
+            }
+
+            _appliedStrength = strength;
+            UpdateBounds();
         }
 
         private void OnDestroy()
@@ -96,17 +114,16 @@ namespace App.Common.Views
                 };
             }
 
-            BuildGrid(_mesh, _config.GroundSize, _config.GroundDivisions, _config.Strength);
+            BuildGrid(_mesh, _config.GroundSize, _config.GroundDivisions);
+
+            // 生成直後の1フレームだけバウンズが0になるのを防ぐ
+            _appliedStrength = Shader.GetGlobalVector(ParamsId).x;
+            UpdateBounds();
             _meshFilter.sharedMesh = _mesh;
         }
 
-        /// <summary>
-        /// XZ平面に一辺 size のグリッドを張る。
-        /// バウンズは、曲率を最大まで上げたときに四隅が沈む量ぶん下へ広げておく。
-        /// 広げないと、まだ画面に映っている地面が元の高さのバウンズで判定され、
-        /// フラスタムカリングに落ちて消える。
-        /// </summary>
-        private static void BuildGrid(Mesh mesh, float size, int divisions, float strength)
+        /// <summary>XZ平面に一辺 size のグリッドを張る</summary>
+        private static void BuildGrid(Mesh mesh, float size, int divisions)
         {
             var verticesPerSide = divisions + 1;
             var vertexCount = verticesPerSide * verticesPerSide;
@@ -155,10 +172,27 @@ namespace App.Common.Views
             mesh.normals = normals;
             mesh.uv = uv;
             mesh.triangles = triangles;
+        }
+
+        /// <summary>
+        /// 実行中の曲率に合わせてバウンズを取り直す。
+        /// 曲率は実機チューニングで変わるので、生成時に焼き込むと追随できず、
+        /// 画面に映っている地面がフラスタムカリングで消える。
+        /// メッシュを作り直す必要はなく、バウンズの代入だけなので毎フレーム呼べる。
+        /// </summary>
+        private void UpdateBounds()
+        {
+            if (_mesh == null || _config == null)
+            {
+                return;
+            }
+
+            var size = _config.GroundSize;
+
             // カーブの中心はプレイヤーとともに動く。中心が地面の隅にあるときが最悪で、
             // 対角の隅までのXZ距離の2乗は size^2 * 2 になる
-            var worstDrop = strength * size * size * 2f;
-            mesh.bounds = new Bounds(
+            var worstDrop = Mathf.Max(_appliedStrength, 0f) * size * size * 2f;
+            _mesh.bounds = new Bounds(
                 new Vector3(0f, -worstDrop * 0.5f, 0f),
                 new Vector3(size, worstDrop, size));
         }
