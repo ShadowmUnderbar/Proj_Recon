@@ -332,4 +332,90 @@ return $"{{\"remain\":{storeView.transform.childCount},\"point\":{pointDataStore
     Assert-ProbeValue -Name '即着弾の通過後に残っている粒子数' -Actual ([double]$instantResult.remain) -Expected 0 | Out-Null
     Assert-ProbeValue -Name '即着弾で増えたポイント' `
         -Actual ([double]$instantResult.point - [double]$instant.pointBefore) -Expected 50 | Out-Null
+
+    # --- 6. ウェーブ切り替わりで漂っている粒子が一括消去される（未回収ぶんは持ち越さない） ---
+    Invoke-UnityCode -Snippet @'
+using System.Collections.Generic;
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Data;
+using App.Battle.Interface;
+using App.Battle.Interface.DataStore;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var calculator = scope.Container.Resolve<IPointDropCalculatorDataStore>();
+var presenter = scope.Container.Resolve<IPointParticlePresenter>();
+var playerView = scope.Container.Resolve<IBattlePlayerView>();
+
+// 吸い寄せ圏外（MagnetDistance=3m）へ出して、回収されずに残る粒子を作る
+var units = new List<PointUnitData>();
+calculator.Split(137, units);
+var player = playerView.PlayerTransform;
+presenter.Spawn(player.position + player.forward * 12f, units);
+
+return units.Count.ToString();
+'@ | Out-Null
+
+    Start-Sleep -Milliseconds 300
+
+    $beforeAdvance = Invoke-UnityJson -Snippet @'
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Interface;
+using App.Battle.Interface.DataStore;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var storeView = scope.Container.Resolve<IPointParticleStoreView>() as MonoBehaviour;
+var pointDataStore = scope.Container.Resolve<IPointDataStore>();
+
+return $"{{\"remain\":{storeView.transform.childCount},\"point\":{pointDataStore.CurrentPoint.CurrentValue}}}";
+'@
+
+    Assert-ProbeTrue -Name 'ウェーブ切り替わり前に粒子が漂っている' -Condition ([int]$beforeAdvance.remain -ge 1) `
+        -Detail "(実測: $($beforeAdvance.remain)個)" | Out-Null
+
+    # ウェーブ進行はUseCase側（Tick）で判定されるため、経過時間を進めて実際の進行経路を通す。
+    # DataStoreの AdvanceWave() を直接叩くと一括消去を含む AdvanceWaveInternal を通らない
+    Invoke-UnityCode -Snippet @'
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Interface.DataStore;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var waveDataStore = scope.Container.Resolve<IWaveManagerDataStore>();
+
+// ポーズ中は経過時間が進まないので解除してから、ウェーブ時間を一気に満たす
+waveDataStore.SetWavePause(false);
+waveDataStore.AddElapsedTime(9999f);
+
+return "advancing";
+'@ | Out-Null
+
+    Start-Sleep -Milliseconds 400
+
+    $afterAdvance = Invoke-UnityJson -Snippet @'
+
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Interface;
+using App.Battle.Interface.DataStore;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var storeView = scope.Container.Resolve<IPointParticleStoreView>() as MonoBehaviour;
+var pointDataStore = scope.Container.Resolve<IPointDataStore>();
+
+return $"{{\"remain\":{storeView.transform.childCount},\"point\":{pointDataStore.CurrentPoint.CurrentValue}}}";
+'@
+
+    Assert-ProbeValue -Name 'ウェーブ切り替わり後に残っている粒子数' -Actual ([double]$afterAdvance.remain) -Expected 0 | Out-Null
+    Assert-ProbeValue -Name '一括消去ではポイントが加算されない' `
+        -Actual ([double]$afterAdvance.point) -Expected ([double]$beforeAdvance.point) | Out-Null
 }

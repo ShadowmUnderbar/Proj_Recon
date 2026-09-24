@@ -12,7 +12,7 @@ namespace App.Battle.Interface
 
         void Spawn(Vector3 position, IReadOnlyList<PointUnitData> units);
 
-        /// <summary>漂っている粒子を全て消す（ポイントは加算しない）</summary>
+        /// <summary>漂っている粒子を全て消す（ポイントは加算しない）。ウェーブ切り替わり時に呼ばれる</summary>
         void AllRemove();
     }
 }
