@@ -12,5 +12,10 @@ namespace App.Battle.Interface.DataStore
 
         /// <summary>粒子を回収したときのポイント加算（0以下は無視する）</summary>
         void Add(int amount);
+
+        /// <summary>
+        /// ポイントを消費する。足りなければ何もせず false を返す（0以下のコストは無償として true）
+        /// </summary>
+        bool TrySpend(int amount);
     }
 }

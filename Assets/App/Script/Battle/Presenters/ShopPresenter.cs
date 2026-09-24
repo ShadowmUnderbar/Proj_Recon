@@ -31,6 +31,16 @@ namespace App.Battle.Presenters
             _shopView.HideUpgradeButton(index);
         }
 
+        public void SetCurrentPoint(int currentPoint)
+        {
+            _shopView.SetCurrentPoint(currentPoint);
+        }
+
+        public void SetPurchasable(int index, bool isPurchasable)
+        {
+            _shopView.SetPurchasable(index, isPurchasable);
+        }
+
         public void Close()
         {
             _shopView.Close();

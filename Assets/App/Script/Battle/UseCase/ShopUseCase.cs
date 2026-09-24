@@ -13,7 +13,7 @@ namespace App.Battle.UseCase
 {
     /// <summary>
     /// ウェーブ間ショップの制御（仮組み）
-    /// ウェーブ突破（OnWaveAdvanced）でショップを開き、アップグレード選択を1回受け付け、
+    /// ウェーブ突破（OnWaveAdvanced）でショップを開き、所持ポイントで買えるだけアップグレードを購入させ、
     /// 「次のウェーブへ」でショップを閉じてウェーブを再開する
     /// </summary>
     public class ShopUseCase : IInitializable, IDisposable
@@ -29,12 +29,17 @@ namespace App.Battle.UseCase
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
         private readonly UpgradeSideEffectApplier _upgradeSideEffectApplier;
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
+        private readonly IPointDataStore _pointDataStore;
         private readonly IShopPresenter _shopPresenter;
         private readonly IPlayerControlPresenter _playerControlPresenter;
 
         private readonly CompositeDisposable _disposable = new();
 
-        private IReadOnlyList<UpgradeMasterData> _currentCandidates;
+        // 今回のショップの候補。購入済みの枠は null にしてインデックス（＝ボタンの並び）を保つ
+        private readonly List<UpgradeMasterData> _currentCandidates = new();
+
+        // ショップ表示中か。表示中だけ所持ポイントの変化をUIへ反映する
+        private bool _isShopOpen;
 
         [Inject]
         public ShopUseCase(
@@ -43,6 +48,7 @@ namespace App.Battle.UseCase
             IUpgradeSessionDataStore upgradeSessionDataStore,
             UpgradeSideEffectApplier upgradeSideEffectApplier,
             IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
+            IPointDataStore pointDataStore,
             IShopPresenter shopPresenter,
             IPlayerControlPresenter playerControlPresenter
         )
@@ -52,6 +58,7 @@ namespace App.Battle.UseCase
             _upgradeSessionDataStore = upgradeSessionDataStore;
             _upgradeSideEffectApplier = upgradeSideEffectApplier;
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
+            _pointDataStore = pointDataStore;
             _shopPresenter = shopPresenter;
             _playerControlPresenter = playerControlPresenter;
         }
@@ -70,16 +77,56 @@ namespace App.Battle.UseCase
             _shopPresenter.OnNextWavePressed
                 .Subscribe(_ => StartNextWave())
                 .AddTo(_disposable);
+
+            // ショップ表示中も粒子は吸い寄せられて回収されるため、所持ポイントの変化を表示と購入可否へ反映する
+            _pointDataStore.CurrentPoint
+                .Subscribe(_ => OnCurrentPointChanged())
+                .AddTo(_disposable);
         }
 
         private void OpenShop()
         {
             // 出現可能なアップグレードから抽選（候補ゼロならボタンはView側で全非表示になる）
-            _currentCandidates = _upgradeLotteryDataStore.DrawUpgrades(GetUpgradeChoiceCount());
+            _currentCandidates.Clear();
+            _currentCandidates.AddRange(_upgradeLotteryDataStore.DrawUpgrades(GetUpgradeChoiceCount()));
             _shopPresenter.Open(_currentCandidates);
+
+            _isShopOpen = true;
+            RefreshPurchasable();
 
             // UI表示中だけボタン選択用のハンドレイを出す
             _playerControlPresenter.SetUiRayEnable(true);
+        }
+
+        private void OnCurrentPointChanged()
+        {
+            // 非表示のショップUIを触らない（ショップ外での回収はHUD側の担当）
+            if (!_isShopOpen)
+            {
+                return;
+            }
+
+            RefreshPurchasable();
+        }
+
+        /// <summary>
+        /// 所持ポイントの表示と、候補ごとの購入可否（ポイントが足りるか）をViewへ反映する
+        /// </summary>
+        private void RefreshPurchasable()
+        {
+            var currentPoint = _pointDataStore.CurrentPoint.CurrentValue;
+            _shopPresenter.SetCurrentPoint(currentPoint);
+
+            for (var i = 0; i < _currentCandidates.Count; i++)
+            {
+                // 購入済み（null）の枠はボタンごと消えているため触らない
+                if (_currentCandidates[i] == null)
+                {
+                    continue;
+                }
+
+                _shopPresenter.SetPurchasable(i, _currentCandidates[i].Cost <= currentPoint);
+            }
         }
 
         /// <summary>
@@ -93,26 +140,41 @@ namespace App.Battle.UseCase
 
         private void OnUpgradeSelected(int index)
         {
-            if (_currentCandidates == null || index < 0 || index >= _currentCandidates.Count)
+            if (index < 0 || index >= _currentCandidates.Count)
             {
                 return;
             }
 
             var selected = _currentCandidates[index];
+
+            // 購入済みの枠（null）への押下は無視する
+            if (selected == null)
+            {
+                return;
+            }
+
+            // ポイントが足りなければ購入させない（View側でもボタンを押せなくしているが、念のため弾く）
+            if (!_pointDataStore.TrySpend(selected.Cost))
+            {
+                return;
+            }
+
             _upgradeSessionDataStore.AddUpgrade(selected);
 
             // GrantBuff/バリア等の付与副作用を適用（読込フローと共通処理）
             _upgradeSideEffectApplier.Apply(selected);
 
-            // 1ウェーブにつき1回だけ選択可能（_currentCandidates=nullで以降の押下を無効化）。
-            // 選択したボタンだけを消し、他の候補は「選ばなかったもの」として表示したままにする
-            _currentCandidates = null;
+            // 購入した候補だけを消し、残りはポイントが続く限り買えるままにする
+            _currentCandidates[index] = null;
             _shopPresenter.HideUpgradeButton(index);
+
+            RefreshPurchasable();
         }
 
         private void StartNextWave()
         {
-            _currentCandidates = null;
+            _isShopOpen = false;
+            _currentCandidates.Clear();
             _shopPresenter.Close();
             _playerControlPresenter.SetUiRayEnable(false);
 

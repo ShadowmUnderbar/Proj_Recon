@@ -20,6 +20,10 @@ namespace App.Common.Data.MasterData
 
         [SerializeField, ReadOnlyAttribute] private int _level;
         public int Level => _level;
+
+        // ショップでの購入に必要なポイント
+        [SerializeField, ReadOnlyAttribute] private int _cost;
+        public int Cost => _cost;
         
         [Space]
         [SerializeField, ReadOnlyAttribute] private float _value1;
