@@ -29,14 +29,23 @@ namespace App.Common.Views
         private void OnValidate()
         {
             // 高さを振りながらSceneビューで見え方を確かめられるようにする
-            if (isActiveAndEnabled)
+            // スライダーを動かしている間はOnValidateが連続で飛ぶ。
+            // そのたびに登録すると同じ処理が何十回も走ってエディタが固まる
+            if (!isActiveAndEnabled || _applyQueued)
             {
-                UnityEditor.EditorApplication.delayCall += ApplyIfAlive;
+                return;
             }
+
+            _applyQueued = true;
+            UnityEditor.EditorApplication.delayCall += ApplyIfAlive;
         }
+
+        private bool _applyQueued;
 
         private void ApplyIfAlive()
         {
+            _applyQueued = false;
+
             if (this != null)
             {
                 Apply();

@@ -12,6 +12,14 @@ Shader "App/CurvedWorldUnlit"
         [MainColor] _BaseColor("Base Color", Color) = (1, 1, 1, 1)
         [HDR] _EmissionColor("Emission Color", Color) = (0, 0, 0, 1)
         [Toggle(_CURVEDWORLD_PER_OBJECT)] _CurvedWorldPerObject("ピボット基準で沈める", Float) = 0
+
+        // 既存マテリアルの設定をそのまま引き継ぐための隠しプロパティ。
+        // URPのParticlesUnlitと同じ名前・同じ既定値にしてあるので、
+        // シェーダを差し替えても不透明・半透明のどちらの設定も保たれる
+        [HideInInspector] _SrcBlend("__src", Float) = 5
+        [HideInInspector] _DstBlend("__dst", Float) = 10
+        [HideInInspector] _ZWrite("__zw", Float) = 0
+        [HideInInspector] _Cull("__cull", Float) = 2
     }
 
     SubShader
@@ -29,9 +37,9 @@ Shader "App/CurvedWorldUnlit"
             Name "Unlit"
             Tags { "LightMode" = "UniversalForward" }
 
-            Blend SrcAlpha OneMinusSrcAlpha
-            ZWrite Off
-            Cull Off
+            Blend [_SrcBlend] [_DstBlend]
+            ZWrite [_ZWrite]
+            Cull [_Cull]
 
             HLSLPROGRAM
             #pragma vertex Vertex
@@ -49,6 +57,12 @@ Shader "App/CurvedWorldUnlit"
                 half4 _BaseColor;
                 half4 _EmissionColor;
                 half _CurvedWorldPerObject;
+                // 描画状態の指定に使うだけでHLSLからは読まないが、
+                // SRP Batcherの対象になるにはCBUFFERに並べておく必要がある
+                half _SrcBlend;
+                half _DstBlend;
+                half _ZWrite;
+                half _Cull;
             CBUFFER_END
 
             TEXTURE2D(_BaseMap);
@@ -100,12 +114,71 @@ Shader "App/CurvedWorldUnlit"
                 half4 color = baseMap * _BaseColor * input.color;
                 color.rgb += _EmissionColor.rgb * color.a;
 
-                // MixFogはrgbをフォグ色へ寄せるだけでアルファは変えない。
-                // 遠方のレイを薄れさせたい場合はアルファ側も落とす必要がある
+                // MixFogはrgbをフォグ色へ寄せるだけで、アルファには触らない。
+                // 遠方のレイは薄くならずフォグ色に染まる。
+                // アルファも落としたくなるが、フォグ無効時は fogFactor が0になるため
+                // 単純に掛けると全て透明になる。落とすならフォグのキーワードで分岐すること
                 color.rgb = MixFog(color.rgb, input.fogFactor);
-                color.a *= input.fogFactor;
                 return color;
             }
+            ENDHLSL
+        }
+        // 不透明設定で使われるマテリアル（EnemyBulletなど）のために、
+        // デプス・デプス法線・影のパスも持たせる。
+        // これらを欠くと、デプスプリパスやSSAOを有効にしたときに破綻し、影も出なくなる。
+        // 半透明マテリアルではURP側がこれらのパスを呼ばないため、持っていても無害。
+        Pass
+        {
+            Name "DepthOnly"
+            Tags { "LightMode" = "DepthOnly" }
+
+            ZWrite [_ZWrite]
+            Cull [_Cull]
+            ColorMask R
+
+            HLSLPROGRAM
+            #pragma vertex Vertex
+            #pragma fragment Fragment
+            #pragma shader_feature_local_vertex _CURVEDWORLD_PER_OBJECT
+            #pragma multi_compile_instancing
+            #include "CurvedWorldUnlitDepth.hlsl"
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "DepthNormals"
+            Tags { "LightMode" = "DepthNormals" }
+
+            ZWrite [_ZWrite]
+            Cull [_Cull]
+
+            HLSLPROGRAM
+            #pragma vertex Vertex
+            #pragma fragment FragmentNormals
+            #pragma shader_feature_local_vertex _CURVEDWORLD_PER_OBJECT
+            #pragma multi_compile_instancing
+            #include "CurvedWorldUnlitDepth.hlsl"
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "ShadowCaster"
+            Tags { "LightMode" = "ShadowCaster" }
+
+            ZWrite On
+            ZTest LEqual
+            Cull [_Cull]
+            ColorMask 0
+
+            HLSLPROGRAM
+            #pragma vertex VertexShadow
+            #pragma fragment Fragment
+            #pragma shader_feature_local_vertex _CURVEDWORLD_PER_OBJECT
+            #pragma multi_compile_instancing
+            #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
+            #include "CurvedWorldUnlitDepth.hlsl"
             ENDHLSL
         }
     }

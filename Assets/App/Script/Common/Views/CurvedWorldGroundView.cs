@@ -70,14 +70,23 @@ namespace App.Common.Views
         private void OnValidate()
         {
             // 分割数や大きさを触りながら見た目を確かめられるようにする
-            if (isActiveAndEnabled)
+            // スライダーを動かしている間はOnValidateが連続で飛ぶ。
+            // そのたびに登録すると同じ処理が何十回も走ってエディタが固まる
+            if (!isActiveAndEnabled || _rebuildQueued)
             {
-                UnityEditor.EditorApplication.delayCall += RebuildIfAlive;
+                return;
             }
+
+            _rebuildQueued = true;
+            UnityEditor.EditorApplication.delayCall += RebuildIfAlive;
         }
+
+        private bool _rebuildQueued;
 
         private void RebuildIfAlive()
         {
+            _rebuildQueued = false;
+
             if (this != null)
             {
                 Rebuild();

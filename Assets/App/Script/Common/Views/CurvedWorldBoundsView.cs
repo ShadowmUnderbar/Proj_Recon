@@ -17,9 +17,6 @@ namespace App.Common.Views
         [SerializeField, Tooltip("対象のレンダラー。空なら自分以下のレンダラーをすべて対象にする")]
         private Renderer[] _renderers;
 
-        /// <summary>バウンズ換算でスケールを割るときの下限</summary>
-        private const float MinScaleForDivision = 0.0001f;
-
         /// <summary>広げる前のローカルバウンズ。再有効化のたびに積み増さないため元を覚えておく</summary>
         private readonly Dictionary<Renderer, Bounds> _originalBounds = new();
 
@@ -59,16 +56,25 @@ namespace App.Common.Views
                     _originalBounds.Add(target, bounds);
                 }
 
-                // 絶対値を取り、現実的な下限で割る。スケール0やミラー配置の負値だと
-                // Mathf.Epsilon では商が無限大になり、Invalid AABB でカリングが壊れる
-                var scaleY = Mathf.Max(Mathf.Abs(target.transform.lossyScale.y), MinScaleForDivision);
-                var drop = _config.CullingDropMargin / scaleY;
-
-                // 下端だけを drop ぶん延ばす。中心も半分だけ下げないと上端まで一緒に伸びてしまう
-                bounds.center -= new Vector3(0f, drop * 0.5f, 0f);
-                bounds.extents += new Vector3(0f, drop * 0.5f, 0f);
-                target.localBounds = bounds;
+                // 沈むのはワールドの真下だが、localBoundsはローカル軸に沿う。
+                // 傾いた壁のようにX/Z方向に回転した対象では、ローカルの-Yは真下ではない。
+                // ワールドの下方向をローカルへ変換し、そこへずらした箱ごと包む
+                var localDown = target.transform.InverseTransformVector(Vector3.down * _config.CullingDropMargin);
+                if (IsFinite(localDown))
+                {
+                    var expanded = bounds;
+                    expanded.Encapsulate(new Bounds(bounds.center + localDown, bounds.size));
+                    target.localBounds = expanded;
+                }
             }
+        }
+
+        /// <summary>スケール0の対象ではInverseTransformVectorが無限大やNaNを返しうる</summary>
+        private static bool IsFinite(Vector3 value)
+        {
+            return !float.IsNaN(value.x) && !float.IsInfinity(value.x)
+                && !float.IsNaN(value.y) && !float.IsInfinity(value.y)
+                && !float.IsNaN(value.z) && !float.IsInfinity(value.z);
         }
     }
 }

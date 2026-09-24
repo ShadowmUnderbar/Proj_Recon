@@ -29,6 +29,10 @@ namespace App.Common.Views
 
         private static readonly int ParamsId = Shader.PropertyToID("_CurvedWorldParams");
 
+        /// <summary>刻み間隔はフレーム内で共通なので、1フレームに1回だけ取りに行く</summary>
+        private static int _cachedFrame = -1;
+        private static float _cachedSegmentLength = float.PositiveInfinity;
+
         /// <summary>
         /// start から end へ線を引く。曲率に応じて必要なだけ点を刻む。
         /// </summary>
@@ -83,6 +87,18 @@ namespace App.Common.Views
         /// これを許容たわみ以下に収める長さを逆算している。
         /// </summary>
         public static float MaxSegmentLength()
+        {
+            if (_cachedFrame == Time.frameCount)
+            {
+                return _cachedSegmentLength;
+            }
+
+            _cachedFrame = Time.frameCount;
+            _cachedSegmentLength = ReadSegmentLength();
+            return _cachedSegmentLength;
+        }
+
+        private static float ReadSegmentLength()
         {
             var parameters = Shader.GetGlobalVector(ParamsId);
             var strength = parameters.x;
