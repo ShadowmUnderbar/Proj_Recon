@@ -53,7 +53,7 @@ namespace App.Battle.Data
         private float _collectDistance = 0.4f;
 
         [SerializeField, Tooltip("取得判定の最小の大きさ（直径m）。見た目が小さい単位の粒子でも取りこぼさないよう、弾の通過判定とプレイヤーの接触判定をこの大きさまで広げる")]
-        private float _minHitSize = 0.5f;
+        private float _minHitSize = 1.5f;
 
         [SerializeField, Tooltip("弾が当たった粒子がプレイヤーへ吸い込まれ切るまでの秒数。どれだけ遠くで撃ってもこの秒数で回収される")]
         private float _bulletPullDuration = 0.5f;
