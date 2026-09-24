@@ -38,8 +38,10 @@ MonoBehaviour:
   _bobAmplitude: 0.15
   _bobFrequency: 0.5
   _driftSpeed: 0.1
+  _heightFollowSpeed: 1.5
   _magnetDistance: 3
   _magnetSpeed: 6
   _magnetAcceleration: 12
   _collectDistance: 0.4
+  _minHitSize: 0.5
   _playerCenterHeight: 1

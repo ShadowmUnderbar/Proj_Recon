@@ -163,9 +163,10 @@ var calculator = scope.Container.Resolve<IPointDropCalculatorDataStore>();
 var presenter = scope.Container.Resolve<IPointParticlePresenter>();
 var playerView = scope.Container.Resolve<IBattlePlayerView>();
 
-// 敵や敵弾に邪魔されずに弾道を確かめるため、ウェーブを止めて敵を消しておく
+// 敵や敵弾に邪魔されずに弾道を確かめるため、ウェーブを止めて敵を消しておく（ビューも消す）
 waveDataStore.SetWavePause(true);
 enemyDataStore.RemoveAllEnemyData();
+scope.Container.Resolve<IEnemyPresenter>().RemoveAllEnemies();
 
 // 当たり判定が大きく狙いやすい最大単位の粒子を1個だけ出す
 var units = new List<PointUnitData>();
@@ -178,8 +179,9 @@ presenter.Spawn(player.position + player.forward * 8f, units);
 return units[0].Value.ToString();
 '@ | Out-Null
 
-    # 生成した粒子のコライダーが物理エンジンへ反映されるまで1フレーム待ってから撃つ
-    Start-Sleep -Milliseconds 300
+    # 生成した粒子のコライダーが物理エンジンへ反映され、かつプレイヤーの高さへ寄り切るまで待ってから撃つ
+    # （高さ移動の途中に撃つと、弾が着く頃には粒子が上下にずれている）
+    Start-Sleep -Milliseconds 1500
 
     $shot = Invoke-UnityJson -Snippet @'
 using UnityEngine;
@@ -259,6 +261,10 @@ var scope = LifetimeScope.Find<BattleLifetimeScope>();
 var calculator = scope.Container.Resolve<IPointDropCalculatorDataStore>();
 var presenter = scope.Container.Resolve<IPointParticlePresenter>();
 var playerView = scope.Container.Resolve<IBattlePlayerView>();
+var enemyDataStore = scope.Container.Resolve<IEnemyDataStore>();
+
+enemyDataStore.RemoveAllEnemyData();
+scope.Container.Resolve<IEnemyPresenter>().RemoveAllEnemies();
 
 var units = new List<PointUnitData>();
 calculator.Split(50, units);
@@ -270,8 +276,9 @@ presenter.Spawn(player.position + player.forward * 8f, units);
 return units[0].Value.ToString();
 '@ | Out-Null
 
-    # 生成した粒子のコライダーが物理エンジンへ反映されるまで1フレーム待ってから撃つ
-    Start-Sleep -Milliseconds 300
+    # 生成した粒子のコライダーが物理エンジンへ反映され、かつプレイヤーの高さへ寄り切るまで待ってから撃つ
+    # （高さ移動の途中に撃つと、弾が着く頃には粒子が上下にずれている）
+    Start-Sleep -Milliseconds 1500
 
     $instant = Invoke-UnityJson -Snippet @'
 using UnityEngine;
@@ -418,4 +425,109 @@ return $"{{\"remain\":{storeView.transform.childCount},\"point\":{pointDataStore
     Assert-ProbeValue -Name 'ウェーブ切り替わり後に残っている粒子数' -Actual ([double]$afterAdvance.remain) -Expected 0 | Out-Null
     Assert-ProbeValue -Name '一括消去ではポイントが加算されない' `
         -Actual ([double]$afterAdvance.point) -Expected ([double]$beforeAdvance.point) | Out-Null
+
+    # --- 7. 生成後にプレイヤーと同じ高さへ寄り、取得判定は高さを無視する ---
+    $height = Invoke-UnityJson -Snippet @'
+using System.Collections.Generic;
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Data;
+using App.Battle.Interface;
+using App.Battle.Interface.DataStore;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var waveDataStore = scope.Container.Resolve<IWaveManagerDataStore>();
+var calculator = scope.Container.Resolve<IPointDropCalculatorDataStore>();
+var presenter = scope.Container.Resolve<IPointParticlePresenter>();
+var playerView = scope.Container.Resolve<IBattlePlayerView>();
+var storeView = scope.Container.Resolve<IPointParticleStoreView>() as MonoBehaviour;
+
+waveDataStore.SetWavePause(true);
+
+// 吸い寄せ圏外（MagnetDistance=3m）へ、足元の高さで1個だけ出す
+var units = new List<PointUnitData>();
+calculator.Split(1, units);
+var player = playerView.PlayerTransform;
+presenter.Spawn(player.position + player.forward * 10f, units);
+
+var particle = storeView.transform.GetChild(storeView.transform.childCount - 1);
+var collider = particle.GetComponent<SphereCollider>();
+
+var config = scope.Container.Resolve<PointParticleConfig>();
+
+return $"{{\"startY\":{particle.position.y},\"targetY\":{player.position.y + config.PlayerCenterHeight},\"hitRadiusWorld\":{collider.radius * particle.localScale.x},\"unitScale\":{particle.localScale.x}}}";
+'@
+
+    # 取得判定は見た目（最小単位はスケール0.12）より大きく、最小サイズ0.5m（半径0.25m）まで広がっている
+    Assert-ProbeTrue -Name '最小単位でも取得判定が0.25m以上ある' -Condition ([double]$height.hitRadiusWorld -ge 0.25) `
+        -Detail "(判定半径: $([math]::Round([double]$height.hitRadiusWorld, 3))m / 見た目スケール: $($height.unitScale))" | Out-Null
+
+    Start-Sleep -Milliseconds 1200
+
+    $followed = Invoke-UnityJson -Snippet @'
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Interface;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var storeView = scope.Container.Resolve<IPointParticleStoreView>() as MonoBehaviour;
+var playerView = scope.Container.Resolve<IBattlePlayerView>();
+var config = scope.Container.Resolve<PointParticleConfig>();
+
+var particle = storeView.transform.GetChild(storeView.transform.childCount - 1);
+var player = playerView.PlayerTransform;
+
+return $"{{\"y\":{particle.position.y},\"targetY\":{player.position.y + config.PlayerCenterHeight}}}";
+'@
+
+    # 目標はプレイヤー座標＋PlayerCenterHeight（Configの基準高さ）
+    $startGap = [math]::Abs([double]$height.startY - [double]$height.targetY)
+    $nowGap = [math]::Abs([double]$followed.y - [double]$followed.targetY)
+    Assert-ProbeTrue -Name 'プレイヤーの高さへ寄っていく' -Condition ($nowGap -lt $startGap) `
+        -Detail "(生成時の差: $([math]::Round($startGap,2))m → 1.2秒後: $([math]::Round($nowGap,2))m)" | Out-Null
+    Assert-ProbeTrue -Name '1.2秒でプレイヤーの高さへ到達する' -Condition ($nowGap -le 0.2) `
+        -Detail "(残差: $([math]::Round($nowGap,2))m。揺れ幅BobAmplitude=0.15mぶんは残る)" | Out-Null
+
+    # --- 8. 高さがずれていても水平距離だけで回収される ---
+    Invoke-UnityCode -Snippet @'
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Interface;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var storeView = scope.Container.Resolve<IPointParticleStoreView>() as MonoBehaviour;
+var playerView = scope.Container.Resolve<IBattlePlayerView>();
+
+var particle = storeView.transform.GetChild(storeView.transform.childCount - 1);
+var player = playerView.PlayerTransform;
+
+// プレイヤーの真上3m（水平距離0・高さは大きくずれている状態）へ運ぶ
+particle.position = player.position + Vector3.up * 3f;
+return "moved";
+'@ | Out-Null
+
+    Start-Sleep -Milliseconds 400
+
+    $ignoreY = Invoke-UnityJson -Snippet @'
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Interface;
+using App.Battle.Interface.DataStore;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var storeView = scope.Container.Resolve<IPointParticleStoreView>() as MonoBehaviour;
+var pointDataStore = scope.Container.Resolve<IPointDataStore>();
+
+return $"{{\"remain\":{storeView.transform.childCount},\"point\":{pointDataStore.CurrentPoint.CurrentValue}}}";
+'@
+
+    Assert-ProbeValue -Name '真上にあっても回収される（高さ無視）' -Actual ([double]$ignoreY.remain) -Expected 0 | Out-Null
 }

@@ -12,6 +12,9 @@ namespace App.Battle.Views
     {
         [SerializeField] private Renderer _renderer;
 
+        [SerializeField, Tooltip("取得判定のコライダー（見た目より大きめに広げる）")]
+        private SphereCollider _hitCollider;
+
         private PointParticleConfig _config;
 
         // 漂いの中心。吸い寄せが始まるまではこの位置を基準に上下・水平へ揺らす
@@ -24,25 +27,27 @@ namespace App.Battle.Views
         // 吸い寄せ中の速度（近づくほど加速させる）
         private float _magnetSpeed;
 
-        // 漂う高さの基準（撃破地点の足元）。高さ制限を絶対座標で持つと段差のある地形で破綻するため相対で持つ
-        private float _groundHeight;
+        // 取得判定の半径（水平距離で判定する）。見た目の大きさと最小判定サイズの大きい方
+        private float _collectRadius;
 
         // 色をインスタンス化せずに差し替えるためのブロック（粒子ごとにマテリアルを増やさない）
         private static MaterialPropertyBlock _propertyBlock;
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         private static readonly int ColorId = Shader.PropertyToID("_Color");
 
+        // プレハブのスフィアコライダーの既定半径（スケール1のときのワールド半径）
+        private const float DefaultColliderRadius = 0.5f;
+
         public bool IsCollected { get; private set; }
 
         /// <summary>この粒子を回収したときに得られるポイント</summary>
         public int Value { get; private set; }
 
-        public void Init(PointUnitData unit, Vector3 driftCenter, float groundHeight, PointParticleConfig config)
+        public void Init(PointUnitData unit, Vector3 driftCenter, PointParticleConfig config)
         {
             _config = config;
             Value = unit.Value;
             _driftCenter = driftCenter;
-            _groundHeight = groundHeight;
             _bobPhase = Random.Range(0f, Mathf.PI * 2f);
 
             var driftAngle = Random.Range(0f, Mathf.PI * 2f);
@@ -50,7 +55,27 @@ namespace App.Battle.Views
 
             transform.localScale = Vector3.one * unit.Scale;
 
+            ApplyHitSize(unit.Scale);
             ApplyColor(unit.Color);
+        }
+
+        /// <summary>
+        /// 取得判定を見た目より大きく広げる。小さい単位の粒子でも取りこぼさないようにするため、
+        /// 弾の通過判定（コライダー）とプレイヤーの接触判定に同じ最小サイズを効かせる
+        /// </summary>
+        private void ApplyHitSize(float scale)
+        {
+            // 見た目の半径（スケール適用後のワールド半径）と、最小判定サイズの半径の大きい方
+            var visualRadius = DefaultColliderRadius * scale;
+            _collectRadius = Mathf.Max(visualRadius, _config.MinHitSize * 0.5f);
+
+            if (_hitCollider == null)
+            {
+                return;
+            }
+
+            // コライダーはスケールの影響を受けるため、ワールド半径が _collectRadius になるよう割り戻す
+            _hitCollider.radius = scale > 0f ? _collectRadius / scale : DefaultColliderRadius;
         }
 
         /// <summary>
@@ -64,21 +89,24 @@ namespace App.Battle.Views
             }
 
             var toPlayer = playerCenter - transform.position;
-            var sqrDistance = toPlayer.sqrMagnitude;
 
-            if (sqrDistance <= _config.CollectDistance * _config.CollectDistance)
+            // 取得判定は高さを無視する（粒子はプレイヤーの高さへ寄っていく途中でも取れるようにする）
+            var horizontalDistance = new Vector2(toPlayer.x, toPlayer.z).sqrMagnitude;
+            var collectDistance = Mathf.Max(_config.CollectDistance, _collectRadius);
+
+            if (horizontalDistance <= collectDistance * collectDistance)
             {
                 Collect();
                 return;
             }
 
-            if (sqrDistance <= _config.MagnetDistance * _config.MagnetDistance)
+            if (toPlayer.sqrMagnitude <= _config.MagnetDistance * _config.MagnetDistance)
             {
                 MoveToPlayer(deltaTime, toPlayer);
                 return;
             }
 
-            Drift(deltaTime);
+            Drift(deltaTime, playerCenter.y);
         }
 
         public void Collect()
@@ -95,21 +123,21 @@ namespace App.Battle.Views
             _driftCenter = transform.position;
         }
 
-        private void Drift(float deltaTime)
+        private void Drift(float deltaTime, float targetHeight)
         {
             // 吸い寄せ圏外へ戻った場合に備えて速度を戻す（再度ゆっくり加速し直す）
             _magnetSpeed = 0f;
 
             _driftCenter += _driftDirection * (_config.DriftSpeed * deltaTime);
 
+            // 撃破地点の高さからプレイヤーの高さへ徐々に移動する（弾を通して取りやすい高さへ揃える）
+            _driftCenter.y = Mathf.MoveTowards(_driftCenter.y, targetHeight, _config.HeightFollowSpeed * deltaTime);
+
             var bobOffset = Mathf.Sin((Time.time + _bobPhase) * _config.BobFrequency * Mathf.PI * 2f)
                             * _config.BobAmplitude;
 
             var position = _driftCenter;
-            position.y = Mathf.Clamp(
-                _driftCenter.y + bobOffset,
-                _groundHeight + _config.MinHeight,
-                _groundHeight + _config.MaxHeight);
+            position.y = _driftCenter.y + bobOffset;
             transform.position = position;
         }
 
