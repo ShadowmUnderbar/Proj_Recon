@@ -221,41 +221,8 @@ return $"{{\"pointBefore\":{pointDataStore.CurrentPoint.CurrentValue},\"particle
 
     Assert-ProbeValue -Name '弾の通過を試す粒子数' -Actual ([double]$shot.particleCount) -Expected 1 | Out-Null
 
-    # 弾速10m/sで3m先の粒子へ届く時間ぶん待つ（この時点では吸い込みが始まっているだけ）
-    Start-Sleep -Milliseconds 400
-
-    $pulling = Invoke-UnityJson -Snippet @'
-using System.Linq;
-using UnityEngine;
-using VContainer;
-using VContainer.Unity;
-using App.Battle;
-using App.Battle.Interface;
-
-var scope = LifetimeScope.Find<BattleLifetimeScope>();
-var storeView = scope.Container.Resolve<IPointParticleStoreView>() as MonoBehaviour;
-var playerView = scope.Container.Resolve<IBattlePlayerView>();
-
-var particle = storeView.transform.childCount > 0
-    ? storeView.transform.GetChild(storeView.transform.childCount - 1)
-    : null;
-
-if (particle == null)
-{
-    return "{\"exists\":false,\"isPulling\":false,\"distance\":0}";
-}
-
-var view = particle.GetComponent<IPointParticleView>();
-var distance = Vector3.Distance(particle.position, playerView.PlayerTransform.position);
-
-return $"{{\"exists\":true,\"isPulling\":{view.IsPulling.ToString().ToLower()},\"distance\":{distance}}}";
-'@
-
-    Assert-ProbeTrue -Name '弾が当たった粒子が吸い込み中になる' `
-        -Condition ([bool]$pulling.exists -and [bool]$pulling.isPulling) | Out-Null
-
-    # 吸い込みは BulletPullDuration(0.5秒) で必ず終わる
-    Start-Sleep -Milliseconds 700
+    # 弾の到達（3m / 10m/s）と吸い込み（BulletPullDuration=0.5秒）が終わるまで待つ
+    Start-Sleep -Milliseconds 1200
 
     $passed = Invoke-UnityJson -Snippet @'
 using UnityEngine;
@@ -495,8 +462,8 @@ var config = scope.Container.Resolve<PointParticleConfig>();
 return $"{{\"startY\":{particle.position.y},\"targetY\":{player.position.y + config.PlayerCenterHeight},\"hitRadiusWorld\":{collider.radius * particle.localScale.x},\"unitScale\":{particle.localScale.x}}}";
 '@
 
-    # 取得判定は見た目（最小単位はスケール0.12）より大きく、最小サイズ0.5m（半径0.25m）まで広がっている
-    Assert-ProbeTrue -Name '最小単位でも取得判定が0.25m以上ある' -Condition ([double]$height.hitRadiusWorld -ge 0.25) `
+    # 取得判定は見た目（最小単位はスケール0.12）より大きく、最小サイズ1.5m（半径0.75m）まで広がっている
+    Assert-ProbeTrue -Name '最小単位でも取得判定が0.75m以上ある' -Condition ([double]$height.hitRadiusWorld -ge 0.75) `
         -Detail "(判定半径: $([math]::Round([double]$height.hitRadiusWorld, 3))m / 見た目スケール: $($height.unitScale))" | Out-Null
 
     Start-Sleep -Milliseconds 1200
@@ -565,4 +532,68 @@ return $"{{\"remain\":{storeView.transform.childCount},\"point\":{pointDataStore
 '@
 
     Assert-ProbeValue -Name '真上にあっても回収される（高さ無視）' -Actual ([double]$ignoreY.remain) -Expected 0 | Out-Null
+
+    # --- 9. 遠くで撃たれた粒子も BulletPullDuration で吸い込み切る ---
+    $farPull = Invoke-UnityJson -Snippet @'
+using System.Collections.Generic;
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Data;
+using App.Battle.Interface;
+using App.Battle.Interface.DataStore;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var calculator = scope.Container.Resolve<IPointDropCalculatorDataStore>();
+var presenter = scope.Container.Resolve<IPointParticlePresenter>();
+var playerView = scope.Container.Resolve<IBattlePlayerView>();
+var pointDataStore = scope.Container.Resolve<IPointDataStore>();
+var storeView = scope.Container.Resolve<IPointParticleStoreView>() as MonoBehaviour;
+var config = scope.Container.Resolve<PointParticleConfig>();
+
+var units = new List<PointUnitData>();
+calculator.Split(20, units);
+
+var player = playerView.PlayerTransform;
+// 吸い寄せ圏外のはるか遠く（20m）に出す
+presenter.Spawn(player.position + player.forward * 20f, units);
+
+var particle = storeView.transform.GetChild(storeView.transform.childCount - 1);
+var view = particle.GetComponent<IPointParticleView>();
+var distance = Vector3.Distance(particle.position, player.position);
+
+// 弾が当たったときと同じ経路で吸い込みを開始する
+view.StartPull();
+
+return $"{{\"pointBefore\":{pointDataStore.CurrentPoint.CurrentValue},\"distance\":{distance},\"isPulling\":{view.IsPulling.ToString().ToLower()},\"isCollected\":{view.IsCollected.ToString().ToLower()},\"pullDuration\":{config.BulletPullDuration},\"unitValue\":{units[0].Value}}}";
+'@
+
+    Assert-ProbeTrue -Name '20m先でも吸い込みが始まる' -Condition ([bool]$farPull.isPulling) `
+        -Detail "(距離: $([math]::Round([double]$farPull.distance,1))m)" | Out-Null
+    Assert-ProbeTrue -Name '吸い込み開始時点では回収されていない' -Condition (-not [bool]$farPull.isCollected) | Out-Null
+
+    # 吸い込み時間（既定0.5秒）＋回収反映ぶんだけ待つ
+    Start-Sleep -Milliseconds 800
+
+    $farPullResult = Invoke-UnityJson -Snippet @'
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Interface;
+using App.Battle.Interface.DataStore;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var storeView = scope.Container.Resolve<IPointParticleStoreView>() as MonoBehaviour;
+var pointDataStore = scope.Container.Resolve<IPointDataStore>();
+
+return $"{{\"remain\":{storeView.transform.childCount},\"point\":{pointDataStore.CurrentPoint.CurrentValue}}}";
+'@
+
+    Assert-ProbeTrue -Name '吸い込み時間が0.5秒以内の設定になっている' `
+        -Condition ([double]$farPull.pullDuration -le 0.5) -Detail "(実測: $($farPull.pullDuration)秒)" | Out-Null
+    Assert-ProbeValue -Name '20m先の粒子も吸い込み後に消えている' -Actual ([double]$farPullResult.remain) -Expected 0 | Out-Null
+    Assert-ProbeValue -Name '20m先の粒子ぶんのポイントが入る' `
+        -Actual ([double]$farPullResult.point - [double]$farPull.pointBefore) -Expected ([double]$farPull.unitValue) | Out-Null
 }
