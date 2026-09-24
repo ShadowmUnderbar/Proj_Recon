@@ -44,4 +44,5 @@ MonoBehaviour:
   _magnetAcceleration: 12
   _collectDistance: 0.4
   _minHitSize: 0.5
+  _bulletPullDuration: 0.5
   _playerCenterHeight: 1

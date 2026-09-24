@@ -187,10 +187,9 @@ namespace App.Battle.Views.Enemy.Bullet
 
             for (var i = 0; i < hitCount; i++)
             {
-                if (_pointParticleHitBuffer[i].collider.TryGetComponent<IPointParticleView>(out var pointParticle)
-                    && !pointParticle.IsCollected)
+                if (_pointParticleHitBuffer[i].collider.TryGetComponent<IPointParticleView>(out var pointParticle))
                 {
-                    pointParticle.Collect();
+                    pointParticle.StartPull();
                 }
             }
         }
@@ -226,9 +225,10 @@ namespace App.Battle.Views.Enemy.Bullet
             // ポイント粒子は弾を止めずに通過させる。プレイヤーの弾だけが回収できる
             if (col.TryGetComponent<IPointParticleView>(out var pointParticle))
             {
-                if (_attackerId == BasePlayerParameter.PlayerId && !pointParticle.IsCollected)
+                if (_attackerId == BasePlayerParameter.PlayerId)
                 {
-                    pointParticle.Collect();
+                    // 撃った瞬間に消さず、プレイヤーへ吸い込まれてから回収される
+                    pointParticle.StartPull();
                 }
 
                 return;
