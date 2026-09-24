@@ -33,9 +33,23 @@ namespace App.Battle.DataStore
         public IReadOnlyList<UpgradeMasterData> DrawUpgrades(int count)
         {
             // 出現可能 = 未取得 かつ 前提コアスキルがアンロック済み
+            // さらに同系統ごとに「所持中の最高レベルの次のレベル」1件だけを候補にする（Lv2所持ならLv3が出る）
+            var ownedMaxLevels = GetOwnedMaxLevels();
+
             var candidates = _upgradeDatabase.UpgradeMasterData
                 .Where(data => !_upgradeSessionDataStore.AppliedUpgrades.Contains(data.Id))
                 .Where(IsUnlocked)
+                .GroupBy(GetSeriesKey)
+                .Select(group =>
+                {
+                    // 所持していない系統は最高レベル0扱いなので最小レベル（＝Lv1）が選ばれる
+                    ownedMaxLevels.TryGetValue(group.Key, out var ownedMaxLevel);
+                    return group
+                        .Where(data => data.Level > ownedMaxLevel)
+                        .OrderBy(data => data.Level)
+                        .FirstOrDefault();
+                })
+                .Where(data => data != null)
                 .ToList();
 
             var drawCount = UnityEngine.Mathf.Min(count, candidates.Count);
@@ -90,6 +104,37 @@ namespace App.Battle.DataStore
 
             // 浮動小数の誤差で末尾まで届かなかった場合の保険
             return weights.Count - 1;
+        }
+
+        /// <summary>
+        /// 同系統（同じ名前の別レベル）を識別するキー。エディタ拡張のStartUpgradeDebugWindowと揃えている
+        /// </summary>
+        private static (UpgradeType upgradeType, string nameKey) GetSeriesKey(UpgradeMasterData data)
+        {
+            return (data.UpgradeType, data.NameKey);
+        }
+
+        /// <summary>
+        /// 系統ごとの取得済み最高レベル。抽選候補を「次のレベル」に絞るために使う
+        /// </summary>
+        private Dictionary<(UpgradeType upgradeType, string nameKey), int> GetOwnedMaxLevels()
+        {
+            var maxLevels = new Dictionary<(UpgradeType upgradeType, string nameKey), int>();
+            foreach (var id in _upgradeSessionDataStore.AppliedUpgrades)
+            {
+                if (!_upgradeDatabase.TryGetUpgradeMasterData(id, out var data))
+                {
+                    continue;
+                }
+
+                var key = GetSeriesKey(data);
+                if (!maxLevels.TryGetValue(key, out var level) || data.Level > level)
+                {
+                    maxLevels[key] = data.Level;
+                }
+            }
+
+            return maxLevels;
         }
 
         /// <summary>
