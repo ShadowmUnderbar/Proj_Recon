@@ -23,7 +23,7 @@ namespace App.Editor
         // CSV列インデックス（GASエクスポーターのスキーマに対応）
         // ヘッダー: id,NameKey,SimpleDescriptionKey,DescriptionKey,UpgradeType,PlayerUnlockType,Level,
         //          Value1,Value1ParameterType,Value2,Value2ParameterType,Value3,Value3ParameterType,
-        //          Value4,Value4ParameterType,Value5,Value5ParameterType
+        //          Value4,Value4ParameterType,Value5,Value5ParameterType,BuffId,Cost
         private const int ColId = 0;
         private const int ColNameKey = 1;
         private const int ColUpgradeType = 2;
@@ -40,6 +40,7 @@ namespace App.Editor
         private const int ColValue5 = 13;
         private const int ColValue5ParameterType = 14;
         private const int ColBuffId = 15; // 任意列（GrantBuff用。既存行は列ごと省略可）
+        private const int ColCost = 16; // 任意列（ショップ購入コスト。未設定なら0＝無償扱い）
         private const int MinColumnCount = 15;
 
         private static readonly BindingFlags PrivateInstance =
@@ -242,6 +243,15 @@ namespace App.Editor
                     continue;
                 }
 
+                // Cost は任意列（列ごと無い・空なら0＝無償）。値があるのに読めない行は取り込まない
+                var cost = 0;
+                var costText = cols.Length > ColCost ? cols[ColCost].Trim() : string.Empty;
+                if (!string.IsNullOrEmpty(costText) && !int.TryParse(costText, out cost))
+                {
+                    errors.Add($"Row{rowNum}: Cost のパース失敗 \"{costText}\"");
+                    continue;
+                }
+
                 // NameKey の $ を除いた名前をファイル名に使用
                 var assetName = cols[ColNameKey].Trim().TrimStart('$');
                 if (level >= 1)
@@ -277,6 +287,8 @@ namespace App.Editor
                 type.GetField("_value5ParameterType", PrivateInstance).SetValue(masterData, value5Pt);
                 var buffId = cols.Length > ColBuffId ? cols[ColBuffId].Trim() : string.Empty;
                 type.GetField("_buffId", PrivateInstance).SetValue(masterData, buffId);
+
+                type.GetField("_cost", PrivateInstance).SetValue(masterData, cost);
 
                 EditorUtility.SetDirty(masterData);
                 importedAssets.Add(masterData);

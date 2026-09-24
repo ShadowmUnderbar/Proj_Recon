@@ -17,6 +17,7 @@ MonoBehaviour:
   _upgradeType: 19
   _playerUnlockType: 4
   _level: 1
+  _cost: 50
   _value1: 2
   _value1ParameterType: 2
   _value2: 0.2

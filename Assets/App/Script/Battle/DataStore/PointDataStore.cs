@@ -17,5 +17,21 @@ namespace App.Battle.DataStore
 
             _currentPoint.Value += amount;
         }
+
+        public bool TrySpend(int amount)
+        {
+            if (amount <= 0)
+            {
+                return true;
+            }
+
+            if (_currentPoint.Value < amount)
+            {
+                return false;
+            }
+
+            _currentPoint.Value -= amount;
+            return true;
+        }
     }
 }
