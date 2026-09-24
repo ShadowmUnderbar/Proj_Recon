@@ -173,6 +173,9 @@ MonoBehaviour:
   _streamerCameraView: {fileID: 2502214490595356515, guid: 845639cd75498d24d9ca347c81c38cb3, type: 3}
   _streamerCameraTriggerConfig: {fileID: 11400000, guid: fbd42e5c1d1fea24486e558b5a17babd, type: 2}
   _dodgeCounterAttackConfig: {fileID: 11400000, guid: 28938c88d976b334b949dd8cc527b6fc, type: 2}
+  _pointParticleStoreView: {fileID: 6445121078471273372, guid: b594897057b518f48b865feeb75daa97, type: 3}
+  _pointParticleConfig: {fileID: 11400000, guid: 2dd6d00b1240e5f4fbe474fe55026429, type: 2}
+  _pointDropConfig: {fileID: 11400000, guid: e03c7a2d746431b4aa2d7f3c35fdeda6, type: 2}
 --- !u!4 &175168502
 Transform:
   m_ObjectHideFlags: 0
