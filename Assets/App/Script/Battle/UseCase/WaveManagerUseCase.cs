@@ -16,6 +16,7 @@ namespace App.Battle.UseCase
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IEnemyRandomSpawnCycleDataStore _enemyRandomSpawnCycleDataStore;
         private readonly IBulletStoreView _bulletStoreView;
+        private readonly IPointParticlePresenter _pointParticlePresenter;
         private readonly WaveConfig _waveConfig;
         private readonly IFreezeDataStore _freezeDataStore;
 
@@ -28,6 +29,7 @@ namespace App.Battle.UseCase
             IEnemyPresenter enemyPresenter,
             IEnemyRandomSpawnCycleDataStore enemyRandomSpawnCycleDataStore,
             IBulletStoreView bulletStoreView,
+            IPointParticlePresenter pointParticlePresenter,
             WaveConfig waveConfig,
             IFreezeDataStore freezeDataStore
         )
@@ -37,6 +39,7 @@ namespace App.Battle.UseCase
             _enemyPresenter = enemyPresenter;
             _enemyRandomSpawnCycleDataStore = enemyRandomSpawnCycleDataStore;
             _bulletStoreView = bulletStoreView;
+            _pointParticlePresenter = pointParticlePresenter;
             _waveConfig = waveConfig;
             _freezeDataStore = freezeDataStore;
         }
@@ -109,6 +112,8 @@ namespace App.Battle.UseCase
             _enemyRandomSpawnCycleDataStore.ResetSpawnCycle();
             // プレイヤー弾・敵弾を全消去
             _bulletStoreView.AllRemove();
+            // 漂っているポイント粒子も全消去（未回収のぶんはウェーブ跨ぎで持ち越さない）
+            _pointParticlePresenter.AllRemove();
             // ウェーブ番号インクリメント＋進行通知
             _waveManagerDataStore.AdvanceWave();
         }
