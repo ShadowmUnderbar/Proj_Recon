@@ -39,8 +39,9 @@ namespace App.Battle.Views
 
             for (var i = 0; i < units.Count; i++)
             {
-                // 水平方向だけ散らし、高さは撃破地点からの相対で別に抽選する
+                // 水平方向だけ散らし、生成時の高さは撃破地点からの相対で別に抽選する
                 // （散らし半径で高さを決めると上限に届かず、全ての粒子がほぼ同じ高さに並んでしまう）
+                // 生成後はプレイヤーと同じ高さへ徐々に寄っていく（PointParticleView.Drift）
                 var offset = Random.insideUnitCircle * _config.SpawnRadius;
                 var driftCenter = position + new Vector3(offset.x, 0f, offset.y);
                 driftCenter.y = position.y + Random.Range(_config.MinHeight, _config.MaxHeight);
@@ -48,7 +49,7 @@ namespace App.Battle.Views
                 // 生成後に座標を動かすと、同じフレームの物理クエリ（即着弾の弾など）に位置が反映されないため
                 // 最初から漂いの中心へ生成する
                 var particle = Instantiate(_pointParticlePrefab, driftCenter, Quaternion.identity, transform);
-                particle.Init(units[i], driftCenter, position.y, _config);
+                particle.Init(units[i], driftCenter, _config);
                 _particles.Add(particle);
             }
         }

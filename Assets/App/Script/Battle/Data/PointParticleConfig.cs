@@ -20,10 +20,10 @@ namespace App.Battle.Data
         [SerializeField, Tooltip("撃破地点を中心に粒子を散らす半径（m）")]
         private float _spawnRadius = 0.6f;
 
-        [SerializeField, Tooltip("撃破地点の足元から測った、粒子が漂う高さの下限（m）。地面へ埋まらないよう持ち上げる")]
+        [SerializeField, Tooltip("生成時の高さの下限（m。撃破地点の足元から測る）。地面へ埋まらないよう持ち上げる")]
         private float _minHeight = 0.5f;
 
-        [SerializeField, Tooltip("撃破地点の足元から測った、粒子が漂う高さの上限（m）")]
+        [SerializeField, Tooltip("生成時の高さの上限（m。撃破地点の足元から測る）")]
         private float _maxHeight = 1.5f;
 
         [Header("漂い")]
@@ -36,6 +36,9 @@ namespace App.Battle.Data
         [SerializeField, Tooltip("水平方向にゆっくり漂う速さ（m/秒）")]
         private float _driftSpeed = 0.1f;
 
+        [SerializeField, Tooltip("生成後にプレイヤーと同じ高さへ寄っていく速さ（m/秒）。0なら生成時の高さのまま漂う")]
+        private float _heightFollowSpeed = 1.5f;
+
         [Header("吸い寄せ・回収")]
         [SerializeField, Tooltip("この距離まで近づくとプレイヤーへ吸い寄せられる（m）")]
         private float _magnetDistance = 3f;
@@ -46,8 +49,11 @@ namespace App.Battle.Data
         [SerializeField, Tooltip("吸い寄せの加速度（m/秒^2）。近づくほど速くなる見た目にする")]
         private float _magnetAcceleration = 12f;
 
-        [SerializeField, Tooltip("この距離まで近づくと回収される（m）")]
+        [SerializeField, Tooltip("この距離まで近づくと回収される（m）。高さは無視し、水平距離で判定する")]
         private float _collectDistance = 0.4f;
+
+        [SerializeField, Tooltip("取得判定の最小の大きさ（直径m）。見た目が小さい単位の粒子でも取りこぼさないよう、弾の通過判定とプレイヤーの接触判定をこの大きさまで広げる")]
+        private float _minHitSize = 0.5f;
 
         [SerializeField, Tooltip("回収・吸い寄せの基準にするプレイヤーの高さ（m）。プレイヤー座標は足元基準のため胴体あたりを狙う")]
         private float _playerCenterHeight = 1f;
@@ -60,10 +66,12 @@ namespace App.Battle.Data
         public float BobAmplitude => _bobAmplitude;
         public float BobFrequency => _bobFrequency;
         public float DriftSpeed => _driftSpeed;
+        public float HeightFollowSpeed => _heightFollowSpeed;
         public float MagnetDistance => _magnetDistance;
         public float MagnetSpeed => _magnetSpeed;
         public float MagnetAcceleration => _magnetAcceleration;
         public float CollectDistance => _collectDistance;
+        public float MinHitSize => _minHitSize;
         public float PlayerCenterHeight => _playerCenterHeight;
     }
 }
