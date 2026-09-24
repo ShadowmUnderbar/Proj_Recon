@@ -1,0 +1,88 @@
+using App.Common.Data;
+using UnityEngine;
+
+namespace App.Common.Views
+{
+    /// <summary>
+    /// 水平線カーブの中心とパラメータを、毎フレームすべてのシェーダへ配る。
+    /// カーブの中心はカメラではなくプレイヤーの足元に置く。
+    /// VRではHMDが小刻みに動くため、カメラを中心にすると首を振るたびに地形が波打つ。
+    /// </summary>
+    [DefaultExecutionOrder(ExecutionOrder)]
+    public class CurvedWorldView : MonoBehaviour
+    {
+        /// <summary>他のViewが位置を確定した後に中心を配りたいので、既定より後ろで回す</summary>
+        private const int ExecutionOrder = 100;
+
+        private static readonly int OriginId = Shader.PropertyToID("_CurvedWorldOrigin");
+        private static readonly int ParamsId = Shader.PropertyToID("_CurvedWorldParams");
+
+        [SerializeField, Tooltip("曲率と地面グリッドの設定")]
+        private CurvedWorldConfig _config;
+
+        [SerializeField, Tooltip("カーブの中心にする対象。通常はプレイヤーの足元。未指定ならこのオブジェクト自身")]
+        private Transform _origin;
+
+        /// <summary>
+        /// 実行中の曲率。設定アセットの値を起点にして、実機調整はこちらだけを書き換える。
+        /// アセットを直接書き換えると、Playを抜けたあとも値が残って意図しない差分になる。
+        /// </summary>
+        private float _runtimeStrength;
+
+        /// <summary>現在フレームの変位。HUDなど他のViewが同じ変位を参照するために公開する</summary>
+        public CurvedWorldDisplacement Displacement { get; private set; }
+
+        public CurvedWorldConfig Config => _config;
+
+        /// <summary>実行中の曲率。実機で調整した値を設定アセットへ書き戻すときに読む</summary>
+        public float RuntimeStrength => _runtimeStrength;
+
+        private Transform OriginTransform => _origin != null ? _origin : transform;
+
+        private void OnEnable()
+        {
+            _runtimeStrength = _config != null ? _config.Strength : 0f;
+            Apply();
+        }
+
+        private void LateUpdate()
+        {
+            Apply();
+        }
+
+        private void OnDisable()
+        {
+            // 曲率0を配ってから止める。止めた瞬間に最後の値が残り続けるのを防ぐ
+            Displacement = new CurvedWorldDisplacement(OriginTransform.position, 0f);
+            PushToShaders(Displacement);
+        }
+
+        /// <summary>実行中の曲率を増減する。設定アセットには触れない</summary>
+        public void AdjustStrength(float delta)
+        {
+            _runtimeStrength = Mathf.Clamp(
+                _runtimeStrength + delta,
+                CurvedWorldConfig.MinStrength,
+                CurvedWorldConfig.MaxStrength);
+        }
+
+        private void Apply()
+        {
+            if (_config == null)
+            {
+                return;
+            }
+
+            var strength = _config.IsEnabled ? _runtimeStrength : CurvedWorldConfig.MinStrength;
+            Displacement = new CurvedWorldDisplacement(OriginTransform.position, strength);
+            PushToShaders(Displacement);
+        }
+
+        private static void PushToShaders(CurvedWorldDisplacement displacement)
+        {
+            var origin = displacement.Origin;
+            Shader.SetGlobalVector(OriginId, new Vector4(origin.x, origin.y, origin.z, 0f));
+            Shader.SetGlobalVector(ParamsId, new Vector4(displacement.Strength, 0f, 0f, 0f));
+        }
+    }
+}
