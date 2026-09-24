@@ -36,6 +36,7 @@ When parsing CSV or spreadsheet data, always confirm the header/data start row w
 - 現在のブランチが`develop`なら、確認を取らずにブランチ作成→コミット→push→`gh pr create --base develop`まで一連で実行する
 - **コミットメッセージの先頭に「Claude: 」を付ける**（例: `Claude: 経験値システム雛形を追加`）
 - 既存の変更とスコープが大きく異なる内容は、別のfeatureブランチ・別PRに分離する。判断が微妙ならユーザーに確認する
+- このルールは `.claude/settings.json` の PreToolUse フックで強制している。`main` / `master` / `develop` へのpushはハーネス側で拒否される（実体は `.claude/scripts/block-protected-push.sh`）。解除が必要な場合はユーザー自身がターミナルで実行する
 
 #### PR前のセルフレビュー必須
 - コード実装を伴う作業では**常に**、PRを出す前に`/code-review`を回し、妥当な指摘を反映してからPRを作成する
