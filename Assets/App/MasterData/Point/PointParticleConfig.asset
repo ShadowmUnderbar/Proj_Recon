@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dcc6a4b6414d034caa29ee6bf9f9bfa, type: 3}
+  m_Name: PointParticleConfig
+  m_EditorClassIdentifier: 
+  _units:
+  - _value: 1
+    _color: {r: 0.7, g: 0.92, b: 1, a: 1}
+    _scale: 0.12
+  - _value: 5
+    _color: {r: 0.4, g: 1, b: 0.55, a: 1}
+    _scale: 0.16
+  - _value: 10
+    _color: {r: 0.3, g: 0.62, b: 1, a: 1}
+    _scale: 0.2
+  - _value: 20
+    _color: {r: 0.7, g: 0.4, b: 1, a: 1}
+    _scale: 0.26
+  - _value: 50
+    _color: {r: 1, g: 0.6, b: 0.2, a: 1}
+    _scale: 0.32
+  - _value: 100
+    _color: {r: 1, g: 0.85, b: 0.2, a: 1}
+    _scale: 0.4
+  _maxParticleCount: 12
+  _spawnRadius: 0.6
+  _minHeight: 0.5
+  _maxHeight: 1.5
+  _bobAmplitude: 0.15
+  _bobFrequency: 0.5
+  _driftSpeed: 0.1
+  _heightFollowSpeed: 1.5
+  _magnetDistance: 3
+  _magnetSpeed: 6
+  _magnetAcceleration: 12
+  _collectDistance: 0.4
+  _minHitSize: 1.5
+  _bulletPullDuration: 0.5
+  _playerCenterHeight: 1

@@ -17,6 +17,10 @@ namespace App.Common.Data.MasterData
         [SerializeField] private EnemyRankType _enemyRankType;
         public EnemyRankType EnemyRankType => _enemyRankType;
 
+        [SerializeField, Tooltip("撃破時のポイントドロップ量の個別指定。0以下ならPointDropConfigのランク別既定値を使う")]
+        private int _dropPointOverride;
+        public int DropPointOverride => _dropPointOverride;
+
         [SerializeField] private float _damage = 1;
         public float Damage => _damage;
 

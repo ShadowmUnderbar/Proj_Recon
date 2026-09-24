@@ -1,4 +1,5 @@
 using App.Battle.Interface;
+using App.Common.Data;
 using App.Battle.Interface.EnemyAI;
 using UnityEngine;
 
@@ -26,7 +27,9 @@ namespace App.Battle.Views.EnemyAI
         {
             base.Attack();
 
-            var size = Physics.OverlapSphereNonAlloc(transform.position, EnemyData.AttackDistanceRange, _hitResults);
+            // ポイント粒子はダメージ対象ではないうえ、バッファを埋めてプレイヤーを押し出すため除外する
+            var size = Physics.OverlapSphereNonAlloc(transform.position, EnemyData.AttackDistanceRange, _hitResults,
+                Physics.AllLayers & ~LayerConstants.PointParticle);
 
             for (var i = 0; i < size; i++)
             {

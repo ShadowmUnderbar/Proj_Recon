@@ -33,6 +33,9 @@ namespace App.Battle
         [SerializeField] private StreamerCameraView _streamerCameraView;
         [SerializeField] private StreamerCameraTriggerConfig _streamerCameraTriggerConfig;
         [SerializeField] private DodgeCounterAttackConfig _dodgeCounterAttackConfig;
+        [SerializeField] private PointParticleStoreView _pointParticleStoreView;
+        [SerializeField] private PointParticleConfig _pointParticleConfig;
+        [SerializeField] private PointDropConfig _pointDropConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -100,6 +103,10 @@ namespace App.Battle
                 .As<IGameStateDataStore>();
             builder.Register<RunStartDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IRunStartDataStore>();
+            builder.Register<PointDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPointDataStore>();
+            builder.Register<PointDropCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPointDropCalculatorDataStore>();
             builder.Register<StreamerCameraDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IStreamerCameraDataStore>();
 
@@ -123,6 +130,9 @@ namespace App.Battle
             builder.RegisterEntryPoint<EnemySpawnUseCase>();
             builder.RegisterEntryPoint<EnemyControlUseCase>();
             builder.RegisterEntryPoint<PlayerGazeUseCase>();
+            // BattleHitUseCase は撃破通知の中で敵データを消すため、
+            // 撃破地点を参照するポイントドロップを先に購読させる（購読順＝登録順）
+            builder.RegisterEntryPoint<PointDropUseCase>();
             builder.RegisterEntryPoint<BattleHitUseCase>();
             builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
@@ -156,6 +166,8 @@ namespace App.Battle
                 .As<IRunStartPresenter>();
             builder.Register<StreamerCameraPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IStreamerCameraPresenter>();
+            builder.Register<PointParticlePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPointParticlePresenter>();
 
             #endregion
 
@@ -222,9 +234,15 @@ namespace App.Battle
             builder.RegisterComponentInNewPrefab(_bulletStoreView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IBulletStoreView>();
 
+            builder.RegisterComponentInNewPrefab(_pointParticleStoreView, Lifetime.Singleton)
+                .UnderTransform(transform)
+                .AsImplementedInterfaces().As<IPointParticleStoreView>();
+
             builder.RegisterInstance(_waveConfig);
             builder.RegisterInstance(_streamerCameraTriggerConfig);
             builder.RegisterInstance(_dodgeCounterAttackConfig);
+            builder.RegisterInstance(_pointParticleConfig);
+            builder.RegisterInstance(_pointDropConfig);
 
             #endregion
         }
