@@ -32,7 +32,19 @@ node sheets-cli.mjs add-enum UpgradeType 9 "バフ付与" GrantBuff  # enumシ�
 node sheets-cli.mjs rename-sheet ConditionType BuffConditionType # シート名変更
 node sheets-cli.mjs delete-columns UpgradeData X:Z               # 列削除（単一なら "X"）
 node sheets-cli.mjs delete-rows UpgradeData 104:106              # 行削除（単一なら "104"。行番号はシート表示と同じ1始まり）
+node sheets-cli.mjs get Upgrade --spreadsheet <ID>               # 全コマンド共通: config.json 以外のスプレッドシートを対象にする
 ```
+
+## 対象スプレッドシート
+
+| 用途 | ID | 指定方法 |
+|---|---|---|
+| マスターデータ（UpgradeData / BuffData / enum 等） | `config.json` の `spreadsheetId` | 指定不要（既定） |
+| ローカライズ表（`Upgrade` シート = Localization の Upgrade テーブル） | `17Lvu9ivs8Ybta8rvmfJ86YtqnEoRLdBkhbkGu-7b7VE` | `--spreadsheet <ID>` |
+
+- ローカライズ表の `Upgrade` シートは A=Key / B=ja-JP / C=en の3列。アップグレード1件につき `$Name` / `$Name_SimpleDesc` / `$Name_Desc` の3行、レベル表記は `$Level{n}_Upgrade`
+- 説明文の `{value1}`〜`{value3}` はアップグレード自身の Value を埋め込むプレースホルダ（`UpgradeDescriptionFormatter`）。GrantBuff型は数値がバフ側にあるため使えない
+- サービスアカウントを**編集者で共有**していないと 403 になる（マスターデータ側と同じ）
 
 ## シート構成の約束事（GASエクスポータと対応）
 

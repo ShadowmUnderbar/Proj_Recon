@@ -95,3 +95,4 @@ Art/**/__pycache__/
 # 最新の原本のみ Art/Latest/ に置いてLFSで追跡する
 !Art/Latest/*.blend
 !Art/Latest/**/*.blend
+.codex/config.toml
