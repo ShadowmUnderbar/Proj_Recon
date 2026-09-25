@@ -749,6 +749,15 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OpenUpgradeShop"",
+                    ""type"": ""Button"",
+                    ""id"": ""aea56b2e-e021-4288-b26d-8bd8d3b99e93"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -784,6 +793,39 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
                     ""action"": ""ShotModeMerge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Shift+U"",
+                    ""id"": ""f7f255e9-323b-43ef-8d4f-dbc29fbf1235"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenUpgradeShop"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""f4b4d393-b6f3-433f-b49e-757ad119406e"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenUpgradeShop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""3882c446-8c10-489d-9e70-d38ffff4a35e"",
+                    ""path"": ""<Keyboard>/u"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""OpenUpgradeShop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -815,6 +857,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         m_Debug_ShotModeNormal = m_Debug.FindAction("ShotModeNormal", throwIfNotFound: true);
         m_Debug_ShotModeWaltz = m_Debug.FindAction("ShotModeWaltz", throwIfNotFound: true);
         m_Debug_ShotModeMerge = m_Debug.FindAction("ShotModeMerge", throwIfNotFound: true);
+        m_Debug_OpenUpgradeShop = m_Debug.FindAction("OpenUpgradeShop", throwIfNotFound: true);
     }
 
     ~@GameMaininput()
@@ -1182,6 +1225,7 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Debug_ShotModeNormal;
     private readonly InputAction m_Debug_ShotModeWaltz;
     private readonly InputAction m_Debug_ShotModeMerge;
+    private readonly InputAction m_Debug_OpenUpgradeShop;
     /// <summary>
     /// Provides access to input actions defined in input action map "Debug".
     /// </summary>
@@ -1205,6 +1249,10 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Debug/ShotModeMerge".
         /// </summary>
         public InputAction @ShotModeMerge => m_Wrapper.m_Debug_ShotModeMerge;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/OpenUpgradeShop".
+        /// </summary>
+        public InputAction @OpenUpgradeShop => m_Wrapper.m_Debug_OpenUpgradeShop;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1240,6 +1288,9 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
             @ShotModeMerge.started += instance.OnShotModeMerge;
             @ShotModeMerge.performed += instance.OnShotModeMerge;
             @ShotModeMerge.canceled += instance.OnShotModeMerge;
+            @OpenUpgradeShop.started += instance.OnOpenUpgradeShop;
+            @OpenUpgradeShop.performed += instance.OnOpenUpgradeShop;
+            @OpenUpgradeShop.canceled += instance.OnOpenUpgradeShop;
         }
 
         /// <summary>
@@ -1260,6 +1311,9 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
             @ShotModeMerge.started -= instance.OnShotModeMerge;
             @ShotModeMerge.performed -= instance.OnShotModeMerge;
             @ShotModeMerge.canceled -= instance.OnShotModeMerge;
+            @OpenUpgradeShop.started -= instance.OnOpenUpgradeShop;
+            @OpenUpgradeShop.performed -= instance.OnOpenUpgradeShop;
+            @OpenUpgradeShop.canceled -= instance.OnOpenUpgradeShop;
         }
 
         /// <summary>
@@ -1455,5 +1509,12 @@ public partial class @GameMaininput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnShotModeMerge(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "OpenUpgradeShop" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnOpenUpgradeShop(InputAction.CallbackContext context);
     }
 }

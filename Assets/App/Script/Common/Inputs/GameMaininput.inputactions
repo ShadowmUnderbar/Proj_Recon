@@ -663,6 +663,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "OpenUpgradeShop",
+                    "type": "Button",
+                    "id": "aea56b2e-e021-4288-b26d-8bd8d3b99e93",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -698,6 +707,39 @@
                     "action": "ShotModeMerge",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "Shift+U",
+                    "id": "f7f255e9-323b-43ef-8d4f-dbc29fbf1235",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenUpgradeShop",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "f4b4d393-b6f3-433f-b49e-757ad119406e",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenUpgradeShop",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "3882c446-8c10-489d-9e70-d38ffff4a35e",
+                    "path": "<Keyboard>/u",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "OpenUpgradeShop",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }
