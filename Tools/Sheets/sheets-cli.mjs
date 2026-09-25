@@ -13,6 +13,7 @@
 //   node sheets-cli.mjs rename-sheet <旧シート名> <新シート名>
 //   node sheets-cli.mjs delete-columns <シート名> <列A1>[:<列A1>]  （例: X:Z）
 //   node sheets-cli.mjs delete-rows <シート名> <行番号>[:<行番号>]  （例: 104:106 / 単一なら 104）
+//   ※ 全コマンド共通: --spreadsheet <ID> で config.json 以外のスプレッドシートを対象にできる
 //
 // シート構成の前提（GASエクスポータ UpgradeDataExporter.gs と対応）:
 //   - データシート: Row1=スキーマ定義行（各セル「変数名,型」、ref@シート名 で参照）、Row2以降データ
@@ -346,7 +347,12 @@ async function main() {
     for (let i = 1; i < argv.length; i++) {
         if (argv[i] === '--json') flags.json = true;
         else if (argv[i] === '--schema') flags.schema = argv[++i];
+        else if (argv[i] === '--spreadsheet') flags.spreadsheet = argv[++i];
         else args.push(argv[i]);
+    }
+    // ID を書き忘れたまま config.json 側（マスターデータ）へ黙って書き込まないよう、空なら中断する
+    if ('spreadsheet' in flags && !flags.spreadsheet?.trim()) {
+        fail('--spreadsheet にスプレッドシートIDを指定してください');
     }
 
     const commands = {
@@ -371,7 +377,9 @@ async function main() {
     const config = loadConfig();
     const sheets = await createClient();
     try {
-        await commands[command](sheets, config.spreadsheetId, args, flags);
+        // --spreadsheet 指定時は config.json より優先（ローカライズ表など別スプレッドシート用）
+        const spreadsheetId = 'spreadsheet' in flags ? flags.spreadsheet : config.spreadsheetId;
+        await commands[command](sheets, spreadsheetId, args, flags);
     } catch (e) {
         fail(explainApiError(e));
     }
