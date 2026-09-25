@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using App.Battle.Interface.DataStore;
-using App.Common.Data;
+using App.Common.Data.Database;
+using App.Common.Data.MasterData;
 using UnityEngine;
 using VContainer;
 
@@ -10,27 +11,27 @@ namespace App.Battle.DataStore
     /// <summary>
     /// ウェーブ進行による敵強化倍率の算出。
     /// ウェーブ1を等倍とし、1ウェーブ進むごとにそのウェーブ帯の増加率を加算していく（線形）。
-    /// 増加率は WaveConfig のウェーブ帯テーブルで切り替えられるため、
-    /// 「5ウェーブ目からは伸びを急にする」といった調整をマスターデータ側で行える。
+    /// 増加率は WaveScalingData のウェーブ帯テーブルで切り替えられるため、
+    /// 「5ウェーブ目からは伸びを急にする」といった調整をスプレッドシート側で行える。
     /// </summary>
     public class EnemyWaveScalingCalculatorDataStore : IEnemyWaveScalingCalculatorDataStore
     {
         private readonly IWaveManagerDataStore _waveManagerDataStore;
 
         // 適用開始ウェーブの昇順に並べた段階一覧（区切りの算出が並び順に依存するため）
-        private readonly List<EnemyWaveScalingTier> _ascendingTiers;
+        private readonly List<WaveScalingMasterData> _ascendingTiers;
 
         [Inject]
         public EnemyWaveScalingCalculatorDataStore(
             IWaveManagerDataStore waveManagerDataStore,
-            WaveConfig waveConfig
+            WaveScalingDatabase waveScalingDatabase
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
 
-            _ascendingTiers = waveConfig.EnemyScalingTiers
+            _ascendingTiers = waveScalingDatabase.WaveScalingMasterData
                 .Where(tier => tier != null)
-                .OrderBy(tier => tier.FromWave)
+                .OrderBy(tier => tier.Wave)
                 .ToList();
         }
 
@@ -81,11 +82,11 @@ namespace App.Battle.DataStore
             for (var i = 0; i < _ascendingTiers.Count; i++)
             {
                 // ウェーブ1は等倍なので、増加が乗るのはウェーブ2以降
-                var fromWave = Mathf.Max(2, _ascendingTiers[i].FromWave);
+                var fromWave = Mathf.Max(2, _ascendingTiers[i].Wave);
 
                 // 次の段階の開始ウェーブの手前までがこの段階の担当区間
                 var toWave = i + 1 < _ascendingTiers.Count
-                    ? _ascendingTiers[i + 1].FromWave - 1
+                    ? _ascendingTiers[i + 1].Wave - 1
                     : currentWave;
                 toWave = Mathf.Min(toWave, currentWave);
 
@@ -95,8 +96,8 @@ namespace App.Battle.DataStore
                 }
 
                 var waveCount = toWave - fromWave + 1;
-                hpMultiplier += (double)_ascendingTiers[i].HpScalePerWave * waveCount;
-                damageMultiplier += (double)_ascendingTiers[i].DamageScalePerWave * waveCount;
+                hpMultiplier += (double)_ascendingTiers[i].HpBuff * waveCount;
+                damageMultiplier += (double)_ascendingTiers[i].AtkBuff * waveCount;
             }
 
             // 倍率が負になると値が反転するため下限を0で止める

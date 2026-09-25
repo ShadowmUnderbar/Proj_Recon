@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2857ec83dec89904c8015c57f9bb93cb, type: 3}
-  m_Name: WaveConfig
+  m_Script: {fileID: 11500000, guid: b70390130e5776d479baab0732565ed5, type: 3}
+  m_Name: WaveScaling1
   m_EditorClassIdentifier: 
-  _waveDurationSeconds: 60
-  _waveEnemyKillCount: 20
-  _maxWaveCount: 0
+  _id: 1
+  _wave: 1
+  _atkBuff: 0.05
+  _hpBuff: 0.1
