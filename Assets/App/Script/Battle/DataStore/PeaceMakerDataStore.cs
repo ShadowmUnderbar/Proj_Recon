@@ -13,7 +13,7 @@ namespace App.Battle.DataStore
     /// マージ／ワルツを撃つと連続数はリセットされる（＝フォームを混ぜればペナルティを回避できる）。
     /// レベルは累積せず、所持中の最高レベルのみを採用する。
     /// </summary>
-    public class PeaceMakerDataStore : IPeaceMakerDataStore
+    public class PeaceMakerDataStore : IPeaceMakerDataStore, IRunResettable
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
 
@@ -44,6 +44,11 @@ namespace App.Battle.DataStore
             return IsPenaltyShot(upgrade)
                 ? upgrade.Value3.value
                 : upgrade.Value2.value;
+        }
+
+        public void ResetRun()
+        {
+            _consecutiveNormalShotCount = 0;
         }
 
         public void NotifyShot(ShotType shotType)

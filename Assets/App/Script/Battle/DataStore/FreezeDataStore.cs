@@ -10,7 +10,7 @@ namespace App.Battle.DataStore
     /// 一時停止（フリーズ）の残り時間を管理する。
     /// 秒数は呼び出し側が指定し、0になった時点で自動的に解除する。
     /// </summary>
-    public class FreezeDataStore : IFreezeDataStore, ITickable, IDisposable
+    public class FreezeDataStore : IFreezeDataStore, IRunResettable, ITickable, IDisposable
     {
         private readonly ReactiveProperty<bool> _isFreezing = new(false);
         public ReadOnlyReactiveProperty<bool> IsFreezing => _isFreezing;
@@ -33,6 +33,11 @@ namespace App.Battle.DataStore
         {
             _remainingTime = 0f;
             _isFreezing.Value = false;
+        }
+
+        public void ResetRun()
+        {
+            Cancel();
         }
 
         public void Tick()

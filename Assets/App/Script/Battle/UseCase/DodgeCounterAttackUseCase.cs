@@ -19,7 +19,7 @@ namespace App.Battle.UseCase
     /// 接触した敵は扇形範囲外でも必ず攻撃対象に含める。
     /// スタンは「吹き飛ばしの移動時間＋フリーズ時間」で自動的に解除される。
     /// </summary>
-    public class DodgeCounterAttackUseCase : IInitializable, ITickable, IDisposable
+    public class DodgeCounterAttackUseCase : IRunResettable, IInitializable, ITickable, IDisposable
     {
 
         private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
@@ -213,6 +213,17 @@ namespace App.Battle.UseCase
             {
                 ApplyPendingDamage();
             }
+        }
+
+        public void ResetRun()
+        {
+            // 持ち越したダメージは前ランの敵Idを指しているため、与えずに破棄する。
+            // リセット中のフリーズ解除でApplyPendingDamageが先に走っても、
+            // ウェーブ間ポーズ中はダメージを通さないガードがあるため実害はない（ここは取りこぼしの保険）
+            _hasPendingDamage = false;
+            _pendingDamage = 0f;
+            _pendingDamageOrigin = Vector3.zero;
+            _pendingDamageEnemyIds.Clear();
         }
 
         /// <summary>

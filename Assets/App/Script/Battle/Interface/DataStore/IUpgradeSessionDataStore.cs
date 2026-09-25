@@ -24,6 +24,5 @@ namespace App.Battle.Interface.DataStore
         /// <summary>セット読込でラン開始時に最初から付与する（所持はするが新規獲得には数えない＝保存対象外）</summary>
         void Preload(UpgradeMasterData upgradeData);
 
-        void Reset();
     }
 }

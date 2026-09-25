@@ -54,6 +54,12 @@ namespace App.Battle.Presenters
             _playerView.SetAimTargets(leftTarget, rightTarget);
         }
 
+        public void PlayDeathAnimation() => _playerView.PlayDeathAnimation();
+
+        public bool IsDeathAnimationFinished => _playerView.IsDeathAnimationFinished;
+
+        public void ResetDeathAnimation() => _playerView.ResetDeathAnimation();
+
         public void MouseAim(Vector2 mousePos)
         {
             _playerView.MouseAim(mousePos);

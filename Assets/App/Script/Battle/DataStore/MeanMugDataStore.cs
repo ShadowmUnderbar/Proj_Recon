@@ -10,7 +10,7 @@ namespace App.Battle.DataStore
     /// 範囲外に出た敵は次のフレームで即座に効果外となる。
     /// レベルは累積せず、所持中の最高レベルのみを採用する。
     /// </summary>
-    public class MeanMugDataStore : IMeanMugDataStore
+    public class MeanMugDataStore : IMeanMugDataStore, IRunResettable
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
 
@@ -36,6 +36,11 @@ namespace App.Battle.DataStore
 
             radius = upgrade.Value2.value;
             return true;
+        }
+
+        public void ResetRun()
+        {
+            _gazedEnemyIds.Clear();
         }
 
         public void SetGazedEnemies(IReadOnlyList<int> gazedEnemyIds)

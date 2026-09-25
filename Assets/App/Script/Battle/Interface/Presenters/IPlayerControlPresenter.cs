@@ -24,6 +24,15 @@ namespace App.Battle.Interface
         void SetMoveAnimation(Vector2 dir);
         void SetModelFacing(Vector3 dir);
         void SetAimTargets(Vector3 leftTarget, Vector3 rightTarget);
+
+        /// <summary>死亡アニメを再生する。エイムIKを切って腕もアニメへ委ねる</summary>
+        void PlayDeathAnimation();
+
+        /// <summary>死亡アニメが最後まで再生されたか（未再生なら true）</summary>
+        bool IsDeathAnimationFinished { get; }
+
+        /// <summary>死亡アニメを解除し、通常の移動アニメ・エイムIKへ戻す</summary>
+        void ResetDeathAnimation();
         void Aim();
         void SetHandRayColor(HandType handType, Color color);
         void SetAimRayColor(HandType handType, Color color);

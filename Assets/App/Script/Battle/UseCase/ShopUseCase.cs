@@ -16,7 +16,7 @@ namespace App.Battle.UseCase
     /// ウェーブ突破（OnWaveAdvanced）でショップを開き、所持ポイントで買えるだけアップグレードを購入させ、
     /// 「次のウェーブへ」でショップを閉じてウェーブを再開する
     /// </summary>
-    public class ShopUseCase : IInitializable, IDisposable
+    public class ShopUseCase : IRunResettable, IInitializable, IDisposable
     {
         // ショップに並べるアップグレードの基本抽選数（目利きで加算される）
         private const int BaseUpgradeChoiceCount = 5;
@@ -169,6 +169,19 @@ namespace App.Battle.UseCase
             _shopPresenter.HideUpgradeButton(index);
 
             RefreshPurchasable();
+        }
+
+        public void ResetRun()
+        {
+            // ショップを開いたままゲームオーバーになった場合、閉じないとビルド選択UIに重なって残り、
+            // 生きている「次のウェーブへ」ボタンで選択中のままランが走り出してしまう
+            if (_isShopOpen)
+            {
+                _shopPresenter.Close();
+            }
+
+            _isShopOpen = false;
+            _currentCandidates.Clear();
         }
 
         private void StartNextWave()

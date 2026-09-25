@@ -11,7 +11,7 @@ namespace App.Battle.DataStore
     /// 当て続ける限り高速連射が維持され、外すと弱体状態に戻る。
     /// レベルは累積せず、所持中の最高レベルのみを採用する。
     /// </summary>
-    public class AvalancheDataStore : IAvalancheDataStore
+    public class AvalancheDataStore : IAvalancheDataStore, IRunResettable
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
 
@@ -42,6 +42,11 @@ namespace App.Battle.DataStore
             return _isPreviousMergeShotHit
                 ? upgrade.Value2.value
                 : upgrade.Value1.value;
+        }
+
+        public void ResetRun()
+        {
+            _isPreviousMergeShotHit = false;
         }
 
         public void NotifyShot(ShotType shotType)

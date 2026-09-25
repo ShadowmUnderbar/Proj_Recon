@@ -11,7 +11,7 @@ namespace App.Battle.DataStore
     /// <summary>
     /// 取得済みバフの実行時状態（発動条件の進行・残り効果時間）を管理する
     /// </summary>
-    public class BuffStateDataStore : IBuffStateDataStore, ITickable
+    public class BuffStateDataStore : IBuffStateDataStore, IRunResettable, ITickable
     {
         private class BuffState
         {
@@ -282,7 +282,7 @@ namespace App.Battle.DataStore
             return result;
         }
 
-        public void Reset()
+        public void ResetRun()
         {
             _buffStates.Clear();
             _currentHealthRatio = 1f;
