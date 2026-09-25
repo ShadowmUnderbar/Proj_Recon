@@ -26,17 +26,17 @@ Material:
     m_Ints: []
     m_Floats:
     - _BarrierFill: 0
-    - _BarrierThickness: 0.06
     - _BarrierOuterRadius: 0.99
+    - _BarrierThickness: 0.3
     - _BarrierVisible: 0
     - _BlinkFrequency: 2
     - _BlinkMinAlpha: 0.3
     - _HealthFill: 1
-    - _HealthThickness: 0.26
-    - _HealthOuterRadius: 0.9
+    - _HealthOuterRadius: 0.7
+    - _HealthThickness: 0.3
     - _LowHealthThreshold: 0.3
     m_Colors:
-    - _BarrierColor: {r: 0.34999996, g: 0.8, b: 1, a: 0.9}
+    - _BarrierColor: {r: 0, g: 0.3137077, b: 0.4528302, a: 1}
     - _HealthColor: {r: 0.29999998, g: 1, b: 0.54999995, a: 0.9}
     - _LowHealthColor: {r: 1, g: 0.24999997, b: 0.19999996, a: 0.95}
     - _TrackColor: {r: 0, g: 0, b: 0, a: 0.4}
