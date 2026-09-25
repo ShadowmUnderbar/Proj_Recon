@@ -41,10 +41,7 @@ namespace App.Battle.UseCase
         // 今回のショップの候補。購入済みの枠は null にしてインデックス（＝ボタンの並び）を保つ
         private readonly List<UpgradeMasterData> _currentCandidates = new();
 
-        // ショップ表示中か。表示中だけ所持ポイントの変化をUIへ反映する
-        private bool _isShopOpen;
-
-        /// <summary>ショップを開いている間だけ手の入力をViewへ流す</summary>
+        // ショップ表示中か。表示中だけ所持ポイントの変化をUIへ反映し、手の入力をViewへ流す
         private bool _isShopOpen;
 
         [Inject]
@@ -103,7 +100,6 @@ namespace App.Battle.UseCase
             // ショップ中はグラブ・トリガーをカード操作に使うため、フォーカスの切り替えは止める
             _gameInputDataStore.SetFocusInputEnable(false);
 
-            _isShopOpen = true;
             RefreshPurchasable();
 
             // UI表示中だけボタン選択用のハンドレイを出す
@@ -197,7 +193,8 @@ namespace App.Battle.UseCase
         }
 
         /// <summary>
-        /// 掴み用の入力をViewへ送る。カードを使わない場合（非VR）はView側で無視される
+        /// カード操作用の入力をViewへ送る。VRは手の姿勢とグラブ・トリガー、非VRはマウスを送り、
+        /// カードを並べられずCanvasへフォールバックした場合はView側で無視される
         /// </summary>
         public void Tick()
         {
@@ -223,7 +220,6 @@ namespace App.Battle.UseCase
         {
             _isShopOpen = false;
             _currentCandidates.Clear();
-            _currentCandidates = null;
             _gameInputDataStore.SetFocusInputEnable(true);
             _shopPresenter.Close();
             _playerControlPresenter.SetUiRayEnable(false);
