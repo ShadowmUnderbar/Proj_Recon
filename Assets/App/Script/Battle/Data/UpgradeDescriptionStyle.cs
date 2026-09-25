@@ -3,8 +3,8 @@ using UnityEngine;
 namespace App.Battle.Data
 {
     /// <summary>
-    /// アップグレード詳細説明の効果値の装飾設定。
-    /// 値の ParameterType が強化（Positive）/弱化（Negative）のとき、埋め込んだ数値をこの色の太字で表示する
+    /// 強化/弱化効果の文字色の設定（EffectTextStyler が使う）。
+    /// アップグレード説明の効果値（ParameterType が Positive/Negative）と、文言中の &lt;p&gt;/&lt;n&gt; タグをこの色で表示する
     /// </summary>
     [CreateAssetMenu(fileName = "UpgradeDescriptionStyle", menuName = "Config/UpgradeDescriptionStyle")]
     public class UpgradeDescriptionStyle : ScriptableObject

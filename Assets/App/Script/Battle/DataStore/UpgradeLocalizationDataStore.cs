@@ -35,7 +35,7 @@ namespace App.Battle.DataStore
         private int _loadGeneration;
         private bool _isDisposed;
 
-        // 詳細説明の効果値の装飾（強化=青・弱化=赤の太字など）
+        // 強化/弱化効果の文字色（効果値と <p>/<n> タグに使う）
         private readonly UpgradeDescriptionStyle _descriptionStyle;
 
         [Inject]
@@ -59,11 +59,13 @@ namespace App.Battle.DataStore
 
             var nameKey = upgrade.NameKey;
             var descriptionTemplate = GetString(UpgradeLocalizationKey.Description(nameKey));
+            var description = UpgradeDescriptionFormatter.Format(descriptionTemplate, upgrade, _descriptionStyle);
 
+            // 簡略説明・詳細説明は文言中の <p>/<n> を強化/弱化色に置き換える（タイトル・レベル表記は現状対象外）
             return new UpgradeLocalizedText(
                 GetString(UpgradeLocalizationKey.Title(nameKey)),
-                GetString(UpgradeLocalizationKey.SimpleDescription(nameKey)),
-                UpgradeDescriptionFormatter.Format(descriptionTemplate, upgrade, _descriptionStyle),
+                EffectTextStyler.ApplyEffectTags(GetString(UpgradeLocalizationKey.SimpleDescription(nameKey)), _descriptionStyle),
+                EffectTextStyler.ApplyEffectTags(description, _descriptionStyle),
                 GetString(UpgradeLocalizationKey.Level(upgrade.Level))
             );
         }

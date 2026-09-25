@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using App.Battle.Data;
 using App.Common.Data;
 using App.Common.Data.MasterData;
-using UnityEngine;
 
 namespace App.Battle.DataStore
 {
@@ -112,7 +111,7 @@ namespace App.Battle.DataStore
         /// <param name="template">ローカライズ表の詳細説明（{valueN} を含む）</param>
         /// <param name="upgrade">値の埋め込み元</param>
         /// <param name="style">
-        /// 値の装飾設定。指定すると ParameterType が強化/弱化の値を色付きの太字（TextMeshPro のリッチテキスト）にする。
+        /// 値の装飾設定。指定すると ParameterType が強化/弱化の値を色付き（TextMeshPro のリッチテキスト）にする。
         /// null なら装飾せず数値だけを埋め込む
         /// </param>
         public static string Format(string template, UpgradeMasterData upgrade, UpgradeDescriptionStyle style = null)
@@ -132,13 +131,9 @@ namespace App.Battle.DataStore
 
                 var (value, parameterType) = GetValue(upgrade, i);
                 var displayValue = ToDisplayString(value, formats[i]);
-                var colorTag = GetColorTag(parameterType, style);
 
                 result = PlaceholderPatterns[i].Replace(result, match =>
-                {
-                    var text = displayValue + match.Groups[1].Value;
-                    return colorTag == null ? text : $"<b><color={colorTag}>{text}</color></b>";
-                });
+                    EffectTextStyler.Colorize(displayValue + match.Groups[1].Value, parameterType, style));
             }
 
             return result;
@@ -154,22 +149,6 @@ namespace App.Battle.DataStore
             }
 
             return patterns;
-        }
-
-        // 強化/弱化なら色コード（#RRGGBBAA）、それ以外（None・装飾設定なし）は null＝装飾しない
-        private static string GetColorTag(ParameterType parameterType, UpgradeDescriptionStyle style)
-        {
-            if (style == null)
-            {
-                return null;
-            }
-
-            return parameterType switch
-            {
-                ParameterType.Positive => "#" + ColorUtility.ToHtmlStringRGBA(style.PositiveColor),
-                ParameterType.Negative => "#" + ColorUtility.ToHtmlStringRGBA(style.NegativeColor),
-                _ => null
-            };
         }
 
         private static (float value, ParameterType parameterType) GetValue(UpgradeMasterData upgrade, int index) => index switch
