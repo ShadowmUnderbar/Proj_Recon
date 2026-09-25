@@ -55,24 +55,488 @@ MonoBehaviour:
     m_Key: $BaseFireRate
     m_Metadata:
       m_Items: []
-  - m_Id: 10454283954380804
-    m_Key: $BaseFireRate
+  - m_Id: 73184814558830592
+    m_Key: $BaseFireRate_SimpleDesc
     m_Metadata:
       m_Items: []
-  - m_Id: 10454283954380804
-    m_Key: $BaseFireRate
-    m_Metadata:
-      m_Items: []
-  - m_Id: 10454283954380805
-    m_Key: $Health
+  - m_Id: 73184814604967936
+    m_Key: $BaseFireRate_Desc
     m_Metadata:
       m_Items: []
   - m_Id: 10454283954380805
     m_Key: $Health
     m_Metadata:
       m_Items: []
-  - m_Id: 10454283954380805
-    m_Key: $Health
+  - m_Id: 73184814604967937
+    m_Key: $Health_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967938
+    m_Key: $Health_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967939
+    m_Key: $Level4_Upgrade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967940
+    m_Key: $Level5_Upgrade
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967941
+    m_Key: $ComboAttackUp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967942
+    m_Key: $ComboAttackUp_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967943
+    m_Key: $ComboAttackUp_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967944
+    m_Key: $LowHealthAttackUp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967945
+    m_Key: $LowHealthAttackUp_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967946
+    m_Key: $LowHealthAttackUp_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967947
+    m_Key: $Multitasking
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967948
+    m_Key: $Multitasking_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967949
+    m_Key: $Multitasking_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967950
+    m_Key: $ExcessiveIntimidation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967951
+    m_Key: $ExcessiveIntimidation_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967952
+    m_Key: $ExcessiveIntimidation_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967953
+    m_Key: $Bullseye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967954
+    m_Key: $Bullseye_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356544
+    m_Key: $Bullseye_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356545
+    m_Key: $Rage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356546
+    m_Key: $Rage_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356547
+    m_Key: $Rage_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356548
+    m_Key: $Barrier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356549
+    m_Key: $Barrier_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356550
+    m_Key: $Barrier_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356551
+    m_Key: $NormalDamageUp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356552
+    m_Key: $NormalDamageUp_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356553
+    m_Key: $NormalDamageUp_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356554
+    m_Key: $WaltzDamageUp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356555
+    m_Key: $WaltzDamageUp_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356556
+    m_Key: $WaltzDamageUp_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356557
+    m_Key: $MergeDamageUp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356558
+    m_Key: $MergeDamageUp_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356559
+    m_Key: $MergeDamageUp_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356560
+    m_Key: $ChokePoint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356561
+    m_Key: $ChokePoint_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356562
+    m_Key: $ChokePoint_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356563
+    m_Key: $BigMouse
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356564
+    m_Key: $BigMouse_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356565
+    m_Key: $BigMouse_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356566
+    m_Key: $Diversion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356567
+    m_Key: $Diversion_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356568
+    m_Key: $Diversion_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356569
+    m_Key: $GiantKilling
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356570
+    m_Key: $GiantKilling_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356571
+    m_Key: $GiantKilling_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356572
+    m_Key: $Dopamine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356573
+    m_Key: $Dopamine_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356574
+    m_Key: $Dopamine_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356575
+    m_Key: $Adrenalin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356576
+    m_Key: $Adrenalin_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356577
+    m_Key: $Adrenalin_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356578
+    m_Key: $PeaceMaker
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356579
+    m_Key: $PeaceMaker_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356580
+    m_Key: $PeaceMaker_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356581
+    m_Key: $Avalanche
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356582
+    m_Key: $Avalanche_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356583
+    m_Key: $Avalanche_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356584
+    m_Key: $LuckyChance
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356585
+    m_Key: $LuckyChance_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356586
+    m_Key: $LuckyChance_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356587
+    m_Key: $KillingCall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356588
+    m_Key: $KillingCall_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356589
+    m_Key: $KillingCall_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356590
+    m_Key: $TurnTable
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356591
+    m_Key: $TurnTable_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356592
+    m_Key: $TurnTable_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356593
+    m_Key: $SnakeEyes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356594
+    m_Key: $SnakeEyes_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356595
+    m_Key: $SnakeEyes_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356596
+    m_Key: $Medusa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356597
+    m_Key: $Medusa_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356598
+    m_Key: $Medusa_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356599
+    m_Key: $MeanMug
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356600
+    m_Key: $MeanMug_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356601
+    m_Key: $MeanMug_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356602
+    m_Key: $DependencyNodeAlpha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356603
+    m_Key: $DependencyNodeAlpha_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356604
+    m_Key: $DependencyNodeAlpha_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356605
+    m_Key: $DependencyNodeBeta
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356606
+    m_Key: $DependencyNodeBeta_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356607
+    m_Key: $DependencyNodeBeta_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356608
+    m_Key: $DependencyNodeGamma
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356609
+    m_Key: $DependencyNodeGamma_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356610
+    m_Key: $DependencyNodeGamma_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356611
+    m_Key: $DamageNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356612
+    m_Key: $DamageNode_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356613
+    m_Key: $DamageNode_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356614
+    m_Key: $CareNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356615
+    m_Key: $CareNode_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356616
+    m_Key: $CareNode_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356617
+    m_Key: $EmergencyNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356618
+    m_Key: $EmergencyNode_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356619
+    m_Key: $EmergencyNode_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356620
+    m_Key: $CounterStep
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356621
+    m_Key: $CounterStep_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356622
+    m_Key: $CounterStep_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356623
+    m_Key: $Appraisal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356624
+    m_Key: $Appraisal_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356625
+    m_Key: $Appraisal_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356626
+    m_Key: $Fixation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356627
+    m_Key: $Fixation_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356628
+    m_Key: $Fixation_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356629
+    m_Key: $ElectricShock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356630
+    m_Key: $ElectricShock_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356631
+    m_Key: $ElectricShock_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356632
+    m_Key: $ExtraConflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356633
+    m_Key: $ExtraConflict_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356634
+    m_Key: $ExtraConflict_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356635
+    m_Key: $FocusConflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356636
+    m_Key: $FocusConflict_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356637
+    m_Key: $FocusConflict_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356638
+    m_Key: $MergeConflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356639
+    m_Key: $MergeConflict_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356640
+    m_Key: $MergeConflict_Desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356641
+    m_Key: $WaltzConflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356642
+    m_Key: $WaltzConflict_SimpleDesc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356643
+    m_Key: $WaltzConflict_Desc
     m_Metadata:
       m_Items: []
   m_Metadata:

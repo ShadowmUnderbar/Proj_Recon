@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 3707760238593
-    m_Localized: Base attack power increases by {value1}%
+    m_Localized: The base value of attack power increases by {value1}%.
     m_Metadata:
       m_Items: []
   - m_Id: 3707760238592
@@ -55,11 +55,517 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 10454283954380804
+    m_Localized: rate of fire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814558830592
+    m_Localized: The rate of fire will be improved.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967936
     m_Localized: The base rate of fire increases by {value1}%.
     m_Metadata:
       m_Items: []
   - m_Id: 10454283954380805
+    m_Localized: Maximum HP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967937
+    m_Localized: Maximum HP increases
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967938
     m_Localized: Maximum HP increases by {value1}%
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967939
+    m_Localized: -Level4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967940
+    m_Localized: -Level5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967941
+    m_Localized: Combo Attack Up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967942
+    m_Localized: Consecutive hits raise attack power
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967943
+    m_Localized: Every 10 hits, attack power increases by 10% for 5 seconds.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967944
+    m_Localized: Low HP Attack Up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967945
+    m_Localized: Attack power rises when HP is low
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967946
+    m_Localized: While HP is below 30%, attack power increases by 50%.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967947
+    m_Localized: Multitasking
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967948
+    m_Localized: Hitting different enemies raises your rate of fire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967949
+    m_Localized: Each hit on a different enemy than the last raises your rate of
+      fire (up to a limit). Hitting the same enemy repeatedly resets it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967950
+    m_Localized: Excessive Intimidation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967951
+    m_Localized: The bullet gets bigger
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967952
+    m_Localized: Bullet size increases by {value1}%.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967953
+    m_Localized: Bullseye
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814604967954
+    m_Localized: Damage rises the more enemies a bullet pierces
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356544
+    m_Localized: Each time a single bullet pierces a set number of enemies, its damage
+      to the following enemies increases.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356545
+    m_Localized: Rage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356546
+    m_Localized: Taking damage raises attack power
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356547
+    m_Localized: When hit, attack power increases by 20% for a duration based on
+      the damage taken.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356548
+    m_Localized: Barrier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356549
+    m_Localized: Gain a barrier that blocks damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356550
+    m_Localized: Gain a barrier equal to {value1}% of maximum HP.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356551
+    m_Localized: Normal Shot Damage Up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356552
+    m_Localized: Normal shot damage increases
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356553
+    m_Localized: Normal shot damage increases by {value1}%.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356554
+    m_Localized: Waltz Shot Damage Up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356555
+    m_Localized: Waltz shot damage increases
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356556
+    m_Localized: Waltz shot damage increases by {value1}%.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356557
+    m_Localized: Merge Shot Damage Up
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356558
+    m_Localized: Merge shot damage increases
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356559
+    m_Localized: Merge shot damage increases by {value1}%.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356560
+    m_Localized: Choke Point
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356561
+    m_Localized: Enemies tend to spawn close together
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356562
+    m_Localized: There is a {value1}% chance that an enemy spawns near the previously
+      spawned enemy.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356563
+    m_Localized: Big Mouth
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356564
+    m_Localized: Rush enemies appear more often
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356565
+    m_Localized: There is a {value1}% chance that a rush enemy appears in place of
+      a minor enemy.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356566
+    m_Localized: Diversion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356567
+    m_Localized: Enemies tend to spawn from where you have been defeating them
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356568
+    m_Localized: After defeating several enemies, there is a {value1}% chance that
+      the next enemy spawns from that direction.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356569
+    m_Localized: Giant Killing
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356570
+    m_Localized: Defeating enemies restores HP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356571
+    m_Localized: Defeating a minor enemy restores {value1} HP, and defeating a major
+      enemy restores {value2} HP.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356572
+    m_Localized: Dopamine
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356573
+    m_Localized: Switching forms between kills raises your rate of fire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356574
+    m_Localized: Defeating an enemy with a different form than the last raises your
+      rate of fire, and more so if it differs from the last two. Defeating with the
+      same form resets it.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356575
+    m_Localized: Adrenaline
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356576
+    m_Localized: The lower your HP, the less damage you take
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356577
+    m_Localized: Damage taken is reduced in proportion to the HP you have lost.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356578
+    m_Localized: Peacemaker
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356579
+    m_Localized: Normal shots fire faster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356580
+    m_Localized: Normal shot cooldown becomes {value2}x. However, after {value1}
+      consecutive normal shots, the next shot's cooldown becomes {value3}x.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356581
+    m_Localized: Avalanche
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356582
+    m_Localized: Keep landing merge shots to fire them faster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356583
+    m_Localized: Merge shot cooldown becomes {value1}x. However, if the previous
+      merge shot hit, the next one becomes {value2}x.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356584
+    m_Localized: Lucky Chance
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356585
+    m_Localized: Attacks can land critical hits
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356586
+    m_Localized: Attacks have a {value1}% chance to be critical hits (+100% damage).
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356587
+    m_Localized: Killing Call
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356588
+    m_Localized: Higher critical chance against your focus target
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356589
+    m_Localized: When a focus shot first hits the focus target, it has a {value1}%
+      chance to be a critical hit.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356590
+    m_Localized: Turntable
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356591
+    m_Localized: The lower your HP, the higher your critical chance
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356592
+    m_Localized: Critical chance increases with the HP you have lost (up to {value1}%
+      near 0 HP).
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356593
+    m_Localized: Snake Eyes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356594
+    m_Localized: Enemies you look at slow down
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356595
+    m_Localized: Enemies at the center of your view (within {value2}m) move at {value1}x
+      speed. The effect lasts {value3} seconds after you look away.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356596
+    m_Localized: Medusa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356597
+    m_Localized: Strong enemies you look at are stunned
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356598
+    m_Localized: Major, boss and irregular enemies at the center of your view (within
+      {value2}m) are stunned for {value1} seconds (once per enemy).
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356599
+    m_Localized: Mean Mug
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356600
+    m_Localized: Deal more damage to enemies you look at
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356601
+    m_Localized: Damage dealt to enemies at the center of your view (within {value2}m)
+      becomes {value1}x.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356602
+    m_Localized: "Dependency Node \u03B1"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356603
+    m_Localized: Strengthens other nodes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356604
+    m_Localized: Has no effect on its own. The more kinds of dependency nodes you
+      hold, the stronger your other nodes become.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356605
+    m_Localized: "Dependency Node \u03B2"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356606
+    m_Localized: Strengthens other nodes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356607
+    m_Localized: Has no effect on its own. The more kinds of dependency nodes you
+      hold, the stronger your other nodes become.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356608
+    m_Localized: "Dependency Node \u03B3"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356609
+    m_Localized: Strengthens other nodes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356610
+    m_Localized: Has no effect on its own. The more kinds of dependency nodes you
+      hold, the stronger your other nodes become.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356611
+    m_Localized: Damage Node
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356612
+    m_Localized: Attack power rises with each dependency node
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356613
+    m_Localized: Attack power increases by {value1}% per active dependency node type.
+      With no dependency nodes, attack power becomes {value2}x.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356614
+    m_Localized: Care Node
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356615
+    m_Localized: Continuously restores HP for each dependency node
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356616
+    m_Localized: Restores {value1}% of maximum HP per second per active dependency
+      node type. With no dependency nodes, you take {value2}% of maximum HP (at least
+      {value3}) as damage per second.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356617
+    m_Localized: Emergency Node
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356618
+    m_Localized: Sacrifice a dependency node to survive a fatal blow
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356619
+    m_Localized: When you would take fatal damage, one dependency node is disabled
+      to negate it, and HP is restored to {value1}% of maximum.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356620
+    m_Localized: Counter Step
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356621
+    m_Localized: Attack power rises right after dodging
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356622
+    m_Localized: For a few seconds after dodging, attack power increases.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356623
+    m_Localized: Appraisal
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356624
+    m_Localized: More choices in the shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356625
+    m_Localized: The number of upgrade choices in the shop increases by {value1}.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356626
+    m_Localized: Fixation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356627
+    m_Localized: Upgrades you own appear more often
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356628
+    m_Localized: Upgrades you already own are more likely to appear as shop choices.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356629
+    m_Localized: Electric Shock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356630
+    m_Localized: Waltz shot damage spreads to nearby enemies
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356631
+    m_Localized: When a waltz shot hits, nearby enemies also take {value2}% of the
+      damage.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356632
+    m_Localized: Ex Conflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356633
+    m_Localized: Seal everything but normal shots for a big boost
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356634
+    m_Localized: Waltz, merge, focus and dual wielding are sealed. In exchange, damage
+      becomes {value1}x and cooldown becomes {value2}x.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356635
+    m_Localized: Focus Conflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356636
+    m_Localized: Seal focus for a boost
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356637
+    m_Localized: Focus is sealed. In exchange, damage becomes {value1}x and cooldown
+      becomes {value2}x.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356638
+    m_Localized: Merge Conflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356639
+    m_Localized: Seal merge to raise damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356640
+    m_Localized: Merge is sealed. In exchange, damage becomes {value1}x.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356641
+    m_Localized: Waltz Conflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356642
+    m_Localized: Seal waltz to fire faster
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73184814613356643
+    m_Localized: Waltz is sealed. In exchange, cooldown becomes {value2}x.
     m_Metadata:
       m_Items: []
   references:
