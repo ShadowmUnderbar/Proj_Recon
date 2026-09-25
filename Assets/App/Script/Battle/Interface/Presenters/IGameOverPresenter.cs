@@ -7,8 +7,8 @@ namespace App.Battle.Interface
         /// <summary>保存スロットボタン押下（押されたスロット番号 0〜2）</summary>
         Observable<int> OnSaveSlotSelected { get; }
 
-        /// <summary>「セーブせずに終了」ボタン押下</summary>
-        Observable<Unit> OnExitWithoutSave { get; }
+        /// <summary>「リスタート」ボタン押下</summary>
+        Observable<Unit> OnRestart { get; }
 
         void Show(string headline);
         void SetSlotLabel(int index, string label);

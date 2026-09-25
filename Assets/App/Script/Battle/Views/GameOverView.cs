@@ -1,13 +1,15 @@
 using App.Battle.Interface;
 using R3;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace App.Battle.Views
 {
     /// <summary>
     /// ゲームオーバー画面（最小実装）。
-    /// ランで獲得したアップグレードをスロット1〜3のいずれかに保存するボタンを表示する。
+    /// ランで獲得したアップグレードをスロット1〜3のいずれかに保存するボタンと、
+    /// ビルド選択からやり直すリスタートボタンを表示する。
     /// </summary>
     public class GameOverView : MonoBehaviour, IGameOverView
     {
@@ -26,14 +28,15 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("各スロットボタンのラベル（_slotButtonsと同数・同順）")]
         private Text[] _slotButtonLabels;
 
-        [SerializeField, Tooltip("セーブせずに終了ボタン")]
-        private Button _exitButton;
+        [FormerlySerializedAs("_exitButton")]
+        [SerializeField, Tooltip("リスタートボタン（押すまでに保存していなければ保存せずやり直す）")]
+        private Button _restartButton;
 
         private readonly Subject<int> _onSaveSlotSelected = new();
         public Observable<int> OnSaveSlotSelected => _onSaveSlotSelected;
 
-        private readonly Subject<Unit> _onExitWithoutSave = new();
-        public Observable<Unit> OnExitWithoutSave => _onExitWithoutSave;
+        private readonly Subject<Unit> _onRestart = new();
+        public Observable<Unit> OnRestart => _onRestart;
 
         private void Awake()
         {
@@ -43,9 +46,9 @@ namespace App.Battle.Views
                 _slotButtons[i].onClick.AddListener(() => _onSaveSlotSelected.OnNext(index));
             }
 
-            if (_exitButton != null)
+            if (_restartButton != null)
             {
-                _exitButton.onClick.AddListener(() => _onExitWithoutSave.OnNext(Unit.Default));
+                _restartButton.onClick.AddListener(() => _onRestart.OnNext(Unit.Default));
             }
 
             // 初期状態は非表示
@@ -93,7 +96,7 @@ namespace App.Battle.Views
         private void OnDestroy()
         {
             _onSaveSlotSelected.Dispose();
-            _onExitWithoutSave.Dispose();
+            _onRestart.Dispose();
         }
     }
 }

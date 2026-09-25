@@ -17,6 +17,8 @@ namespace App.Battle.UseCase
     /// <summary>
     /// ラン開始時にセット選択UIを出し、選択されたスロットのアップグレードを最初から装備してランを開始する。
     /// 選択中はゲームを停止（IsWavePause=true）し、選択完了で解除してウェーブ1を開始する。
+    /// 表示のきっかけは <see cref="IRunStartDataStore.IsSelecting"/> なので、
+    /// ゲームオーバーからのリスタート（RunResetUseCase）でも同じ導線で選択画面へ戻れる。
     /// </summary>
     public class RunStartUseCase : IInitializable, IDisposable
     {
@@ -66,11 +68,21 @@ namespace App.Battle.UseCase
                 .Subscribe(_ => StartRun())
                 .AddTo(_disposable);
 
+            // 選択開始のたびにUIを出す。シーン開始時もリスタート時もここを通る
+            _runStartDataStore.IsSelecting
+                .Where(isSelecting => isSelecting)
+                .Subscribe(_ => OnBeginSelecting())
+                .AddTo(_disposable);
+
+            _runStartDataStore.SetSelecting(true);
+        }
+
+        /// <summary>セット選択の開始。ゲームを止めてスロット一覧を表示する</summary>
+        private void OnBeginSelecting()
+        {
             // デバッグ用: エディタで選択したアップグレードを最初から所持させる
             ApplyDebugStartUpgrades();
 
-            // ラン開始時はゲームを止めてセット選択を待つ
-            _runStartDataStore.SetSelecting(true);
             _waveManagerDataStore.SetWavePause(true);
 
             _runStartPresenter.Show("セット選択\nスロットを選ぶと最初から装備で開始 / 使わずに開始も可");

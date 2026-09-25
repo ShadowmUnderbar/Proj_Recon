@@ -11,6 +11,7 @@ namespace App.Battle.UseCase
     /// <summary>
     /// プレイヤーHPが0になったらゲームオーバーにし、ゲームオーバー画面を表示する。
     /// 画面のスロット保存ボタンで、そのランで獲得したアップグレードをメタ進行スロットへ保存する。
+    /// 保存は何度でも行え、リスタートボタンでラン状態を初期化してビルド選択へ戻る。
     /// </summary>
     public class GameOverUseCase : IInitializable, IDisposable
     {
@@ -21,6 +22,7 @@ namespace App.Battle.UseCase
         private readonly IMetaProgressionDataStore _metaProgressionDataStore;
         private readonly IGameOverPresenter _gameOverPresenter;
         private readonly IPlayerControlPresenter _playerControlPresenter;
+        private readonly RunResetUseCase _runResetUseCase;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -32,7 +34,8 @@ namespace App.Battle.UseCase
             IUpgradeSessionDataStore upgradeSessionDataStore,
             IMetaProgressionDataStore metaProgressionDataStore,
             IGameOverPresenter gameOverPresenter,
-            IPlayerControlPresenter playerControlPresenter
+            IPlayerControlPresenter playerControlPresenter,
+            RunResetUseCase runResetUseCase
         )
         {
             _playerStateDataStore = playerStateDataStore;
@@ -42,6 +45,7 @@ namespace App.Battle.UseCase
             _metaProgressionDataStore = metaProgressionDataStore;
             _gameOverPresenter = gameOverPresenter;
             _playerControlPresenter = playerControlPresenter;
+            _runResetUseCase = runResetUseCase;
         }
 
         public void Initialize()
@@ -52,14 +56,14 @@ namespace App.Battle.UseCase
                 .Subscribe(_ => OnPlayerDead())
                 .AddTo(_disposable);
 
-            // スロット保存ボタン（保存して終了）
+            // スロット保存ボタン（画面は開いたままなので、続けて別スロットへも保存できる）
             _gameOverPresenter.OnSaveSlotSelected
                 .Subscribe(OnSaveSlotSelected)
                 .AddTo(_disposable);
 
-            // セーブせずに終了ボタン
-            _gameOverPresenter.OnExitWithoutSave
-                .Subscribe(_ => OnExitWithoutSave())
+            // リスタートボタン
+            _gameOverPresenter.OnRestart
+                .Subscribe(_ => OnRestart())
                 .AddTo(_disposable);
         }
 
@@ -77,7 +81,7 @@ namespace App.Battle.UseCase
 
             // 保存対象はそのランで新たに獲得した分のみ（セット読込で最初から持っていた分は除外）
             var acquiredCount = _upgradeSessionDataStore.NewlyAcquiredUpgrades.Count;
-            _gameOverPresenter.Show($"GAME OVER\n獲得アップグレード: {acquiredCount}個\nスロットに上書き保存、またはセーブせずに終了");
+            _gameOverPresenter.Show($"GAME OVER\n獲得アップグレード: {acquiredCount}個\nスロットに上書き保存してからリスタート");
 
             RefreshAllSlotLabels();
 
@@ -90,7 +94,7 @@ namespace App.Battle.UseCase
             }
         }
 
-        // スロットへ上書き保存して終了する
+        // スロットへ上書き保存する。画面は閉じないので、保存先を選び直してからリスタートできる
         private void OnSaveSlotSelected(int slotIndex)
         {
             if (!_gameStateDataStore.IsGameOver.CurrentValue)
@@ -103,26 +107,24 @@ namespace App.Battle.UseCase
 
             _metaProgressionDataStore.SaveToSlot(slotIndex, ids, clearedWave);
 
-            // 保存もセーブせず終了も同じ終了フロー（画面を閉じる）。
-            // 閉じた後のリスタート等はPhase2で対応する
-            CloseGameOver();
+            // 保存結果をラベル（現在: 〜）と状態テキストの両方に反映する
+            RefreshAllSlotLabels();
+            _gameOverPresenter.SetStatus($"スロット{slotIndex + 1}に保存しました（{ids.Count}個 / Wave{clearedWave}）");
         }
 
-        // セーブせずに終了する
-        private void OnExitWithoutSave()
+        // ラン状態を初期化してビルド選択からやり直す
+        private void OnRestart()
         {
             if (!_gameStateDataStore.IsGameOver.CurrentValue)
             {
                 return;
             }
 
-            CloseGameOver();
-        }
-
-        private void CloseGameOver()
-        {
             _gameOverPresenter.Hide();
             _playerControlPresenter.SetUiRayEnable(false);
+
+            // リセット後のビルド選択UIの表示・ハンドレイの再有効化はRunStartUseCaseが行う
+            _runResetUseCase.ResetRun();
         }
 
         private void RefreshAllSlotLabels()
