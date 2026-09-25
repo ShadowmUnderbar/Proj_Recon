@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using App.Battle.Data;
 using App.Battle.Interface;
+using App.Common.Data;
 using App.Common.Data.MasterData;
 using R3;
 using UnityEngine;
@@ -9,7 +11,12 @@ namespace App.Battle.Views
 {
     /// <summary>
     /// ウェーブ間に表示するショップUI（仮組み）
-    /// アップグレード候補ボタンと「次のウェーブへ」ボタンを表示する
+    /// アップグレード候補と「次のウェーブへ」ボタンを表示する。
+    ///
+    /// 候補は3Dカード（<see cref="UpgradeCardBoardView"/>）で提示する。VRでは掴んで内容を確認して
+    /// トリガーで確定させ、非VR（PC/エディタ）ではマウスで狙ってクリックした時点で確定する。
+    /// カードを並べられなかったときだけ従来どおりCanvasのボタンで選ばせる。
+    /// 「次のウェーブへ」ボタンはどちらの場合もCanvas側をそのまま使う
     /// </summary>
     public class ShopView : MonoBehaviour, IShopView
     {
@@ -28,11 +35,20 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("所持ポイントの表示")]
         private Text _currentPointLabel;
 
+        [SerializeField, Tooltip("アップグレード候補を並べる3Dカードのボード")]
+        private UpgradeCardBoardView _upgradeCardBoardView;
+
+        [SerializeField, Tooltip("背景パネル。3Dカードを出すときは手前に被らないよう隠す")]
+        private Graphic _panelBackground;
+
         private readonly Subject<int> _onUpgradeSelected = new();
         public Observable<int> OnUpgradeSelected => _onUpgradeSelected;
 
         private readonly Subject<Unit> _onNextWavePressed = new();
         public Observable<Unit> OnNextWavePressed => _onNextWavePressed;
+
+        /// <summary>3Dカードで候補を出しているか（VRかつボードが設定されている場合のみ）</summary>
+        private bool _isCardMode;
 
         private void Awake()
         {
@@ -44,6 +60,13 @@ namespace App.Battle.Views
 
             _nextWaveButton.onClick.AddListener(() => _onNextWavePressed.OnNext(Unit.Default));
 
+            if (_upgradeCardBoardView != null)
+            {
+                _upgradeCardBoardView.OnCardConfirmed
+                    .Subscribe(index => _onUpgradeSelected.OnNext(index))
+                    .AddTo(this);
+            }
+
             // 初期状態は非表示
             Close();
         }
@@ -51,6 +74,22 @@ namespace App.Battle.Views
         public void Open(IReadOnlyList<UpgradeMasterData> upgrades)
         {
             _shopRoot.SetActive(true);
+
+            // カードを並べられなかった場合（カメラ未取得・プレハブ未設定）は候補が選べなくなるため、
+            // Canvasのボタンへフォールバックする
+            _isCardMode = _upgradeCardBoardView != null
+                          && _upgradeCardBoardView.Open(upgrades, !DebugConfig.IsVRMode);
+
+            // 非VRではCanvasがScreenSpaceOverlayで背景パネルが手前に描かれ、カードが一切見えなくなるため隠す。
+            // VRのCanvasはカードとは別の位置に置かれるWorldSpaceなので、backdropはそのまま残す
+            SetPanelBackgroundVisible(!(_isCardMode && !DebugConfig.IsVRMode));
+
+            if (_isCardMode)
+            {
+                // カードと二重に候補が並ばないよう、Canvasのボタンはすべて隠す
+                HideAllUpgradeButtons();
+                return;
+            }
 
             // 候補ぶんだけボタンを表示し、余りは非表示（候補ゼロなら全非表示）
             for (var i = 0; i < _upgradeButtons.Length; i++)
@@ -70,12 +109,40 @@ namespace App.Battle.Views
 
         public void HideUpgradeButton(int index)
         {
+            if (_isCardMode)
+            {
+                _upgradeCardBoardView.RemoveCard(index);
+                return;
+            }
+
             if (index < 0 || index >= _upgradeButtons.Length)
             {
                 return;
             }
 
             _upgradeButtons[index].gameObject.SetActive(false);
+        }
+
+        /// <summary>掴み操作用の入力をカードボードへ中継する</summary>
+        public void UpdateHandInput(in ShopHandInput input)
+        {
+            if (!_isCardMode)
+            {
+                return;
+            }
+
+            _upgradeCardBoardView.UpdateHandInput(input);
+        }
+
+        /// <summary>非VRのポインタ入力をカードボードへ中継する</summary>
+        public void UpdatePointerInput(in ShopPointerInput input)
+        {
+            if (!_isCardMode)
+            {
+                return;
+            }
+
+            _upgradeCardBoardView.UpdatePointerInput(input);
         }
 
         public void SetCurrentPoint(int currentPoint)
@@ -90,6 +157,12 @@ namespace App.Battle.Views
 
         public void SetPurchasable(int index, bool isPurchasable)
         {
+            if (_isCardMode)
+            {
+                _upgradeCardBoardView.SetPurchasable(index, isPurchasable);
+                return;
+            }
+
             if (index < 0 || index >= _upgradeButtons.Length)
             {
                 return;
@@ -100,7 +173,30 @@ namespace App.Battle.Views
 
         public void Close()
         {
+            if (_upgradeCardBoardView != null)
+            {
+                _upgradeCardBoardView.Close();
+            }
+
+            _isCardMode = false;
+            SetPanelBackgroundVisible(true);
             _shopRoot.SetActive(false);
+        }
+
+        private void SetPanelBackgroundVisible(bool isVisible)
+        {
+            if (_panelBackground != null)
+            {
+                _panelBackground.enabled = isVisible;
+            }
+        }
+
+        private void HideAllUpgradeButtons()
+        {
+            foreach (var button in _upgradeButtons)
+            {
+                button.gameObject.SetActive(false);
+            }
         }
 
         private void OnDestroy()

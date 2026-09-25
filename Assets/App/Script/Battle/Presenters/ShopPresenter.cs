@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using App.Battle.Data;
 using App.Battle.Interface;
 using App.Common.Data.MasterData;
 using R3;
@@ -39,6 +40,16 @@ namespace App.Battle.Presenters
         public void SetPurchasable(int index, bool isPurchasable)
         {
             _shopView.SetPurchasable(index, isPurchasable);
+        }
+
+        public void UpdateHandInput(in ShopHandInput input)
+        {
+            _shopView.UpdateHandInput(input);
+        }
+
+        public void UpdatePointerInput(in ShopPointerInput input)
+        {
+            _shopView.UpdatePointerInput(input);
         }
 
         public void Close()
