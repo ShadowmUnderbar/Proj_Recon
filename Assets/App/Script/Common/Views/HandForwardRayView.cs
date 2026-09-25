@@ -7,6 +7,7 @@ namespace App.Common.Views
     {
         [SerializeField] private LineRenderer _lineRenderer;
         [SerializeField] private LayerMask _layerMask;
+
         private PlatformHandRotation _platformHandRotation;
         private readonly string _emissiveColor = "_EmissionColor";
         private readonly float _maxRayRange = 50f;
@@ -50,10 +51,11 @@ namespace App.Common.Views
             }
 
             var direction = _platformHandRotation.Rotation * Vector3.forward;
+            var start = transform.position;
+            var end = start + direction * _maxRayRange;
 
-            _lineRenderer.SetPosition(0, transform.position);
-
-            _lineRenderer.SetPosition(1, transform.position + direction * _maxRayRange);
+            // カーブ有効時は途中に点を足す。2点のままだと両端しか沈まず、間が浮いて地面から離れる
+            CurvedWorldLine.SetLine(_lineRenderer, start, end);
         }
     }
 }

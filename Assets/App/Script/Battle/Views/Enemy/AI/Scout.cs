@@ -1,3 +1,4 @@
+using App.Common.Views;
 using UnityEngine;
 
 namespace App.Battle.Views.Enemy.AI
@@ -19,10 +20,11 @@ namespace App.Battle.Views.Enemy.AI
                 return;
             }
 
-            lineRenderer.positionCount = 2;
-            lineRenderer.SetPosition(0, lineRenderer.transform.position);
-            lineRenderer.SetPosition(1,
-                lineRenderer.transform.position + lineRenderer.transform.forward * EnemyData.AttackDistanceRange);
+            var start = lineRenderer.transform.position;
+            var end = start + lineRenderer.transform.forward * EnemyData.AttackDistanceRange;
+
+            // カーブ有効時は途中に点を足す。2点のままだと両端しか沈まず、間が浮く
+            CurvedWorldLine.SetLine(lineRenderer, start, end);
         }
 
         protected override void IdleState()
