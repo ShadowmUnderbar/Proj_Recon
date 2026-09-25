@@ -334,6 +334,7 @@ namespace App.Editor
             canvas.transform.localRotation = Quaternion.identity;
 
             PlacePanel(instance, StartPanelPosition, Quaternion.Euler(0f, 180f, 0f));
+            RemoveStrays<MainMenuView>(instance);
         }
 
         /// <summary>オプションパネルのプレハブを作り、壁際へ設置する</summary>
@@ -345,23 +346,29 @@ namespace App.Editor
             // このメニューを再実行しても、その作業が消えないようにする
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(OptionPanelPrefabPath);
 
-            GameObject panel;
-            if (prefab != null)
+            if (prefab == null)
             {
-                panel = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-            }
-            else
-            {
-                panel = OptionPanelBuilder.CreateOptionPanel();
-                SetupFixedPanel(panel.GetComponent<Canvas>(), camera);
-                PrefabUtility.SaveAsPrefabAssetAndConnect(
-                    panel, OptionPanelPrefabPath, InteractionMode.AutomatedAction);
+                // 組み立て用の一時オブジェクトからプレハブを作り、シーンには残さない。
+                // 残すとプレハブから生成したものと二重になり、
+                // VContainerが取り残しの方を解決してUIの操作が効かなくなる
+                var source = OptionPanelBuilder.CreateOptionPanel();
+                SetupFixedPanel(source.GetComponent<Canvas>(), camera);
+                prefab = PrefabUtility.SaveAsPrefabAsset(source, OptionPanelPrefabPath);
+                Object.DestroyImmediate(source);
+
+                if (prefab == null)
+                {
+                    Debug.LogError($"{OptionPanelPrefabPath} の保存に失敗しました");
+                    return;
+                }
             }
 
+            var panel = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
             SetupFixedPanel(panel.GetComponent<Canvas>(), camera);
             panel.name = OptionPanelName;
 
             PlacePanel(panel, OptionPanelPosition, Quaternion.Euler(0f, -90f, 0f));
+            RemoveStrays<OptionPanelView>(panel);
         }
 
         /// <summary>
@@ -384,6 +391,21 @@ namespace App.Editor
 
             panel.transform.position = position;
             panel.transform.rotation = rotation;
+        }
+
+        /// <summary>
+        /// 設置したパネル以外を消す。プレハブの生成・保存の過程で組み立て用のオブジェクトが
+        /// シーンに残ることがあり、残るとVContainerがそちらを解決してUIの操作が効かなくなる。
+        /// </summary>
+        private static void RemoveStrays<T>(GameObject keep) where T : Component
+        {
+            foreach (var found in Object.FindObjectsOfType<T>(true))
+            {
+                if (found.gameObject != keep)
+                {
+                    Object.DestroyImmediate(found.gameObject);
+                }
+            }
         }
 
         /// <summary>

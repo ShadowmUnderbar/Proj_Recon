@@ -173,8 +173,7 @@ namespace App.MainMenu.Views
         {
             if (_snapTurnAngleLabel != null)
             {
-                // 度記号はTMPの既定フォント（ASCIIのみ）に無いため文字で書く
-                _snapTurnAngleLabel.text = $"{angle:F0} deg";
+                _snapTurnAngleLabel.text = $"{angle:F0}°";
             }
         }
 

@@ -42,6 +42,9 @@ namespace App.Editor
         private const float SliderPositionX = 130f;
         private const float ValueLabelPositionX = 500f;
 
+        /// <summary>日本語を表示できるフォント。TMPの既定フォントには日本語のグリフが無い</summary>
+        private const string FontAssetPath = "Assets/App/Font/nicokaku_v2-5 SDF.asset";
+
         private static readonly Color PanelColor = new(0.05f, 0.07f, 0.1f, 0.9f);
         private static readonly Color ButtonColor = new(0.2f, 0.28f, 0.38f, 1f);
         private static readonly Color SliderBackgroundColor = new(0.15f, 0.18f, 0.22f, 1f);
@@ -58,18 +61,15 @@ namespace App.Editor
             CreateText("Title", rootRect, new Vector2(PanelWidth, 100f), new Vector2(0f, TitlePositionY),
                 "OPTION", TitleFontSize, TextAlignmentOptions.Center);
 
-            // ラベルは英字にしている。プロジェクトのTMPフォント（LiberationSans）に日本語の
-            // グリフが無く、日本語にすると実行時にすべて□へ置き換わってしまうため。
-            // 日本語フォントアセットを用意したら、ここと本番UIをまとめて日本語へ差し替える
-            var dominantHandLeft = CreateRow(rootRect, "DominantHand", DominantHandPositionY, "DOMINANT HAND",
-                "LEFT", "RIGHT", out var dominantHandRight);
+            var dominantHandLeft = CreateRow(rootRect, "DominantHand", DominantHandPositionY, "利き手",
+                "左", "右", out var dominantHandRight);
 
-            var smoothLocomotion = CreateRow(rootRect, "Locomotion", LocomotionPositionY, "LOCOMOTION",
-                "SMOOTH", "TELEPORT", out var teleportLocomotion);
+            var smoothLocomotion = CreateRow(rootRect, "Locomotion", LocomotionPositionY, "移動方式",
+                "スムーズ", "テレポート", out var teleportLocomotion);
 
-            var moveSpeedSlider = CreateSliderRow(rootRect, "MoveSpeed", MoveSpeedPositionY, "MOVE SPEED",
+            var moveSpeedSlider = CreateSliderRow(rootRect, "MoveSpeed", MoveSpeedPositionY, "移動速度",
                 out var moveSpeedLabel);
-            var snapTurnSlider = CreateSliderRow(rootRect, "SnapTurnAngle", SnapTurnPositionY, "TURN ANGLE",
+            var snapTurnSlider = CreateSliderRow(rootRect, "SnapTurnAngle", SnapTurnPositionY, "ターン角度",
                 out var snapTurnLabel);
 
             // スライダーの範囲はプレハブにも保存しておく。実行時にも組み立て直すが、
@@ -182,6 +182,17 @@ namespace App.Editor
             var rect = CreateRect(name, parent, size, position);
 
             var text = rect.gameObject.AddComponent<TextMeshProUGUI>();
+
+            var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FontAssetPath);
+            if (font != null)
+            {
+                text.font = font;
+            }
+            else
+            {
+                Debug.LogWarning($"{FontAssetPath} が見つかりませんでした。日本語が表示されない可能性があります");
+            }
+
             text.text = content;
             text.fontSize = fontSize;
             text.alignment = alignment;
