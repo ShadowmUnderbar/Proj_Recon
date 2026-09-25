@@ -1,0 +1,12 @@
+{
+  "Game__ElseIf_Mannequin": {
+    "candidate_faces": 1132,
+    "candidate_triangles": 1132,
+    "deleted_faces": 0
+  },
+  "Game__ElseIf_Anatomy_Restoration": {
+    "candidate_faces": 545,
+    "candidate_triangles": 1090,
+    "deleted_faces": 0
+  }
+}

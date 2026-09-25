@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「ElseIf_LocalRetopo.blend」で保存しました\n[{'object': 'ElseIf_Jacket_Front_L', 'before_vertices': 5613, 'after_vertices': 5138, 'before_triangles': 11222, 'after_triangles': 10272}, {'object': 'ElseIf_Jacket_Front_R', 'before_vertices': 5530, 'after_vertices': 5134, 'before_triangles': 11056, 'after_triangles': 10264}, {'object': 'ElseIf_Jacket_Back', 'before_vertices': 10821, 'after_vertices': 10589, 'before_triangles': 21638, 'after_triangles': 21174}, {'object': 'ElseIf_Jacket_Sleeve_L', 'before_vertices': 16464, 'after_vertices': 14855, 'before_triangles': 32928, 'after_triangles': 29710}, {'object': 'ElseIf_Jacket_Sleeve_R', 'before_vertices': 16464, 'after_vertices': 14854, 'before_triangles': 32928, 'after_triangles': 29708}]\n"
+  }
+}

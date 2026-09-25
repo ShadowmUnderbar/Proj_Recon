@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "Internal restored anatomy receives interpolated body weights, independent of garment weights.\n"
+  }
+}

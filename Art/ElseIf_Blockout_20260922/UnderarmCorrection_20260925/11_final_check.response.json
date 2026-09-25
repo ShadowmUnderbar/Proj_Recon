@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「ElseIf_Underarm_Corrected.blend」で保存しました\n{'vertices': 148131, 'triangles': 288752, 'new_keys': 20, 'material_count': 10, 'topology_or_basis_changes': [], 'master_changes': [], 'activation': [{'frame': 1, 'values': {'DLHN_Underarm_Drape_L': 0.0, 'DLHN_Underarm_Drape_R': 0.0}}, {'frame': 11, 'values': {'DLHN_Underarm_Drape_L': 0.0, 'DLHN_Underarm_Drape_R': 0.0}}, {'frame': 111, 'values': {'DLHN_Underarm_Drape_L': 0.0, 'DLHN_Underarm_Drape_R': 0.0}}, {'frame': 21, 'values': {'DLHN_Underarm_Drape_L': 1.0, 'DLHN_Underarm_Drape_R': 1.0}}, {'frame': 71, 'values': {'DLHN_Underarm_Drape_L': 1.0, 'DLHN_Underarm_Drape_R': 1.0}}, {'frame': 41, 'values': {'DLHN_Underarm_Drape_L': 0.0, 'DLHN_Underarm_Drape_R': 0.0}}, {'frame': 61, 'values': {'DLHN_Underarm_Drape_L': 0.0, 'DLHN_Underarm_Drape_R': 0.0}}], 'bones': 74}\n"
+  }
+}

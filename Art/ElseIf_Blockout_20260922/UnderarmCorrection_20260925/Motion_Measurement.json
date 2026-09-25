@@ -1,0 +1,164 @@
+{
+  "Base": {
+    "shoulder": {
+      "max_displacement_mm": 0.0001273155770498146,
+      "mean_dz_mm": 1.5803553446879537e-05,
+      "min_dz_mm": 0.0
+    },
+    "underarm_bodice": {
+      "max_displacement_mm": 0.00013328003749250113,
+      "mean_dz_mm": 4.379751965964921e-05,
+      "min_dz_mm": -0.00011920928955078125
+    },
+    "lower_bodice": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "hem": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "outer_sleeve": {
+      "max_displacement_mm": 0.0002515605541487654,
+      "mean_dz_mm": 1.1418327365895544e-05,
+      "min_dz_mm": -0.00011920928955078125
+    }
+  },
+  "A_Natural": {
+    "shoulder": {
+      "max_displacement_mm": 0.0001228781230931777,
+      "mean_dz_mm": -5.236680432102094e-07,
+      "min_dz_mm": -0.00011920928955078125
+    },
+    "underarm_bodice": {
+      "max_displacement_mm": 0.0001228781230931777,
+      "mean_dz_mm": -1.734114991600324e-06,
+      "min_dz_mm": -0.00011920928955078125
+    },
+    "lower_bodice": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "hem": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "outer_sleeve": {
+      "max_displacement_mm": 0.00025561029908669657,
+      "mean_dz_mm": -2.7854537911817835e-06,
+      "min_dz_mm": -0.0002384185791015625
+    }
+  },
+  "B_Side90": {
+    "shoulder": {
+      "max_displacement_mm": 0.0002384185791015625,
+      "mean_dz_mm": -5.124465851414192e-06,
+      "min_dz_mm": -0.0002384185791015625
+    },
+    "underarm_bodice": {
+      "max_displacement_mm": 86.55968761351274,
+      "mean_dz_mm": -46.11759606425062,
+      "min_dz_mm": -78.62937450408936
+    },
+    "lower_bodice": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "hem": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "outer_sleeve": {
+      "max_displacement_mm": 0.00027028258364226006,
+      "mean_dz_mm": -5.232586771522217e-05,
+      "min_dz_mm": -0.0002384185791015625
+    }
+  },
+  "G_WideOpen": {
+    "shoulder": {
+      "max_displacement_mm": 0.00027314279645418167,
+      "mean_dz_mm": -2.562232925707096e-06,
+      "min_dz_mm": -0.0002384185791015625
+    },
+    "underarm_bodice": {
+      "max_displacement_mm": 85.0862936581952,
+      "mean_dz_mm": -47.184809603294475,
+      "min_dz_mm": -82.90243148803711
+    },
+    "lower_bodice": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "hem": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "outer_sleeve": {
+      "max_displacement_mm": 0.00037743276467102775,
+      "mean_dz_mm": -7.053500943334191e-05,
+      "min_dz_mm": -0.00035762786865234375
+    }
+  },
+  "D_AsymmetricAim": {
+    "shoulder": {
+      "max_displacement_mm": 0.0002384185791015625,
+      "mean_dz_mm": -1.4363466328051459e-05,
+      "min_dz_mm": -0.0002384185791015625
+    },
+    "underarm_bodice": {
+      "max_displacement_mm": 0.0002602375924076584,
+      "mean_dz_mm": -3.019138664863128e-05,
+      "min_dz_mm": -0.0002384185791015625
+    },
+    "lower_bodice": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "hem": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "outer_sleeve": {
+      "max_displacement_mm": 0.00041749852079516354,
+      "mean_dz_mm": -8.143284324409692e-05,
+      "min_dz_mm": -0.00035762786865234375
+    }
+  },
+  "F_OneArmBack": {
+    "shoulder": {
+      "max_displacement_mm": 0.00017120130796843851,
+      "mean_dz_mm": -5.386299873019297e-06,
+      "min_dz_mm": -0.00011920928955078125
+    },
+    "underarm_bodice": {
+      "max_displacement_mm": 0.00017120130796843851,
+      "mean_dz_mm": -1.6229537741900467e-05,
+      "min_dz_mm": -0.00011920928955078125
+    },
+    "lower_bodice": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "hem": {
+      "max_displacement_mm": 0.0,
+      "mean_dz_mm": 0.0,
+      "min_dz_mm": 0.0
+    },
+    "outer_sleeve": {
+      "max_displacement_mm": 0.0002980232238769531,
+      "mean_dz_mm": -9.462410178218993e-05,
+      "min_dz_mm": -0.0002384185791015625
+    }
+  }
+}

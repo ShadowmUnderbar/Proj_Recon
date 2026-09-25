@@ -1,0 +1,92 @@
+{
+  "Master": {
+    "vertices": 336851,
+    "triangles": 665037,
+    "material_count": 10,
+    "shape_key_instances_including_basis": 31,
+    "shape_key_instances_excluding_basis": 18,
+    "shape_key_unique_names": [
+      "Local_Shoulder_Armhole_20260924",
+      "Local_StreetShoe_Form_20260924",
+      "Secondary_Cloth_Weight_20260924"
+    ]
+  },
+  "Current": {
+    "vertices": 159887,
+    "triangles": 311109,
+    "material_count": 10,
+    "shape_key_instances_including_basis": 180,
+    "shape_key_instances_excluding_basis": 122,
+    "shape_key_unique_names": [
+      "DLHN_Contact_L_A_Natural",
+      "DLHN_Contact_L_B_Side90",
+      "DLHN_Contact_L_C_Forward",
+      "DLHN_Contact_L_D_AsymmetricAim",
+      "DLHN_Contact_L_F_OneArmBack",
+      "DLHN_Contact_L_G_WideOpen",
+      "DLHN_Contact_L_I_FrontBack",
+      "DLHN_Contact_L_J_WristTwist",
+      "DLHN_Contact_R_A_Natural",
+      "DLHN_Contact_R_B_Side90",
+      "DLHN_Contact_R_C_Forward",
+      "DLHN_Contact_R_D_AsymmetricAim",
+      "DLHN_Contact_R_G_WideOpen",
+      "DLHN_Contact_R_I_FrontBack",
+      "DLHN_Contact_R_J_WristTwist",
+      "DLHN_ElbowVolume_L",
+      "DLHN_ElbowVolume_R",
+      "DLHN_Wrist_Clearance_L",
+      "DLHN_Wrist_Clearance_R"
+    ],
+    "bone_count": 74,
+    "auxiliary_bones": [
+      "DLHN_SleeveTip_L",
+      "DLHN_SleeveTip_R"
+    ],
+    "corrective_instances": 122
+  },
+  "Optimized": {
+    "vertices": 148131,
+    "triangles": 288752,
+    "material_count": 10,
+    "shape_key_instances_including_basis": 230,
+    "shape_key_instances_excluding_basis": 170,
+    "shape_key_unique_names": [
+      "DLHN_Contact_L_A_Natural",
+      "DLHN_Contact_L_B_Side90",
+      "DLHN_Contact_L_B_Side90.001",
+      "DLHN_Contact_L_C_Forward",
+      "DLHN_Contact_L_D_AsymmetricAim",
+      "DLHN_Contact_L_F_OneArmBack",
+      "DLHN_Contact_L_G_WideOpen",
+      "DLHN_Contact_L_G_WideOpen.001",
+      "DLHN_Contact_L_I_FrontBack",
+      "DLHN_Contact_L_J_WristTwist",
+      "DLHN_Contact_R_A_Natural",
+      "DLHN_Contact_R_B_Side90",
+      "DLHN_Contact_R_B_Side90.001",
+      "DLHN_Contact_R_C_Forward",
+      "DLHN_Contact_R_D_AsymmetricAim",
+      "DLHN_Contact_R_G_WideOpen",
+      "DLHN_Contact_R_G_WideOpen.001",
+      "DLHN_Contact_R_I_FrontBack",
+      "DLHN_Contact_R_J_WristTwist",
+      "DLHN_ElbowVolume_L",
+      "DLHN_ElbowVolume_R",
+      "DLHN_Wide_ClothEase_L",
+      "DLHN_Wide_ClothEase_R",
+      "DLHN_Wrist_Clearance_L",
+      "DLHN_Wrist_Clearance_R"
+    ],
+    "bone_count": 74,
+    "auxiliary_bones": [
+      "DLHN_SleeveTip_L",
+      "DLHN_SleeveTip_R"
+    ],
+    "corrective_instances": 170
+  },
+  "current_reduction_percent": 7.18622733511406,
+  "master_reduction_percent": 56.58106240705405,
+  "protected_vertices_max_error_mm": 0,
+  "master_changes": []
+}

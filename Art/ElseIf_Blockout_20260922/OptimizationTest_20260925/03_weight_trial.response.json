@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{'1': {'max_motion_mm': 0.00011944189326376765, 'mean_motion_mm': 6.704810730007402e-07}, '11': {'max_motion_mm': 0.8505376968352409, 'mean_motion_mm': 0.039837659685380375}, '21': {'max_motion_mm': 11.489792094669085, 'mean_motion_mm': 0.5450547062487998}, '71': {'max_motion_mm': 13.516723160146029, 'mean_motion_mm': 0.6457918710033611}}\n"
+  }
+}

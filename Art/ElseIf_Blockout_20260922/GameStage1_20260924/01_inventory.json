@@ -1,0 +1,5219 @@
+{
+  "file": "D:\\UnityProj\\Proj_Recon\\Art\\ElseIf_Blockout_20260922\\LocalRefinement_20260924\\ElseIf_Local_Refinement.blend",
+  "objects": [
+    {
+      "name": "ElseIf_Mannequin",
+      "verts": 4550,
+      "tris": 7520,
+      "raw": 8683,
+      "materials": [
+        "Mannequin_Clay"
+      ],
+      "mods": [
+        [
+          "Armature",
+          "ARMATURE"
+        ],
+        [
+          "Hide_Source_Clothes_And_Head_NONDESTRUCTIVE",
+          "MASK"
+        ]
+      ],
+      "groups": 68,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Anatomy_Restoration",
+      "verts": 72050,
+      "tris": 144096,
+      "raw": 880,
+      "materials": [
+        "Mannequin_Clay"
+      ],
+      "mods": [
+        [
+          "Join_Only_Missing_Anatomy",
+          "REMESH"
+        ],
+        [
+          "Relax_Restored_Surface",
+          "SMOOTH"
+        ],
+        [
+          "Restoration_Surface",
+          "SUBSURF"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Shorts",
+      "verts": 22302,
+      "tris": 44608,
+      "raw": 747,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [
+        [
+          "Editable_Subdivision",
+          "SUBSURF"
+        ],
+        [
+          "Cloth_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Sock_L",
+      "verts": 52608,
+      "tris": 105216,
+      "raw": 1680,
+      "materials": [
+        "EL_Design_Sock"
+      ],
+      "mods": [
+        [
+          "Editable_Subdivision",
+          "SUBSURF"
+        ],
+        [
+          "Cloth_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Sock_R",
+      "verts": 52608,
+      "tris": 105216,
+      "raw": 1680,
+      "materials": [
+        "EL_Design_Sock"
+      ],
+      "mods": [
+        [
+          "Editable_Subdivision",
+          "SUBSURF"
+        ],
+        [
+          "Cloth_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Shoe_L_Sole",
+      "verts": 2690,
+      "tris": 5376,
+      "raw": 192,
+      "materials": [
+        "EL_Design_Sole",
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Editable_Subdivision",
+          "SUBSURF"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Shoe_L_Upper",
+      "verts": 11330,
+      "tris": 22656,
+      "raw": 384,
+      "materials": [
+        "EL_Design_Ink",
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Editable_Subdivision",
+          "SUBSURF"
+        ],
+        [
+          "Cloth_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Shoe_R_Sole",
+      "verts": 2690,
+      "tris": 5376,
+      "raw": 192,
+      "materials": [
+        "EL_Design_Sole",
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Editable_Subdivision",
+          "SUBSURF"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Shoe_R_Upper",
+      "verts": 11330,
+      "tris": 22656,
+      "raw": 384,
+      "materials": [
+        "EL_Design_Ink",
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Editable_Subdivision",
+          "SUBSURF"
+        ],
+        [
+          "Cloth_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Shoe_L_AnkleCollar",
+      "verts": 3328,
+      "tris": 6656,
+      "raw": 128,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Editable_Subdivision",
+          "SUBSURF"
+        ],
+        [
+          "Soft_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Shoe_L_Tongue",
+      "verts": 1250,
+      "tris": 2496,
+      "raw": 49,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Editable_Subdivision",
+          "SUBSURF"
+        ],
+        [
+          "Soft_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Shoe_R_AnkleCollar",
+      "verts": 3328,
+      "tris": 6656,
+      "raw": 128,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Editable_Subdivision",
+          "SUBSURF"
+        ],
+        [
+          "Soft_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Shoe_R_Tongue",
+      "verts": 1250,
+      "tris": 2496,
+      "raw": 49,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Editable_Subdivision",
+          "SUBSURF"
+        ],
+        [
+          "Soft_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Master",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "Review_Floor",
+      "verts": 4,
+      "tris": 2,
+      "raw": 4,
+      "materials": [
+        "Review_Floor"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Review_Stage",
+        "Scene Collection",
+        "Scene Collection",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Front_L",
+      "verts": 6380,
+      "tris": 12756,
+      "raw": 3190,
+      "materials": [
+        "EL_Design_GreyWhite_Print"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Front_R",
+      "verts": 6380,
+      "tris": 12756,
+      "raw": 3190,
+      "materials": [
+        "EL_Design_GreyWhite_Print"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Back",
+      "verts": 12418,
+      "tris": 24832,
+      "raw": 6209,
+      "materials": [
+        "EL_Design_GreyWhite_Print"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Sleeve_L",
+      "verts": 16464,
+      "tris": 32928,
+      "raw": 8232,
+      "materials": [
+        "EL_Design_GreyWhite_Print"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Sleeve_R",
+      "verts": 16464,
+      "tris": 32928,
+      "raw": 8232,
+      "materials": [
+        "EL_Design_GreyWhite_Print"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Stand_Collar",
+      "verts": 6630,
+      "tris": 13256,
+      "raw": 3315,
+      "materials": [
+        "EL_Design_GreyWhite_Print"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Hem_Facing",
+      "verts": 4186,
+      "tris": 8368,
+      "raw": 2093,
+      "materials": [
+        "EL_Design_GreyWhite_Print"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Cuff_L",
+      "verts": 1680,
+      "tris": 3360,
+      "raw": 840,
+      "materials": [
+        "EL_Design_GreyWhite_Print"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Cuff_R",
+      "verts": 1680,
+      "tris": 3360,
+      "raw": 840,
+      "materials": [
+        "EL_Design_GreyWhite_Print"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Closure_Tape",
+      "verts": 870,
+      "tris": 1736,
+      "raw": 435,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Front_Facing_L",
+      "verts": 1160,
+      "tris": 2316,
+      "raw": 580,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Front_Facing_R",
+      "verts": 1160,
+      "tris": 2316,
+      "raw": 580,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Collar_Turnback",
+      "verts": 3096,
+      "tris": 5160,
+      "raw": 1548,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Hem_Turnback",
+      "verts": 3216,
+      "tris": 5360,
+      "raw": 1608,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Cuff_L_Turnback",
+      "verts": 2016,
+      "tris": 3360,
+      "raw": 1008,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "ElseIf_Jacket_Cuff_R_Turnback",
+      "verts": 2016,
+      "tris": 3360,
+      "raw": 1008,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Fabric_Thickness",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Primary_Construction",
+        "Scene Collection"
+      ]
+    },
+    {
+      "name": "EL_Chest_AO",
+      "verts": 77,
+      "tris": 77,
+      "raw": 77,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Chest_Rules",
+      "verts": 18,
+      "tris": 14,
+      "raw": 18,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Zip_Pull_Red",
+      "verts": 56,
+      "tris": 108,
+      "raw": 28,
+      "materials": [
+        "EL_Design_Red"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Zip_Slider",
+      "verts": 32,
+      "tris": 60,
+      "raw": 16,
+      "materials": [
+        "EL_Design_Fastener"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Pocket_L_Welt",
+      "verts": 190,
+      "tris": 376,
+      "raw": 95,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Pocket_L_Opening",
+      "verts": 57,
+      "tris": 72,
+      "raw": 57,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Hem_L_Triangle",
+      "verts": 30,
+      "tris": 22,
+      "raw": 30,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Hem_L_Rule",
+      "verts": 8,
+      "tris": 6,
+      "raw": 8,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Pocket_R_Welt",
+      "verts": 190,
+      "tris": 376,
+      "raw": 95,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Pocket_R_Opening",
+      "verts": 57,
+      "tris": 72,
+      "raw": 57,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Hem_R_Triangle",
+      "verts": 30,
+      "tris": 22,
+      "raw": 30,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Hem_R_Rule",
+      "verts": 8,
+      "tris": 6,
+      "raw": 8,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Back_Print_Base",
+      "verts": 1254,
+      "tris": 2504,
+      "raw": 627,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Back_Reference_Artwork",
+      "verts": 589,
+      "tris": 1080,
+      "raw": 589,
+      "materials": [
+        "EL_Design_Reference_BackPrint"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Back_Webbing_L",
+      "verts": 368,
+      "tris": 732,
+      "raw": 184,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Back_Buckle_L",
+      "verts": 40,
+      "tris": 76,
+      "raw": 20,
+      "materials": [
+        "EL_Design_Fastener"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Back_BuckleInset_L",
+      "verts": 12,
+      "tris": 12,
+      "raw": 12,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoulder_Webbing_L",
+      "verts": 150,
+      "tris": 296,
+      "raw": 75,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Back_Webbing_R",
+      "verts": 368,
+      "tris": 732,
+      "raw": 184,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Back_Buckle_R",
+      "verts": 40,
+      "tris": 76,
+      "raw": 20,
+      "materials": [
+        "EL_Design_Fastener"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Back_BuckleInset_R",
+      "verts": 12,
+      "tris": 12,
+      "raw": 12,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoulder_Webbing_R",
+      "verts": 150,
+      "tris": 296,
+      "raw": 75,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Back_Center_Tab",
+      "verts": 232,
+      "tris": 460,
+      "raw": 116,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Back_Center_Symbol",
+      "verts": 17,
+      "tris": 17,
+      "raw": 17,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_InkStrip",
+      "verts": 324,
+      "tris": 560,
+      "raw": 324,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_Icon_0",
+      "verts": 17,
+      "tris": 17,
+      "raw": 17,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_Icon_1",
+      "verts": 50,
+      "tris": 48,
+      "raw": 50,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_Box_1",
+      "verts": 180,
+      "tris": 176,
+      "raw": 180,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_Icon_2",
+      "verts": 24,
+      "tris": 22,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_Box_2",
+      "verts": 180,
+      "tris": 176,
+      "raw": 180,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_Icon_3",
+      "verts": 17,
+      "tris": 17,
+      "raw": 17,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_Box_3",
+      "verts": 180,
+      "tris": 176,
+      "raw": 180,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_UpperBar_0",
+      "verts": 24,
+      "tris": 28,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_UpperBar_1",
+      "verts": 24,
+      "tris": 28,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_UpperBar_2",
+      "verts": 24,
+      "tris": 28,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_UpperBar_3",
+      "verts": 24,
+      "tris": 28,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_RedTab",
+      "verts": 48,
+      "tris": 92,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Red"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_L_CuffTab",
+      "verts": 21,
+      "tris": 24,
+      "raw": 21,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_InkStrip",
+      "verts": 324,
+      "tris": 560,
+      "raw": 324,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_Icon_0",
+      "verts": 17,
+      "tris": 17,
+      "raw": 17,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_Icon_1",
+      "verts": 50,
+      "tris": 48,
+      "raw": 50,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_Box_1",
+      "verts": 180,
+      "tris": 176,
+      "raw": 180,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_Icon_2",
+      "verts": 24,
+      "tris": 22,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_Box_2",
+      "verts": 180,
+      "tris": 176,
+      "raw": 180,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_Icon_3",
+      "verts": 17,
+      "tris": 17,
+      "raw": 17,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_Box_3",
+      "verts": 180,
+      "tris": 176,
+      "raw": 180,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_UpperBar_0",
+      "verts": 24,
+      "tris": 28,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_UpperBar_1",
+      "verts": 24,
+      "tris": 28,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_UpperBar_2",
+      "verts": 24,
+      "tris": 28,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_UpperBar_3",
+      "verts": 24,
+      "tris": 28,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_RedTab",
+      "verts": 48,
+      "tris": 92,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Red"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sleeve_R_CuffTab",
+      "verts": 21,
+      "tris": 24,
+      "raw": 21,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_UpperArm_RearPatch",
+      "verts": 99,
+      "tris": 160,
+      "raw": 99,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_UpperArm_DUM",
+      "verts": 112,
+      "tris": 108,
+      "raw": 112,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Collar_A",
+      "verts": 17,
+      "tris": 17,
+      "raw": 17,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Collar_Fastener_-0.027",
+      "verts": 18,
+      "tris": 32,
+      "raw": 9,
+      "materials": [
+        "EL_Design_Fastener"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Collar_Fastener_0.027",
+      "verts": 18,
+      "tris": 32,
+      "raw": 9,
+      "materials": [
+        "EL_Design_Fastener"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Thigh_Band_L",
+      "verts": 392,
+      "tris": 780,
+      "raw": 196,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Thigh_Fastener_L",
+      "verts": 24,
+      "tris": 30,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Fastener"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Thigh_Tag_L",
+      "verts": 32,
+      "tris": 42,
+      "raw": 32,
+      "materials": [
+        "EL_Design_Red"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_L_Mark_0",
+      "verts": 17,
+      "tris": 17,
+      "raw": 17,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_L_Rule_0",
+      "verts": 110,
+      "tris": 108,
+      "raw": 110,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_L_Mark_1",
+      "verts": 24,
+      "tris": 22,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_L_Rule_1",
+      "verts": 110,
+      "tris": 108,
+      "raw": 110,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_L_Mark_2",
+      "verts": 17,
+      "tris": 17,
+      "raw": 17,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_L_Rule_2",
+      "verts": 110,
+      "tris": 108,
+      "raw": 110,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_L_WhiteBand_0",
+      "verts": 104,
+      "tris": 204,
+      "raw": 52,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_L_WhiteBand_1",
+      "verts": 104,
+      "tris": 204,
+      "raw": 52,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_L_WhiteBand_2",
+      "verts": 104,
+      "tris": 204,
+      "raw": 52,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_L_AnkleStrap",
+      "verts": 120,
+      "tris": 236,
+      "raw": 60,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_L_BuckleFrame",
+      "verts": 50,
+      "tris": 96,
+      "raw": 25,
+      "materials": [
+        "EL_Design_Fastener"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_L_BuckleInset",
+      "verts": 16,
+      "tris": 18,
+      "raw": 16,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_L_RedCross",
+      "verts": 24,
+      "tris": 22,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Red"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_L_SideWhite",
+      "verts": 85,
+      "tris": 128,
+      "raw": 85,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_L_HeelWhite",
+      "verts": 81,
+      "tris": 128,
+      "raw": 81,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Thigh_Band_R",
+      "verts": 392,
+      "tris": 780,
+      "raw": 196,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Thigh_Fastener_R",
+      "verts": 24,
+      "tris": 30,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Fastener"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Thigh_Tag_R",
+      "verts": 32,
+      "tris": 42,
+      "raw": 32,
+      "materials": [
+        "EL_Design_Red"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_R_Mark_0",
+      "verts": 17,
+      "tris": 17,
+      "raw": 17,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_R_Rule_0",
+      "verts": 110,
+      "tris": 108,
+      "raw": 110,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_R_Mark_1",
+      "verts": 24,
+      "tris": 22,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_R_Rule_1",
+      "verts": 110,
+      "tris": 108,
+      "raw": 110,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_R_Mark_2",
+      "verts": 17,
+      "tris": 17,
+      "raw": 17,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Sock_R_Rule_2",
+      "verts": 110,
+      "tris": 108,
+      "raw": 110,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_R_WhiteBand_0",
+      "verts": 104,
+      "tris": 204,
+      "raw": 52,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_R_WhiteBand_1",
+      "verts": 104,
+      "tris": 204,
+      "raw": 52,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_R_WhiteBand_2",
+      "verts": 104,
+      "tris": 204,
+      "raw": 52,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_R_AnkleStrap",
+      "verts": 120,
+      "tris": 236,
+      "raw": 60,
+      "materials": [
+        "EL_Design_Graphite"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_R_BuckleFrame",
+      "verts": 50,
+      "tris": 96,
+      "raw": 25,
+      "materials": [
+        "EL_Design_Fastener"
+      ],
+      "mods": [
+        [
+          "Thin_Fabric_Layer",
+          "SOLIDIFY"
+        ]
+      ],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_R_BuckleInset",
+      "verts": 16,
+      "tris": 18,
+      "raw": 16,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_R_RedCross",
+      "verts": 24,
+      "tris": 22,
+      "raw": 24,
+      "materials": [
+        "EL_Design_Red"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_R_SideWhite",
+      "verts": 85,
+      "tris": 128,
+      "raw": 85,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoe_R_HeelWhite",
+      "verts": 81,
+      "tris": 128,
+      "raw": 81,
+      "materials": [
+        "EL_Design_Ivory"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoulder_Back_Connector_L",
+      "verts": 75,
+      "tris": 112,
+      "raw": 75,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    },
+    {
+      "name": "EL_Shoulder_Back_Connector_R",
+      "verts": 75,
+      "tris": 112,
+      "raw": 75,
+      "materials": [
+        "EL_Design_Ink"
+      ],
+      "mods": [],
+      "groups": 0,
+      "collections": [
+        "ElseIf_Design_Basis"
+      ]
+    }
+  ],
+  "bones": [
+    {
+      "name": "Root",
+      "parent": null,
+      "deform": true,
+      "head": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "tail": [
+        -7.099963995091212e-15,
+        2.0102154962842178e-07,
+        0.9911525845527649
+      ],
+      "matrix": [
+        [
+          1.0,
+          -7.163340694270673e-15,
+          8.498071224494197e-08,
+          0.0
+        ],
+        [
+          8.498071935036933e-08,
+          2.0281594004245562e-07,
+          -0.9999999403953552,
+          0.0
+        ],
+        [
+          -1.0072107739316459e-14,
+          0.9999999403953552,
+          3.5762786865234375e-07,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_C_Hips",
+      "parent": "Root",
+      "deform": true,
+      "head": [
+        0.0,
+        -0.003576035611331463,
+        0.9911526441574097
+      ],
+      "tail": [
+        -5.630117886116191e-16,
+        -0.010208025574684143,
+        1.043559193611145
+      ],
+      "matrix": [
+        [
+          1.0,
+          -1.0658141036401503e-14,
+          7.450580596923828e-08,
+          0.0
+        ],
+        [
+          7.39162899776602e-08,
+          -0.12554742395877838,
+          -0.9920875430107117,
+          -0.003576035611331463
+        ],
+        [
+          9.35402511004213e-09,
+          0.9920875430107117,
+          -0.12554727494716644,
+          0.9911526441574097
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_C_Spine",
+      "parent": "J_Bip_C_Hips",
+      "deform": true,
+      "head": [
+        -5.551115123125783e-17,
+        -0.015998031944036484,
+        1.0428264141082764
+      ],
+      "tail": [
+        -1.2966777403262855e-16,
+        -0.032796286046504974,
+        1.1528756618499756
+      ],
+      "matrix": [
+        [
+          1.0,
+          -6.661337088959755e-16,
+          1.4901138989387164e-08,
+          -5.551115123125783e-17
+        ],
+        [
+          1.4730524355854868e-08,
+          -0.15089522302150726,
+          -0.9885495901107788,
+          -0.015998031944036484
+        ],
+        [
+          2.2485231454538734e-09,
+          0.988549530506134,
+          -0.15089507400989532,
+          1.0428264141082764
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_C_Chest",
+      "parent": "J_Bip_C_Spine",
+      "deform": true,
+      "head": [
+        2.7755575615628914e-17,
+        -0.019024644047021866,
+        1.154977798461914
+      ],
+      "tail": [
+        -2.0116410457468993e-17,
+        -0.005925401113927364,
+        1.2619770765304565
+      ],
+      "matrix": [
+        [
+          1.0,
+          -4.44089183380283e-16,
+          6.006849417872218e-08,
+          2.7755575615628914e-17
+        ],
+        [
+          5.962336047105055e-08,
+          0.12151641398668289,
+          -0.9925891160964966,
+          -0.019024644047021866
+        ],
+        [
+          -7.299302939856034e-09,
+          0.9925891160964966,
+          0.12151654064655304,
+          1.154977798461914
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_C_UpperChest",
+      "parent": "J_Bip_C_Chest",
+      "deform": true,
+      "head": [
+        9.020562075079397e-17,
+        -0.004489582031965256,
+        1.2618011236190796
+      ],
+      "tail": [
+        4.538417354465118e-16,
+        0.04078935831785202,
+        1.3905434608459473
+      ],
+      "matrix": [
+        [
+          1.0,
+          2.6645352591003757e-15,
+          2.9802315282267955e-08,
+          9.020562075079397e-17
+        ],
+        [
+          2.8114229166931182e-08,
+          0.3317803740501404,
+          -0.9433563351631165,
+          -0.004489582031965256
+        ],
+        [
+          -9.887816787568227e-09,
+          0.9433562755584717,
+          0.33178049325942993,
+          1.2618011236190796
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_L_Bust1",
+      "parent": "J_Bip_C_UpperChest",
+      "deform": true,
+      "head": [
+        0.051934100687503815,
+        -0.07294344902038574,
+        1.254599690437317
+      ],
+      "tail": [
+        0.0619269460439682,
+        -0.09236979484558105,
+        1.2569899559020996
+      ],
+      "matrix": [
+        [
+          0.8906087875366211,
+          0.4547119140625,
+          0.007259205915033817,
+          0.051934100687503815
+        ],
+        [
+          0.45228859782218933,
+          -0.8839717507362366,
+          -0.11843892931938171,
+          -0.07294344902038574
+        ],
+        [
+          -0.04743868112564087,
+          0.10876604914665222,
+          -0.9929343461990356,
+          1.254599690437317
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_L_Bust2",
+      "parent": "J_Sec_L_Bust1",
+      "deform": true,
+      "head": [
+        0.061714138835668564,
+        -0.09247761219739914,
+        1.2570034265518188
+      ],
+      "tail": [
+        0.09354211390018463,
+        -0.15435196459293365,
+        1.26461660861969
+      ],
+      "matrix": [
+        [
+          0.8906088471412659,
+          0.4547122120857239,
+          0.007260591257363558,
+          0.061714138835668564
+        ],
+        [
+          0.4522891938686371,
+          -0.8839715719223022,
+          -0.11843834072351456,
+          -0.09247761219739914
+        ],
+        [
+          -0.047437239438295364,
+          0.10876613855361938,
+          -0.9929344058036804,
+          1.2570034265518188
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_L_Bust2_end",
+      "parent": "J_Sec_L_Bust2",
+      "deform": true,
+      "head": [
+        0.09286430478096008,
+        -0.15469534695148468,
+        1.2646595239639282
+      ],
+      "tail": [
+        0.10877829045057297,
+        -0.18563251197338104,
+        1.2684661149978638
+      ],
+      "matrix": [
+        [
+          0.8906088471412659,
+          0.4547122120857239,
+          0.007260541431605816,
+          0.09286430478096008
+        ],
+        [
+          0.4522891938686371,
+          -0.8839715719223022,
+          -0.11843840032815933,
+          -0.15469534695148468
+        ],
+        [
+          -0.047437310218811035,
+          0.10876616835594177,
+          -0.9929344058036804,
+          1.2646595239639282
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_R_Bust1",
+      "parent": "J_Bip_C_UpperChest",
+      "deform": true,
+      "head": [
+        -0.05193410813808441,
+        -0.07294345647096634,
+        1.254599690437317
+      ],
+      "tail": [
+        -0.0619269534945488,
+        -0.09236980974674225,
+        1.2569899559020996
+      ],
+      "matrix": [
+        [
+          0.8906087875366211,
+          -0.4547118544578552,
+          -0.007259218953549862,
+          -0.05193410813808441
+        ],
+        [
+          -0.45228853821754456,
+          -0.8839718103408813,
+          -0.11843892931938171,
+          -0.07294345647096634
+        ],
+        [
+          0.047438666224479675,
+          0.10876604914665222,
+          -0.9929343461990356,
+          1.254599690437317
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_R_Bust2",
+      "parent": "J_Sec_R_Bust1",
+      "deform": true,
+      "head": [
+        -0.06171414628624916,
+        -0.09247761964797974,
+        1.2570034265518188
+      ],
+      "tail": [
+        -0.09354211390018463,
+        -0.15435197949409485,
+        1.26461660861969
+      ],
+      "matrix": [
+        [
+          0.8906088471412659,
+          -0.4547122120857239,
+          -0.007260594051331282,
+          -0.06171414628624916
+        ],
+        [
+          -0.4522891938686371,
+          -0.883971631526947,
+          -0.11843835562467575,
+          -0.09247761964797974
+        ],
+        [
+          0.04743724688887596,
+          0.10876613855361938,
+          -0.9929344058036804,
+          1.2570034265518188
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_R_Bust2_end",
+      "parent": "J_Sec_R_Bust2",
+      "deform": true,
+      "head": [
+        -0.09286431223154068,
+        -0.15469536185264587,
+        1.2646595239639282
+      ],
+      "tail": [
+        -0.10877829790115356,
+        -0.18563252687454224,
+        1.2684661149978638
+      ],
+      "matrix": [
+        [
+          0.8906088471412659,
+          -0.45471227169036865,
+          -0.007260547485202551,
+          -0.09286431223154068
+        ],
+        [
+          -0.45228925347328186,
+          -0.883971631526947,
+          -0.11843840777873993,
+          -0.15469536185264587
+        ],
+        [
+          0.04743732139468193,
+          0.10876616835594177,
+          -0.9929344058036804,
+          1.2646595239639282
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_C_Hood_01",
+      "parent": "J_Bip_C_UpperChest",
+      "deform": true,
+      "head": [
+        7.771561172376096e-16,
+        0.10087155550718307,
+        1.398535132408142
+      ],
+      "tail": [
+        4.223822118074819e-15,
+        0.10883742570877075,
+        1.3180826902389526
+      ],
+      "matrix": [
+        [
+          1.0000007152557373,
+          4.263256075747422e-14,
+          6.31349905688694e-08,
+          7.771561172376096e-16
+        ],
+        [
+          -6.282773057364466e-08,
+          0.09853153675794601,
+          0.9951334595680237,
+          0.10087155550718307
+        ],
+        [
+          -6.22073326184136e-09,
+          -0.9951335191726685,
+          0.09853172302246094,
+          1.398535132408142
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_C_Hood_end_01",
+      "parent": "J_Sec_C_Hood_01",
+      "deform": true,
+      "head": [
+        4.223822118074819e-15,
+        0.10883742570877075,
+        1.3180826902389526
+      ],
+      "tail": [
+        7.106752117130508e-15,
+        0.11573462933301926,
+        1.2484233379364014
+      ],
+      "matrix": [
+        [
+          1.0000004768371582,
+          4.118471378820529e-14,
+          -1.7528380169551383e-07,
+          4.223822118074819e-15
+        ],
+        [
+          1.744305819784131e-07,
+          0.09853148460388184,
+          0.9951333999633789,
+          0.10883742570877075
+        ],
+        [
+          1.7271048591283034e-08,
+          -0.9951337575912476,
+          0.09853164106607437,
+          1.3180826902389526
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_C_Hood_end_01_end",
+      "parent": "J_Sec_C_Hood_end_01",
+      "deform": true,
+      "head": [
+        7.106752117130508e-15,
+        0.11573462933301926,
+        1.2484233379364014
+      ],
+      "tail": [
+        3.210731236436004e-09,
+        0.11918321251869202,
+        1.2135937213897705
+      ],
+      "matrix": [
+        [
+          1.0000004768371582,
+          9.173515280735955e-08,
+          -9.21828302580252e-08,
+          7.106752117130508e-15
+        ],
+        [
+          8.269531548421583e-08,
+          0.09853111952543259,
+          0.9951334595680237,
+          0.11573462933301926
+        ],
+        [
+          1.0037160791398492e-07,
+          -0.9951338171958923,
+          0.09853127598762512,
+          1.2484233379364014
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_L_HoodString1_01",
+      "parent": "J_Bip_C_UpperChest",
+      "deform": true,
+      "head": [
+        0.0331110842525959,
+        -0.057504087686538696,
+        1.3751834630966187
+      ],
+      "tail": [
+        0.03908189758658409,
+        -0.12300483882427216,
+        1.2759677171707153
+      ],
+      "matrix": [
+        [
+          -0.9986684322357178,
+          0.05015936493873596,
+          -0.012034595012664795,
+          0.0331110842525959
+        ],
+        [
+          -0.01757570542395115,
+          -0.5502558946609497,
+          -0.8348070383071899,
+          -0.057504087686538696
+        ],
+        [
+          -0.04849708080291748,
+          -0.8334869146347046,
+          0.5504017472267151,
+          1.3751834630966187
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_L_HoodString2_01",
+      "parent": "J_Sec_L_HoodString1_01",
+      "deform": true,
+      "head": [
+        0.03914891183376312,
+        -0.11411114037036896,
+        1.2701002359390259
+      ],
+      "tail": [
+        0.04377855360507965,
+        -0.11971922963857651,
+        1.1430972814559937
+      ],
+      "matrix": [
+        [
+          -0.9993313550949097,
+          0.03639332205057144,
+          0.0033102333545684814,
+          0.03914891183376312
+        ],
+        [
+          -0.004913018085062504,
+          -0.04408485069870949,
+          -0.9990124106407166,
+          -0.11411114037036896
+        ],
+        [
+          -0.03621295094490051,
+          -0.9983620643615723,
+          0.04423004388809204,
+          1.2701002359390259
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_L_HoodString2_end_01",
+      "parent": "J_Sec_L_HoodString2_01",
+      "deform": true,
+      "head": [
+        0.04365508630871773,
+        -0.11971931159496307,
+        1.1430928707122803
+      ],
+      "tail": [
+        0.04620261862874031,
+        -0.12280528247356415,
+        1.0732073783874512
+      ],
+      "matrix": [
+        [
+          -0.9993317127227783,
+          0.036393243819475174,
+          0.003310306230559945,
+          0.04365508630871773
+        ],
+        [
+          -0.0049131023697555065,
+          -0.04408521577715874,
+          -0.9990125298500061,
+          -0.11971931159496307
+        ],
+        [
+          -0.03621288016438484,
+          -0.9983620643615723,
+          0.04423041269183159,
+          1.1430928707122803
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_L_HoodString2_end_01_end",
+      "parent": "J_Sec_L_HoodString2_end_01",
+      "deform": true,
+      "head": [
+        0.04613467678427696,
+        -0.12280531227588654,
+        1.0732048749923706
+      ],
+      "tail": [
+        0.047408442944288254,
+        -0.12434829771518707,
+        1.038262128829956
+      ],
+      "matrix": [
+        [
+          -0.9993317127227783,
+          0.036393243819475174,
+          0.003310306230559945,
+          0.04613467678427696
+        ],
+        [
+          -0.0049131023697555065,
+          -0.044085223227739334,
+          -0.9990125298500061,
+          -0.12280531227588654
+        ],
+        [
+          -0.03621288016438484,
+          -0.9983620643615723,
+          0.044230420142412186,
+          1.0732048749923706
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_R_HoodString1_01",
+      "parent": "J_Bip_C_UpperChest",
+      "deform": true,
+      "head": [
+        -0.0331110842525959,
+        -0.057504087686538696,
+        1.3751834630966187
+      ],
+      "tail": [
+        -0.03908191993832588,
+        -0.12300485372543335,
+        1.2759678363800049
+      ],
+      "matrix": [
+        [
+          -0.9986684322357178,
+          -0.05015953630208969,
+          0.01203453354537487,
+          -0.0331110842525959
+        ],
+        [
+          0.017576057463884354,
+          -0.5502560138702393,
+          -0.8348073959350586,
+          -0.057504087686538696
+        ],
+        [
+          0.04849701002240181,
+          -0.8334868550300598,
+          0.5504022240638733,
+          1.3751834630966187
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_R_HoodString2_01",
+      "parent": "J_Sec_R_HoodString1_01",
+      "deform": true,
+      "head": [
+        -0.03914891183376312,
+        -0.11411115527153015,
+        1.2701002359390259
+      ],
+      "tail": [
+        -0.04377857595682144,
+        -0.1197192445397377,
+        1.1430972814559937
+      ],
+      "matrix": [
+        [
+          -0.9993313550949097,
+          -0.036393508315086365,
+          -0.0033102836459875107,
+          -0.03914891183376312
+        ],
+        [
+          0.004913280252367258,
+          -0.04408485069870949,
+          -0.9990127682685852,
+          -0.11411115527153015
+        ],
+        [
+          0.03621295467019081,
+          -0.9983624219894409,
+          0.04423046112060547,
+          1.2701002359390259
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_R_HoodString2_end_01",
+      "parent": "J_Sec_R_HoodString2_01",
+      "deform": true,
+      "head": [
+        -0.04365508630871773,
+        -0.11971932649612427,
+        1.1430928707122803
+      ],
+      "tail": [
+        -0.046202633529901505,
+        -0.12280529737472534,
+        1.0732073783874512
+      ],
+      "matrix": [
+        [
+          -0.9993317127227783,
+          -0.03639347106218338,
+          -0.0033103162422776222,
+          -0.04365508630871773
+        ],
+        [
+          0.004913327284157276,
+          -0.04408525675535202,
+          -0.9990128874778748,
+          -0.11971932649612427
+        ],
+        [
+          0.03621292486786842,
+          -0.9983624219894409,
+          0.0442308709025383,
+          1.1430928707122803
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Sec_R_HoodString2_end_01_end",
+      "parent": "J_Sec_R_HoodString2_end_01",
+      "deform": true,
+      "head": [
+        -0.04613467678427696,
+        -0.12280532717704773,
+        1.0732048749923706
+      ],
+      "tail": [
+        -0.04740845039486885,
+        -0.12434831261634827,
+        1.038262128829956
+      ],
+      "matrix": [
+        [
+          -0.9993317127227783,
+          -0.03639346361160278,
+          -0.003310316475108266,
+          -0.04613467678427696
+        ],
+        [
+          0.004913327284157276,
+          -0.04408526048064232,
+          -0.9990128874778748,
+          -0.12280532717704773
+        ],
+        [
+          0.03621291741728783,
+          -0.9983624219894409,
+          0.0442308746278286,
+          1.0732048749923706
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_C_Neck",
+      "parent": "J_Bip_C_UpperChest",
+      "deform": true,
+      "head": [
+        3.0531133177191805e-16,
+        0.03357435390353203,
+        1.3930808305740356
+      ],
+      "tail": [
+        -9.808443005857785e-17,
+        0.0245475172996521,
+        1.4682378768920898
+      ],
+      "matrix": [
+        [
+          1.0,
+          -5.329070094684278e-15,
+          6.365777238670489e-08,
+          3.0531133177191805e-16
+        ],
+        [
+          6.320354373201553e-08,
+          -0.11924927681684494,
+          -0.9928640723228455,
+          0.03357435390353203
+        ],
+        [
+          7.591153483588187e-09,
+          0.9928640127182007,
+          -0.1192491352558136,
+          1.3930808305740356
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_C_Head",
+      "parent": "J_Bip_C_Neck",
+      "deform": true,
+      "head": [
+        2.9722757588501736e-10,
+        0.023843660950660706,
+        1.4681533575057983
+      ],
+      "tail": [
+        -2.7215625308940616e-09,
+        0.02316192351281643,
+        1.5312261581420898
+      ],
+      "matrix": [
+        [
+          1.0,
+          -4.785919216487855e-08,
+          4.489600655688264e-07,
+          2.9722757588501736e-10
+        ],
+        [
+          4.484164719542605e-07,
+          -0.010808116756379604,
+          -0.9999412894248962,
+          0.023843660950660706
+        ],
+        [
+          5.27087529178516e-08,
+          0.9999411106109619,
+          -0.010807991027832031,
+          1.4681533575057983
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Adj_L_FaceEye",
+      "parent": "J_Bip_C_Head",
+      "deform": true,
+      "head": [
+        0.0173133984208107,
+        0.0023375987075269222,
+        1.531001091003418
+      ],
+      "tail": [
+        0.029006212949752808,
+        -0.026906337589025497,
+        1.5293484926223755
+      ],
+      "matrix": [
+        [
+          0.9285213947296143,
+          0.37075021862983704,
+          -0.019804030656814575,
+          0.0173133984208107
+        ],
+        [
+          0.37127843499183655,
+          -0.9272529482841492,
+          0.04851473867893219,
+          0.0023375987075269222
+        ],
+        [
+          -0.0003765425644814968,
+          -0.05239979550242424,
+          -0.9986255168914795,
+          1.531001091003418
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Adj_R_FaceEye",
+      "parent": "J_Bip_C_Head",
+      "deform": true,
+      "head": [
+        -0.017313390970230103,
+        0.0023375849705189466,
+        1.531001091003418
+      ],
+      "tail": [
+        -0.029006192460656166,
+        -0.02690635807812214,
+        1.5293484926223755
+      ],
+      "matrix": [
+        [
+          0.9285215735435486,
+          -0.370749831199646,
+          0.019803812727332115,
+          -0.017313390970230103
+        ],
+        [
+          -0.3712780475616455,
+          -0.9272531270980835,
+          0.04851483553647995,
+          0.0023375849705189466
+        ],
+        [
+          0.00037629620055668056,
+          -0.052399784326553345,
+          -0.998625636100769,
+          1.531001091003418
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Shoulder",
+      "parent": "J_Bip_C_UpperChest",
+      "deform": true,
+      "head": [
+        0.021111615002155304,
+        0.02525080181658268,
+        1.366681456565857
+      ],
+      "tail": [
+        0.0892208144068718,
+        0.025250794366002083,
+        1.356989860534668
+      ],
+      "matrix": [
+        [
+          -0.14087602496147156,
+          0.9900270104408264,
+          -1.3207325366693112e-07,
+          0.021111615002155304
+        ],
+        [
+          1.1920928955078125e-07,
+          -1.1548397793603726e-07,
+          -0.9999997019767761,
+          0.02525080181658268
+        ],
+        [
+          -0.9900268912315369,
+          -0.14087587594985962,
+          -5.9604641222676946e-08,
+          1.366681456565857
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_UpperArm",
+      "parent": "J_Bip_L_Shoulder",
+      "deform": true,
+      "head": [
+        0.08914963901042938,
+        0.025250865146517754,
+        1.356489658355713
+      ],
+      "tail": [
+        0.1810024082660675,
+        0.025250833481550217,
+        1.1595107316970825
+      ],
+      "matrix": [
+        [
+          -0.9063076972961426,
+          0.4226180911064148,
+          4.231417847222474e-07,
+          0.08914963901042938
+        ],
+        [
+          -5.351263894226577e-07,
+          -1.4410258586394775e-07,
+          -0.9999999403953552,
+          0.025250865146517754
+        ],
+        [
+          -0.4226180613040924,
+          -0.9063076376914978,
+          3.989023866779462e-07,
+          1.356489658355713
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_LowerArm",
+      "parent": "J_Bip_L_UpperArm",
+      "deform": true,
+      "head": [
+        0.1810024082660675,
+        0.025250833481550217,
+        1.1595107316970825
+      ],
+      "tail": [
+        0.26660001277923584,
+        0.02525084652006626,
+        0.9759460687637329
+      ],
+      "matrix": [
+        [
+          -0.9063076972961426,
+          0.42261815071105957,
+          5.11654945967166e-07,
+          0.1810024082660675
+        ],
+        [
+          -5.351263894226577e-07,
+          6.533749541404177e-08,
+          -0.9999999403953552,
+          0.025250833481550217
+        ],
+        [
+          -0.4226180613040924,
+          -0.9063077569007874,
+          2.0908522913032357e-07,
+          1.1595107316970825
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Hand",
+      "parent": "J_Bip_L_LowerArm",
+      "deform": true,
+      "head": [
+        0.2666022777557373,
+        0.02522001415491104,
+        0.9759470820426941
+      ],
+      "tail": [
+        0.2874859869480133,
+        0.025220023468136787,
+        0.9311617612838745
+      ],
+      "matrix": [
+        [
+          -0.9063076972961426,
+          0.42261815071105957,
+          5.680014396602928e-07,
+          0.2666022777557373
+        ],
+        [
+          -5.351263894226577e-07,
+          1.9866470779561496e-07,
+          -0.9999999403953552,
+          0.02522001415491104
+        ],
+        [
+          -0.4226180613040924,
+          -0.9063077569007874,
+          8.824973463106289e-08,
+          0.9759470820426941
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Index1",
+      "parent": "J_Bip_L_Hand",
+      "deform": true,
+      "head": [
+        0.2993277311325073,
+        0.005713130813091993,
+        0.9230971336364746
+      ],
+      "tail": [
+        0.31257957220077515,
+        0.0063218045979738235,
+        0.8946784734725952
+      ],
+      "matrix": [
+        [
+          -0.9063076972961426,
+          0.4225385785102844,
+          0.00820201076567173,
+          0.2993277311325073
+        ],
+        [
+          6.09919652561075e-08,
+          0.01940774731338024,
+          -0.999811589717865,
+          0.005713130813091993
+        ],
+        [
+          -0.4226180613040924,
+          -0.9061371088027954,
+          -0.017589377239346504,
+          0.9230971336364746
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Index2",
+      "parent": "J_Bip_L_Index1",
+      "deform": true,
+      "head": [
+        0.31257927417755127,
+        0.006354412995278835,
+        0.894679069519043
+      ],
+      "tail": [
+        0.32022568583488464,
+        0.0070982822217047215,
+        0.8769617676734924
+      ],
+      "matrix": [
+        [
+          -0.9181336760520935,
+          0.39595621824264526,
+          0.01577938161790371,
+          0.31257927417755127
+        ],
+        [
+          -0.0005613781977444887,
+          0.038520049303770065,
+          -0.999257504940033,
+          0.006354412995278835
+        ],
+        [
+          -0.39626994729042053,
+          -0.917461097240448,
+          -0.03514423221349716,
+          0.894679069519043
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Index3",
+      "parent": "J_Bip_L_Index2",
+      "deform": true,
+      "head": [
+        0.3201981782913208,
+        0.0071374112740159035,
+        0.8769515752792358
+      ],
+      "tail": [
+        0.32397016882896423,
+        0.007459328509867191,
+        0.868069052696228
+      ],
+      "matrix": [
+        [
+          -0.9204355478286743,
+          0.3906523883342743,
+          0.013741862028837204,
+          0.3201981782913208
+        ],
+        [
+          -0.0007712304941378534,
+          0.03334002196788788,
+          -0.9994435906410217,
+          0.0071374112740159035
+        ],
+        [
+          -0.3908931016921997,
+          -0.9199343919754028,
+          -0.03038601204752922,
+          0.8769515752792358
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Little1",
+      "parent": "J_Bip_L_Hand",
+      "deform": true,
+      "head": [
+        0.2975819706916809,
+        0.05417325720191002,
+        0.9268409013748169
+      ],
+      "tail": [
+        0.31010863184928894,
+        0.05417325720191002,
+        0.8999773859977722
+      ],
+      "matrix": [
+        [
+          -0.9063076972961426,
+          0.42261815071105957,
+          4.883282258560939e-07,
+          0.2975819706916809
+        ],
+        [
+          -5.351263894226577e-07,
+          1.0141789630324638e-08,
+          -0.9999999403953552,
+          0.05417325720191002
+        ],
+        [
+          -0.4226180613040924,
+          -0.9063077569007874,
+          2.5910952672347776e-07,
+          0.9268409013748169
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Little2",
+      "parent": "J_Bip_L_Little1",
+      "deform": true,
+      "head": [
+        0.31010863184928894,
+        0.05417325720191002,
+        0.8999773859977722
+      ],
+      "tail": [
+        0.31732818484306335,
+        0.05417325720191002,
+        0.8844950199127197
+      ],
+      "matrix": [
+        [
+          -0.9063076972961426,
+          0.42261815071105957,
+          4.883356155005458e-07,
+          0.31010863184928894
+        ],
+        [
+          -5.351263894226577e-07,
+          1.0159226349060191e-08,
+          -0.9999999403953552,
+          0.05417325720191002
+        ],
+        [
+          -0.4226180613040924,
+          -0.9063077569007874,
+          2.5909372425303445e-07,
+          0.8999773859977722
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Little3",
+      "parent": "J_Bip_L_Little2",
+      "deform": true,
+      "head": [
+        0.31732818484306335,
+        0.05417325720191002,
+        0.8844950199127197
+      ],
+      "tail": [
+        0.32105711102485657,
+        0.05400910601019859,
+        0.8768122792243958
+      ],
+      "matrix": [
+        [
+          -0.8996335864067078,
+          0.43656739592552185,
+          -0.00825351383537054,
+          0.31732818484306335
+        ],
+        [
+          -0.0001534417679067701,
+          -0.01921817660331726,
+          -0.9998152256011963,
+          0.05417325720191002
+        ],
+        [
+          -0.4366452693939209,
+          -0.8994662761688232,
+          0.017356349155306816,
+          0.8844950199127197
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Middle1",
+      "parent": "J_Bip_L_Hand",
+      "deform": true,
+      "head": [
+        0.2996831238269806,
+        0.023188645020127296,
+        0.9223350286483765
+      ],
+      "tail": [
+        0.31444650888442993,
+        0.023188671097159386,
+        0.8906748294830322
+      ],
+      "matrix": [
+        [
+          -0.9063076972961426,
+          0.42261815071105957,
+          8.046096695579763e-07,
+          0.2996831238269806
+        ],
+        [
+          -5.351263894226577e-07,
+          7.585275625388022e-07,
+          -0.9999999403953552,
+          0.023188645020127296
+        ],
+        [
+          -0.4226180613040924,
+          -0.9063077569007874,
+          -4.191583116153197e-07,
+          0.9223350286483765
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Middle2",
+      "parent": "J_Bip_L_Middle1",
+      "deform": true,
+      "head": [
+        0.31444650888442993,
+        0.023188671097159386,
+        0.8906748294830322
+      ],
+      "tail": [
+        0.32355430722236633,
+        0.023188648745417595,
+        0.871143102645874
+      ],
+      "matrix": [
+        [
+          -0.9063076972961426,
+          0.42261815071105957,
+          5.0012545216304716e-08,
+          0.31444650888442993
+        ],
+        [
+          -5.351263894226577e-07,
+          -1.027001644615666e-06,
+          -0.9999999403953552,
+          0.023188671097159386
+        ],
+        [
+          -0.4226180613040924,
+          -0.9063077569007874,
+          1.1990807706752094e-06,
+          0.8906748294830322
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Middle3",
+      "parent": "J_Bip_L_Middle2",
+      "deform": true,
+      "head": [
+        0.32355430722236633,
+        0.023188648745417595,
+        0.871143102645874
+      ],
+      "tail": [
+        0.3281082212924957,
+        0.023188650608062744,
+        0.8613772392272949
+      ],
+      "matrix": [
+        [
+          -0.9063076972961426,
+          0.42261815071105957,
+          5.613894131784036e-07,
+          0.32355430722236633
+        ],
+        [
+          -5.351263894226577e-07,
+          1.8301932414033217e-07,
+          -0.9999999403953552,
+          0.023188648745417595
+        ],
+        [
+          -0.4226180613040924,
+          -0.9063077569007874,
+          1.0242922598990845e-07,
+          0.871143102645874
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Ring1",
+      "parent": "J_Bip_L_Hand",
+      "deform": true,
+      "head": [
+        0.2993820011615753,
+        0.03870450705289841,
+        0.922980785369873
+      ],
+      "tail": [
+        0.31307679414749146,
+        0.038704510778188705,
+        0.8936122059822083
+      ],
+      "matrix": [
+        [
+          -0.9063076972961426,
+          0.42261815071105957,
+          3.5075231608061586e-09,
+          0.2993820011615753
+        ],
+        [
+          6.092000148782972e-08,
+          1.4118393210083013e-07,
+          -0.9999999403953552,
+          0.03870450705289841
+        ],
+        [
+          -0.4226180613040924,
+          -0.9063077569007874,
+          -1.1155498214066029e-07,
+          0.922980785369873
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Ring2",
+      "parent": "J_Bip_L_Ring1",
+      "deform": true,
+      "head": [
+        0.31307679414749146,
+        0.038704510778188705,
+        0.8936122059822083
+      ],
+      "tail": [
+        0.32098010182380676,
+        0.038704533129930496,
+        0.8766635060310364
+      ],
+      "matrix": [
+        [
+          -0.9063076972961426,
+          0.4226181209087372,
+          9.934601621353067e-07,
+          0.31307679414749146
+        ],
+        [
+          -5.351263325792388e-07,
+          1.2053860700689256e-06,
+          -0.9999999403953552,
+          0.038704510778188705
+        ],
+        [
+          -0.4226180613040924,
+          -0.9063076972961426,
+          -8.241498221650545e-07,
+          0.8936122059822083
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Ring3",
+      "parent": "J_Bip_L_Ring2",
+      "deform": true,
+      "head": [
+        0.32098010182380676,
+        0.038704533129930496,
+        0.8766635060310364
+      ],
+      "tail": [
+        0.32482507824897766,
+        0.03891842067241669,
+        0.8681429028511047
+      ],
+      "matrix": [
+        [
+          -0.9114910364151001,
+          0.4112090766429901,
+          0.009532672353088856,
+          0.32098010182380676
+        ],
+        [
+          -0.00013595237396657467,
+          0.022874630987644196,
+          -0.9997382760047913,
+          0.038704533129930496
+        ],
+        [
+          -0.4113195836544037,
+          -0.9112536311149597,
+          -0.020794076845049858,
+          0.8766635060310364
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Thumb1",
+      "parent": "J_Bip_L_Hand",
+      "deform": true,
+      "head": [
+        0.2590046525001526,
+        0.009378372691571712,
+        0.9687390327453613
+      ],
+      "tail": [
+        0.2716106176376343,
+        -0.019786648452281952,
+        0.9370018839836121
+      ],
+      "matrix": [
+        [
+          0.3724823296070099,
+          0.2807045578956604,
+          -0.8845690488815308,
+          0.2590046525001526
+        ],
+        [
+          0.7523155808448792,
+          -0.64943528175354,
+          0.1107037216424942,
+          0.009378372691571712
+        ],
+        [
+          -0.5433949828147888,
+          -0.7067103385925293,
+          -0.4530813992023468,
+          0.9687390327453613
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Thumb2",
+      "parent": "J_Bip_L_Thumb1",
+      "deform": true,
+      "head": [
+        0.2712424099445343,
+        -0.02065342292189598,
+        0.9376521110534668
+      ],
+      "tail": [
+        0.2795664072036743,
+        -0.03762517124414444,
+        0.917593777179718
+      ],
+      "matrix": [
+        [
+          0.35934385657310486,
+          0.3020089268684387,
+          -0.8829850554466248,
+          0.2712424099445343
+        ],
+        [
+          0.7806205153465271,
+          -0.6157649159431458,
+          0.10707401484251022,
+          -0.02065342292189598
+        ],
+        [
+          -0.5113738775253296,
+          -0.7277525663375854,
+          -0.4570257067680359,
+          0.9376521110534668
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Thumb3",
+      "parent": "J_Bip_L_Thumb2",
+      "deform": true,
+      "head": [
+        0.27935895323753357,
+        -0.038168735802173615,
+        0.9179676175117493
+      ],
+      "tail": [
+        0.28291451930999756,
+        -0.047466080635786057,
+        0.9084369540214539
+      ],
+      "matrix": [
+        [
+          0.3825482428073883,
+          0.25800561904907227,
+          -0.8871805667877197,
+          0.27935895323753357
+        ],
+        [
+          0.7286466956138611,
+          -0.6746490597724915,
+          0.11799091100692749,
+          -0.038168735802173615
+        ],
+        [
+          -0.568093478679657,
+          -0.6915785074234009,
+          -0.4460808038711548,
+          0.9179676175117493
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Shoulder",
+      "parent": "J_Bip_C_UpperChest",
+      "deform": true,
+      "head": [
+        -0.021111615002155304,
+        0.02525080367922783,
+        1.366681456565857
+      ],
+      "tail": [
+        -0.08922082185745239,
+        0.025250788778066635,
+        1.356989860534668
+      ],
+      "matrix": [
+        [
+          -0.14087596535682678,
+          -0.9900270104408264,
+          2.3300516716062702e-07,
+          -0.021111615002155304
+        ],
+        [
+          -1.1920928955078125e-07,
+          -2.1606679467822687e-07,
+          -0.9999996423721313,
+          0.02525080367922783
+        ],
+        [
+          0.9900268912315369,
+          -0.14087578654289246,
+          2.9802320611338473e-08,
+          1.366681456565857
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_UpperArm",
+      "parent": "J_Bip_R_Shoulder",
+      "deform": true,
+      "head": [
+        -0.08914963901042938,
+        0.025250867009162903,
+        1.356489658355713
+      ],
+      "tail": [
+        -0.1810024082660675,
+        0.025250833481550217,
+        1.159510612487793
+      ],
+      "matrix": [
+        [
+          -0.9063077569007874,
+          -0.4226180911064148,
+          -3.463846951490268e-07,
+          -0.08914963901042938
+        ],
+        [
+          4.5529145609179977e-07,
+          -1.513194831659348e-07,
+          -0.9999998807907104,
+          0.025250867009162903
+        ],
+        [
+          0.4226181209087372,
+          -0.9063077569007874,
+          4.4694075995721505e-07,
+          1.356489658355713
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_LowerArm",
+      "parent": "J_Bip_R_UpperArm",
+      "deform": true,
+      "head": [
+        -0.1810024082660675,
+        0.025250833481550217,
+        1.159510612487793
+      ],
+      "tail": [
+        -0.26660001277923584,
+        0.025250833481550217,
+        0.9759458899497986
+      ],
+      "matrix": [
+        [
+          -0.9063077569007874,
+          -0.42261815071105957,
+          -4.115785827707441e-07,
+          -0.1810024082660675
+        ],
+        [
+          4.5529151293521863e-07,
+          2.9423294911623543e-09,
+          -0.9999998807907104,
+          0.025250833481550217
+        ],
+        [
+          0.4226181209087372,
+          -0.9063078761100769,
+          3.071320975323033e-07,
+          1.159510612487793
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Hand",
+      "parent": "J_Bip_R_LowerArm",
+      "deform": true,
+      "head": [
+        -0.2666022777557373,
+        0.025220012292265892,
+        0.9759469628334045
+      ],
+      "tail": [
+        -0.2874859869480133,
+        0.025220002979040146,
+        0.931161642074585
+      ],
+      "matrix": [
+        [
+          -0.9063077569007874,
+          -0.42261815071105957,
+          -1.1584748449422477e-07,
+          -0.2666022777557373
+        ],
+        [
+          2.1687296225536556e-07,
+          -1.8552682945482957e-07,
+          -0.9999998807907104,
+          0.025220012292265892
+        ],
+        [
+          0.4226181209087372,
+          -0.9063078761100769,
+          3.771831984522578e-07,
+          0.9759469628334045
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Index1",
+      "parent": "J_Bip_R_Hand",
+      "deform": true,
+      "head": [
+        -0.2993277311325073,
+        0.005713127087801695,
+        0.9230969548225403
+      ],
+      "tail": [
+        -0.31257957220077515,
+        0.006321798078715801,
+        0.8946782946586609
+      ],
+      "matrix": [
+        [
+          -0.9063077569007874,
+          -0.4225385785102844,
+          -0.00820189993828535,
+          -0.2993277311325073
+        ],
+        [
+          -1.4062845821172232e-07,
+          0.019407659769058228,
+          -0.9998115301132202,
+          0.005713127087801695
+        ],
+        [
+          0.4226181209087372,
+          -0.906137228012085,
+          -0.017589259892702103,
+          0.9230969548225403
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Index2",
+      "parent": "J_Bip_R_Index1",
+      "deform": true,
+      "head": [
+        -0.31257927417755127,
+        0.006354408338665962,
+        0.8946788907051086
+      ],
+      "tail": [
+        -0.32022568583488464,
+        0.007098276633769274,
+        0.8769615888595581
+      ],
+      "matrix": [
+        [
+          -0.9181337356567383,
+          -0.39595621824264526,
+          -0.015779173001646996,
+          -0.31257927417755127
+        ],
+        [
+          0.0005611776141449809,
+          0.03851998969912529,
+          -0.9992574453353882,
+          0.006354408338665962
+        ],
+        [
+          0.3962699770927429,
+          -0.9174612164497375,
+          -0.03514418751001358,
+          0.8946788907051086
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Index3",
+      "parent": "J_Bip_R_Index2",
+      "deform": true,
+      "head": [
+        -0.3201981782913208,
+        0.00713740661740303,
+        0.8769513964653015
+      ],
+      "tail": [
+        -0.32397016882896423,
+        0.007459323387593031,
+        0.8680688738822937
+      ],
+      "matrix": [
+        [
+          -0.9204356074333191,
+          -0.3906523585319519,
+          -0.013741761445999146,
+          -0.3201981782913208
+        ],
+        [
+          0.00077114871237427,
+          0.03333995118737221,
+          -0.999443531036377,
+          0.00713740661740303
+        ],
+        [
+          0.3908931016921997,
+          -0.9199344515800476,
+          -0.03038591518998146,
+          0.8769513964653015
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Little1",
+      "parent": "J_Bip_R_Hand",
+      "deform": true,
+      "head": [
+        -0.2975820004940033,
+        0.05417325347661972,
+        0.9268407821655273
+      ],
+      "tail": [
+        -0.31010866165161133,
+        0.05417325347661972,
+        0.8999772667884827
+      ],
+      "matrix": [
+        [
+          -0.9063077569007874,
+          -0.42261815071105957,
+          -4.1160126329486957e-07,
+          -0.2975820004940033
+        ],
+        [
+          4.552914845135092e-07,
+          2.996046077896608e-09,
+          -0.9999998807907104,
+          0.05417325347661972
+        ],
+        [
+          0.4226181209087372,
+          -0.9063078761100769,
+          3.07083411144049e-07,
+          0.9268407821655273
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Little2",
+      "parent": "J_Bip_R_Little1",
+      "deform": true,
+      "head": [
+        -0.31010866165161133,
+        0.05417325347661972,
+        0.8999772667884827
+      ],
+      "tail": [
+        -0.31732821464538574,
+        0.05417325347661972,
+        0.8844949007034302
+      ],
+      "matrix": [
+        [
+          -0.9063077569007874,
+          -0.42261815071105957,
+          -4.115785543490347e-07,
+          -0.31010866165161133
+        ],
+        [
+          4.552914845135092e-07,
+          2.9423148362184293e-09,
+          -0.9999998807907104,
+          0.05417325347661972
+        ],
+        [
+          0.4226181209087372,
+          -0.9063078761100769,
+          3.071320975323033e-07,
+          0.8999772667884827
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Little3",
+      "parent": "J_Bip_R_Little2",
+      "deform": true,
+      "head": [
+        -0.31732821464538574,
+        0.05417325347661972,
+        0.8844949007034302
+      ],
+      "tail": [
+        -0.32105714082717896,
+        0.054009102284908295,
+        0.8768121600151062
+      ],
+      "matrix": [
+        [
+          -0.8996336460113525,
+          -0.43656739592552185,
+          0.00825369730591774,
+          -0.31732821464538574
+        ],
+        [
+          0.00015324279956985265,
+          -0.019218184053897858,
+          -0.9998151659965515,
+          0.05417325347661972
+        ],
+        [
+          0.4366453289985657,
+          -0.8994663953781128,
+          0.017356345430016518,
+          0.8844949007034302
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Middle1",
+      "parent": "J_Bip_R_Hand",
+      "deform": true,
+      "head": [
+        -0.2996831238269806,
+        0.023188643157482147,
+        0.9223348498344421
+      ],
+      "tail": [
+        -0.31444650888442993,
+        0.023188669234514236,
+        0.8906746506690979
+      ],
+      "matrix": [
+        [
+          -0.9063077569007874,
+          -0.42261815071105957,
+          -7.262750614245306e-07,
+          -0.2996831238269806
+        ],
+        [
+          4.552914845135092e-07,
+          7.475778147636447e-07,
+          -0.9999998807907104,
+          0.023188643157482147
+        ],
+        [
+          0.4226181209087372,
+          -0.9063078761100769,
+          -3.6773701594938757e-07,
+          0.9223348498344421
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Middle2",
+      "parent": "J_Bip_R_Middle1",
+      "deform": true,
+      "head": [
+        -0.31444650888442993,
+        0.023188669234514236,
+        0.8906746506690979
+      ],
+      "tail": [
+        -0.32355430722236633,
+        0.023188646882772446,
+        0.8711429238319397
+      ],
+      "matrix": [
+        [
+          -0.9063077569007874,
+          -0.42261815071105957,
+          2.6744544356915867e-08,
+          -0.31444650888442993
+        ],
+        [
+          4.552914845135092e-07,
+          -1.034218598761072e-06,
+          -0.9999998807907104,
+          0.023188669234514236
+        ],
+        [
+          0.4226181209087372,
+          -0.9063078761100769,
+          1.247119257641316e-06,
+          0.8906746506690979
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Middle3",
+      "parent": "J_Bip_R_Middle2",
+      "deform": true,
+      "head": [
+        -0.32355430722236633,
+        0.023188646882772446,
+        0.8711429238319397
+      ],
+      "tail": [
+        -0.3281082212924957,
+        0.023188646882772446,
+        0.8613770604133606
+      ],
+      "matrix": [
+        [
+          -0.9063077569007874,
+          -0.42261815071105957,
+          -4.1157852592732524e-07,
+          -0.32355430722236633
+        ],
+        [
+          4.552914845135092e-07,
+          2.9423290470731445e-09,
+          -0.9999998807907104,
+          0.023188646882772446
+        ],
+        [
+          0.4226181209087372,
+          -0.9063078761100769,
+          3.0713204068888444e-07,
+          0.8711429238319397
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Ring1",
+      "parent": "J_Bip_R_Hand",
+      "deform": true,
+      "head": [
+        -0.2993820011615753,
+        0.03870450332760811,
+        0.9229806661605835
+      ],
+      "tail": [
+        -0.31307679414749146,
+        0.03870450705289841,
+        0.8936120867729187
+      ],
+      "matrix": [
+        [
+          -0.9063077569007874,
+          -0.42261815071105957,
+          8.681138297106372e-08,
+          -0.2993820011615753
+        ],
+        [
+          -1.4075490639697819e-07,
+          1.0187704901909456e-07,
+          -0.9999998807907104,
+          0.03870450332760811
+        ],
+        [
+          0.4226181209087372,
+          -0.9063078761100769,
+          -3.443324203544762e-08,
+          0.9229806661605835
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Ring2",
+      "parent": "J_Bip_R_Ring1",
+      "deform": true,
+      "head": [
+        -0.31307679414749146,
+        0.03870450705289841,
+        0.8936120867729187
+      ],
+      "tail": [
+        -0.32098010182380676,
+        0.0387045294046402,
+        0.8766633868217468
+      ],
+      "matrix": [
+        [
+          -0.9063077569007874,
+          -0.4226181209087372,
+          -7.006225359873497e-07,
+          -0.31307679414749146
+        ],
+        [
+          2.1687296225536556e-07,
+          1.1981691159235197e-06,
+          -0.9999998807907104,
+          0.03870450705289841
+        ],
+        [
+          0.4226181209087372,
+          -0.9063078165054321,
+          -8.768714678808465e-07,
+          0.8936120867729187
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Ring3",
+      "parent": "J_Bip_R_Ring2",
+      "deform": true,
+      "head": [
+        -0.32098010182380676,
+        0.0387045294046402,
+        0.8766633868217468
+      ],
+      "tail": [
+        -0.32482507824897766,
+        0.03891841694712639,
+        0.8681427836418152
+      ],
+      "matrix": [
+        [
+          -0.9114910960197449,
+          -0.4112090766429901,
+          -0.009532594121992588,
+          -0.32098010182380676
+        ],
+        [
+          0.00013587249850388616,
+          0.02287462167441845,
+          -0.9997382164001465,
+          0.0387045294046402
+        ],
+        [
+          0.41131964325904846,
+          -0.9112538695335388,
+          -0.020794028416275978,
+          0.8766633868217468
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Thumb1",
+      "parent": "J_Bip_R_Hand",
+      "deform": true,
+      "head": [
+        -0.2590046525001526,
+        0.009378370828926563,
+        0.9687389135360718
+      ],
+      "tail": [
+        -0.2716106176376343,
+        -0.019786659628152847,
+        0.9370017647743225
+      ],
+      "matrix": [
+        [
+          0.3724824786186218,
+          -0.28070440888404846,
+          0.8845691680908203,
+          -0.2590046525001526
+        ],
+        [
+          -0.7523154616355896,
+          -0.6494354605674744,
+          0.11070380359888077,
+          0.009378370828926563
+        ],
+        [
+          0.5433951616287231,
+          -0.7067103981971741,
+          -0.45308154821395874,
+          0.9687389135360718
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Thumb2",
+      "parent": "J_Bip_R_Thumb1",
+      "deform": true,
+      "head": [
+        -0.2712424099445343,
+        -0.020653434097766876,
+        0.9376519918441772
+      ],
+      "tail": [
+        -0.2795664072036743,
+        -0.03762517869472504,
+        0.9175936579704285
+      ],
+      "matrix": [
+        [
+          0.35934385657310486,
+          -0.3020089268684387,
+          0.8829851746559143,
+          -0.2712424099445343
+        ],
+        [
+          -0.7806205749511719,
+          -0.615764856338501,
+          0.10707400739192963,
+          -0.020653434097766876
+        ],
+        [
+          0.5113739371299744,
+          -0.7277528047561646,
+          -0.45702582597732544,
+          0.9376519918441772
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Thumb3",
+      "parent": "J_Bip_R_Thumb2",
+      "deform": true,
+      "head": [
+        -0.27935895323753357,
+        -0.03816874325275421,
+        0.9179674983024597
+      ],
+      "tail": [
+        -0.28291451930999756,
+        -0.04746608808636665,
+        0.9084368348121643
+      ],
+      "matrix": [
+        [
+          0.382548451423645,
+          -0.2580055892467499,
+          0.8871806263923645,
+          -0.27935895323753357
+        ],
+        [
+          -0.7286466956138611,
+          -0.6746491193771362,
+          0.11799108237028122,
+          -0.03816874325275421
+        ],
+        [
+          0.5680934190750122,
+          -0.6915786862373352,
+          -0.4460810422897339,
+          0.9179674983024597
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_UpperLeg",
+      "parent": "J_Bip_C_Hips",
+      "deform": true,
+      "head": [
+        0.07260619848966599,
+        5.233054980635643e-05,
+        0.9516816735267639
+      ],
+      "tail": [
+        0.0726061537861824,
+        0.008436409756541252,
+        0.5510116815567017
+      ],
+      "matrix": [
+        [
+          -1.0,
+          -1.0374175474225922e-07,
+          2.472787343776872e-07,
+          0.07260619848966599
+        ],
+        [
+          -2.4932307951530674e-07,
+          0.020920563489198685,
+          -0.9998111128807068,
+          5.233054980635643e-05
+        ],
+        [
+          9.854394988906279e-08,
+          -0.9997808337211609,
+          -0.020917875692248344,
+          0.9516816735267639
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_LowerLeg",
+      "parent": "J_Bip_L_UpperLeg",
+      "deform": true,
+      "head": [
+        0.0726061761379242,
+        0.010812915861606598,
+        0.5510613918304443
+      ],
+      "tail": [
+        0.07260613888502121,
+        0.04092520475387573,
+        0.09924697875976562
+      ],
+      "matrix": [
+        [
+          -1.0,
+          -8.226923142728992e-08,
+          2.2797219401127222e-07,
+          0.0726061761379242
+        ],
+        [
+          -2.328660428929652e-07,
+          0.06649994105100632,
+          -0.9978163838386536,
+          0.010812915861606598
+        ],
+        [
+          6.692538789820901e-08,
+          -0.997786283493042,
+          -0.0664958730340004,
+          0.5510613918304443
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_Foot",
+      "parent": "J_Bip_L_LowerLeg",
+      "deform": true,
+      "head": [
+        0.0726061761379242,
+        0.035752072930336,
+        0.09890222549438477
+      ],
+      "tail": [
+        0.07260619848966599,
+        -0.06347668170928955,
+        0.0983584076166153
+      ],
+      "matrix": [
+        [
+          1.0,
+          2.252580770800705e-07,
+          1.2472790331230499e-05,
+          0.0726061761379242
+        ],
+        [
+          1.5679688658565283e-07,
+          -1.000015139579773,
+          0.005482834298163652,
+          0.035752072930336
+        ],
+        [
+          1.2473833521653432e-05,
+          -0.005480536725372076,
+          -0.9999846816062927,
+          0.09890222549438477
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_L_ToeBase",
+      "parent": "J_Bip_L_Foot",
+      "deform": true,
+      "head": [
+        0.0726061761379242,
+        -0.06313872337341309,
+        0.03669509291648865
+      ],
+      "tail": [
+        0.0726061761379242,
+        -0.11275144666433334,
+        0.03620817884802818
+      ],
+      "matrix": [
+        [
+          1.0,
+          1.5987210199349539e-13,
+          -1.5183619552772143e-06,
+          0.0726061761379242
+        ],
+        [
+          1.4826817107405077e-08,
+          -0.9999818801879883,
+          0.009816511534154415,
+          -0.06313872337341309
+        ],
+        [
+          -1.5182895367615856e-06,
+          -0.009814084507524967,
+          -0.9999513030052185,
+          0.03669509291648865
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_UpperLeg",
+      "parent": "J_Bip_C_Hips",
+      "deform": true,
+      "head": [
+        -0.07260619848966599,
+        5.233054980635643e-05,
+        0.9516816735267639
+      ],
+      "tail": [
+        -0.07260624319314957,
+        0.008436409756541252,
+        0.5510116815567017
+      ],
+      "matrix": [
+        [
+          -1.0,
+          -1.0374175474225922e-07,
+          2.472787343776872e-07,
+          -0.07260619848966599
+        ],
+        [
+          -2.4932307951530674e-07,
+          0.020920563489198685,
+          -0.9998111128807068,
+          5.233054980635643e-05
+        ],
+        [
+          9.854394988906279e-08,
+          -0.9997808337211609,
+          -0.020917875692248344,
+          0.9516816735267639
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_LowerLeg",
+      "parent": "J_Bip_R_UpperLeg",
+      "deform": true,
+      "head": [
+        -0.07260619103908539,
+        0.010812915861606598,
+        0.5510613918304443
+      ],
+      "tail": [
+        -0.07260622829198837,
+        0.04092520475387573,
+        0.09924697875976562
+      ],
+      "matrix": [
+        [
+          -1.0,
+          -8.226922432186257e-08,
+          2.2797219401127222e-07,
+          -0.07260619103908539
+        ],
+        [
+          -2.328660428929652e-07,
+          0.06649994105100632,
+          -0.9978163838386536,
+          0.010812915861606598
+        ],
+        [
+          6.692538789820901e-08,
+          -0.997786283493042,
+          -0.0664958730340004,
+          0.5510613918304443
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_Foot",
+      "parent": "J_Bip_R_LowerLeg",
+      "deform": true,
+      "head": [
+        -0.07260619103908539,
+        0.035752072930336,
+        0.09890222549438477
+      ],
+      "tail": [
+        -0.0726061686873436,
+        -0.06347668170928955,
+        0.0983584076166153
+      ],
+      "matrix": [
+        [
+          1.0,
+          2.252580770800705e-07,
+          1.2472790331230499e-05,
+          -0.07260619103908539
+        ],
+        [
+          1.5679688658565283e-07,
+          -1.000015139579773,
+          0.005482834298163652,
+          0.035752072930336
+        ],
+        [
+          1.2473833521653432e-05,
+          -0.005480536725372076,
+          -0.9999846816062927,
+          0.09890222549438477
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    },
+    {
+      "name": "J_Bip_R_ToeBase",
+      "parent": "J_Bip_R_Foot",
+      "deform": true,
+      "head": [
+        -0.07260619103908539,
+        -0.06313872337341309,
+        0.03669509291648865
+      ],
+      "tail": [
+        -0.07260619103908539,
+        -0.11275144666433334,
+        0.03620817884802818
+      ],
+      "matrix": [
+        [
+          1.0,
+          1.5987210199349539e-13,
+          -1.5183619552772143e-06,
+          -0.07260619103908539
+        ],
+        [
+          1.4826817107405077e-08,
+          -0.9999818801879883,
+          0.009816511534154415,
+          -0.06313872337341309
+        ],
+        [
+          -1.5182895367615856e-06,
+          -0.009814084507524967,
+          -0.9999513030052185,
+          0.03669509291648865
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "constraints": []
+    }
+  ],
+  "collections": [
+    {
+      "name": "ElseIf_Source_VRM_UNTOUCHED",
+      "hide": true,
+      "objects": 3
+    },
+    {
+      "name": "ElseIf_Master",
+      "hide": false,
+      "objects": 15
+    },
+    {
+      "name": "ElseIf_Review_Stage",
+      "hide": false,
+      "objects": 10
+    },
+    {
+      "name": "ElseIf_Revision_Backups",
+      "hide": true,
+      "objects": 8
+    },
+    {
+      "name": "ElseIf_Fitting_Support",
+      "hide": false,
+      "objects": 1
+    },
+    {
+      "name": "ElseIf_Silhouette_Before_20260923",
+      "hide": true,
+      "objects": 1
+    },
+    {
+      "name": "ElseIf_Primary_Construction",
+      "hide": false,
+      "objects": 17
+    },
+    {
+      "name": "ElseIf_Approved_Silhouette_20260924",
+      "hide": true,
+      "objects": 1
+    },
+    {
+      "name": "ElseIf_Design_Basis",
+      "hide": false,
+      "objects": 95
+    }
+  ]
+}
