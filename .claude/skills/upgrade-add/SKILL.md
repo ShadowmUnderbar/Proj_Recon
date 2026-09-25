@@ -113,6 +113,7 @@ Googleスプレッドシート（正本）
 3. Unityで `Tools/マスターデータ/UpgradeData CSVインポート` 実行 → アセット生成＋Database更新
 4. 消費側は既存の `CalcMultiply/CalcAdd` が自動で拾うため**コード変更不要**
 5. [`playtest-run`](../playtest-run/SKILL.md) で獲得→効果反映を確認
+6. 新しい `NameKey` を足した場合は「ローカライズ表への追記」の3行を追加（レベル追加だけなら不要）
 
 ## パターンB: 新しい UpgradeType（新パラメータ系）
 
@@ -122,7 +123,8 @@ Googleスプレッドシート（正本）
    - 効果を効かせたい `Player*ParameterDataStore` に `IUpgradeEffectSimpleCalculatorDataStore` をDIで注入（VContainer。直接 `new` しない）
    - 基礎値に `CalcMultiply(UpgradeType.新規)`（倍率系）か `CalcAdd(...)`（加算系）を掛ける/足す
    - HP・回避系のように「基礎値を `BasePlayerParameter` から直接代入している箇所」がある場合、そこに補正を差し込む改修が要る（未接続タイプ問題と同じ轍を踏まないこと）
-4. コンパイル（`uloop-compile` スキル）→ `playtest-run` で検証
+4. 「ローカライズ表への追記」の3行を追加し、`{valueN}` を使うなら `UpgradeDescriptionFormatter.ValueFormats` に新タイプの変換規則を追加
+5. コンパイル（`uloop-compile` スキル）→ `playtest-run` で検証
 
 ## パターンC: GrantBuff型（条件付き・時限バフ）
 
@@ -148,8 +150,32 @@ BuffData.csv ヘッダー: `id,NameKey,ConditionType,ConditionValue,Duration,Eff
 3. `BuffDatabase.asset` と `UpgradeDatabase.asset` が更新されたことを確認。`CommonLifetimeScope`（`Assets/App/Script/Common/CommonLifetimeScope.cs`）に両Databaseが割当済みか確認
 4. 選択時挙動: `ShopUseCase.OnUpgradeSelected` が GrantBuff を見て `BuffDatabase.TryGetBuffMasterData(BuffId)` → `BuffStateDataStore.AddBuff`。BuffIdがDBに無いと `Debug.LogWarning`（`playtest-run` で検出される）
 5. **新しい発動条件や効果種別が必要な場合のみ**、`BuffStateDataStore`（効果合成・有効判定）と `BuffConditionUseCase`（入力購読）に分岐を追加。既存の条件/効果で足りるならコード変更不要
+6. 「ローカライズ表への追記」の3行を追加（数値はバフ側にあるため `{valueN}` は使わない）
 
 ---
+
+## ローカライズ表への追記（全パターン共通・必須）
+
+新しい `NameKey` を追加したら、**ローカライズ表のスプレッドシート**（マスターデータとは別。ID `17Lvu9ivs8Ybta8rvmfJ86YtqnEoRLdBkhbkGu-7b7VE`、`Upgrade` シート）に次の**3行**を追記する。表示側は `IUpgradeLocalizationDataStore.GetText` がこの3キーを引く（未登録だとキー文字列がそのまま出る）。
+
+| Key（A列） | 内容 | 例（ja-JP / en） |
+|---|---|---|
+| `$Name` | タイトル | 基礎威力アップ / Base Damage Up |
+| `$Name_SimpleDesc` | 簡略説明（一言） | 攻撃力が上昇する / Attack power increases |
+| `$Name_Desc` | 詳細説明（数値入り） | 攻撃力の基礎値が{value1}%アップ / Base attack power increases by {value1}%. |
+
+- **文言は大筋が合っていればよい。枠（キー行）だけでも可**。最終的な言い回しはユーザーが書き換えるので、文言の確認や磨き込みで止まらない。決めきれなければ B/C 列は空欄のまま3行だけ作る
+- 列は A=Key / B=Japanese (ja-JP) / C=English (en) の3列。既存行の末尾に `append-rows` で足す（途中に空行を作らない）
+  ```powershell
+  cd Tools/Sheets
+  node sheets-cli.mjs append-rows Upgrade '[["$Foo","フー","Foo"],["$Foo_SimpleDesc","",""],["$Foo_Desc","",""]]' --spreadsheet 17Lvu9ivs8Ybta8rvmfJ86YtqnEoRLdBkhbkGu-7b7VE
+  node sheets-cli.mjs get Upgrade --spreadsheet 17Lvu9ivs8Ybta8rvmfJ86YtqnEoRLdBkhbkGu-7b7VE   # 読み戻して確認
+  ```
+- 追記前に `get` で同じキーが既に無いか確認する（重複キーは Unity 側で片方しか引けなくなる）
+- **`{valueN}` を使う場合**: 詳細説明の `{value1}`〜`{value3}` は、そのアップグレード自身の Value を `UpgradeDescriptionFormatter`（`Assets/App/Script/Battle/DataStore/UpgradeDescriptionFormatter.cs`）が表示用に変換して埋め込む。**新しい `UpgradeType` を足したとき（パターンB）は、その `ValueFormats` 表にも1行追加する**（`Raw`=そのまま / `Percent`=0.05→5 / `MultiplierDelta`=1.1→10）。未登録のタイプは `{valueN}` が置換されずに残る
+- GrantBuff型（パターンC）は数値がバフ側にあり `{valueN}` が使えないため、単一レベルなら数値を直書き、複数レベルなら数値なしの説明にする
+- 既存の `NameKey` にレベルを足すだけ（パターンA）なら追記不要。ただしレベル表記キーは `$Level1_Upgrade`〜`$Level5_Upgrade` までしか無いので、**Lv6以上を作るときは `$Level{n}_Upgrade` も追記**する
+- Unity 側の String Table（`Assets/Localization/Upgrade_*.asset`）への取り込みはユーザー作業（PR本文で依頼する）
 
 ## 命名規則
 
@@ -163,6 +189,8 @@ BuffData.csv ヘッダー: `id,NameKey,ConditionType,ConditionValue,Duration,Eff
 - [ ] enum変更はスプレッドシート側にも反映したか（`UpgradeType.cs` を手編集で終わらせていないか）
 - [ ] パターンB/C で新タイプ・新条件を足したなら、**消費側コードを書いたか**（データだけで満足していないか）
 - [ ] `UpgradeDatabase.asset`（GrantBuffなら `BuffDatabase.asset` も）が配列更新されたか
+- [ ] 新しい `NameKey` の3行（`$Name` / `$Name_SimpleDesc` / `$Name_Desc`）をローカライズ表に追記したか（文言は大筋でよい・枠だけでも可）
+- [ ] パターンBで `{valueN}` を使うなら `UpgradeDescriptionFormatter.ValueFormats` に規則を足したか
 - [ ] `uloop-compile` でエラーなし
 - [ ] `playtest-run` でショップに候補が出て、獲得後に効果が反映され、`Debug.LogWarning/Error` が出ていないか
 - [ ] コード変更は日本語コミット＋PR（developベース）。Claudeの変更は必ずPR経由
@@ -199,7 +227,7 @@ GitHub Issue（`.github/ISSUE_TEMPLATE/add-upgrade.yml` のフォーム）で送
 
 1. `git checkout develop && git pull` → `feature/add-upgrade-<name>`（`<name>`はNameKeyの`$`除去・kebab化）を作成
 2. 変更をコミット（**日本語メッセージ + `Co-Authored-By`**）。差分には `UpgradeData.csv`・再生成された `.asset`（GrantBuffなら Buff 側も）・パターンBのコードを含む
-3. `gh pr create --base develop`（本文に対象issue番号 `Closes #N`、実装したパターン、playtest結果を日本語で記載）
+3. `gh pr create --base develop`（本文に対象issue番号 `Closes #N`、実装したパターン、playtest結果、ローカライズ表に追記したキーを日本語で記載）
 4. `gh issue comment <N>` でPRリンクを通知し、`gh issue close <N>`
 5. **マージは絶対にしない**（人間レビュー必須）。`main`/`develop` へのforce push禁止
 
