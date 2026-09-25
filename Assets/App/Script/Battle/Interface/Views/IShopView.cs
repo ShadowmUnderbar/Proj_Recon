@@ -28,6 +28,12 @@ namespace App.Battle.Interface
         void SetPurchasable(int index, bool isPurchasable);
 
         /// <summary>
+        /// 指定インデックスの候補にローカライズ済みの文言を反映する。
+        /// Open の後に呼ぶ。ロケール切替などで文言が変わったときも呼び直される
+        /// </summary>
+        void SetUpgradeText(int index, in UpgradeLocalizedText text);
+
+        /// <summary>
         /// 3Dカードの掴み・確定判定に使う片手ぶんの入力を渡す（VRのみ。それ以外では無視される）
         /// </summary>
         void UpdateHandInput(in ShopHandInput input);

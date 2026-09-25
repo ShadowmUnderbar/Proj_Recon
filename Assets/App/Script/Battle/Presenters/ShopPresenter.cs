@@ -42,6 +42,11 @@ namespace App.Battle.Presenters
             _shopView.SetPurchasable(index, isPurchasable);
         }
 
+        public void SetUpgradeText(int index, in UpgradeLocalizedText text)
+        {
+            _shopView.SetUpgradeText(index, text);
+        }
+
         public void UpdateHandInput(in ShopHandInput input)
         {
             _shopView.UpdateHandInput(input);

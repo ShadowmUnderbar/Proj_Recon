@@ -194,6 +194,19 @@ namespace App.Battle.Views
             }
         }
 
+        /// <summary>指定インデックスのカードに、ローカライズ済みの文言を反映する（購入済みで消えたカードは無視）</summary>
+        public void SetText(int index, in UpgradeLocalizedText text)
+        {
+            foreach (var card in _cards)
+            {
+                if (card.Index == index)
+                {
+                    card.SetText(text);
+                    return;
+                }
+            }
+        }
+
         /// <summary>片手ぶんの入力を受け取る。判定・移動は LateUpdate でまとめて行う</summary>
         public void UpdateHandInput(in ShopHandInput input)
         {
