@@ -570,60 +570,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &1576992898
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1576992900}
-  - component: {fileID: 1576992899}
-  m_Layer: 0
-  m_Name: CommonLifetimeScope
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1576992899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1576992898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd703d630da32054bb87a02ea1eba6c6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentReference:
-    TypeName: 
-  autoRun: 1
-  autoInjectGameObjects: []
-  _enemyDatabase: {fileID: 11400000, guid: 25a18e38d2d2dd749b250325309d63e7, type: 2}
-  _enemySpawnDatabase: {fileID: 11400000, guid: f9b5961c17d333a438c79cb9285f564b, type: 2}
-  _upgradeDatabase: {fileID: 11400000, guid: d9aef8c097885ae43a58b8faae724e81, type: 2}
-  _buffDatabase: {fileID: 11400000, guid: 151c973fef82b9749b1aa9286ecd29de, type: 2}
-  _waveScalingDatabase: {fileID: 11400000, guid: 302016ccb39ccea4d8311d82fbd3f5a3, type: 2}
-  _streamerModeConfig: {fileID: 11400000, guid: 48652d6077c903549a4d8fa114ea2a4f, type: 2}
---- !u!4 &1576992900
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1576992898}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1770217221
 GameObject:
   m_ObjectHideFlags: 0
@@ -727,7 +673,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1322864118}
   - {fileID: 175168502}
-  - {fileID: 1576992900}
   - {fileID: 304253001}
   - {fileID: 1131396428}
   - {fileID: 1770217225}

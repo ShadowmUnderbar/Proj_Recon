@@ -10,6 +10,7 @@ namespace App.Battle.Presenters
 
         public Observable<int> OnSaveSlotSelected => _gameOverView.OnSaveSlotSelected;
         public Observable<Unit> OnRestart => _gameOverView.OnRestart;
+        public Observable<Unit> OnReturnToMainMenu => _gameOverView.OnReturnToMainMenu;
 
         [Inject]
         public GameOverPresenter(IGameOverView gameOverView)

@@ -10,6 +10,9 @@ namespace App.Battle.Interface
         /// <summary>「リスタート」ボタン押下</summary>
         Observable<Unit> OnRestart { get; }
 
+        /// <summary>「メインメニューへ」ボタン押下</summary>
+        Observable<Unit> OnReturnToMainMenu { get; }
+
         void Show(string headline);
         void SetSlotLabel(int index, string label);
         void SetStatus(string status);

@@ -9,7 +9,7 @@ namespace App.Battle.Views
     /// <summary>
     /// ゲームオーバー画面（最小実装）。
     /// ランで獲得したアップグレードをスロット1〜3のいずれかに保存するボタンと、
-    /// ビルド選択からやり直すリスタートボタンを表示する。
+    /// ビルド選択からやり直すリスタートボタンと、メインメニューシーンへ戻るボタンを表示する。
     /// </summary>
     public class GameOverView : MonoBehaviour, IGameOverView
     {
@@ -32,11 +32,17 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("リスタートボタン（押すまでに保存していなければ保存せずやり直す）")]
         private Button _restartButton;
 
+        [SerializeField, Tooltip("メインメニューへ戻るボタン")]
+        private Button _returnToMainMenuButton;
+
         private readonly Subject<int> _onSaveSlotSelected = new();
         public Observable<int> OnSaveSlotSelected => _onSaveSlotSelected;
 
         private readonly Subject<Unit> _onRestart = new();
         public Observable<Unit> OnRestart => _onRestart;
+
+        private readonly Subject<Unit> _onReturnToMainMenu = new();
+        public Observable<Unit> OnReturnToMainMenu => _onReturnToMainMenu;
 
         private void Awake()
         {
@@ -49,6 +55,11 @@ namespace App.Battle.Views
             if (_restartButton != null)
             {
                 _restartButton.onClick.AddListener(() => _onRestart.OnNext(Unit.Default));
+            }
+
+            if (_returnToMainMenuButton != null)
+            {
+                _returnToMainMenuButton.onClick.AddListener(() => _onReturnToMainMenu.OnNext(Unit.Default));
             }
 
             // 初期状態は非表示
@@ -97,6 +108,7 @@ namespace App.Battle.Views
         {
             _onSaveSlotSelected.Dispose();
             _onRestart.Dispose();
+            _onReturnToMainMenu.Dispose();
         }
     }
 }

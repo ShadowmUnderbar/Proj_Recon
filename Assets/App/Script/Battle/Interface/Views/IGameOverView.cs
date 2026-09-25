@@ -3,7 +3,8 @@ using R3;
 namespace App.Battle.Interface
 {
     /// <summary>
-    /// ゲームオーバー画面のUI。スロット3つへの保存ボタン・リスタートボタンと状態テキストを持つ。
+    /// ゲームオーバー画面のUI。スロット3つへの保存ボタン・リスタートボタン・
+    /// メインメニューへ戻るボタンと状態テキストを持つ。
     /// </summary>
     public interface IGameOverView
     {
@@ -12,6 +13,9 @@ namespace App.Battle.Interface
 
         /// <summary>「リスタート」ボタン押下</summary>
         Observable<Unit> OnRestart { get; }
+
+        /// <summary>「メインメニューへ」ボタン押下</summary>
+        Observable<Unit> OnReturnToMainMenu { get; }
 
         /// <summary>画面を表示し、見出しを設定する</summary>
         void Show(string headline);

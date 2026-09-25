@@ -1,0 +1,24 @@
+{
+    "name": "App.MainMenu",
+    "rootNamespace": "",
+    "references": [
+        "GUID:b0214a6008ed146ff8f122a6a9c2f6cc",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:77221876cc6b8244180b96e320b1bcd4",
+        "GUID:f132077da0b539844bdbbae657da156d",
+        "GUID:e48ba82fc88d7f549912144c2b5a7e80",
+        "App.MainMenu.Interfaces",
+        "App.MainMenu.Views",
+        "App.MainMenu.Presenters",
+        "App.MainMenu.UseCase"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

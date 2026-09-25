@@ -42,6 +42,10 @@ namespace App.Common
             // ストリーマーモードのディスプレイ出力切り替え（ミラー表示の抑制）
             builder.RegisterEntryPoint<StreamerDisplayUseCase>();
 
+            // シーン遷移。常駐スコープに置くことでメインメニュー・バトルの双方から使える
+            builder.Register<SceneTransitionUseCase>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ISceneTransitionUseCase>();
+
             #endregion
 
             #region Config
