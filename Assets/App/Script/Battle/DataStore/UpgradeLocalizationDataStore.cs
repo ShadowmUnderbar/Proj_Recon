@@ -35,8 +35,14 @@ namespace App.Battle.DataStore
         private int _loadGeneration;
         private bool _isDisposed;
 
+        // 詳細説明の効果値の装飾（強化=青・弱化=赤の太字など）
+        private readonly UpgradeDescriptionStyle _descriptionStyle;
+
         [Inject]
-        public UpgradeLocalizationDataStore() { }
+        public UpgradeLocalizationDataStore(UpgradeDescriptionStyle descriptionStyle)
+        {
+            _descriptionStyle = descriptionStyle;
+        }
 
         public void Initialize()
         {
@@ -57,7 +63,7 @@ namespace App.Battle.DataStore
             return new UpgradeLocalizedText(
                 GetString(UpgradeLocalizationKey.Title(nameKey)),
                 GetString(UpgradeLocalizationKey.SimpleDescription(nameKey)),
-                UpgradeDescriptionFormatter.Format(descriptionTemplate, upgrade),
+                UpgradeDescriptionFormatter.Format(descriptionTemplate, upgrade, _descriptionStyle),
                 GetString(UpgradeLocalizationKey.Level(upgrade.Level))
             );
         }

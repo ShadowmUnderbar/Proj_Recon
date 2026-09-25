@@ -38,6 +38,7 @@ namespace App.Battle
         [SerializeField] private PointParticleConfig _pointParticleConfig;
         [SerializeField] private PointDropConfig _pointDropConfig;
         [SerializeField] private PlayerDeathConfig _playerDeathConfig;
+        [SerializeField] private UpgradeDescriptionStyle _upgradeDescriptionStyle;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -262,6 +263,8 @@ namespace App.Battle
             builder.RegisterInstance(_pointParticleConfig);
             builder.RegisterInstance(_pointDropConfig);
             builder.RegisterInstance(_playerDeathConfig);
+            // アップグレード詳細説明の効果値の装飾（UpgradeLocalizationDataStore が利用）
+            builder.RegisterInstance(_upgradeDescriptionStyle);
 
             #endregion
         }
