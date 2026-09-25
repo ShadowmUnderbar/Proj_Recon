@@ -28,6 +28,7 @@ namespace App.Battle
         [SerializeField] private BulletStoreView _bulletStoreView;
         [SerializeField] private ShopView _shopView;
         [SerializeField] private GameOverView _gameOverView;
+        [SerializeField] private PlayerLifeGaugeView _playerLifeGaugeView;
         [SerializeField] private RunStartView _runStartView;
         [SerializeField] private WaveConfig _waveConfig;
         [SerializeField] private StreamerCameraView _streamerCameraView;
@@ -147,6 +148,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
             builder.RegisterEntryPoint<GameOverUseCase>();
+            builder.RegisterEntryPoint<PlayerLifeGaugeUseCase>();
             builder.RegisterEntryPoint<RunStartUseCase>();
             builder.RegisterEntryPoint<StreamerCameraUseCase>();
 
@@ -165,6 +167,8 @@ namespace App.Battle
                 .As<IShopPresenter>();
             builder.Register<GameOverPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IGameOverPresenter>();
+            builder.Register<PlayerLifeGaugePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPlayerLifeGaugePresenter>();
             builder.Register<RunStartPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IRunStartPresenter>();
             builder.Register<StreamerCameraPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -184,6 +188,10 @@ namespace App.Battle
 
             builder.RegisterComponentInNewPrefab(_gameOverView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IGameOverView>();
+
+            // 足元の半円ライフゲージ。プレイヤー位置へはUseCase経由で追従させる
+            builder.RegisterComponentInNewPrefab(_playerLifeGaugeView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<IPlayerLifeGaugeView>();
 
             builder.RegisterComponentInNewPrefab(_runStartView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IRunStartView>();
