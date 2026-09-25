@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 2
   _wave: 3
-  _atkBuff: 1.1
+  _atkBuff: 1.05
   _hpBuff: 1.15
