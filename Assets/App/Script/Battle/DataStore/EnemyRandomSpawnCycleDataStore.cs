@@ -7,7 +7,7 @@ using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
-    public class EnemyRandomSpawnCycleDataStore : IEnemyRandomSpawnCycleDataStore, ITickable
+    public class EnemyRandomSpawnCycleDataStore : IEnemyRandomSpawnCycleDataStore, IRunResettable, ITickable
     {
         private readonly IWaveManagerDataStore _waveManagerDataStore;
 
@@ -35,16 +35,20 @@ namespace App.Battle.DataStore
         private float SpawnDistanceMin => 25f;
         private float SpawnDistanceMax => 40f;
 
+        // ラン開始時の同時スポーン数。リスタートでここまで戻す
+        private const int InitialCommonSpawnCounts = 2;
+        private const float InitialMinorSpawnCounts = 1f;
+
         private float _commonSpawnCycle;
         private float CommonSpawnInterval => 4f;
-        private int _commonSpawnCounts = 2;
+        private int _commonSpawnCounts = InitialCommonSpawnCounts;
 
         private float CommonSpawnCountUpInterval => 40f;
         private float _commonSpawnCountUpCycle;
 
         private float _minorSpawnCycle;
         private float MinorSpawnInterval => 20f;
-        private float _minorSpawnCounts = 1;
+        private float _minorSpawnCounts = InitialMinorSpawnCounts;
 
         private float _majorSpawnCycle;
         private float MajorSpawnInterval => 50f;
@@ -88,6 +92,14 @@ namespace App.Battle.DataStore
                 _minorSpawnCounts *= 1.5f;
                 _onSpawnMajorEnemy.OnNext(Unit.Default);
             }
+        }
+
+        public void ResetRun()
+        {
+            // ウェーブ跨ぎでは維持される難易度カウントも、ランをやり直すときだけ初期値へ戻す
+            ResetSpawnCycle();
+            _commonSpawnCounts = InitialCommonSpawnCounts;
+            _minorSpawnCounts = InitialMinorSpawnCounts;
         }
 
         public void ResetSpawnCycle()

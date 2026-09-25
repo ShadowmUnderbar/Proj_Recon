@@ -31,6 +31,9 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("次のウェーブへボタン")]
         private Button _nextWaveButton;
 
+        [SerializeField, Tooltip("所持ポイントの表示")]
+        private Text _currentPointLabel;
+
         [SerializeField, Tooltip("VRでアップグレード候補を並べる3Dカードのボード")]
         private UpgradeCardBoardView _upgradeCardBoardView;
 
@@ -89,7 +92,10 @@ namespace App.Battle.Views
 
                 if (hasCandidate)
                 {
-                    _upgradeButtonLabels[i].text = $"{upgrades[i].NameKey}\nLv.{upgrades[i].Level}";
+                    // 購入コストを併記する（コスト0は無償の候補）
+                    _upgradeButtonLabels[i].text =
+                        $"{upgrades[i].NameKey}\nLv.{upgrades[i].Level}\n{upgrades[i].Cost} P";
+                    _upgradeButtons[i].interactable = true;
                 }
             }
         }
@@ -119,6 +125,26 @@ namespace App.Battle.Views
             }
 
             _upgradeCardBoardView.UpdateHandInput(input);
+        }
+
+        public void SetCurrentPoint(int currentPoint)
+        {
+            if (_currentPointLabel == null)
+            {
+                return;
+            }
+
+            _currentPointLabel.text = $"所持ポイント: {currentPoint} P";
+        }
+
+        public void SetPurchasable(int index, bool isPurchasable)
+        {
+            if (index < 0 || index >= _upgradeButtons.Length)
+            {
+                return;
+            }
+
+            _upgradeButtons[index].interactable = isPurchasable;
         }
 
         public void Close()

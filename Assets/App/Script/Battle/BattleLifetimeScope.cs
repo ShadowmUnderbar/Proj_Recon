@@ -24,19 +24,28 @@ namespace App.Battle
         [SerializeField] private HitBoxStoreView _hitBoxStoreView;
         [SerializeField] private BlitzEffectView _blitzEffectView;
         [SerializeField] private BulletTracerView _bulletTracerView;
+        [SerializeField] private CounterTracerView _counterTracerView;
         [SerializeField] private BulletStoreView _bulletStoreView;
         [SerializeField] private ShopView _shopView;
         [SerializeField] private GameOverView _gameOverView;
+        [SerializeField] private PlayerLifeGaugeView _playerLifeGaugeView;
         [SerializeField] private RunStartView _runStartView;
         [SerializeField] private WaveConfig _waveConfig;
         [SerializeField] private StreamerCameraView _streamerCameraView;
         [SerializeField] private StreamerCameraTriggerConfig _streamerCameraTriggerConfig;
+        [SerializeField] private DodgeCounterAttackConfig _dodgeCounterAttackConfig;
+        [SerializeField] private PointParticleStoreView _pointParticleStoreView;
+        [SerializeField] private PointParticleConfig _pointParticleConfig;
+        [SerializeField] private PointDropConfig _pointDropConfig;
+        [SerializeField] private PlayerDeathConfig _playerDeathConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
             #region DataStore
 
             // 登録順序がTick順序に影響するため、依存順に登録
+            builder.Register<FreezeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IFreezeDataStore>();
             builder.Register<PlayerStateDataStore>(Lifetime.Singleton)
                 .AsImplementedInterfaces().As<IPlayerStateDataStore>();
             builder.Register<PlayerFocusDataStore>(Lifetime.Singleton)
@@ -45,6 +54,9 @@ namespace App.Battle
                 .AsImplementedInterfaces().As<IPlayerAimDataStore>();
             builder.Register<PlayerShotTypeDataStore>(Lifetime.Singleton)
                 .AsImplementedInterfaces().As<IPlayerShotTypeDataStore>();
+            // 敵のスポーン時HP・攻撃力の決定に使う（EnemyDataStoreが依存）
+            builder.Register<EnemyWaveScalingCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IEnemyWaveScalingCalculatorDataStore>();
             builder.Register<EnemyDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IEnemyDataStore>();
             builder.Register<EnemyRandomSpawnCycleDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IEnemyRandomSpawnCycleDataStore>();
@@ -56,8 +68,8 @@ namespace App.Battle
                 .As<IPlayerBulletParameterDataStore>();
             builder.Register<PlayerDodgeParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerDodgeParameterDataStore>();
-            builder.Register<ParryingDaggerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
-                .As<IParryingDaggerDataStore>();
+            builder.Register<DodgeCounterAttackDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IDodgeCounterAttackDataStore>();
             builder.Register<ElectricShockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IElectricShockDataStore>();
             builder.Register<ShotConflictDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -96,6 +108,10 @@ namespace App.Battle
                 .As<IGameStateDataStore>();
             builder.Register<RunStartDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IRunStartDataStore>();
+            builder.Register<PointDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPointDataStore>();
+            builder.Register<PointDropCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPointDropCalculatorDataStore>();
             builder.Register<StreamerCameraDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IStreamerCameraDataStore>();
 
@@ -105,6 +121,9 @@ namespace App.Battle
 
             // アップグレード付与副作用の共通処理（ShopUseCase・RunStartUseCaseが利用）
             builder.Register<UpgradeSideEffectApplier>(Lifetime.Singleton);
+
+            // ラン状態の一括リセット（GameOverUseCaseのリスタートが利用）
+            builder.Register<RunResetUseCase>(Lifetime.Singleton);
 
             // 配信用カメラのフレーミング計算（StreamerCameraViewが利用）
             builder.Register<StreamerCameraFramingCalculator>(Lifetime.Singleton);
@@ -119,16 +138,21 @@ namespace App.Battle
             builder.RegisterEntryPoint<EnemySpawnUseCase>();
             builder.RegisterEntryPoint<EnemyControlUseCase>();
             builder.RegisterEntryPoint<PlayerGazeUseCase>();
+            // BattleHitUseCase は撃破通知の中で敵データを消すため、
+            // 撃破地点を参照するポイントドロップを先に購読させる（購読順＝登録順）
+            builder.RegisterEntryPoint<PointDropUseCase>();
             builder.RegisterEntryPoint<BattleHitUseCase>();
             builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
-            builder.RegisterEntryPoint<ParryingDaggerUseCase>();
+            builder.RegisterEntryPoint<FreezeUseCase>();
+            builder.RegisterEntryPoint<DodgeCounterAttackUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
             builder.RegisterEntryPoint<GameOverUseCase>();
+            builder.RegisterEntryPoint<PlayerLifeGaugeUseCase>();
             builder.RegisterEntryPoint<RunStartUseCase>();
             builder.RegisterEntryPoint<StreamerCameraUseCase>();
 
@@ -147,10 +171,14 @@ namespace App.Battle
                 .As<IShopPresenter>();
             builder.Register<GameOverPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IGameOverPresenter>();
+            builder.Register<PlayerLifeGaugePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPlayerLifeGaugePresenter>();
             builder.Register<RunStartPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IRunStartPresenter>();
             builder.Register<StreamerCameraPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IStreamerCameraPresenter>();
+            builder.Register<PointParticlePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPointParticlePresenter>();
 
             #endregion
 
@@ -164,6 +192,10 @@ namespace App.Battle
 
             builder.RegisterComponentInNewPrefab(_gameOverView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IGameOverView>();
+
+            // 足元の半円ライフゲージ。プレイヤー位置へはUseCase経由で追従させる
+            builder.RegisterComponentInNewPrefab(_playerLifeGaugeView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<IPlayerLifeGaugeView>();
 
             builder.RegisterComponentInNewPrefab(_runStartView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IRunStartView>();
@@ -208,11 +240,25 @@ namespace App.Battle
                 .As<ISimpleObjectFactory<BulletTracerView>>()
                 .WithParameter("prefab", _bulletTracerView);
 
+            builder.Register<TracerFreezeState>(Lifetime.Singleton).As<ITracerFreezeState>();
+
+            builder.Register<SimpleObjectFactory<CounterTracerView, CounterTracerView>>(Lifetime.Singleton)
+                .As<ISimpleObjectFactory<CounterTracerView>>()
+                .WithParameter("prefab", _counterTracerView);
+
             builder.RegisterComponentInNewPrefab(_bulletStoreView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IBulletStoreView>();
 
+            builder.RegisterComponentInNewPrefab(_pointParticleStoreView, Lifetime.Singleton)
+                .UnderTransform(transform)
+                .AsImplementedInterfaces().As<IPointParticleStoreView>();
+
             builder.RegisterInstance(_waveConfig);
             builder.RegisterInstance(_streamerCameraTriggerConfig);
+            builder.RegisterInstance(_dodgeCounterAttackConfig);
+            builder.RegisterInstance(_pointParticleConfig);
+            builder.RegisterInstance(_pointDropConfig);
+            builder.RegisterInstance(_playerDeathConfig);
 
             #endregion
         }

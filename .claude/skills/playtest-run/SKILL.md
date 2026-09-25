@@ -29,7 +29,8 @@ $f = "Tools/Playtest/対象ファイル.ps1"
 
 - ゲームシーンは`Assets/Scenes/SampleScene.unity`の1本のみ
 - プレイヤーのHP減少は実装済み（PR #34）。敵の攻撃がプレイヤーの被弾受け（`PlayerDamageReceiverView`）に当たると`PlayerStateDataStore.Health`が減る
-- **ゲームオーバー判定は実装済み**（メタ進行Phase1）。HPが0になると`GameStateDataStore.IsGameOver`がtrueになり`GameOverUseCase`がウェーブをポーズ＋ゲームオーバー画面（`GameOverView`）を表示する。ランナーは`Get-WaveState`の`isGameOver`を監視し、**ゲームオーバーを検出したらスロット0保存ボタン（`Invoke-GameOverSlotSave`）を押してから正常終端**する（エラー扱いにはしない）。つまり終端は「目標ウェーブ到達」か「ゲームオーバー」のどちらか。ランダムドリルは被弾を避けないため、目標ウェーブ到達前にゲームオーバーで終わることがある（正常）。HP0まで到達させたくない検証（全ウェーブクリアの確認等）をしたい場合は将来的に無敵/回復手段の注入が要る
+- **ゲームオーバー判定は実装済み**（メタ進行Phase1）。HPが0になると`GameStateDataStore.IsGameOver`がtrueになり`GameOverUseCase`がウェーブをポーズ＋ゲームオーバー画面（`GameOverView`）を表示する。ランナーは`Get-WaveState`の`isGameOver`を監視し、**ゲームオーバーを検出したらスロット0保存ボタン（`Invoke-GameOverSlotSave`）を押してから正常終端**する（エラー扱いにはしない）。**スロット保存を押しても画面は閉じない**（保存とリスタートを分けたため）。画面を閉じるのは`RestartButton`で、押すとラン状態が初期化されビルド選択（`RunStartView`）へ戻る。この経路は`GameOverRestart`プローブで検証している。つまり終端は「目標ウェーブ到達」か「ゲームオーバー」のどちらか。ランダムドリルは被弾を避けないため、目標ウェーブ到達前にゲームオーバーで終わることがある（正常）。HP0まで到達させたくない検証（全ウェーブクリアの確認等）をしたい場合は将来的に無敵/回復手段の注入が要る
+- **HP0の直後にはゲームオーバー画面は出ない**。死亡演出（ヒットストップ→死亡アニメ→余韻、`PlayerDeathConfig`で調整）を挟むため、既定で約1.4秒遅れて表示される。ボタンを押す処理は固定待ちにせず`Wait-GameOverPanel`で表示を待つこと（`Invoke-GameOverSlotSave`は内部で待つ）。演出そのものは`PlayerDeath`プローブで検証している
 - **ラン開始時にセット選択ゲートがある**（メタ進行Phase2）。Play開始直後は`RunStartDataStore.IsSelecting=true`＋`IsWavePause=true`でゲームが停止し、セット選択UI（`RunStartView`）が出る。ランナーは`Get-WaveState`の`isSelectingRunStart`を見て、`Resolve-RunStartIfSelecting`で「使わずに開始」ボタンを押しランを始める（プレイテストはセットを読み込まずに開始する）。この解除を最優先で処理するため、`isSelectingRunStart`の間はショップ/ゲームオーバー処理より先に返す
 - ウェーブ数を表示するUIは存在しない → 状態はUIではなく`execute-dynamic-code`経由でDataStoreから読む
 - ショップの開閉状態を公開するプロパティはない → `IsWavePause`とショップUIプレハブ（`ShopView`）の出現で判断する
@@ -63,7 +64,7 @@ function PlaytestScenarioStep {
     # ここでInvoke-Uloopを使い、移動・発射・フォーム切替などを組み立てる。
 }
 ```
-既存の`FixedFlow.ps1`（決め打ち移動+発射）・`RandomDrill.ps1`（移動/発射/フォーム/フォーカス/回避をサイクルごとに変える）を参考にする。ショップでのアップグレード選択・次ウェーブ操作は`PlaytestCommon.ps1`の`Resolve-ShopIfOpen`が共通処理として自動で行う（アップグレードを1つ選択=常に最初の候補`UpgradeButton0`→`NextWaveButton`押下→ポーズ解除を確認できるまで最大3回リトライ、解除されなければthrow）。
+既存の`FixedFlow.ps1`（決め打ち移動+発射）・`RandomDrill.ps1`（移動/発射/フォーム/フォーカス/回避をサイクルごとに変える）を参考にする。ショップでのアップグレード選択・次ウェーブ操作は`PlaytestCommon.ps1`の`Resolve-ShopIfOpen`が共通処理として自動で行う（アップグレードを1つ選択=常に最初の候補`UpgradeButton0`→`NextWaveButton`押下。通貨制の導入後、所持ポイントが足りない候補のボタンは`interactable=false`になるため、押しても購入されずに次ウェーブへ進む（異常ではない）→ポーズ解除を確認できるまで最大3回リトライ、解除されなければthrow）。
 
 ## 演出の数値検証（プローブ）
 
@@ -73,6 +74,13 @@ function PlaytestScenarioStep {
 & "Tools/Playtest/probe-effect.ps1" -Probe StreamerCameraShot
 ```
 終了コード0=全項目OK、1=検証NGまたはエラー検出、2=プローブ指定ミス。結果は`Tools/Playtest/Reports/probe_*.json`に保存される（最大10件、`.gitignore`済み）。
+
+### 表示判定とデバッグ設定の落とし穴（実証済み）
+
+- **パス形式の`GameObject.Find("A/B/C")`は非アクティブなオブジェクトも返す**。UIの表示/非表示を確かめるときは`activeInHierarchy`まで見ること（見ないと常にtrueになり、検証が素通りする）
+- **デバッグウィンドウの「開始時アップグレード」（EditorPrefs）が入ったままだと実測値がぶれる**。実際にバリアが致死ダメージを丸ごと吸収してHPを0にできなかった。期待値を固定したいプローブは`ProbePrepare`でEditorPrefsを退避・クリアし、`ProbeCleanup`で戻す（`Probes/GameOverRestart.ps1`が実例）
+- **短い演出は別々の`Invoke-UnityJson`で観測できない**。uloopの往復は数百msかかるため、0.2秒のヒットストップは次の呼び出しでは既に明けている。同期的に起きる状態は「起点の処理と同じスニペット内」で読むこと（`Probes/PlayerDeath.ps1`が実例）
+- **`UseCase`を`IRunResettable`にするときは`RunResetUseCase`を注入していないか確認する**。両方満たすとVContainerが循環参照になり、`InvalidOperationException: ValueFactory attempted to access the Value property`でコンテナ構築ごと失敗する（`GameOverUseCase`で実際に踏んだ）
 
 ### 検証の組み立て方（実証済みのパターン）
 
@@ -116,6 +124,8 @@ C#スニペットはPowerShellの**単一引用符ヒアストリング**（`@'`
 
 ### 既存のプローブ
 
+- `ShopPurchase` — ショップの通貨制。ポイント0では買えない／表示中にポイントが入るとその場で買えるようになる／購入でコストが引かれる／同じショップで続けて買える／購入済みボタンの再押下で二重取得・二重支払いしない、を17項目で検証する。コストは固定値を仮定せずボタンのラベルから読むこと（デバッグ用の開始アップグレードが載っているとLv2以上＝別コストの候補が並ぶ）。`AppliedUpgrades` の件数も必ず差分で見ること
+- `PointParticleDrop` — 敵撃破時のポイント粒子ドロップ。ドロップ量の分割内訳・撃破時の生成数・接触回収・弾の通過回収（弾が消えないこと）・即着弾での回収・ウェーブ切り替わり時の一括消去・プレイヤーの高さへの追従・取得判定の最小サイズ・弾を当てた粒子の吸い込み（距離に依らず0.5秒で完了）を29項目で検証する。弾の検証は粒子と同じ高さの水平弾道で撃つこと（斜め撃ちは銃口が地面に埋まって弾が即消える）。粒子は専用レイヤー `PointParticle`（8）にあり、レイキャスト側で除外しているため通常のクエリでは掛からない。生成直後の粒子は同じフレームの物理クエリに反映されないので、粒子を出してから撃つまでに必ず1フレーム待つこと。ウェーブ進行の検証は `AddElapsedTime` で実際のTick経路を通すこと（DataStoreの `AdvanceWave()` 直叩きでは一括消去を含む `AdvanceWaveInternal` を通らない）。弾道の検証では `IEnemyDataStore.RemoveAllEnemyData` だけでなく `IEnemyPresenter.RemoveAllEnemies` も呼ぶこと（データだけ消しても敵のビューが残って弾道を塞ぐ）。粒子はプレイヤーの高さへ移動し続けるため、撃つ前に高さが落ち着くまで待つこと。弾を当てた粒子は即座には回収されず吸い込み（既定0.5秒）を挟むので、回収の確認は弾の到達時間＋0.5秒ぶん待つこと。吸い込みの「最中」を狙って観測するとuloop呼び出しの往復時間で窓を外してフレークするため、状態は同期的に読める場所で確認し、完了は時間の下限だけ待って確かめること
 - `StreamerCameraShot` — ストリーマーモードの配信用カメラ。追従一致・自動フレーミング距離・注視方向・Orbitの回り込み・プレイヤー視点への非干渉・復帰を20項目で検証する。`ProbePrepare`で`StreamerModeConfig`を一時的に有効化（PCモードでも動くよう`_vrOnly`を外す）し、`ProbeCleanup`で元の値へ必ず戻す
 
 ### 状態観測の仕組み（`Get-WaveState`の内部）

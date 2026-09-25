@@ -1,0 +1,14 @@
+{
+  "Topo__ElseIf_Mannequin": {
+    "before_triangles": 7520,
+    "deleted_triangles": 1280,
+    "after_triangles": 6240,
+    "deleted_faces": 1280
+  },
+  "Topo__ElseIf_Anatomy_Restoration": {
+    "before_triangles": 36024,
+    "deleted_triangles": 1602,
+    "after_triangles": 34422,
+    "deleted_faces": 801
+  }
+}

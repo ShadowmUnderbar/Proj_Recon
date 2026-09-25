@@ -83,3 +83,15 @@ Tools/Sheets/package-lock.json
 # 実行時セーブデータ（SaveDataStoreがApplication.dataPath配下に書き出す。ソース管理対象外）
 /Assets/DLHN/
 /Assets/DLHN.meta
+.cursor/mcp.json
+.mcp.json
+
+# Art（Blender作業ディレクトリ）
+# 工程フォルダの中間世代・自動バックアップ・参考画像は追跡しない
+Art/**/*.blend
+Art/**/*.blend1
+Art/**/*.jpg
+Art/**/__pycache__/
+# 最新の原本のみ Art/Latest/ に置いてLFSで追跡する
+!Art/Latest/*.blend
+!Art/Latest/**/*.blend

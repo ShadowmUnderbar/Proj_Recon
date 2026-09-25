@@ -1,0 +1,30 @@
+{
+  "Opt__ElseIf_Mannequin": {
+    "1": {
+      "faces": 2573,
+      "triangles": 2573
+    },
+    "2": {
+      "faces": 1239,
+      "triangles": 1239
+    },
+    "3": {
+      "faces": 3708,
+      "triangles": 3708
+    }
+  },
+  "Opt__ElseIf_Anatomy_Restoration": {
+    "1": {
+      "faces": 600,
+      "triangles": 1200
+    },
+    "2": {
+      "faces": 887,
+      "triangles": 1774
+    },
+    "3": {
+      "faces": 16525,
+      "triangles": 33050
+    }
+  }
+}

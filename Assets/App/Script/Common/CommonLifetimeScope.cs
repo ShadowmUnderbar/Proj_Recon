@@ -15,6 +15,7 @@ namespace App.Common
         [SerializeField] private EnemySpawnDatabase _enemySpawnDatabase;
         [SerializeField] private UpgradeDatabase _upgradeDatabase;
         [SerializeField] private BuffDatabase _buffDatabase;
+        [SerializeField] private WaveScalingDatabase _waveScalingDatabase;
         [SerializeField] private StreamerModeConfig _streamerModeConfig;
 
         protected override void Configure(IContainerBuilder builder)
@@ -56,6 +57,8 @@ namespace App.Common
             builder.RegisterInstance(_enemySpawnDatabase);
             builder.RegisterInstance(_upgradeDatabase);
             builder.RegisterInstance(_buffDatabase);
+            // ウェーブ強化の増加率テーブル。BattleLifetimeScope（子スコープ）から解決される
+            builder.RegisterInstance(_waveScalingDatabase);
 
             #endregion
         }

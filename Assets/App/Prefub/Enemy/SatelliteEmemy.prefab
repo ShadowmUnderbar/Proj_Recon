@@ -160,6 +160,7 @@ GameObject:
   - component: {fileID: 2796764521119824477}
   - component: {fileID: 9011892144538251905}
   - component: {fileID: 3444613555652714715}
+  - component: {fileID: 2189775807663696963}
   m_Layer: 6
   m_Name: SatelliteEmemy
   m_TagString: Enemy
@@ -248,6 +249,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _visualRoot: {fileID: 1269631385687991252}
   _config: {fileID: 11400000, guid: 2a7a085e7749d3c429d8d774577df907, type: 2}
+--- !u!114 &2189775807663696963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6969719736142006962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dd0084eae59aab4a8dc4fd9fd3a1bb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _config: {fileID: 11400000, guid: 4258731bf09aea84092817b7736fb5c0, type: 2}
+  _renderers: []
 --- !u!1 &8554459682166942809
 GameObject:
   m_ObjectHideFlags: 0

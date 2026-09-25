@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{\"collisions\": {\"ElseIf_Shoe_L_Sole\": 136, \"ElseIf_Shoe_L_Upper\": 314, \"ElseIf_Shoe_L_AnkleCollar\": 0, \"ElseIf_Shoe_L_Tongue\": 0, \"ElseIf_Shoe_R_Sole\": 136, \"ElseIf_Shoe_R_Upper\": 314, \"ElseIf_Shoe_R_AnkleCollar\": 0, \"ElseIf_Shoe_R_Tongue\": 0}, \"L\": {\"count\": 279, \"bounds\": [[0.04398611560463905, 0.10677900165319443], [-0.10541611164808273, 0.07783715426921844], [0.014071970246732235, 0.15602819621562958]]}, \"R\": {\"count\": 279, \"bounds\": [[-0.10677900910377502, -0.04398612678050995], [-0.10541611909866333, 0.07783716171979904], [0.014071970246732235, 0.15602819621562958]]}}\n"
+  }
+}

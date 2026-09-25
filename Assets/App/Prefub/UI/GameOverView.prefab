@@ -381,7 +381,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u30BB\u30FC\u30D6\u305B\u305A\u306B\u7D42\u4E86"
+  m_Text: "\u30EA\u30B9\u30BF\u30FC\u30C8"
 --- !u!1 &4310356620427412384
 GameObject:
   m_ObjectHideFlags: 0
@@ -537,7 +537,7 @@ GameObject:
   - component: {fileID: 4332280310384541410}
   - component: {fileID: 3010480619772501200}
   m_Layer: 0
-  m_Name: ExitButton
+  m_Name: RestartButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1007,7 +1007,7 @@ MonoBehaviour:
   - {fileID: 8747373191627005832}
   - {fileID: 8452307103107966840}
   - {fileID: 3353421248913322624}
-  _exitButton: {fileID: 3010480619772501200}
+  _restartButton: {fileID: 3010480619772501200}
 --- !u!1 &6922898884921315821
 GameObject:
   m_ObjectHideFlags: 0

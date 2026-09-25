@@ -34,7 +34,6 @@ public enum UpgradeType
     EmergencyNode = 29, // エマージェンシー・ノード
     Appraisal = 30, // 目利き
     Fixation = 31, // 執着
-    ParryingDagger = 32, // パリングダガー
     ElectricShock = 33, // 感電
     ExtraConflict = 34, // エクスコンフリクト
     FocusConflict = 35, // フォーカスコンフリクト

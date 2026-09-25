@@ -1,0 +1,125 @@
+{
+  "protected_changes": [],
+  "poses": {
+    "ElseIf_Basis_Construction": {
+      "base_cloth_body_intersections": [],
+      "design_body_intersections": [],
+      "hands": {
+        "L": {
+          "points": 764,
+          "outside": 0
+        },
+        "R": {
+          "points": 764,
+          "outside": 0
+        }
+      },
+      "thigh_coverage": {
+        "sample_points": 204,
+        "uncovered": 0,
+        "sample": []
+      },
+      "render": {
+        "engine": "CYCLES",
+        "resolution": [
+          880,
+          1120,
+          100
+        ],
+        "samples": 48,
+        "view": "AgX"
+      }
+    },
+    "ElseIf_NaturalPose_Validation": {
+      "base_cloth_body_intersections": [],
+      "design_body_intersections": [],
+      "hands": {
+        "L": {
+          "points": 764,
+          "outside": 0
+        },
+        "R": {
+          "points": 764,
+          "outside": 0
+        }
+      },
+      "thigh_coverage": {
+        "sample_points": 204,
+        "uncovered": 0,
+        "sample": []
+      },
+      "render": {
+        "engine": "CYCLES",
+        "resolution": [
+          880,
+          1120,
+          100
+        ],
+        "samples": 48,
+        "view": "AgX"
+      }
+    }
+  },
+  "headsocket": {
+    "exists": true,
+    "type": "EMPTY",
+    "constraints": [
+      [
+        "チャイルド",
+        "CHILD_OF"
+      ]
+    ]
+  },
+  "shape_keys": {
+    "ElseIf_Jacket": {
+      "Basis": 1.0,
+      "Silhouette_Drape_20260923": 1.0
+    },
+    "ElseIf_Jacket_Back": {
+      "Basis": 1.0,
+      "Secondary_Cloth_Weight_20260924": 1.0
+    },
+    "ElseIf_Jacket_Front_L": {
+      "Basis": 1.0,
+      "Secondary_Cloth_Weight_20260924": 1.0
+    },
+    "ElseIf_Jacket_Front_R": {
+      "Basis": 1.0,
+      "Secondary_Cloth_Weight_20260924": 1.0
+    },
+    "ElseIf_Jacket_Sleeve_L": {
+      "Basis": 1.0,
+      "Secondary_Cloth_Weight_20260924": 1.0
+    },
+    "ElseIf_Jacket_Sleeve_R": {
+      "Basis": 1.0,
+      "Secondary_Cloth_Weight_20260924": 1.0
+    },
+    "NaturalPose__ElseIf_Jacket_Back": {
+      "Basis": 1.0,
+      "Secondary_Cloth_Weight_20260924": 1.0
+    },
+    "NaturalPose__ElseIf_Jacket_Front_L": {
+      "Basis": 1.0,
+      "Secondary_Cloth_Weight_20260924": 1.0
+    },
+    "NaturalPose__ElseIf_Jacket_Front_R": {
+      "Basis": 1.0,
+      "Secondary_Cloth_Weight_20260924": 1.0
+    },
+    "NaturalPose__ElseIf_Jacket_Sleeve_L": {
+      "Basis": 1.0,
+      "Secondary_Cloth_Weight_20260924": 1.0
+    },
+    "NaturalPose__ElseIf_Jacket_Sleeve_R": {
+      "Basis": 1.0,
+      "Secondary_Cloth_Weight_20260924": 1.0
+    }
+  },
+  "backup_collections": [
+    "ElseIf_Approved_Silhouette_20260924",
+    "ElseIf_Revision_Backups",
+    "ElseIf_Silhouette_Before_20260923",
+    "ElseIf_Source_VRM_UNTOUCHED"
+  ]
+}

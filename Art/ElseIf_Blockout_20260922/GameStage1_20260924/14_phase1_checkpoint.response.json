@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: コピーを「ElseIf_Game_Rigged_BeforeReduction.blend」で保存しました\n{\"ElseIf_Anatomy_Restoration\": [[\"Join_Only_Missing_Anatomy\", \"REMESH\", null], [\"Relax_Restored_Surface\", \"SMOOTH\", null], [\"Restoration_Surface\", \"SUBSURF\", 1]], \"ElseIf_Shoe_L_Upper\": [[\"Editable_Subdivision\", \"SUBSURF\", 2], [\"Cloth_Thickness\", \"SOLIDIFY\", null]], \"ElseIf_Shorts\": [[\"Editable_Subdivision\", \"SUBSURF\", 2], [\"Cloth_Thickness\", \"SOLIDIFY\", null]], \"ElseIf_Sock_L\": [[\"Editable_Subdivision\", \"SUBSURF\", 2], [\"Cloth_Thickness\", \"SOLIDIFY\", null]]}\n"
+  }
+}

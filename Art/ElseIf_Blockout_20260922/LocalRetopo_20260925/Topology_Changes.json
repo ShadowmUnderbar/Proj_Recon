@@ -1,0 +1,56 @@
+{
+  "objects": [
+    {
+      "object": "ElseIf_Jacket_Front_L",
+      "before_vertices": 5613,
+      "after_vertices": 5138,
+      "before_triangles": 11222,
+      "after_triangles": 10272
+    },
+    {
+      "object": "ElseIf_Jacket_Front_R",
+      "before_vertices": 5530,
+      "after_vertices": 5134,
+      "before_triangles": 11056,
+      "after_triangles": 10264
+    },
+    {
+      "object": "ElseIf_Jacket_Back",
+      "before_vertices": 10821,
+      "after_vertices": 10589,
+      "before_triangles": 21638,
+      "after_triangles": 21174
+    },
+    {
+      "object": "ElseIf_Jacket_Sleeve_L",
+      "before_vertices": 16464,
+      "after_vertices": 14855,
+      "before_triangles": 32928,
+      "after_triangles": 29710
+    },
+    {
+      "object": "ElseIf_Jacket_Sleeve_R",
+      "before_vertices": 16464,
+      "after_vertices": 14854,
+      "before_triangles": 32928,
+      "after_triangles": 29708
+    }
+  ],
+  "reweighted": {
+    "Topo__ElseIf_Jacket_Front_L": 1131,
+    "Topo__ElseIf_Jacket_Front_R": 1205,
+    "Topo__ElseIf_Jacket_Back": 2341,
+    "Topo__ElseIf_Jacket_Sleeve_L": 2310,
+    "Topo__ElseIf_Jacket_Sleeve_R": 2287,
+    "Topo__EL_Chest_AO": 14,
+    "Topo__EL_Chest_Rules": 18,
+    "Topo__EL_Back_Print_Base": 404,
+    "Topo__EL_Back_Reference_Artwork": 170,
+    "Topo__EL_Back_Webbing_L": 152,
+    "Topo__EL_Back_Buckle_L": 38,
+    "Topo__EL_Back_BuckleInset_L": 12,
+    "Topo__EL_Back_Webbing_R": 152,
+    "Topo__EL_Back_Buckle_R": 38,
+    "Topo__EL_Back_BuckleInset_R": 12
+  }
+}

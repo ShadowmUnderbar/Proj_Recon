@@ -3,12 +3,16 @@ using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using R3;
 using UnityEngine;
+using VContainer;
 using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
-    public class PlayerDodgeParameterDataStore : IPlayerDodgeParameterDataStore, IInitializable, ITickable, IDisposable
+    public class PlayerDodgeParameterDataStore : IPlayerDodgeParameterDataStore, IRunResettable, IInitializable,
+        ITickable, IDisposable
     {
+        private readonly IFreezeDataStore _freezeDataStore;
+
         private float _dodgeCoolDown;
 
         // 回避の直線移動用の状態
@@ -21,6 +25,9 @@ namespace App.Battle.DataStore
 
         private readonly Subject<PlayerDamagedData> _onDamagedDuringDodge = new();
         public Observable<PlayerDamagedData> OnDamagedDuringDodge => _onDamagedDuringDodge;
+
+        private readonly Subject<DodgeEndData> _onDodgeEnd = new();
+        public Observable<DodgeEndData> OnDodgeEnd => _onDodgeEnd;
 
         private readonly ReactiveProperty<bool> _isDodging = new(false);
         public ReadOnlyReactiveProperty<bool> IsDodging => _isDodging;
@@ -35,8 +42,27 @@ namespace App.Battle.DataStore
 
         public float DodgeDuration => BasePlayerParameter.DodgeDuration;
 
+        [Inject]
+        public PlayerDodgeParameterDataStore(IFreezeDataStore freezeDataStore)
+        {
+            _freezeDataStore = freezeDataStore;
+        }
+
         public void Initialize()
         {
+            DodgeCount.Value = MaxDodgeCount.Value;
+        }
+
+        public void ResetRun()
+        {
+            // 移動中にゲームオーバーになってもフラグが立ったままにならないよう、回避状態ごと畳む
+            _isDodging.Value = false;
+            _dodgeStartPosition = Vector3.zero;
+            _dodgeTargetPosition = Vector3.zero;
+            _dodgeElapsed = 0f;
+            _dodgeCoolDown = 0f;
+
+            MaxDodgeCount.Value = BasePlayerParameter.DodgeCount;
             DodgeCount.Value = MaxDodgeCount.Value;
         }
 
@@ -49,6 +75,21 @@ namespace App.Battle.DataStore
             _onDodge.OnNext(Unit.Default);
         }
 
+        public Vector3 DodgeTargetPosition => _dodgeTargetPosition;
+
+        public Vector3 DodgeDirection
+        {
+            get
+            {
+                var direction = _dodgeTargetPosition - _dodgeStartPosition;
+                direction.y = 0f;
+
+                return direction.sqrMagnitude > 0f ? direction.normalized : Vector3.zero;
+            }
+        }
+
+        public float RemainingDodgeTime => Mathf.Max(0f, DodgeDuration - _dodgeElapsed);
+
         public void StartDodge(Vector3 start, Vector3 target)
         {
             _dodgeStartPosition = start;
@@ -57,11 +98,12 @@ namespace App.Battle.DataStore
             _isDodging.Value = true;
         }
 
-        public bool TryAdvanceDodge(float deltaTime, out Vector3 position)
+        public bool TryAdvanceDodge(float deltaTime, out Vector3 position, out bool isFinished)
         {
             if (!_isDodging.Value)
             {
                 position = _dodgeTargetPosition;
+                isFinished = false;
                 return false;
             }
 
@@ -72,11 +114,26 @@ namespace App.Battle.DataStore
             {
                 position = _dodgeTargetPosition;
                 _isDodging.Value = false;
+                isFinished = true;
                 return true;
             }
 
             position = Vector3.Lerp(_dodgeStartPosition, _dodgeTargetPosition, _dodgeElapsed / DodgeDuration);
+            isFinished = false;
             return true;
+        }
+
+        public void NotifyDodgeEnd()
+        {
+            // 開始地点と終了地点が一致した場合は通知しない
+            var direction = DodgeDirection;
+
+            if (direction == Vector3.zero)
+            {
+                return;
+            }
+
+            _onDodgeEnd.OnNext(new DodgeEndData(_dodgeTargetPosition, direction));
         }
 
         public void NotifyDamageBlocked(PlayerDamagedData damagedData)
@@ -91,6 +148,12 @@ namespace App.Battle.DataStore
 
         public void Tick()
         {
+            // フリーズ中は回避そのものを止めるため、クールダウンの回復も止める
+            if (_freezeDataStore.IsFreezing.CurrentValue)
+            {
+                return;
+            }
+
             if (DodgeCount.Value >= MaxDodgeCount.Value)
             {
                 return;
@@ -110,6 +173,7 @@ namespace App.Battle.DataStore
         {
             _onDodge.Dispose();
             _onDamagedDuringDodge.Dispose();
+            _onDodgeEnd.Dispose();
             _isDodging.Dispose();
         }
     }

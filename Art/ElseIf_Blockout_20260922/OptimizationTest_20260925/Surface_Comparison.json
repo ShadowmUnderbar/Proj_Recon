@@ -1,0 +1,1388 @@
+{
+  "Base": {
+    "low_priority_max_surface_distance_mm": 0.7847005035728216,
+    "low_priority_mean_surface_distance_mm": 0.026562222663497965,
+    "wide_ease_activation": {
+      "L": 0.0,
+      "R": 0.0
+    },
+    "objects": [
+      {
+        "object": "Opt__ElseIf_Sock_L",
+        "max_mm": 0.7325930055230856
+      },
+      {
+        "object": "Opt__ElseIf_Sock_R",
+        "max_mm": 0.7325902115553617
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_L_Sole",
+        "max_mm": 0.13117946218699217
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_R_Sole",
+        "max_mm": 0.13118320202920586
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_L",
+        "max_mm": 0.242344438447617
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_R",
+        "max_mm": 0.1608131715329364
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Back",
+        "max_mm": 0.2019507810473442
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Closure_Tape",
+        "max_mm": 0.7847005035728216
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+        "max_mm": 0.35611327621154487
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+        "max_mm": 0.27330758166499436
+      },
+      {
+        "object": "Opt__EL_Pocket_L_Welt",
+        "max_mm": 0.0716233771527186
+      },
+      {
+        "object": "Opt__EL_Pocket_R_Welt",
+        "max_mm": 0.07052154978737235
+      },
+      {
+        "object": "Opt__EL_Back_Print_Base",
+        "max_mm": 0.1869023690233007
+      },
+      {
+        "object": "Opt__EL_Back_Reference_Artwork",
+        "max_mm": 0.14950211334507912
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_L",
+        "max_mm": 0.08315387094626203
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_R",
+        "max_mm": 0.10767115600174293
+      },
+      {
+        "object": "Opt__EL_Back_Center_Tab",
+        "max_mm": 0.1697505358606577
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_InkStrip",
+        "max_mm": 0.17937911616172642
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_1",
+        "max_mm": 0.016601112292846665
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_2",
+        "max_mm": 0.020364488591440022
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_3",
+        "max_mm": 0.018817998352460563
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_InkStrip",
+        "max_mm": 0.10684123844839633
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_1",
+        "max_mm": 0.017603893866180442
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_2",
+        "max_mm": 0.022711927158525214
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_3",
+        "max_mm": 0.018302629541722126
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_1",
+        "max_mm": 0.015416355381603353
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_2",
+        "max_mm": 0.028717817258439027
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_1",
+        "max_mm": 0.017030613889801316
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_2",
+        "max_mm": 0.02903275344579015
+      }
+    ]
+  },
+  "A_Natural": {
+    "low_priority_max_surface_distance_mm": 0.7847005035728216,
+    "low_priority_mean_surface_distance_mm": 0.026562809235998203,
+    "wide_ease_activation": {
+      "L": 0.0,
+      "R": 0.0
+    },
+    "objects": [
+      {
+        "object": "Opt__ElseIf_Sock_L",
+        "max_mm": 0.7325930055230856
+      },
+      {
+        "object": "Opt__ElseIf_Sock_R",
+        "max_mm": 0.7325902115553617
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_L_Sole",
+        "max_mm": 0.13117946218699217
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_R_Sole",
+        "max_mm": 0.13118320202920586
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_L",
+        "max_mm": 0.242344438447617
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_R",
+        "max_mm": 0.1608131715329364
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Back",
+        "max_mm": 0.2019507810473442
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Closure_Tape",
+        "max_mm": 0.7847005035728216
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+        "max_mm": 0.35611327621154487
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+        "max_mm": 0.27330758166499436
+      },
+      {
+        "object": "Opt__EL_Pocket_L_Welt",
+        "max_mm": 0.0716233771527186
+      },
+      {
+        "object": "Opt__EL_Pocket_R_Welt",
+        "max_mm": 0.07052154978737235
+      },
+      {
+        "object": "Opt__EL_Back_Print_Base",
+        "max_mm": 0.1869023690233007
+      },
+      {
+        "object": "Opt__EL_Back_Reference_Artwork",
+        "max_mm": 0.14950211334507912
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_L",
+        "max_mm": 0.08315387094626203
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_R",
+        "max_mm": 0.10767115600174293
+      },
+      {
+        "object": "Opt__EL_Back_Center_Tab",
+        "max_mm": 0.1697505358606577
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_InkStrip",
+        "max_mm": 0.18119000014849007
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_1",
+        "max_mm": 0.01663872717472259
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_2",
+        "max_mm": 0.020345407392596826
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_3",
+        "max_mm": 0.01886958307295572
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_InkStrip",
+        "max_mm": 0.10712676885304973
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_1",
+        "max_mm": 0.01761527164489962
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_2",
+        "max_mm": 0.022691885533276945
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_3",
+        "max_mm": 0.018296806956641376
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_1",
+        "max_mm": 0.015416355381603353
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_2",
+        "max_mm": 0.028717817258439027
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_1",
+        "max_mm": 0.017030613889801316
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_2",
+        "max_mm": 0.02903275344579015
+      }
+    ]
+  },
+  "B_Side90": {
+    "low_priority_max_surface_distance_mm": 5.231478251516819,
+    "low_priority_mean_surface_distance_mm": 0.0678586868986909,
+    "wide_ease_activation": {
+      "L": 1.0,
+      "R": 1.0
+    },
+    "objects": [
+      {
+        "object": "Opt__ElseIf_Sock_L",
+        "max_mm": 0.7325930055230856
+      },
+      {
+        "object": "Opt__ElseIf_Sock_R",
+        "max_mm": 0.7325902115553617
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_L_Sole",
+        "max_mm": 0.13117946218699217
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_R_Sole",
+        "max_mm": 0.13118320202920586
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_L",
+        "max_mm": 5.231478251516819
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_R",
+        "max_mm": 3.1269437167793512
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Back",
+        "max_mm": 4.05989121645689
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Closure_Tape",
+        "max_mm": 0.7847005035728216
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+        "max_mm": 0.35611327621154487
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+        "max_mm": 0.27330758166499436
+      },
+      {
+        "object": "Opt__EL_Pocket_L_Welt",
+        "max_mm": 0.0716233771527186
+      },
+      {
+        "object": "Opt__EL_Pocket_R_Welt",
+        "max_mm": 0.07052154978737235
+      },
+      {
+        "object": "Opt__EL_Back_Print_Base",
+        "max_mm": 1.2103953631594777
+      },
+      {
+        "object": "Opt__EL_Back_Reference_Artwork",
+        "max_mm": 0.9076787973754108
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_L",
+        "max_mm": 1.8008181359618902
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_R",
+        "max_mm": 1.898763352073729
+      },
+      {
+        "object": "Opt__EL_Back_Center_Tab",
+        "max_mm": 0.1697505358606577
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_InkStrip",
+        "max_mm": 0.17941417172551155
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_1",
+        "max_mm": 0.01663322291278746
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_2",
+        "max_mm": 0.02025732828769833
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_3",
+        "max_mm": 0.018825754523277283
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_InkStrip",
+        "max_mm": 0.10696381650632247
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_1",
+        "max_mm": 0.01741217784001492
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_2",
+        "max_mm": 0.022785414330428466
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_3",
+        "max_mm": 0.018278107745572925
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_1",
+        "max_mm": 0.015416355381603353
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_2",
+        "max_mm": 0.028717817258439027
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_1",
+        "max_mm": 0.017030613889801316
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_2",
+        "max_mm": 0.02903275344579015
+      }
+    ]
+  },
+  "C_Forward": {
+    "low_priority_max_surface_distance_mm": 0.7847005035728216,
+    "low_priority_mean_surface_distance_mm": 0.026563168636281467,
+    "wide_ease_activation": {
+      "L": 0.0,
+      "R": 0.0
+    },
+    "objects": [
+      {
+        "object": "Opt__ElseIf_Sock_L",
+        "max_mm": 0.7325930055230856
+      },
+      {
+        "object": "Opt__ElseIf_Sock_R",
+        "max_mm": 0.7325902115553617
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_L_Sole",
+        "max_mm": 0.13117946218699217
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_R_Sole",
+        "max_mm": 0.13118320202920586
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_L",
+        "max_mm": 0.242344438447617
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_R",
+        "max_mm": 0.1608131715329364
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Back",
+        "max_mm": 0.2019507810473442
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Closure_Tape",
+        "max_mm": 0.7847005035728216
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+        "max_mm": 0.35611327621154487
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+        "max_mm": 0.27330758166499436
+      },
+      {
+        "object": "Opt__EL_Pocket_L_Welt",
+        "max_mm": 0.0716233771527186
+      },
+      {
+        "object": "Opt__EL_Pocket_R_Welt",
+        "max_mm": 0.07052154978737235
+      },
+      {
+        "object": "Opt__EL_Back_Print_Base",
+        "max_mm": 0.1869023690233007
+      },
+      {
+        "object": "Opt__EL_Back_Reference_Artwork",
+        "max_mm": 0.14950211334507912
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_L",
+        "max_mm": 0.08315387094626203
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_R",
+        "max_mm": 0.10767115600174293
+      },
+      {
+        "object": "Opt__EL_Back_Center_Tab",
+        "max_mm": 0.1697505358606577
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_InkStrip",
+        "max_mm": 0.18223583174403757
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_1",
+        "max_mm": 0.016578698705416173
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_2",
+        "max_mm": 0.02025718458753545
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_3",
+        "max_mm": 0.018778608136926778
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_InkStrip",
+        "max_mm": 0.10729351197369397
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_1",
+        "max_mm": 0.01760508348525036
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_2",
+        "max_mm": 0.022789425202063285
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_3",
+        "max_mm": 0.018338510926696472
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_1",
+        "max_mm": 0.015416355381603353
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_2",
+        "max_mm": 0.028717817258439027
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_1",
+        "max_mm": 0.017030613889801316
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_2",
+        "max_mm": 0.02903275344579015
+      }
+    ]
+  },
+  "D_AsymmetricAim": {
+    "low_priority_max_surface_distance_mm": 0.7847005035728216,
+    "low_priority_mean_surface_distance_mm": 0.02727743557624797,
+    "wide_ease_activation": {
+      "L": 0.022588271647691727,
+      "R": 0.0
+    },
+    "objects": [
+      {
+        "object": "Opt__ElseIf_Sock_L",
+        "max_mm": 0.7325930055230856
+      },
+      {
+        "object": "Opt__ElseIf_Sock_R",
+        "max_mm": 0.7325902115553617
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_L_Sole",
+        "max_mm": 0.13117946218699217
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_R_Sole",
+        "max_mm": 0.13118320202920586
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_L",
+        "max_mm": 0.242344438447617
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_R",
+        "max_mm": 0.1608131715329364
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Back",
+        "max_mm": 0.2019507810473442
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Closure_Tape",
+        "max_mm": 0.7847005035728216
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+        "max_mm": 0.35611327621154487
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+        "max_mm": 0.27330758166499436
+      },
+      {
+        "object": "Opt__EL_Pocket_L_Welt",
+        "max_mm": 0.0716233771527186
+      },
+      {
+        "object": "Opt__EL_Pocket_R_Welt",
+        "max_mm": 0.07052154978737235
+      },
+      {
+        "object": "Opt__EL_Back_Print_Base",
+        "max_mm": 0.1869023690233007
+      },
+      {
+        "object": "Opt__EL_Back_Reference_Artwork",
+        "max_mm": 0.14950211334507912
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_L",
+        "max_mm": 0.08315387094626203
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_R",
+        "max_mm": 0.10767115600174293
+      },
+      {
+        "object": "Opt__EL_Back_Center_Tab",
+        "max_mm": 0.1697505358606577
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_InkStrip",
+        "max_mm": 0.20534601935651153
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_1",
+        "max_mm": 0.01654353764024563
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_2",
+        "max_mm": 0.020376442989800125
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_3",
+        "max_mm": 0.018835657101590186
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_InkStrip",
+        "max_mm": 0.11458211520221084
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_1",
+        "max_mm": 0.017690339518594556
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_2",
+        "max_mm": 0.022712052668794058
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_3",
+        "max_mm": 0.018209901099908166
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_1",
+        "max_mm": 0.015416355381603353
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_2",
+        "max_mm": 0.028717817258439027
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_1",
+        "max_mm": 0.017030613889801316
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_2",
+        "max_mm": 0.02903275344579015
+      }
+    ]
+  },
+  "E_Elbow90": {
+    "low_priority_max_surface_distance_mm": 0.7847005035728216,
+    "low_priority_mean_surface_distance_mm": 0.026626453152484006,
+    "wide_ease_activation": {
+      "L": 0.0,
+      "R": 0.0
+    },
+    "objects": [
+      {
+        "object": "Opt__ElseIf_Sock_L",
+        "max_mm": 0.7325930055230856
+      },
+      {
+        "object": "Opt__ElseIf_Sock_R",
+        "max_mm": 0.7325902115553617
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_L_Sole",
+        "max_mm": 0.13117946218699217
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_R_Sole",
+        "max_mm": 0.13118320202920586
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_L",
+        "max_mm": 0.242344438447617
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_R",
+        "max_mm": 0.1608131715329364
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Back",
+        "max_mm": 0.2019507810473442
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Closure_Tape",
+        "max_mm": 0.7847005035728216
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+        "max_mm": 0.35611327621154487
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+        "max_mm": 0.27330758166499436
+      },
+      {
+        "object": "Opt__EL_Pocket_L_Welt",
+        "max_mm": 0.0716233771527186
+      },
+      {
+        "object": "Opt__EL_Pocket_R_Welt",
+        "max_mm": 0.07052154978737235
+      },
+      {
+        "object": "Opt__EL_Back_Print_Base",
+        "max_mm": 0.1869023690233007
+      },
+      {
+        "object": "Opt__EL_Back_Reference_Artwork",
+        "max_mm": 0.14950211334507912
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_L",
+        "max_mm": 0.08315387094626203
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_R",
+        "max_mm": 0.10767115600174293
+      },
+      {
+        "object": "Opt__EL_Back_Center_Tab",
+        "max_mm": 0.1697505358606577
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_InkStrip",
+        "max_mm": 0.3840808058157563
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_1",
+        "max_mm": 0.016524878446944058
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_2",
+        "max_mm": 0.020214290998410434
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_3",
+        "max_mm": 0.018833234207704663
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_InkStrip",
+        "max_mm": 0.1518219505669549
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_1",
+        "max_mm": 0.017579897757968865
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_2",
+        "max_mm": 0.02277956809848547
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_3",
+        "max_mm": 0.018220878700958565
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_1",
+        "max_mm": 0.015416355381603353
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_2",
+        "max_mm": 0.028717817258439027
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_1",
+        "max_mm": 0.017030613889801316
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_2",
+        "max_mm": 0.02903275344579015
+      }
+    ]
+  },
+  "F_OneArmBack": {
+    "low_priority_max_surface_distance_mm": 0.7847005035728216,
+    "low_priority_mean_surface_distance_mm": 0.026565081961899804,
+    "wide_ease_activation": {
+      "L": 0.0,
+      "R": 0.0
+    },
+    "objects": [
+      {
+        "object": "Opt__ElseIf_Sock_L",
+        "max_mm": 0.7325930055230856
+      },
+      {
+        "object": "Opt__ElseIf_Sock_R",
+        "max_mm": 0.7325902115553617
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_L_Sole",
+        "max_mm": 0.13117946218699217
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_R_Sole",
+        "max_mm": 0.13118320202920586
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_L",
+        "max_mm": 0.242344438447617
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_R",
+        "max_mm": 0.1608131715329364
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Back",
+        "max_mm": 0.2019507810473442
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Closure_Tape",
+        "max_mm": 0.7847005035728216
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+        "max_mm": 0.35611327621154487
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+        "max_mm": 0.27330758166499436
+      },
+      {
+        "object": "Opt__EL_Pocket_L_Welt",
+        "max_mm": 0.0716233771527186
+      },
+      {
+        "object": "Opt__EL_Pocket_R_Welt",
+        "max_mm": 0.07052154978737235
+      },
+      {
+        "object": "Opt__EL_Back_Print_Base",
+        "max_mm": 0.1869023690233007
+      },
+      {
+        "object": "Opt__EL_Back_Reference_Artwork",
+        "max_mm": 0.14950211334507912
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_L",
+        "max_mm": 0.08315387094626203
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_R",
+        "max_mm": 0.10767115600174293
+      },
+      {
+        "object": "Opt__EL_Back_Center_Tab",
+        "max_mm": 0.1697505358606577
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_InkStrip",
+        "max_mm": 0.19111689471174031
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_1",
+        "max_mm": 0.016556283298996277
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_2",
+        "max_mm": 0.020329749531811103
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_3",
+        "max_mm": 0.01881867319752928
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_InkStrip",
+        "max_mm": 0.10717252735048532
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_1",
+        "max_mm": 0.017554290025145747
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_2",
+        "max_mm": 0.022733800506102853
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_3",
+        "max_mm": 0.018255746908835135
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_1",
+        "max_mm": 0.015416355381603353
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_2",
+        "max_mm": 0.028717817258439027
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_1",
+        "max_mm": 0.017030613889801316
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_2",
+        "max_mm": 0.02903275344579015
+      }
+    ]
+  },
+  "G_WideOpen": {
+    "low_priority_max_surface_distance_mm": 5.858258344233036,
+    "low_priority_mean_surface_distance_mm": 0.06834319044271155,
+    "wide_ease_activation": {
+      "L": 1.0,
+      "R": 1.0
+    },
+    "objects": [
+      {
+        "object": "Opt__ElseIf_Sock_L",
+        "max_mm": 0.7325930055230856
+      },
+      {
+        "object": "Opt__ElseIf_Sock_R",
+        "max_mm": 0.7325902115553617
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_L_Sole",
+        "max_mm": 0.13117946218699217
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_R_Sole",
+        "max_mm": 0.13118320202920586
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_L",
+        "max_mm": 5.858258344233036
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_R",
+        "max_mm": 3.376138396561146
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Back",
+        "max_mm": 3.9825960993766785
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Closure_Tape",
+        "max_mm": 0.7847005035728216
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+        "max_mm": 0.35611327621154487
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+        "max_mm": 0.27330758166499436
+      },
+      {
+        "object": "Opt__EL_Pocket_L_Welt",
+        "max_mm": 0.0716233771527186
+      },
+      {
+        "object": "Opt__EL_Pocket_R_Welt",
+        "max_mm": 0.07052154978737235
+      },
+      {
+        "object": "Opt__EL_Back_Print_Base",
+        "max_mm": 1.1428965954110026
+      },
+      {
+        "object": "Opt__EL_Back_Reference_Artwork",
+        "max_mm": 0.906588276848197
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_L",
+        "max_mm": 1.8118144944310188
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_R",
+        "max_mm": 1.8332817126065493
+      },
+      {
+        "object": "Opt__EL_Back_Center_Tab",
+        "max_mm": 0.1697505358606577
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_InkStrip",
+        "max_mm": 0.18013671797234565
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_1",
+        "max_mm": 0.01654482002777513
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_2",
+        "max_mm": 0.0203983345272718
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_3",
+        "max_mm": 0.018860797354136594
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_InkStrip",
+        "max_mm": 0.10696837125578895
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_1",
+        "max_mm": 0.017636819393374026
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_2",
+        "max_mm": 0.02273326026625
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_3",
+        "max_mm": 0.01832806628954131
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_1",
+        "max_mm": 0.015416355381603353
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_2",
+        "max_mm": 0.028717817258439027
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_1",
+        "max_mm": 0.017030613889801316
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_2",
+        "max_mm": 0.02903275344579015
+      }
+    ]
+  },
+  "H_FrontNear": {
+    "low_priority_max_surface_distance_mm": 0.7847005035728216,
+    "low_priority_mean_surface_distance_mm": 0.026566661178645465,
+    "wide_ease_activation": {
+      "L": 0.0,
+      "R": 0.0
+    },
+    "objects": [
+      {
+        "object": "Opt__ElseIf_Sock_L",
+        "max_mm": 0.7325930055230856
+      },
+      {
+        "object": "Opt__ElseIf_Sock_R",
+        "max_mm": 0.7325902115553617
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_L_Sole",
+        "max_mm": 0.13117946218699217
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_R_Sole",
+        "max_mm": 0.13118320202920586
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_L",
+        "max_mm": 0.242344438447617
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_R",
+        "max_mm": 0.1608131715329364
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Back",
+        "max_mm": 0.2019507810473442
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Closure_Tape",
+        "max_mm": 0.7847005035728216
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+        "max_mm": 0.35611327621154487
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+        "max_mm": 0.27330758166499436
+      },
+      {
+        "object": "Opt__EL_Pocket_L_Welt",
+        "max_mm": 0.0716233771527186
+      },
+      {
+        "object": "Opt__EL_Pocket_R_Welt",
+        "max_mm": 0.07052154978737235
+      },
+      {
+        "object": "Opt__EL_Back_Print_Base",
+        "max_mm": 0.1869023690233007
+      },
+      {
+        "object": "Opt__EL_Back_Reference_Artwork",
+        "max_mm": 0.14950211334507912
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_L",
+        "max_mm": 0.08315387094626203
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_R",
+        "max_mm": 0.10767115600174293
+      },
+      {
+        "object": "Opt__EL_Back_Center_Tab",
+        "max_mm": 0.1697505358606577
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_InkStrip",
+        "max_mm": 0.19314086239319295
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_1",
+        "max_mm": 0.016510601199115627
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_2",
+        "max_mm": 0.020353938452899456
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_3",
+        "max_mm": 0.018814502254826948
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_InkStrip",
+        "max_mm": 0.1086756237782538
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_1",
+        "max_mm": 0.017617288904148154
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_2",
+        "max_mm": 0.022863261619932018
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_3",
+        "max_mm": 0.018279764844919555
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_1",
+        "max_mm": 0.015416355381603353
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_2",
+        "max_mm": 0.028717817258439027
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_1",
+        "max_mm": 0.017030613889801316
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_2",
+        "max_mm": 0.02903275344579015
+      }
+    ]
+  },
+  "I_FrontBack": {
+    "low_priority_max_surface_distance_mm": 0.7847005035728216,
+    "low_priority_mean_surface_distance_mm": 0.026564386691241938,
+    "wide_ease_activation": {
+      "L": 0.0,
+      "R": 0.0
+    },
+    "objects": [
+      {
+        "object": "Opt__ElseIf_Sock_L",
+        "max_mm": 0.7325930055230856
+      },
+      {
+        "object": "Opt__ElseIf_Sock_R",
+        "max_mm": 0.7325902115553617
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_L_Sole",
+        "max_mm": 0.13117946218699217
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_R_Sole",
+        "max_mm": 0.13118320202920586
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_L",
+        "max_mm": 0.242344438447617
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_R",
+        "max_mm": 0.1608131715329364
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Back",
+        "max_mm": 0.2019507810473442
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Closure_Tape",
+        "max_mm": 0.7847005035728216
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+        "max_mm": 0.35611327621154487
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+        "max_mm": 0.27330758166499436
+      },
+      {
+        "object": "Opt__EL_Pocket_L_Welt",
+        "max_mm": 0.0716233771527186
+      },
+      {
+        "object": "Opt__EL_Pocket_R_Welt",
+        "max_mm": 0.07052154978737235
+      },
+      {
+        "object": "Opt__EL_Back_Print_Base",
+        "max_mm": 0.1869023690233007
+      },
+      {
+        "object": "Opt__EL_Back_Reference_Artwork",
+        "max_mm": 0.14950211334507912
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_L",
+        "max_mm": 0.08315387094626203
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_R",
+        "max_mm": 0.10767115600174293
+      },
+      {
+        "object": "Opt__EL_Back_Center_Tab",
+        "max_mm": 0.1697505358606577
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_InkStrip",
+        "max_mm": 0.18604063370730728
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_1",
+        "max_mm": 0.016571082596783526
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_2",
+        "max_mm": 0.0202667015400948
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_3",
+        "max_mm": 0.018754997654468752
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_InkStrip",
+        "max_mm": 0.10780996672110632
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_1",
+        "max_mm": 0.017591197320143692
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_2",
+        "max_mm": 0.02277556632179767
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_3",
+        "max_mm": 0.01823423008318059
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_1",
+        "max_mm": 0.015416355381603353
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_2",
+        "max_mm": 0.028717817258439027
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_1",
+        "max_mm": 0.017030613889801316
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_2",
+        "max_mm": 0.02903275344579015
+      }
+    ]
+  },
+  "J_WristTwist": {
+    "low_priority_max_surface_distance_mm": 1.3526007533073425,
+    "low_priority_mean_surface_distance_mm": 0.02717239597238652,
+    "wide_ease_activation": {
+      "L": 0.0,
+      "R": 0.0
+    },
+    "objects": [
+      {
+        "object": "Opt__ElseIf_Sock_L",
+        "max_mm": 0.7325930055230856
+      },
+      {
+        "object": "Opt__ElseIf_Sock_R",
+        "max_mm": 0.7325902115553617
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_L_Sole",
+        "max_mm": 0.13117946218699217
+      },
+      {
+        "object": "Opt__ElseIf_Shoe_R_Sole",
+        "max_mm": 0.13118320202920586
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_L",
+        "max_mm": 0.242344438447617
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_R",
+        "max_mm": 0.1608131715329364
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Back",
+        "max_mm": 0.2019507810473442
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Closure_Tape",
+        "max_mm": 0.7847005035728216
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+        "max_mm": 0.35611327621154487
+      },
+      {
+        "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+        "max_mm": 0.27330758166499436
+      },
+      {
+        "object": "Opt__EL_Pocket_L_Welt",
+        "max_mm": 0.0716233771527186
+      },
+      {
+        "object": "Opt__EL_Pocket_R_Welt",
+        "max_mm": 0.07052154978737235
+      },
+      {
+        "object": "Opt__EL_Back_Print_Base",
+        "max_mm": 0.1869023690233007
+      },
+      {
+        "object": "Opt__EL_Back_Reference_Artwork",
+        "max_mm": 0.14950211334507912
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_L",
+        "max_mm": 0.08315387094626203
+      },
+      {
+        "object": "Opt__EL_Back_Webbing_R",
+        "max_mm": 0.10767115600174293
+      },
+      {
+        "object": "Opt__EL_Back_Center_Tab",
+        "max_mm": 0.1697505358606577
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_InkStrip",
+        "max_mm": 1.3526007533073425
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_1",
+        "max_mm": 0.017303174900007434
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_2",
+        "max_mm": 0.02546815449022688
+      },
+      {
+        "object": "Opt__EL_Sleeve_L_Box_3",
+        "max_mm": 0.024322675017174333
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_InkStrip",
+        "max_mm": 0.4026767855975777
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_1",
+        "max_mm": 0.01772897485352587
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_2",
+        "max_mm": 0.03170624404447153
+      },
+      {
+        "object": "Opt__EL_Sleeve_R_Box_3",
+        "max_mm": 0.023575803425046615
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_1",
+        "max_mm": 0.015416355381603353
+      },
+      {
+        "object": "Opt__EL_Sock_L_Rule_2",
+        "max_mm": 0.028717817258439027
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_1",
+        "max_mm": 0.017030613889801316
+      },
+      {
+        "object": "Opt__EL_Sock_R_Rule_2",
+        "max_mm": 0.02903275344579015
+      }
+    ]
+  }
+}

@@ -11,10 +11,11 @@ using VContainer;
 
 namespace App.Battle.DataStore
 {
-    public class EnemyDataStore : IEnemyDataStore
+    public class EnemyDataStore : IEnemyDataStore, IRunResettable
     {
         private readonly EnemyDatabase _enemyDatabase;
         private readonly EnemySpawnDatabase _enemySpawnDatabase;
+        private readonly IEnemyWaveScalingCalculatorDataStore _enemyWaveScalingCalculatorDataStore;
 
         private readonly Dictionary<int, EnemyData> _spawnEnemyDataList = new();
 
@@ -40,11 +41,13 @@ namespace App.Battle.DataStore
         [Inject]
         public EnemyDataStore(
             EnemyDatabase enemyDatabase,
-            EnemySpawnDatabase enemySpawnDatabase
+            EnemySpawnDatabase enemySpawnDatabase,
+            IEnemyWaveScalingCalculatorDataStore enemyWaveScalingCalculatorDataStore
         )
         {
             _enemyDatabase = enemyDatabase;
             _enemySpawnDatabase = enemySpawnDatabase;
+            _enemyWaveScalingCalculatorDataStore = enemyWaveScalingCalculatorDataStore;
         }
 
         private bool IsOnceSpawned(string enemyCode)
@@ -136,7 +139,11 @@ namespace App.Battle.DataStore
                 enemyId = Random.Range(0, int.MaxValue);
             } while (_spawnEnemyDataList.ContainsKey(enemyId));
 
-            var enemy = new EnemyData(enemyId, enemyMasterData, spawnPose);
+            // 強化倍率はスポーン時点のウェーブで固定する（ウェーブを跨いで生き残った敵は当時の値のまま）
+            _enemyWaveScalingCalculatorDataStore.GetScaledStatus(
+                enemyMasterData.Hp, enemyMasterData.Damage, out var hp, out var damage);
+
+            var enemy = new EnemyData(enemyId, enemyMasterData, spawnPose, hp, damage);
 
             _spawnEnemyDataList.Add(enemyId, enemy);
             _onEnemyAdded.OnNext(enemyId);
@@ -158,6 +165,14 @@ namespace App.Battle.DataStore
             {
                 _onEnemyRemoved.OnNext(id);
             }
+        }
+
+        public void ResetRun()
+        {
+            RemoveAllEnemyData();
+
+            // 「一度だけ出現する敵」の出現済み記録もランごとに作り直す
+            _onceSpawnedEnemyCodes.Clear();
         }
 
         public void Damage(HitData hitData)

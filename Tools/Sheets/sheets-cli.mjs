@@ -12,6 +12,7 @@
 //   node sheets-cli.mjs add-enum <シート名> <数値> <日本語コメント> <要素名>
 //   node sheets-cli.mjs rename-sheet <旧シート名> <新シート名>
 //   node sheets-cli.mjs delete-columns <シート名> <列A1>[:<列A1>]  （例: X:Z）
+//   node sheets-cli.mjs delete-rows <シート名> <行番号>[:<行番号>]  （例: 104:106 / 単一なら 104）
 //
 // シート構成の前提（GASエクスポータ UpgradeDataExporter.gs と対応）:
 //   - データシート: Row1=スキーマ定義行（各セル「変数名,型」、ref@シート名 で参照）、Row2以降データ
@@ -284,6 +285,39 @@ async function cmdDeleteColumns(sheets, spreadsheetId, args) {
     console.log(`列削除完了: ${sheetName}!${startCol.toUpperCase()}:${endCol.toUpperCase()} (${end - start + 1}列)`);
 }
 
+// delete-rows: 行を削除（例: "104" 単一、"104:106" 範囲。行番号は1始まりでシート表示と同じ）
+async function cmdDeleteRows(sheets, spreadsheetId, args) {
+    const [sheetName, rowRange] = args;
+    if (!sheetName || !rowRange) fail('使い方: delete-rows <シート名> <行番号>[:<行番号>]');
+    const [startRow, endRow = startRow] = String(rowRange).split(':');
+    const start = Number(startRow);
+    const end = Number(endRow);
+    if (!Number.isInteger(start) || !Number.isInteger(end) || start < 1 || end < start) {
+        fail(`行指定が不正です: ${rowRange}`);
+    }
+    // Row1はスキーマ定義行（データシート）で、消すとGASエクスポートもインポータも壊れるため守る
+    if (start < 2) {
+        fail('Row1（スキーマ定義行）は削除できません。データ行は2行目以降を指定してください');
+    }
+    const sheetId = await getSheetId(sheets, spreadsheetId, sheetName);
+    await sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+            requests: [{
+                deleteDimension: {
+                    range: {
+                        sheetId,
+                        dimension: 'ROWS',
+                        startIndex: start - 1,
+                        endIndex: end,
+                    },
+                },
+            }],
+        },
+    });
+    console.log(`行削除完了: ${sheetName}!${start}:${end} (${end - start + 1}行)`);
+}
+
 // A1形式の列名を0始まりのインデックスへ変換（A→0, Z→25, AA→26）
 function a1ToColumn(a1) {
     const s = String(a1).trim().toUpperCase();
@@ -325,6 +359,7 @@ async function main() {
         'add-enum': cmdAddEnum,
         'rename-sheet': cmdRenameSheet,
         'delete-columns': cmdDeleteColumns,
+        'delete-rows': cmdDeleteRows,
     };
 
     if (!command || !commands[command]) {

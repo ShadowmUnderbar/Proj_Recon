@@ -15,6 +15,7 @@ TagManager:
   - UI
   - Enemy
   - Bullet
+  - PointParticle
   - UpgradeCard
   - 
   - 

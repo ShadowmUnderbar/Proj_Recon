@@ -113,6 +113,21 @@ namespace App.Battle.Views
             _hitFeedback.Play(hitDirection);
         }
 
+        public void KnockBack(Vector3 destination, float duration)
+        {
+            if (EnemyAI == null)
+            {
+                return;
+            }
+
+            EnemyAI.KnockBack(destination, duration);
+
+            // 移動後の座標を即座に流す（同フレームで対象検索・ダメージ判定に使うため、
+            // UpdateでのPose更新を待たない）。移動中も毎フレームUpdateで更新される
+            Pose.Value = transform.ToPose();
+            transform.hasChanged = false;
+        }
+
         public void SetStun(bool isStun)
         {
             if (EnemyAI == null)

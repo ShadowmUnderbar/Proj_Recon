@@ -9,7 +9,7 @@ namespace App.Battle.Presenters
         private readonly IGameOverView _gameOverView;
 
         public Observable<int> OnSaveSlotSelected => _gameOverView.OnSaveSlotSelected;
-        public Observable<Unit> OnExitWithoutSave => _gameOverView.OnExitWithoutSave;
+        public Observable<Unit> OnRestart => _gameOverView.OnRestart;
 
         [Inject]
         public GameOverPresenter(IGameOverView gameOverView)

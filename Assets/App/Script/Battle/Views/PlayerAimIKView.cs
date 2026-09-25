@@ -38,6 +38,9 @@ namespace App.Battle.Views
         private float _leftWeight;
         private float _rightWeight;
 
+        // エイムIKを効かせるか。死亡アニメ中は false にして腕をアニメへ委ねる
+        private bool _isEnabled = true;
+
         private void Awake()
         {
             if (_animator == null)
@@ -65,6 +68,11 @@ namespace App.Battle.Views
             _leftTarget = leftTarget;
             _rightTarget = rightTarget;
             _hasTargets = true;
+        }
+
+        public void SetEnable(bool enable)
+        {
+            _isEnabled = enable;
         }
 
         private void OnAnimatorIK(int layerIndex)
@@ -146,8 +154,8 @@ namespace App.Battle.Views
             var isBehind = horizontalToTarget.sqrMagnitude > Mathf.Epsilon
                 && Vector3.Angle(transform.forward, horizontalToTarget) > _maxBackAngle;
 
-            // 後方なら目標ウェイトを0へフェードし、腕を基礎アニメ姿勢へ戻す
-            var targetWeight = isBehind ? 0f : _aimWeight;
+            // 後方、または無効化中（死亡アニメ中）なら目標ウェイトを0へフェードし、腕を基礎アニメ姿勢へ戻す
+            var targetWeight = isBehind || !_isEnabled ? 0f : _aimWeight;
             weight = Mathf.MoveTowards(weight, targetWeight, _weightLerpSpeed * Time.deltaTime);
 
             // 肩から到達距離内へクランプした到達点

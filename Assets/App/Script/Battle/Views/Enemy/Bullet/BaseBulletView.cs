@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Views;
 using App.Common.Data;
@@ -27,6 +28,9 @@ namespace App.Battle.Views.Enemy.Bullet
         // 爆風の範囲内判定用バッファと、爆風内で既にダメージを与えた対象のId。
         // 1体が複数のヒットボックスを持つため、Id単位で重複を除外する
         private readonly Collider[] _explosiveHitBuffer = new Collider[32];
+
+        // 即着弾でポイント粒子を拾うための判定バッファ（通常の命中判定とはレイヤーが別なので分けている）
+        private readonly RaycastHit[] _pointParticleHitBuffer = new RaycastHit[16];
         private readonly List<int> _explosiveHitTargetIds = new();
 
         // 即着弾のヒット結果を距離昇順に並べるための比較子（毎ショットのアロケーション回避のため共有）
@@ -43,6 +47,9 @@ namespace App.Battle.Views.Enemy.Bullet
         }
 
         protected bool CanHit { get; private set; } = true;
+
+        /// <summary>フリーズでその場に止まっているか（移動を止める。当たり判定は生かしたまま）</summary>
+        protected bool IsPause { get; private set; }
         protected BulletData BulletData { get; private set; }
         private int _hitCount = 0;
         private int _focusTargetId = 0;
@@ -80,17 +87,28 @@ namespace App.Battle.Views.Enemy.Bullet
         {
         }
 
+        /// <summary>
+        /// その場で止める／再開する（フリーズ用）。移動だけを止め、当たり判定と寿命はそのまま。
+        /// </summary>
+        public void SetPause(bool isPause)
+        {
+            IsPause = isPause;
+        }
+
         private void InstantHitCheck()
         {
             // 弾はまだ移動していないため、現在位置が発射地点
             var origin = transform.position;
 
+            // ポイント粒子は着弾判定に混ぜない（バッファを埋めて本来の対象を押し出すため）。
+            // 弾道上の粒子は CollectPointParticles で別に拾う
             var hitCount = Physics.SphereCastNonAlloc(
                 origin,
                 BulletData.Size * 0.5f,
                 transform.forward,
                 _instantHitBuffer,
-                Mathf.Infinity);
+                Mathf.Infinity,
+                Physics.DefaultRaycastLayers & ~LayerConstants.PointParticle);
 
             // トレーサーの着弾地点を算出（shooterレイヤー/弾タグを除外した最遠の有効ヒット）
             var maxHitDistance = -1f;
@@ -120,6 +138,8 @@ namespace App.Battle.Views.Enemy.Bullet
 
             SpawnTracer(origin, endPos);
 
+            CollectPointParticles(origin, endPos);
+
             // SphereCastNonAllocの結果は距離順が保証されないため、
             // 手前の敵から順にヒット処理する（貫通順序に依存する効果のため）
             System.Array.Sort(_instantHitBuffer, 0, hitCount, _hitDistanceComparer);
@@ -133,6 +153,44 @@ namespace App.Battle.Views.Enemy.Bullet
             if (CanHit)
             {
                 HitAfterProcess().Forget();
+            }
+        }
+
+        /// <summary>
+        /// 即着弾の弾道上にあるポイント粒子を回収する。
+        /// 粒子は Ignore Raycast レイヤーにあり通常のレイキャストには掛からないため、ここで明示的に拾う
+        /// </summary>
+        private void CollectPointParticles(Vector3 startPos, Vector3 endPos)
+        {
+            // 回収できるのはプレイヤーの弾だけ
+            if (_attackerId != BasePlayerParameter.PlayerId)
+            {
+                return;
+            }
+
+            var direction = endPos - startPos;
+            var distance = direction.magnitude;
+
+            if (distance <= 0f)
+            {
+                return;
+            }
+
+            var hitCount = Physics.SphereCastNonAlloc(
+                startPos,
+                BulletData.Size * 0.5f,
+                direction / distance,
+                _pointParticleHitBuffer,
+                distance,
+                LayerConstants.PointParticle,
+                QueryTriggerInteraction.Collide);
+
+            for (var i = 0; i < hitCount; i++)
+            {
+                if (_pointParticleHitBuffer[i].collider.TryGetComponent<IPointParticleView>(out var pointParticle))
+                {
+                    pointParticle.StartPull();
+                }
             }
         }
 
@@ -164,6 +222,18 @@ namespace App.Battle.Views.Enemy.Bullet
                 return;
             }
 
+            // ポイント粒子は弾を止めずに通過させる。プレイヤーの弾だけが回収できる
+            if (col.TryGetComponent<IPointParticleView>(out var pointParticle))
+            {
+                if (_attackerId == BasePlayerParameter.PlayerId)
+                {
+                    // 撃った瞬間に消さず、プレイヤーへ吸い込まれてから回収される
+                    pointParticle.StartPull();
+                }
+
+                return;
+            }
+
             if (!col.TryGetComponent<IHitBoxView>(out var hitBox))
             {
                 HitAfterProcess().Forget();
@@ -184,9 +254,11 @@ namespace App.Battle.Views.Enemy.Bullet
 
             // 同一弾内で何体目のヒットか（1始まり）。PenetrationCount条件バフの倍率計算に使う。
             // エイム状態とフォーカス対象一致はキリングコールの条件判定に使う
-            // isProjectile: 弾の直撃であることを伝える（回避中のパリィ対象の判定に使う）
+            // isProjectile: 弾の直撃であることを伝える（回避時跳ね返し攻撃の接触弾カウントに使う）
+            // projectileId: この弾を一意に識別するId（同じ弾を重複カウントしないために使う）
             hitBox.OnHit(BulletData.Damage, _attackerId, transform.position, out var canPenetrable,
-                _hitTargetIds.Count, BulletData.ShotType, BulletData.FocusType, _focusTargetId == hitBox.Id, true);
+                _hitTargetIds.Count, BulletData.ShotType, BulletData.FocusType, _focusTargetId == hitBox.Id, true,
+                gameObject.GetInstanceID());
 
             if (_focusTargetId == hitBox.Id)
             {
@@ -233,7 +305,8 @@ namespace App.Battle.Views.Enemy.Bullet
                 origin,
                 BulletData.Explosive,
                 _explosiveHitBuffer,
-                Physics.AllLayers,
+                // ポイント粒子はダメージ対象ではないうえ、バッファを埋めて本来の対象を押し出すため除外する
+                Physics.AllLayers & ~LayerConstants.PointParticle,
                 QueryTriggerInteraction.Collide);
 
             _explosiveHitTargetIds.Clear();

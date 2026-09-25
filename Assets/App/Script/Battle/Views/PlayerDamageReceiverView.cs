@@ -34,9 +34,9 @@ namespace App.Battle.Views
 
         public void OnHit(float damage, int attackerId, Vector3 attackCenter, out bool canPenetrable,
             int penetrationIndex = 1, ShotType? shotType = null, AimFocusType focusType = AimFocusType.NotFocus,
-            bool isFocusTarget = false, bool isProjectile = false)
+            bool isFocusTarget = false, bool isProjectile = false, int projectileId = 0)
         {
-            _onDamaged.OnNext(new PlayerDamagedData(damage, attackerId, isProjectile));
+            _onDamaged.OnNext(new PlayerDamagedData(damage, attackerId, isProjectile, projectileId));
 
             // 演出等での購読余地を残すためHitDataも流す（方向は使わないのでデフォルト）
             _onHitObservable.OnNext(new HitData(Id, damage, HitDirectionType.None));

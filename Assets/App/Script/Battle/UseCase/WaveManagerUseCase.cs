@@ -16,7 +16,9 @@ namespace App.Battle.UseCase
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IEnemyRandomSpawnCycleDataStore _enemyRandomSpawnCycleDataStore;
         private readonly IBulletStoreView _bulletStoreView;
+        private readonly IPointParticlePresenter _pointParticlePresenter;
         private readonly WaveConfig _waveConfig;
+        private readonly IFreezeDataStore _freezeDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -27,7 +29,9 @@ namespace App.Battle.UseCase
             IEnemyPresenter enemyPresenter,
             IEnemyRandomSpawnCycleDataStore enemyRandomSpawnCycleDataStore,
             IBulletStoreView bulletStoreView,
-            WaveConfig waveConfig
+            IPointParticlePresenter pointParticlePresenter,
+            WaveConfig waveConfig,
+            IFreezeDataStore freezeDataStore
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -35,7 +39,9 @@ namespace App.Battle.UseCase
             _enemyPresenter = enemyPresenter;
             _enemyRandomSpawnCycleDataStore = enemyRandomSpawnCycleDataStore;
             _bulletStoreView = bulletStoreView;
+            _pointParticlePresenter = pointParticlePresenter;
             _waveConfig = waveConfig;
+            _freezeDataStore = freezeDataStore;
         }
 
         public void Initialize()
@@ -106,13 +112,16 @@ namespace App.Battle.UseCase
             _enemyRandomSpawnCycleDataStore.ResetSpawnCycle();
             // プレイヤー弾・敵弾を全消去
             _bulletStoreView.AllRemove();
+            // 漂っているポイント粒子も全消去（未回収のぶんはウェーブ跨ぎで持ち越さない）
+            _pointParticlePresenter.AllRemove();
             // ウェーブ番号インクリメント＋進行通知
             _waveManagerDataStore.AdvanceWave();
         }
 
         private void OnUpdateWavePause(bool isPause)
         {
-            _enemyPresenter.SetPause(isPause);
+            // 敵の停止はフリーズと共有の機構なので、フリーズ中の解除で動き出さないよう論理和で渡す
+            _enemyPresenter.SetPause(isPause || _freezeDataStore.IsFreezing.CurrentValue);
         }
 
         public void Dispose()

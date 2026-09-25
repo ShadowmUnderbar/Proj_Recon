@@ -54,6 +54,12 @@ namespace App.Battle.Presenters
             _playerView.SetAimTargets(leftTarget, rightTarget);
         }
 
+        public void PlayDeathAnimation() => _playerView.PlayDeathAnimation();
+
+        public bool IsDeathAnimationFinished => _playerView.IsDeathAnimationFinished;
+
+        public void ResetDeathAnimation() => _playerView.ResetDeathAnimation();
+
         public void MouseAim(Vector2 mousePos)
         {
             _playerView.MouseAim(mousePos);
@@ -67,6 +73,11 @@ namespace App.Battle.Presenters
         public void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition)
         {
             _playerView.ShotToward(handType, bulletData, focusTargetId, targetPosition);
+        }
+
+        public void PlayCounterTracer(Vector3 startPos, Vector3 endPos, float width)
+        {
+            _playerView.PlayCounterTracer(startPos, endPos, width);
         }
 
         public void Aim()

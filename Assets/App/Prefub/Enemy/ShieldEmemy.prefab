@@ -278,6 +278,7 @@ GameObject:
   - component: {fileID: 2796764521119824477}
   - component: {fileID: 360341382911308008}
   - component: {fileID: 7025905074725197641}
+  - component: {fileID: 258203144965129529}
   m_Layer: 6
   m_Name: ShieldEmemy
   m_TagString: Enemy
@@ -363,3 +364,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _visualRoot: {fileID: 9123505319087396218}
   _config: {fileID: 11400000, guid: 2a7a085e7749d3c429d8d774577df907, type: 2}
+--- !u!114 &258203144965129529
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6969719736142006962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dd0084eae59aab4a8dc4fd9fd3a1bb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _config: {fileID: 11400000, guid: 4258731bf09aea84092817b7736fb5c0, type: 2}
+  _renderers: []

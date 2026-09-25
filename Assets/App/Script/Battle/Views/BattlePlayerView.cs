@@ -49,6 +49,7 @@ namespace App.Battle.Views
         private ISimpleObjectFactory<IPlayerAimMuzzleView> _aimFactory;
         private ISimpleObjectFactory<IPlayerShotView> _shotFactory;
         private ISimpleObjectFactory<BlitzEffectView> _blitzEffectView;
+        private ISimpleObjectFactory<CounterTracerView> _counterTracerFactory;
 
         public ReactiveProperty<Pose> LeftHandPose { get; } = new();
         public ReactiveProperty<Pose> RightHandPose { get; } = new();
@@ -58,13 +59,15 @@ namespace App.Battle.Views
             ISimpleObjectFactory<IPlayerTopDownAimView> topDownFactory,
             ISimpleObjectFactory<IPlayerAimMuzzleView> aimFactory,
             ISimpleObjectFactory<IPlayerShotView> shotFactory,
-            ISimpleObjectFactory<BlitzEffectView> blitzEffectView
+            ISimpleObjectFactory<BlitzEffectView> blitzEffectView,
+            ISimpleObjectFactory<CounterTracerView> counterTracerFactory
         )
         {
             _topDownFactory = topDownFactory;
             _aimFactory = aimFactory;
             _shotFactory = shotFactory;
             _blitzEffectView = blitzEffectView;
+            _counterTracerFactory = counterTracerFactory;
 
             var aimViews = new List<IPlayerAimMuzzleView>();
             var shotViews = new List<IPlayerShotView>();
@@ -134,6 +137,21 @@ namespace App.Battle.Views
         public void SetAimTargets(Vector3 leftTarget, Vector3 rightTarget)
         {
             _playerAimIKView.SetAimTargets(leftTarget, rightTarget);
+        }
+
+        public void PlayDeathAnimation()
+        {
+            // 腕はエイムIKが毎フレーム上書きするため、先に切ってから死亡アニメへ移す
+            _playerAimIKView.SetEnable(false);
+            _playerAnimationView.PlayDeath();
+        }
+
+        public bool IsDeathAnimationFinished => _playerAnimationView.IsDeathFinished;
+
+        public void ResetDeathAnimation()
+        {
+            _playerAnimationView.ResetDeath();
+            _playerAimIKView.SetEnable(true);
         }
 
         public void Aim()
@@ -208,7 +226,8 @@ namespace App.Battle.Views
 
             var targetPos = new Vector3(mousePos.x, 0, mousePos.y);
 
-            if (Physics.Raycast(ray, out var hit, 100f))
+            // ポイント粒子を接地点として拾わないよう除外する（照準が漂う粒子に吸い付くのを防ぐ）
+            if (Physics.Raycast(ray, out var hit, 100f, Physics.DefaultRaycastLayers & ~LayerConstants.PointParticle))
             {
                 targetPos = hit.point;
             }
@@ -230,6 +249,13 @@ namespace App.Battle.Views
         {
             var effect = _blitzEffectView.Instantiate(transform);
             effect.Play(startPos, playerPos).Forget();
+        }
+
+        public void PlayCounterTracer(Vector3 startPos, Vector3 endPos, float width)
+        {
+            // 見た目・挙動は CounterTracerView プレハブ側で調整する
+            var tracer = _counterTracerFactory.Instantiate(null);
+            tracer.Play(startPos, endPos, width).Forget();
         }
 
         private void OnHitBullet(HitData hit)

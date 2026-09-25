@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "B_Side90 [('Opt__ElseIf_Jacket_Sleeve_L', 0, 290, 3.8054777060395395), ('Opt__ElseIf_Jacket_Sleeve_R', 0, 276, 3.510437073691413)]\nG_WideOpen [('Opt__ElseIf_Jacket_Sleeve_L', 0, 264, 2.8217453101552676), ('Opt__ElseIf_Jacket_Sleeve_R', 0, 238, 2.7320196227492897)]\n情報: 「ElseIf_Optimization_Test.blend」で保存しました\n"
+  }
+}

@@ -33,6 +33,15 @@ namespace App.Battle.Interface
         void SetMoveAnimation(Vector2 dir);
         void SetModelFacing(Vector3 dir);
         void SetAimTargets(Vector3 leftTarget, Vector3 rightTarget);
+
+        /// <summary>死亡アニメを再生する。エイムIKを切って腕もアニメへ委ねる</summary>
+        void PlayDeathAnimation();
+
+        /// <summary>死亡アニメが最後まで再生されたか（未再生なら true）</summary>
+        bool IsDeathAnimationFinished { get; }
+
+        /// <summary>死亡アニメを解除し、通常の移動アニメ・エイムIKへ戻す</summary>
+        void ResetDeathAnimation();
         void Aim();
         void MouseAim(Vector2 mousePos);
         void SetAimRayColor(HandType handType, Color color);
@@ -49,5 +58,14 @@ namespace App.Battle.Interface
         void ShotToward(HandType handType, BulletData bulletData, int focusTargetId, Vector3 targetPosition);
 
         void Blitz(Vector3 startPos, Transform playerPos);
+
+        /// <summary>
+        /// 回避時跳ね返し攻撃（カウンター）のレイ演出を再生する。
+        /// 見た目と挙動は専用プレハブ（CounterTracerView）側で調整する。
+        /// </summary>
+        /// <param name="startPos">レイの発射地点</param>
+        /// <param name="endPos">レイの着弾地点</param>
+        /// <param name="width">レイの基準の太さ（弾の当たり判定サイズ）</param>
+        void PlayCounterTracer(Vector3 startPos, Vector3 endPos, float width);
     }
 }

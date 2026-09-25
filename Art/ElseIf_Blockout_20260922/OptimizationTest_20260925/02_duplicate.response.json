@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: コピーを「ElseIf_Game_Current_Backup.blend」で保存しました\n情報: 「ElseIf_Optimization_Test.blend」で保存しました\nIndependent optimized collection created; current and master unchanged.\n"
+  }
+}
