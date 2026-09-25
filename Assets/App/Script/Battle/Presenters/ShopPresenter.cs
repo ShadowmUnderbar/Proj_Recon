@@ -47,6 +47,11 @@ namespace App.Battle.Presenters
             _shopView.UpdateHandInput(input);
         }
 
+        public void UpdatePointerInput(in ShopPointerInput input)
+        {
+            _shopView.UpdatePointerInput(input);
+        }
+
         public void Close()
         {
             _shopView.Close();

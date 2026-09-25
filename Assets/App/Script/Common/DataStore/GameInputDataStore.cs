@@ -99,8 +99,16 @@ namespace App.Common.DataStore
             IsLeftStick.Value = Input.Main.PushLeftStick.inProgress;
             IsDodge.Value = Input.Main.Dodge.inProgress;
 
+            // アップグレードカードのクリック判定で使うためエディタ限定にしない
+            // （現状ビルド後は DebugConfig.IsVRMode が常にtrueでこの経路は通らないが、
+            // 非VRのPCビルドを出すようになったときにここで詰まらないようにしておく）。
+            // VR実機にはマウスが無く Mouse.current が null になるため、その場合は更新しない
+            if (Mouse.current != null)
+            {
+                MouseInputPosition = Mouse.current.position.ReadValue();
+            }
+
 #if UNITY_EDITOR
-            MouseInputPosition = Mouse.current.position.ReadValue();
             DebugNormal.Value = Input.Debug.ShotModeNormal.inProgress;
             DebugWaltz.Value = Input.Debug.ShotModeWaltz.inProgress;
             DebugMerge.Value = Input.Debug.ShotModeMerge.inProgress;

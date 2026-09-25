@@ -23,7 +23,7 @@ namespace App.Battle.Interface
 
         /// <summary>
         /// 指定インデックスの候補を購入できるか（ポイントが足りるか）を反映する。
-        /// 買えない候補はボタンを押せなくする
+        /// 買えない候補はボタンを押せなくし、3Dカードのときは灰色にして確定させない
         /// </summary>
         void SetPurchasable(int index, bool isPurchasable);
 
@@ -31,6 +31,11 @@ namespace App.Battle.Interface
         /// 3Dカードの掴み・確定判定に使う片手ぶんの入力を渡す（VRのみ。それ以外では無視される）
         /// </summary>
         void UpdateHandInput(in ShopHandInput input);
+
+        /// <summary>
+        /// 3Dカードのクリック判定に使うポインタ入力を渡す（非VRのみ。それ以外では無視される）
+        /// </summary>
+        void UpdatePointerInput(in ShopPointerInput input);
 
         void Close();
     }

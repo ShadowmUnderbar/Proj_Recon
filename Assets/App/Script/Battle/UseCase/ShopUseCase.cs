@@ -203,6 +203,16 @@ namespace App.Battle.UseCase
                 return;
             }
 
+            if (!DebugConfig.IsVRMode)
+            {
+                // 非VRはマウスで狙ってクリック。左クリックは入力定義上 UseLeft（＝左トリガー）に割り当てられている
+                _shopPresenter.UpdatePointerInput(new ShopPointerInput(
+                    _gameInputDataStore.MouseInputPosition,
+                    _gameInputDataStore.IsLeftTrigger.CurrentValue));
+
+                return;
+            }
+
             _shopPresenter.UpdateHandInput(new ShopHandInput(
                 HandType.Left,
                 _playerControlPresenter.LeftHandPose.Value,

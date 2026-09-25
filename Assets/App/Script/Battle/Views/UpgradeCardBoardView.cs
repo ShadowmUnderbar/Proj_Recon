@@ -5,6 +5,8 @@ using App.Common.Data.MasterData;
 using App.Common.Views;
 using R3;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace App.Battle.Views
 {
@@ -16,6 +18,9 @@ namespace App.Battle.Views
     ///
     /// 掴みは「手を重ねて掴む（近接）」と「レイで狙って掴む（遠隔）」の両方に対応する。
     /// 近接のほうが意図が明確なため、近接で掴めるカードがあればそちらを優先する。
+    ///
+    /// 非VR（PC/エディタ）では手が無いため掴みは使わず、マウスで狙ってクリックした時点で確定する。
+    /// カードの見た目・配置はVRと共通なので、実機が無くてもPCで確認できる
     /// </summary>
     public class UpgradeCardBoardView : MonoBehaviour
     {
@@ -37,6 +42,10 @@ namespace App.Battle.Views
 
         [SerializeField, Tooltip("並べたカードの向き[deg]。カードの表がプレイヤー側を向くように調整する")]
         private Vector3 _cardFacingRotation = new(0f, 180f, 0f);
+
+        [Header("配置（非VR）")]
+        [SerializeField, Tooltip("非VRでのカメラ相対のカード位置[m]。見下ろしカメラでも画面内に収まるようにする")]
+        private Vector3 _pointerLocalPosition = new(0f, 0f, 1f);
 
         [Header("持ったときの見え方")]
         [SerializeField, Tooltip("持っているときのカードの拡大率")]
@@ -78,19 +87,33 @@ namespace App.Battle.Views
 
         private Camera _targetCamera;
 
+        /// <summary>マウスで選ぶモード（非VR）か。掴みは使わず、クリックした時点で確定する</summary>
+        private bool _isPointerMode;
+
+        private readonly PointerState _pointerState = new();
+
         /// <summary>
         /// レイ判定の結果を受けるバッファ。毎フレームのアロケーションを避けるため使い回す。
         /// RaycastNonAllocは距離順に詰めてくれないため、カード枚数ぶんは余裕を持たせる
         /// </summary>
         private readonly RaycastHit[] _rayHits = new RaycastHit[16];
 
+        /// <summary>UIのレイ判定の結果を受けるバッファ。毎フレームのアロケーションを避けるため使い回す</summary>
+        private readonly List<RaycastResult> _uiRaycastResults = new();
+
+        /// <summary>UIのレイ判定に使うイベントデータ。位置だけ差し替えて使い回す</summary>
+        private PointerEventData _uiPointerEventData;
+
         /// <summary>
         /// 候補ぶんのカードを生成し、カメラ前方に並べる。
         /// プレハブ未設定やカメラ未取得で並べられなかった場合は false を返し、呼び出し側でUIを出し分けられるようにする
         /// </summary>
-        public bool Open(IReadOnlyList<UpgradeMasterData> upgrades)
+        /// <param name="upgrades">並べるアップグレード候補</param>
+        /// <param name="isPointerMode">非VRでマウス操作にするか。false なら手での掴み操作</param>
+        public bool Open(IReadOnlyList<UpgradeMasterData> upgrades, bool isPointerMode)
         {
             Close();
+            _isPointerMode = isPointerMode;
 
             if (_cardPrefab == null || upgrades == null || upgrades.Count == 0)
             {
@@ -130,6 +153,7 @@ namespace App.Battle.Views
                 }
 
                 ReleaseCardFromHands(_cards[i]);
+                _pointerState.Release(_cards[i]);
                 Destroy(_cards[i].gameObject);
                 _cards.RemoveAt(i);
                 return;
@@ -153,12 +177,33 @@ namespace App.Battle.Views
             {
                 handState.Reset();
             }
+
+            _pointerState.Reset();
+        }
+
+        /// <summary>指定インデックスのカードに、所持ポイントで買えるかどうかを反映する</summary>
+        public void SetPurchasable(int index, bool isPurchasable)
+        {
+            foreach (var card in _cards)
+            {
+                if (card.Index == index)
+                {
+                    card.SetPurchasable(isPurchasable);
+                    return;
+                }
+            }
         }
 
         /// <summary>片手ぶんの入力を受け取る。判定・移動は LateUpdate でまとめて行う</summary>
         public void UpdateHandInput(in ShopHandInput input)
         {
             _handStates[(int)input.HandType].SetInput(input);
+        }
+
+        /// <summary>非VRのポインタ入力を受け取る。判定は LateUpdate でまとめて行う</summary>
+        public void UpdatePointerInput(in ShopPointerInput input)
+        {
+            _pointerState.SetInput(input);
         }
 
         private void LateUpdate()
@@ -168,9 +213,16 @@ namespace App.Battle.Views
                 return;
             }
 
-            foreach (var handState in _handStates)
+            if (_isPointerMode)
             {
-                UpdateHand(handState);
+                UpdatePointer();
+            }
+            else
+            {
+                foreach (var handState in _handStates)
+                {
+                    UpdateHand(handState);
+                }
             }
 
             // 掴まれていないカードは定位置へ戻す
@@ -227,14 +279,91 @@ namespace App.Battle.Views
 
                 handState.HeldCard.MoveTo(holdPose, Vector3.one * _holdScale, _followSpeed);
 
-                // 持っている状態でトリガーを引いた瞬間に確定する
-                if (input.IsConfirming && !handState.PreviousConfirming)
+                // 持っている状態でトリガーを引いた瞬間に確定する。買えないカードは読めるだけで確定させない
+                if (input.IsConfirming && !handState.PreviousConfirming && handState.HeldCard.IsPurchasable)
                 {
                     _onCardConfirmed.OnNext(handState.HeldCard.Index);
                 }
             }
 
-            handState.StoreFrameState(pointingPose.rotation);
+            handState.StorePointingRotation(pointingPose.rotation);
+        }
+
+        /// <summary>
+        /// 非VRのポインタ操作。カードは掴まず、狙っているカードを強調表示し、押した瞬間にそのカードを確定する
+        /// </summary>
+        private void UpdatePointer()
+        {
+            if (!_pointerState.HasInput || !TryGetTargetCamera(out var targetCamera))
+            {
+                return;
+            }
+
+            // Canvasのボタン（次のウェーブへ）を押したクリックで、その裏のカードまで確定しないようにする
+            var hovered = IsPointerOverInteractableUi(_pointerState.ScreenPosition)
+                ? null
+                : FindCardByRay(targetCamera.ScreenPointToRay(_pointerState.ScreenPosition));
+
+            SetPointerHovered(hovered);
+
+            if (hovered != null
+                && hovered.IsPurchasable
+                && _pointerState.IsPressed
+                && !_pointerState.PreviousPressed)
+            {
+                _onCardConfirmed.OnNext(hovered.Index);
+            }
+        }
+
+        /// <summary>
+        /// ポインタが「押せるUI」の上にあるか。
+        /// <see cref="EventSystem.IsPointerOverGameObject"/> ではショップの背景パネルにも反応してしまい、
+        /// パネルに覆われた範囲のカードが一切クリックできなくなるため、Selectableの有無まで見て判定する
+        /// </summary>
+        private bool IsPointerOverInteractableUi(Vector2 screenPosition)
+        {
+            if (EventSystem.current == null)
+            {
+                return false;
+            }
+
+            _uiPointerEventData ??= new PointerEventData(EventSystem.current);
+            _uiPointerEventData.position = screenPosition;
+            _uiRaycastResults.Clear();
+            EventSystem.current.RaycastAll(_uiPointerEventData, _uiRaycastResults);
+
+            foreach (var result in _uiRaycastResults)
+            {
+                var selectable = result.gameObject.GetComponentInParent<Selectable>();
+
+                if (selectable != null && selectable.IsInteractable())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>ポインタで狙っているカードの強調表示を更新する</summary>
+        private void SetPointerHovered(UpgradeCardView card)
+        {
+            var previous = _pointerState.SetHovered(card);
+
+            if (previous == card)
+            {
+                return;
+            }
+
+            if (previous != null)
+            {
+                previous.SetHighlight(CardHighlight.None);
+            }
+
+            if (card != null)
+            {
+                card.SetHighlight(CardHighlight.Hovered);
+            }
         }
 
         /// <summary>コントローラの姿勢を、実際に指し示している向き（ハンドレイと同じ基準）へ直す</summary>
@@ -305,7 +434,9 @@ namespace App.Battle.Views
         {
             var nearest = FindNearestCard(handPose.position);
 
-            return nearest != null ? nearest : FindCardByRay(handPose);
+            return nearest != null
+                ? nearest
+                : FindCardByRay(new Ray(handPose.position, handPose.rotation * Vector3.forward));
         }
 
         private UpgradeCardView FindNearestCard(Vector3 handPosition)
@@ -338,11 +469,11 @@ namespace App.Battle.Views
             return nearest;
         }
 
-        private UpgradeCardView FindCardByRay(Pose handPose)
+        /// <summary>レイの先にあるカードのうち最も手前のものを返す（手のレイ・マウスのレイで共通）</summary>
+        private UpgradeCardView FindCardByRay(Ray ray)
         {
             var hitCount = Physics.RaycastNonAlloc(
-                handPose.position,
-                handPose.rotation * Vector3.forward,
+                ray,
                 _rayHits,
                 _rayGrabDistance,
                 _cardLayerMask,
@@ -420,6 +551,18 @@ namespace App.Battle.Views
             }
 
             var cameraTransform = targetCamera.transform;
+
+            // 非VRのカメラは真上から見下ろす固定アングルのため、俯角で置くと視界の外へ出てしまう。
+            // <see cref="VrUiFollowCanvasView"/> の非VR時と同じく、カメラ相対の一定位置に貼り付ける
+            if (_isPointerMode)
+            {
+                transform.SetPositionAndRotation(
+                    cameraTransform.TransformPoint(_pointerLocalPosition),
+                    cameraTransform.rotation);
+
+                return true;
+            }
+
             var yawForward = Quaternion.AngleAxis(-_pitchAngle, cameraTransform.right) * cameraTransform.forward;
             yawForward.y = 0f;
 
@@ -503,8 +646,15 @@ namespace App.Battle.Views
 
             private UpgradeCardView _hoveredCard;
 
+            /// <summary>
+            /// 入力を差し替える。押下エッジの基準になる前フレームの状態もここで進める。
+            /// 最初の1回だけは今の状態をそのまま前フレーム扱いにし、
+            /// グラブ・トリガーを握ったままショップが開いても即座に掴んで確定しないようにする
+            /// </summary>
             public void SetInput(in ShopHandInput input)
             {
+                PreviousGrabbing = HasInput ? Input.IsGrabbing : input.IsGrabbing;
+                PreviousConfirming = HasInput ? Input.IsConfirming : input.IsConfirming;
                 Input = input;
                 HasInput = true;
             }
@@ -537,11 +687,9 @@ namespace App.Battle.Views
                 HeldCard = null;
             }
 
-            /// <summary>次フレームでの差分・押下エッジ判定のために、このフレームの状態を控える</summary>
-            public void StoreFrameState(Quaternion pointingRotation)
+            /// <summary>次フレームでのひねりの差分を測るために、このフレームの手の向きを控える</summary>
+            public void StorePointingRotation(Quaternion pointingRotation)
             {
-                PreviousGrabbing = Input.IsGrabbing;
-                PreviousConfirming = Input.IsConfirming;
                 PreviousPointingRotation = pointingRotation;
             }
 
@@ -568,6 +716,60 @@ namespace App.Battle.Views
                 HasInput = false;
                 PreviousGrabbing = false;
                 PreviousConfirming = false;
+            }
+        }
+
+        /// <summary>非VRのポインタ操作の状態。クリックの押下エッジを取るために前フレームの状態も保持する</summary>
+        private class PointerState
+        {
+            public Vector2 ScreenPosition { get; private set; }
+            public bool IsPressed { get; private set; }
+            public bool PreviousPressed { get; private set; }
+            public bool HasInput { get; private set; }
+
+            private UpgradeCardView _hoveredCard;
+
+            /// <summary>
+            /// 入力を差し替える。押下エッジの基準になる前フレームの状態もここで進める。
+            ///
+            /// 最初の1回だけは今の状態をそのまま前フレーム扱いにする。
+            /// 非VRでは左クリックが射撃と確定を兼ねているため、撃ちっぱなしでウェーブが終わると
+            /// ショップが開いた最初のフレームが押下エッジに見えて、カーソル下のカードを勝手に買ってしまう。
+            /// 判定・移動を行う LateUpdate 側で控えると、途中で抜けたフレームのぶん取りこぼす
+            /// </summary>
+            public void SetInput(in ShopPointerInput input)
+            {
+                PreviousPressed = HasInput ? IsPressed : input.IsPressed;
+                ScreenPosition = input.ScreenPosition;
+                IsPressed = input.IsPressed;
+                HasInput = true;
+            }
+
+            /// <summary>狙っているカードを差し替え、直前まで狙っていたカードを返す（強調表示の更新は呼び出し側）</summary>
+            public UpgradeCardView SetHovered(UpgradeCardView card)
+            {
+                var previous = _hoveredCard;
+                _hoveredCard = card;
+
+                return previous;
+            }
+
+            /// <summary>破棄されるカードをホバー対象から外す</summary>
+            public void Release(UpgradeCardView card)
+            {
+                if (_hoveredCard == card)
+                {
+                    _hoveredCard = null;
+                }
+            }
+
+            public void Reset()
+            {
+                ScreenPosition = Vector2.zero;
+                IsPressed = false;
+                PreviousPressed = false;
+                HasInput = false;
+                _hoveredCard = null;
             }
         }
     }
