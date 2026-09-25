@@ -109,16 +109,77 @@ function Resolve-RunStartIfSelecting {
     throw "ラン開始のセット選択を解除できませんでした（使わずに開始ボタン押下後もisSelectingRunStart=trueのまま）"
 }
 
+# ショップに並んだ3Dカードの一覧（インデックス・クリック座標・コスト・購入可否）を取得する。
+# コストはカード上の "CostText"（プレースホルダのプレハブの子）から読む。
+# 本番モデルへ差し替えてオブジェクト名が変わったら、ここも合わせて直すこと。
+# x/y は simulate-mouse-input に渡す前提で左上原点に直してある
+# （WorldToScreenPointは左下原点。カードが1行だけなら中央で一致してしまい違いに気づけないので注意）
+function Get-ShopCards {
+    $json = Invoke-UnityJson -Snippet @'
+using System.Linq;
+using UnityEngine;
+using App.Battle.Views;
+
+var cam = Camera.main;
+var cards = UnityEngine.Object.FindObjectsOfType<UpgradeCardView>(true).OrderBy(x => x.Index).ToList();
+var items = new System.Collections.Generic.List<string>();
+
+foreach (var card in cards)
+{
+    var screenPoint = cam.WorldToScreenPoint(card.transform.position);
+    var costTransform = card.transform.Find("CostText");
+    var cost = -1;
+    if (costTransform != null)
+    {
+        int.TryParse(costTransform.GetComponent<TMPro.TextMeshPro>().text.Replace("P", "").Trim(), out cost);
+    }
+
+    var onScreen = screenPoint.z > 0f
+        && screenPoint.x >= 0f && screenPoint.x < Screen.width
+        && screenPoint.y >= 0f && screenPoint.y < Screen.height;
+
+    // simulate-mouse-input の座標は左上原点なので、ここで上下を反転して渡す
+    var clickY = Mathf.RoundToInt(Screen.height - screenPoint.y);
+
+    items.Add($"{{\"index\":{card.Index},\"x\":{Mathf.RoundToInt(screenPoint.x)},\"y\":{clickY},\"cost\":{cost},\"purchasable\":{card.IsPurchasable.ToString().ToLower()},\"onScreen\":{onScreen.ToString().ToLower()}}}");
+}
+
+return "[" + string.Join(",", items) + "]";
+'@
+    return @($json)
+}
+
+# 3Dカードを画面座標でクリックする（非VRのポインタ操作の経路をそのまま通す）
+function Invoke-ShopCardClick {
+    param([Parameter(Mandatory)] $Card)
+    Invoke-Uloop -Command 'simulate-mouse-input' -Params @{
+        action = 'Click'; button = 'Left'; x = "$($Card.x)"; y = "$($Card.y)"
+    } | Out-Null
+    Start-Sleep -Milliseconds 400
+}
+
 function Resolve-ShopIfOpen {
     param([Parameter(Mandatory)] $WaveState)
     if (-not $WaveState.isWavePause) { return $false }
 
     # フロー: アップグレードを1つ選択 → 「次のウェーブへ」を押す
-    # 選択後は選んだボタンだけが非表示になり、他の候補は表示されたまま残る（ShopView.HideUpgradeButton(index)の動作）
-    Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
-        action = 'Click'; 'target-path' = $Global:PlaytestShopUpgradeButtonPath; 'bypass-raycast' = 'true'
-    } | Out-Null
-    Start-Sleep -Milliseconds 300
+    # 候補は3Dカードで並ぶ（ShopView）。カードを並べられなかったときだけCanvasのボタンに落ちるため、
+    # まずカードを探し、無ければ従来どおりボタンを押す
+    $cards = @(Get-ShopCards)
+
+    if ($cards.Count -gt 0) {
+        # 買えるカードが無ければ購入せず次ウェーブへ進む（ポイント不足は異常ではない）。
+        # VRモードのエディタではカードは掴み操作で選ぶため、このクリックは空振りする（同じく異常ではない）
+        $target = $cards | Where-Object { $_.purchasable -and $_.onScreen } | Select-Object -First 1
+        if ($target) { Invoke-ShopCardClick -Card $target }
+    }
+    else {
+        # 選択後は選んだボタンだけが非表示になり、他の候補は表示されたまま残る（ShopView.HideUpgradeButton(index)の動作）
+        Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
+            action = 'Click'; 'target-path' = $Global:PlaytestShopUpgradeButtonPath; 'bypass-raycast' = 'true'
+        } | Out-Null
+        Start-Sleep -Milliseconds 300
+    }
 
     # 「次のウェーブへ」押下後、実際にポーズ解除されたことを確認できるまでリトライする。
     # 確認なしに進むと、遷移失敗時にランナーが同じショップ処理を繰り返して進行不能になる

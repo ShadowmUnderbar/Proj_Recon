@@ -48,7 +48,7 @@ Unity Editorで `Tools > Playtest Runner` を開き、シナリオ（`FixedFlow`
 終了コード0=エラーなし、1=エラー検出、2=シナリオ指定ミス。結果は`Tools/Playtest/Reports/`にJSONで保存される（最大10件、古いものから自動削除、`.gitignore`済みでコミット対象外）。
 
 ### スクリプト構成
-- `Tools/Playtest/PlaytestCommon.ps1`: 共通ヘルパー（`Invoke-Uloop`＝uloop CLIラッパー、`Get-WaveState`＝ウェーブ状態取得、`Resolve-ShopIfOpen`＝ショップ自動選択、`Get-NewErrors`＝エラー取得、`Write-PlaytestReport`＝レポート出力）
+- `Tools/Playtest/PlaytestCommon.ps1`: 共通ヘルパー（`Invoke-Uloop`＝uloop CLIラッパー、`Get-WaveState`＝ウェーブ状態取得、`Resolve-ShopIfOpen`＝ショップ自動選択、`Get-ShopCards`／`Invoke-ShopCardClick`＝アップグレードカードの取得とクリック、`Get-NewErrors`＝エラー取得、`Write-PlaytestReport`＝レポート出力）
 - `Tools/Playtest/Scenarios/*.ps1`: シナリオ本体。各ファイルは`PlaytestScenarioStep`関数を1つ定義するだけでよい（詳細は後述）
 - `Tools/Playtest/run-playtest.ps1`: テストランのランナー本体。compile→clear-console→Play→（状態観測→シナリオ実行 or ショップ処理→エラー確認）の繰り返し→Stop→レポート出力
 - `Tools/Playtest/probe-effect.ps1`: プローブのランナー本体。compile→clear-console→ProbePrepare→Play→ラン開始ゲート解除→ProbeRun→エラー確認→Stop→ProbeCleanup→レポート出力
@@ -64,7 +64,7 @@ function PlaytestScenarioStep {
     # ここでInvoke-Uloopを使い、移動・発射・フォーム切替などを組み立てる。
 }
 ```
-既存の`FixedFlow.ps1`（決め打ち移動+発射）・`RandomDrill.ps1`（移動/発射/フォーム/フォーカス/回避をサイクルごとに変える）を参考にする。ショップでのアップグレード選択・次ウェーブ操作は`PlaytestCommon.ps1`の`Resolve-ShopIfOpen`が共通処理として自動で行う（アップグレードを1つ選択=常に最初の候補`UpgradeButton0`→`NextWaveButton`押下。通貨制の導入後、所持ポイントが足りない候補のボタンは`interactable=false`になるため、押しても購入されずに次ウェーブへ進む（異常ではない）→ポーズ解除を確認できるまで最大3回リトライ、解除されなければthrow）。
+既存の`FixedFlow.ps1`（決め打ち移動+発射）・`RandomDrill.ps1`（移動/発射/フォーム/フォーカス/回避をサイクルごとに変える）を参考にする。ショップでのアップグレード選択・次ウェーブ操作は`PlaytestCommon.ps1`の`Resolve-ShopIfOpen`が共通処理として自動で行う（買える3Dカードを1枚クリック→`NextWaveButton`押下。所持ポイントが足りず買えるカードが無ければ購入せずに次ウェーブへ進む（異常ではない）→ポーズ解除を確認できるまで最大3回リトライ、解除されなければthrow）。
 
 ## 演出の数値検証（プローブ）
 
@@ -124,7 +124,7 @@ C#スニペットはPowerShellの**単一引用符ヒアストリング**（`@'`
 
 ### 既存のプローブ
 
-- `ShopPurchase` — ショップの通貨制。ポイント0では買えない／表示中にポイントが入るとその場で買えるようになる／購入でコストが引かれる／同じショップで続けて買える／購入済みボタンの再押下で二重取得・二重支払いしない、を17項目で検証する。コストは固定値を仮定せずボタンのラベルから読むこと（デバッグ用の開始アップグレードが載っているとLv2以上＝別コストの候補が並ぶ）。`AppliedUpgrades` の件数も必ず差分で見ること
+- `ShopPurchase` — ショップの通貨制を、3Dカードを実際にマウスでクリックして19項目で検証する。ポイント0では買えない／買えないカードはクリックしても何も起きない／表示中にポイントが入るとその場で買えるようになる／購入でコストが引かれる／購入したカードだけが消える／同じショップで続けて買える／買えるだけ買うと残りは買えないものだけになる、を見る。コストは固定値を仮定せずカード上の`CostText`から読むこと（デバッグ用の開始アップグレードが載っているとLv2以上＝別コストの候補が並ぶ）。`AppliedUpgrades` の件数も必ず差分で見ること。**カードのクリック判定は非VRのポインタ操作なので、`ProbePrepare`でVRモード（EditorPrefsの`VRMode`）を一時的に切り、`ProbeCleanup`で元へ戻している**（VRモードのままだとカードは掴み操作でしか選べず、クリックが空振りする）
 - `PointParticleDrop` — 敵撃破時のポイント粒子ドロップ。ドロップ量の分割内訳・撃破時の生成数・接触回収・弾の通過回収（弾が消えないこと）・即着弾での回収・ウェーブ切り替わり時の一括消去・プレイヤーの高さへの追従・取得判定の最小サイズ・弾を当てた粒子の吸い込み（距離に依らず0.5秒で完了）を29項目で検証する。弾の検証は粒子と同じ高さの水平弾道で撃つこと（斜め撃ちは銃口が地面に埋まって弾が即消える）。粒子は専用レイヤー `PointParticle`（8）にあり、レイキャスト側で除外しているため通常のクエリでは掛からない。生成直後の粒子は同じフレームの物理クエリに反映されないので、粒子を出してから撃つまでに必ず1フレーム待つこと。ウェーブ進行の検証は `AddElapsedTime` で実際のTick経路を通すこと（DataStoreの `AdvanceWave()` 直叩きでは一括消去を含む `AdvanceWaveInternal` を通らない）。弾道の検証では `IEnemyDataStore.RemoveAllEnemyData` だけでなく `IEnemyPresenter.RemoveAllEnemies` も呼ぶこと（データだけ消しても敵のビューが残って弾道を塞ぐ）。粒子はプレイヤーの高さへ移動し続けるため、撃つ前に高さが落ち着くまで待つこと。弾を当てた粒子は即座には回収されず吸い込み（既定0.5秒）を挟むので、回収の確認は弾の到達時間＋0.5秒ぶん待つこと。吸い込みの「最中」を狙って観測するとuloop呼び出しの往復時間で窓を外してフレークするため、状態は同期的に読める場所で確認し、完了は時間の下限だけ待って確かめること
 - `StreamerCameraShot` — ストリーマーモードの配信用カメラ。追従一致・自動フレーミング距離・注視方向・Orbitの回り込み・プレイヤー視点への非干渉・復帰を20項目で検証する。`ProbePrepare`で`StreamerModeConfig`を一時的に有効化（PCモードでも動くよう`_vrOnly`を外す）し、`ProbeCleanup`で元の値へ必ず戻す
 
@@ -178,7 +178,15 @@ return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave
 
 移動・発射の座標や継続時間に厳密な乱数生成は不要（Claude自身が呼び出しごとに値を変えれば十分）。1回のドリルで移動キー・発射座標・フォーム・フォーカスの組み合わせを変え続けることが目的。ウェーブ1〜3クリア+ショップ2回+フォーム全種切替+フォーカス切替+回避を含む形で検証済み、エラーなしで完走した。
 
-### ショップUIの階層パス（`Resolve-ShopIfOpen`が使用）
+### アップグレード候補の3Dカード（`Resolve-ShopIfOpen`が使用）
+アップグレード候補は`ShopView`のCanvasボタンではなく、**3Dカード**（`UpgradeCardBoardView`が生成する`UpgradeCardView`）で並ぶ。VRはカードを掴んでトリガーで確定、非VRはマウスでカードをクリックして確定する。カードを並べられなかったとき（カメラ未取得・プレハブ未設定）だけ従来のCanvasボタンへフォールバックする。
+
+- カードの一覧（インデックス・画面座標・コスト・購入可否）は`Get-ShopCards`で取れる。コストはカード上の`CostText`から読んでいるため、本番モデルへ差し替えてオブジェクト名が変わったらここも直すこと
+- カードのクリックは`Invoke-ShopCardClick`（`simulate-mouse-input`でカードの画面座標をクリックする）。`simulate-mouse-ui`ではなく`simulate-mouse-input`を使うこと（カードはUIではなく3Dコライダーのため）
+- **カードのクリックが効くのは非VRのときだけ**。VRモードのエディタではカードは掴み操作でしか選べず、クリックは空振りする（購入せずに次ウェーブへ進む）
+- 非VRではショップの背景パネル（`ShopCanvas/Panel`のImage）をカード表示中だけ隠している。ScreenSpaceOverlayのCanvasが手前に描かれ、カードが一切見えなくなるため
+
+### ショップUIの階層パス（`Resolve-ShopIfOpen`のフォールバックが使用）
 `ShopView`プレハブは`BattleLifetimeScope`が実行時にインスタンス化する。**`ShopCanvas`は`VrUiFollowCanvasView`によってワールド座標でカメラ正面へ遅延追従する（再ペアレントはしない）**ため、クリック対象のパスはプレハブインスタンス配下を指定すること：
 ```
 BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/UpgradeButtons/UpgradeButton0～11
@@ -195,7 +203,7 @@ BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/NextWaveButton
 - **新しいテストシチュエーションを増やす** → `Tools/Playtest/Scenarios/`に新規`.ps1`を追加（このファイルの「新しいテストシチュエーションを追加する」節を参照）。SKILL.md側の変更は基本不要
 - **新しいカメラ演出・エフェクトを追加した** → `Tools/Playtest/Probes/`に新規`.ps1`を追加し、「既存のプローブ」の一覧に1行足す（「演出の数値検証」節を参照）。演出は目視では検証にならないので、必ず数値で押さえる
 - **プローブ共通の道具が足りない** → `PlaytestCommon.ps1`の「演出の数値検証」セクションにヘルパーを追加し、上の表を更新
-- **ショップの選択ロジックを増やす**（例: 常に同じ候補ではなく、状況に応じて選ぶ）→ `PlaytestCommon.ps1`の`Resolve-ShopIfOpen`を拡張
+- **ショップの選択ロジックを増やす**（例: 常に同じ候補ではなく、状況に応じて選ぶ）→ `PlaytestCommon.ps1`の`Resolve-ShopIfOpen`を拡張。カードの見た目・構成を変えた場合は`Get-ShopCards`（`CostText`の参照）も合わせて直す
 - **新しい状態観測が必要になる**（例: プレイヤーのHP減少/ゲームオーバー判定が実装された、ウェーブ数UIが追加された）→ `Get-WaveState`のC#スニペットに新しいDataStore/プロパティを追加し、「前提・制約」セクションの記述を更新
 - **検知基準を広げる**（例: ソフトロック検知、見た目異常チェックを追加する）→ `run-playtest.ps1`のエラー確認部分に新しいチェックを追記し、「前提・制約」の検知基準の記述も更新
 - **`Debug.LogError`ではないが検知したい既知の問題が見つかった** → `PlaytestCommon.ps1`の`$Global:PlaytestKnownIssuePatterns`にメッセージの一部（検索文字列）を1行追加するだけでよい。`Get-NewErrors`が`log-type=All`＋`search-text`でLog/Warningレベルのメッセージも横断検索し、エラーとして報告する
