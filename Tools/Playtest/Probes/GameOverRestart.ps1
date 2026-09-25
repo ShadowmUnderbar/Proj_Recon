@@ -211,6 +211,7 @@ var gameState = scope.Container.Resolve<IGameStateDataStore>();
 var runStart = scope.Container.Resolve<IRunStartDataStore>();
 var barrier = scope.Container.Resolve<IPlayerBarrierDataStore>();
 var dodge = scope.Container.Resolve<IPlayerDodgeParameterDataStore>();
+var baseParameter = scope.Container.Resolve<PlayerBaseParameterConfig>();
 
 var enemyViews = UnityEngine.Object.FindObjectsByType<EnemyView>(FindObjectsSortMode.None).Length;
 var gameOverPanel = GameObject.Find("BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel");
@@ -220,7 +221,7 @@ var gameOverShown = gameOverPanel != null && gameOverPanel.activeInHierarchy;
 var runStartShown = runStartPanel != null && runStartPanel.activeInHierarchy;
 var shopShown = shopPanel != null && shopPanel.activeInHierarchy;
 
-return $"{{\"wave\":{wave.CurrentWave.CurrentValue},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"point\":{point.CurrentPoint.CurrentValue},\"upgrades\":{session.AppliedUpgrades.Count},\"enemies\":{enemyDataStore.Enemies.Count},\"enemyViews\":{enemyViews},\"health\":{player.Health.Value},\"maxHealth\":{player.MaxHealth.Value},\"baseHealth\":{BasePlayerParameter.Health},\"posX\":{player.Position.Value.x},\"posZ\":{player.Position.Value.z},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"isSelecting\":{runStart.IsSelecting.CurrentValue.ToString().ToLower()},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"barrier\":{barrier.CurrentBarrier.CurrentValue},\"dodgeCount\":{dodge.DodgeCount.Value},\"baseDodgeCount\":{BasePlayerParameter.DodgeCount},\"gameOverShown\":{gameOverShown.ToString().ToLower()},\"runStartShown\":{runStartShown.ToString().ToLower()},\"shopShown\":{shopShown.ToString().ToLower()}}}";
+return $"{{\"wave\":{wave.CurrentWave.CurrentValue},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"point\":{point.CurrentPoint.CurrentValue},\"upgrades\":{session.AppliedUpgrades.Count},\"enemies\":{enemyDataStore.Enemies.Count},\"enemyViews\":{enemyViews},\"health\":{player.Health.Value},\"maxHealth\":{player.MaxHealth.Value},\"baseHealth\":{baseParameter.Health},\"posX\":{player.Position.Value.x},\"posZ\":{player.Position.Value.z},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"isSelecting\":{runStart.IsSelecting.CurrentValue.ToString().ToLower()},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"barrier\":{barrier.CurrentBarrier.CurrentValue},\"dodgeCount\":{dodge.DodgeCount.Value},\"baseDodgeCount\":{baseParameter.DodgeCount},\"gameOverShown\":{gameOverShown.ToString().ToLower()},\"runStartShown\":{runStartShown.ToString().ToLower()},\"shopShown\":{shopShown.ToString().ToLower()}}}";
 '@
 
     Assert-ProbeValue -Name 'リスタート後のウェーブ' -Actual ([double]$after.wave) -Expected 1 | Out-Null

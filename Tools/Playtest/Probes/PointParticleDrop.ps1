@@ -211,7 +211,7 @@ var bullet = bulletFactory.Instantiate(null);
 var bulletObject = ((MonoBehaviour)bullet).gameObject;
 bulletObject.name = "ProbeBullet";
 bullet.Spawn(
-    BasePlayerParameter.PlayerId,
+    PlayerConstants.PlayerId,
     new Pose(muzzlePosition, Quaternion.LookRotation(direction)),
     new BulletData { Speed = 10f, Damage = 1f, Size = 0.2f },
     -1);
@@ -308,7 +308,7 @@ var pointBefore = pointDataStore.CurrentPoint.CurrentValue;
 // 弾速0＝即着弾。弾道上をSphereCastでまとめて判定する経路を通す
 var bullet = bulletFactory.Instantiate(null);
 bullet.Spawn(
-    BasePlayerParameter.PlayerId,
+    PlayerConstants.PlayerId,
     new Pose(muzzlePosition, Quaternion.LookRotation(direction)),
     new BulletData { Speed = 0f, Damage = 1f, Size = 0.2f },
     -1);
