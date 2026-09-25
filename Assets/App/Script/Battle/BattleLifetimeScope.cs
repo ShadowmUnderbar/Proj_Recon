@@ -36,6 +36,7 @@ namespace App.Battle
         [SerializeField] private PointParticleStoreView _pointParticleStoreView;
         [SerializeField] private PointParticleConfig _pointParticleConfig;
         [SerializeField] private PointDropConfig _pointDropConfig;
+        [SerializeField] private PlayerDeathConfig _playerDeathConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -249,6 +250,7 @@ namespace App.Battle
             builder.RegisterInstance(_dodgeCounterAttackConfig);
             builder.RegisterInstance(_pointParticleConfig);
             builder.RegisterInstance(_pointDropConfig);
+            builder.RegisterInstance(_playerDeathConfig);
 
             #endregion
         }

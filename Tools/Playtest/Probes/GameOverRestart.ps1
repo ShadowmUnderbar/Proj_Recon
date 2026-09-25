@@ -126,8 +126,20 @@ return $"{{\"wave\":{wave.CurrentWave.CurrentValue},\"point\":{point.CurrentPoin
     Assert-ProbeTrue -Name 'ゲームオーバー直前はウェーブが進んでいる' -Condition ([int]$before.wave -ge 3) `
         -Detail "(実測: Wave$($before.wave))" | Out-Null
 
-    # ゲームオーバー画面の表示（UI生成・ハンドレイ切替）を待つ
-    Start-Sleep -Milliseconds 800
+    # 死亡演出（ヒットストップ→死亡アニメ→余韻）が終わってから画面が出るため、
+    # 固定待ちではなく表示されるまでポーリングする（演出時間そのものはPlayerDeathプローブが検証する）
+    for ($i = 0; $i -lt 30; $i++) {
+        $waiting = Invoke-UnityJson -Snippet @'
+using UnityEngine;
+
+var panel = GameObject.Find("BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel");
+var panelShown = panel != null && panel.activeInHierarchy;
+
+return $"{{\"panelShown\":{panelShown.ToString().ToLower()}}}";
+'@
+        if ([bool]$waiting.panelShown) { break }
+        Start-Sleep -Milliseconds 200
+    }
 
     $gameOver = Invoke-UnityJson -Snippet @'
 using UnityEngine;
@@ -203,10 +215,12 @@ var dodge = scope.Container.Resolve<IPlayerDodgeParameterDataStore>();
 var enemyViews = UnityEngine.Object.FindObjectsByType<EnemyView>(FindObjectsSortMode.None).Length;
 var gameOverPanel = GameObject.Find("BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel");
 var runStartPanel = GameObject.Find("BattleLifetimeScope/RunStartView(Clone)/RunStartCanvas/Panel");
+var shopPanel = GameObject.Find("BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel");
 var gameOverShown = gameOverPanel != null && gameOverPanel.activeInHierarchy;
 var runStartShown = runStartPanel != null && runStartPanel.activeInHierarchy;
+var shopShown = shopPanel != null && shopPanel.activeInHierarchy;
 
-return $"{{\"wave\":{wave.CurrentWave.CurrentValue},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"point\":{point.CurrentPoint.CurrentValue},\"upgrades\":{session.AppliedUpgrades.Count},\"enemies\":{enemyDataStore.Enemies.Count},\"enemyViews\":{enemyViews},\"health\":{player.Health.Value},\"maxHealth\":{player.MaxHealth.Value},\"baseHealth\":{BasePlayerParameter.Health},\"posX\":{player.Position.Value.x},\"posZ\":{player.Position.Value.z},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"isSelecting\":{runStart.IsSelecting.CurrentValue.ToString().ToLower()},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"barrier\":{barrier.CurrentBarrier.CurrentValue},\"dodgeCount\":{dodge.DodgeCount.Value},\"gameOverShown\":{gameOverShown.ToString().ToLower()},\"runStartShown\":{runStartShown.ToString().ToLower()}}}";
+return $"{{\"wave\":{wave.CurrentWave.CurrentValue},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"point\":{point.CurrentPoint.CurrentValue},\"upgrades\":{session.AppliedUpgrades.Count},\"enemies\":{enemyDataStore.Enemies.Count},\"enemyViews\":{enemyViews},\"health\":{player.Health.Value},\"maxHealth\":{player.MaxHealth.Value},\"baseHealth\":{BasePlayerParameter.Health},\"posX\":{player.Position.Value.x},\"posZ\":{player.Position.Value.z},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"isSelecting\":{runStart.IsSelecting.CurrentValue.ToString().ToLower()},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"barrier\":{barrier.CurrentBarrier.CurrentValue},\"dodgeCount\":{dodge.DodgeCount.Value},\"baseDodgeCount\":{BasePlayerParameter.DodgeCount},\"gameOverShown\":{gameOverShown.ToString().ToLower()},\"runStartShown\":{runStartShown.ToString().ToLower()},\"shopShown\":{shopShown.ToString().ToLower()}}}";
 '@
 
     Assert-ProbeValue -Name 'リスタート後のウェーブ' -Actual ([double]$after.wave) -Expected 1 | Out-Null
@@ -219,7 +233,8 @@ return $"{{\"wave\":{wave.CurrentWave.CurrentValue},\"elapsed\":{wave.ElapsedTim
     Assert-ProbeValue -Name 'リスタート後の最大HP' -Actual ([double]$after.maxHealth) -Expected ([double]$after.baseHealth) | Out-Null
     Assert-ProbeValue -Name 'リスタート後の現在HP' -Actual ([double]$after.health) -Expected ([double]$after.baseHealth) | Out-Null
     Assert-ProbeValue -Name 'リスタート後のバリア残量' -Actual ([double]$after.barrier) -Expected 0 | Out-Null
-    Assert-ProbeValue -Name 'リスタート後の回避回数' -Actual ([double]$after.dodgeCount) -Expected 2 | Out-Null
+    Assert-ProbeValue -Name 'リスタート後の回避回数' -Actual ([double]$after.dodgeCount) `
+        -Expected ([double]$after.baseDodgeCount) | Out-Null
     Assert-ProbeTrue -Name 'リスタートでプレイヤーが原点へ戻る' `
         -Condition ([math]::Abs([double]$after.posX) -lt 0.01 -and [math]::Abs([double]$after.posZ) -lt 0.01) `
         -Detail "(実測: ($($after.posX), $($after.posZ)))" | Out-Null
@@ -227,6 +242,8 @@ return $"{{\"wave\":{wave.CurrentWave.CurrentValue},\"elapsed\":{wave.ElapsedTim
     Assert-ProbeTrue -Name 'リスタートでゲームオーバー画面が閉じる' -Condition (-not [bool]$after.gameOverShown) | Out-Null
     Assert-ProbeTrue -Name 'リスタートでビルド選択へ戻る' -Condition ([bool]$after.isSelecting) | Out-Null
     Assert-ProbeTrue -Name 'ビルド選択UIが表示される' -Condition ([bool]$after.runStartShown) | Out-Null
+    Assert-ProbeTrue -Name 'リスタートでショップが閉じる' -Condition (-not [bool]$after.shopShown) `
+        -Detail '(開いたまま残ると「次のウェーブへ」で選択中のままランが走り出す)' | Out-Null
     Assert-ProbeTrue -Name 'ビルド選択中はゲームが止まっている' -Condition ([bool]$after.isWavePause) | Out-Null
 
     # --- 5. 戻ったビルド選択からそのまま次のランを始められる ---

@@ -51,8 +51,30 @@ $Global:PlaytestShopNextWaveButtonPath = 'BattleLifetimeScope/ShopView(Clone)/Sh
 # ゲームオーバー画面のスロット0保存ボタン
 $Global:PlaytestGameOverSlotButtonPath = 'BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel/SlotButtons/SlotButton0'
 
+function Wait-GameOverPanel {
+    # 死亡演出（ヒットストップ→死亡アニメ→余韻）の後に画面が出るため、表示されるまで待つ。
+    # 固定待ちにすると演出時間の調整でボタンを押し損ねる
+    param([int] $MaxAttempts = 30)
+
+    for ($i = 0; $i -lt $MaxAttempts; $i++) {
+        $result = Invoke-Uloop -Command 'find-game-objects' -Params @{
+            'name-pattern' = 'RestartButton'; 'search-mode' = 'Exact'
+        }
+        if ($result.Success -and $result.Result -match 'RestartButton') { return $true }
+        Start-Sleep -Milliseconds 200
+    }
+
+    return $false
+}
+
 function Invoke-GameOverSlotSave {
     # ゲームオーバー画面のスロット0保存ボタンを押し、アップグレードセット保存フローを疎通させる（ベストエフォート）
+    if (-not (Wait-GameOverPanel)) {
+        # 押せていないのに正常終端したように見えるのを防ぐため、待てなかったことを明示する
+        Write-Host "警告: ゲームオーバー画面の表示を待てなかったため、スロット保存は実行できていません"
+        return
+    }
+
     Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
         action = 'Click'; 'target-path' = $Global:PlaytestGameOverSlotButtonPath; 'bypass-raycast' = 'true'
     } | Out-Null
