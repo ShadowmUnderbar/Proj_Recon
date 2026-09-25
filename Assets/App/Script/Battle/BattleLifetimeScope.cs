@@ -102,6 +102,9 @@ namespace App.Battle
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeLotteryDataStore>();
+            // アップグレードのローカライズ文言（Localization の Upgrade テーブル）
+            builder.Register<UpgradeLocalizationDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IUpgradeLocalizationDataStore>();
             builder.Register<WaveManagerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IWaveManagerDataStore>();
             builder.Register<GameStateDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
