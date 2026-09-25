@@ -9,7 +9,7 @@ using VContainer.Unity;
 
 namespace App.Battle.UseCase
 {
-    public class EnemyRandomSpawnUseCase : IInitializable, IDisposable
+    public class EnemyRandomSpawnUseCase : IRunResettable, IInitializable, IDisposable
     {
         private readonly IEnemyRandomSpawnCycleDataStore _enemyRandomSpawnCycleDataStore;
         private readonly IPlayerStateDataStore _playerStateDataStore;
@@ -55,6 +55,19 @@ namespace App.Battle.UseCase
             _playerStateDataStore = playerStateDataStore;
             _enemyDataStore = enemyDataStore;
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
+        }
+
+        public void ResetRun()
+        {
+            // チョークポイント・陽動の蓄積はラン限りの状態。
+            // 残すと次のランで前ランの撃破方向へスポーンが偏る
+            _lastSpawnPosition = null;
+            _forceClusterNextSpawn = false;
+
+            _diversionKillCount = 0;
+            _diversionKillDirectionSum = Vector3.zero;
+            _isDiversionArmed = false;
+            _armedDiversionDirection = Vector3.zero;
         }
 
         public void Initialize()

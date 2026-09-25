@@ -8,7 +8,7 @@ using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
-    public class PlayerStateDataStore : IPlayerStateDataStore, IInitializable
+    public class PlayerStateDataStore : IPlayerStateDataStore, IRunResettable, IInitializable
     {
         private readonly IPlayerBarrierDataStore _playerBarrierDataStore;
         private readonly IBuffStateDataStore _buffStateDataStore;
@@ -52,14 +52,26 @@ namespace App.Battle.DataStore
 
         public void Initialize()
         {
-            Position.Value = Vector3.zero;
-            Health.Value = BasePlayerParameter.Health;
-            MaxHealth.Value = BasePlayerParameter.Health;
+            ResetRun();
 
             // 所持中のHP強化を反映した値に揃える。
             // シーン開始時点では未所持なので通常は基礎値のままで、実際の反映は
             // アップグレード獲得時（UpgradeSideEffectApplier）とセット読込時（RunStartUseCase）に行われる
             RefreshMaxHealth();
+        }
+
+        public void ResetRun()
+        {
+            Position.Value = Vector3.zero;
+            Rotate.Value = Quaternion.identity;
+
+            // ここでは RefreshMaxHealth を呼ばず基礎値に戻すだけにする。
+            // 他DataStoreのリセット順に依存せず常に同じ結果にするためで、
+            // 強化の反映はセット読込（RunStartUseCase）・獲得時にあらためて行われる
+            MaxHealth.Value = BasePlayerParameter.Health;
+            Health.Value = BasePlayerParameter.Health;
+
+            UnlockCoreSkillType = UnlockCoreSkillType.First;
         }
 
         public void RefreshMaxHealth()

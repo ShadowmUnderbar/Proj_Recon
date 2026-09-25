@@ -37,6 +37,7 @@ namespace App.Battle
         [SerializeField] private PointParticleStoreView _pointParticleStoreView;
         [SerializeField] private PointParticleConfig _pointParticleConfig;
         [SerializeField] private PointDropConfig _pointDropConfig;
+        [SerializeField] private PlayerDeathConfig _playerDeathConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -120,6 +121,9 @@ namespace App.Battle
 
             // アップグレード付与副作用の共通処理（ShopUseCase・RunStartUseCaseが利用）
             builder.Register<UpgradeSideEffectApplier>(Lifetime.Singleton);
+
+            // ラン状態の一括リセット（GameOverUseCaseのリスタートが利用）
+            builder.Register<RunResetUseCase>(Lifetime.Singleton);
 
             // 配信用カメラのフレーミング計算（StreamerCameraViewが利用）
             builder.Register<StreamerCameraFramingCalculator>(Lifetime.Singleton);
@@ -254,6 +258,7 @@ namespace App.Battle
             builder.RegisterInstance(_dodgeCounterAttackConfig);
             builder.RegisterInstance(_pointParticleConfig);
             builder.RegisterInstance(_pointDropConfig);
+            builder.RegisterInstance(_playerDeathConfig);
 
             #endregion
         }

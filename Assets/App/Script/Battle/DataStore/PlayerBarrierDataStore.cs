@@ -13,7 +13,7 @@ namespace App.Battle.DataStore
     /// - 最後の被弾から一定時間（RegenDelay）経過後、毎秒 最大値×RegenRatePerSecond ずつ最大値まで回復する
     /// - 最大値は「最大HP × 取得済みバリア倍率(最高レベル)」。取得時は満タンで付与する
     /// </summary>
-    public class PlayerBarrierDataStore : IPlayerBarrierDataStore, ITickable
+    public class PlayerBarrierDataStore : IPlayerBarrierDataStore, IRunResettable, ITickable
     {
         // 被弾後に回復が始まるまでの待機時間（秒）
         private const float RegenDelay = 7f;
@@ -84,7 +84,7 @@ namespace App.Battle.DataStore
             _currentBarrier.Value = Mathf.Min(_maxBarrier.Value, _currentBarrier.Value + regen);
         }
 
-        public void Reset()
+        public void ResetRun()
         {
             _currentBarrier.Value = 0f;
             _maxBarrier.Value = 0f;

@@ -8,7 +8,7 @@ using VContainer;
 
 namespace App.Battle.DataStore
 {
-    public class UpgradeSessionDataStore : IUpgradeSessionDataStore, IDisposable
+    public class UpgradeSessionDataStore : IUpgradeSessionDataStore, IRunResettable, IDisposable
     {
         // 所持している全アップグレード（読込分＋新規獲得分）
         private readonly List<string> _appliedUpgrades = new();
@@ -50,7 +50,7 @@ namespace App.Battle.DataStore
             _onChanged.OnNext(Unit.Default);
         }
 
-        public void Reset()
+        public void ResetRun()
         {
             _appliedUpgrades.Clear();
             _preloadedIds.Clear();

@@ -3,10 +3,15 @@ using R3;
 
 namespace App.Battle.DataStore
 {
-    public class GameStateDataStore : IGameStateDataStore
+    public class GameStateDataStore : IGameStateDataStore, IRunResettable
     {
         private readonly ReactiveProperty<bool> _isGameOver = new(false);
         public ReadOnlyReactiveProperty<bool> IsGameOver => _isGameOver;
+
+        public void ResetRun()
+        {
+            _isGameOver.Value = false;
+        }
 
         public void SetGameOver()
         {

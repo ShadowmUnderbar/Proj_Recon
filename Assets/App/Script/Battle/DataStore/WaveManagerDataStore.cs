@@ -3,7 +3,7 @@ using R3;
 
 namespace App.Battle.DataStore
 {
-    public class WaveManagerDataStore : IWaveManagerDataStore
+    public class WaveManagerDataStore : IWaveManagerDataStore, IRunResettable
     {
         public ReactiveProperty<bool> IsWavePause { get; } = new(false);
 
@@ -32,6 +32,15 @@ namespace App.Battle.DataStore
         public void IncrementKillCount()
         {
             _killCount.Value++;
+        }
+
+        public void ResetRun()
+        {
+            _currentWave.Value = 1;
+            _elapsedTime.Value = 0f;
+            _killCount.Value = 0;
+
+            // ポーズはビルド選択の開始・終了に合わせて RunStartUseCase が切り替えるため、ここでは触らない
         }
 
         public void AdvanceWave()

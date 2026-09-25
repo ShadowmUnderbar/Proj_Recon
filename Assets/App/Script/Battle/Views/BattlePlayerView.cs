@@ -139,6 +139,21 @@ namespace App.Battle.Views
             _playerAimIKView.SetAimTargets(leftTarget, rightTarget);
         }
 
+        public void PlayDeathAnimation()
+        {
+            // 腕はエイムIKが毎フレーム上書きするため、先に切ってから死亡アニメへ移す
+            _playerAimIKView.SetEnable(false);
+            _playerAnimationView.PlayDeath();
+        }
+
+        public bool IsDeathAnimationFinished => _playerAnimationView.IsDeathFinished;
+
+        public void ResetDeathAnimation()
+        {
+            _playerAnimationView.ResetDeath();
+            _playerAimIKView.SetEnable(true);
+        }
+
         public void Aim()
         {
             _playerTopDownAimListView.Aim();

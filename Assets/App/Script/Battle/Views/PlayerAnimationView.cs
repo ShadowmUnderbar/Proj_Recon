@@ -14,6 +14,16 @@ namespace App.Battle.Views
         private const string MoveXParam = "MoveX";
         private const string MoveYParam = "MoveY";
 
+        [Header("死亡アニメーション")]
+        [SerializeField, Tooltip("死亡アニメ専用レイヤーの名前。全身に効かせるためマスク無しのオーバーライドレイヤーにする")]
+        private string _deathLayerName = "Death";
+
+        [SerializeField, Tooltip("死亡アニメのステート名")]
+        private string _deathStateName = "Death";
+
+        [SerializeField, Tooltip("死亡レイヤーの既定ステート名（何も再生しない空ステート）")]
+        private string _deathIdleStateName = "Empty";
+
         // 急な方向転換でもモーションが滑らかに切り替わるようダンピングを掛ける
         [SerializeField] private float _dampTime = 0.1f;
 
@@ -32,6 +42,14 @@ namespace App.Battle.Views
         private Quaternion _targetFacing;
         private bool _hasFacing;
 
+        // 死亡レイヤーのインデックスとステートのハッシュ（毎回の文字列検索を避ける）
+        private int _deathLayerIndex = -1;
+        private int _deathStateHash;
+        private int _deathIdleStateHash;
+
+        // 死亡アニメを再生中か（未再生なら待たせない）
+        private bool _isPlayingDeath;
+
         private void Awake()
         {
             _moveXHash = Animator.StringToHash(MoveXParam);
@@ -41,6 +59,71 @@ namespace App.Battle.Views
             {
                 _modelTransform = _animator.transform;
             }
+
+            _deathStateHash = Animator.StringToHash(_deathStateName);
+            _deathIdleStateHash = Animator.StringToHash(_deathIdleStateName);
+
+            if (_animator != null)
+            {
+                _deathLayerIndex = _animator.GetLayerIndex(_deathLayerName);
+
+                if (_deathLayerIndex < 0)
+                {
+                    Debug.LogWarning($"[PlayerAnimationView] 死亡アニメ用レイヤー \"{_deathLayerName}\" が見つかりません");
+                }
+            }
+        }
+
+        public void PlayDeath()
+        {
+            if (_animator == null || _deathLayerIndex < 0)
+            {
+                // レイヤーが無い場合はアニメを待たせない（ゲームオーバー画面が出なくなるのを防ぐ）
+                _isPlayingDeath = false;
+                return;
+            }
+
+            // 専用レイヤーを全身に効かせてから頭出しする。
+            // 移動レイヤーはマスク付き（腕・頭は対象外）なので、上から丸ごと上書きする必要がある
+            _animator.SetLayerWeight(_deathLayerIndex, 1f);
+            _animator.Play(_deathStateHash, _deathLayerIndex, 0f);
+
+            _isPlayingDeath = true;
+        }
+
+        public bool IsDeathFinished
+        {
+            get
+            {
+                // Animatorが破棄済みでも待ち続けないよう、再生できない状態は完了扱いにする
+                if (!_isPlayingDeath || _animator == null || _deathLayerIndex < 0)
+                {
+                    return true;
+                }
+
+                var state = _animator.GetCurrentAnimatorStateInfo(_deathLayerIndex);
+
+                // Playの反映は次の評価までかかるため、目的のステートに入るまでは未完了として扱う
+                if (state.shortNameHash != _deathStateHash)
+                {
+                    return false;
+                }
+
+                return state.normalizedTime >= 1f;
+            }
+        }
+
+        public void ResetDeath()
+        {
+            _isPlayingDeath = false;
+
+            if (_animator == null || _deathLayerIndex < 0)
+            {
+                return;
+            }
+
+            _animator.Play(_deathIdleStateHash, _deathLayerIndex, 0f);
+            _animator.SetLayerWeight(_deathLayerIndex, 0f);
         }
 
         public void SetFacingDirection(Vector3 dir)

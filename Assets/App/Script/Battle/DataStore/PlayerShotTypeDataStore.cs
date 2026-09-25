@@ -8,7 +8,7 @@ using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
-    public class PlayerShotTypeDataStore : IPlayerShotTypeDataStore, IInitializable, ITickable
+    public class PlayerShotTypeDataStore : IPlayerShotTypeDataStore, IRunResettable, IInitializable, ITickable
     {
         private readonly IPlayerAimDataStore _playerAimDataStore;
         private readonly IPlayerStateDataStore _playerStateDataStore;
@@ -40,6 +40,11 @@ namespace App.Battle.DataStore
         public void Initialize()
         {
             ShotType.Value = Common.Data.ShotType.Normal;
+        }
+
+        public void ResetRun()
+        {
+            Initialize();
         }
 
         public void Tick()

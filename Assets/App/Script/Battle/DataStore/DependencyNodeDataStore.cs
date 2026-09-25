@@ -13,7 +13,7 @@ namespace App.Battle.DataStore
     /// 無効化はこのランの実行時状態としてのみ保持するため、獲得済みアップグレードの保存内容には影響しない
     /// （次のランでは再び有効な状態で読み込まれる）。
     /// </summary>
-    public class DependencyNodeDataStore : IDependencyNodeDataStore
+    public class DependencyNodeDataStore : IDependencyNodeDataStore, IRunResettable
     {
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
         private readonly UpgradeDatabase _upgradeDatabase;
@@ -87,6 +87,11 @@ namespace App.Battle.DataStore
 
             disabledNameKey = null;
             return false;
+        }
+
+        public void ResetRun()
+        {
+            _disabledIds.Clear();
         }
 
         public bool IsDisabled(string upgradeId)

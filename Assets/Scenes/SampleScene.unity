@@ -177,6 +177,7 @@ MonoBehaviour:
   _pointParticleStoreView: {fileID: 6445121078471273372, guid: b594897057b518f48b865feeb75daa97, type: 3}
   _pointParticleConfig: {fileID: 11400000, guid: 2dd6d00b1240e5f4fbe474fe55026429, type: 2}
   _pointDropConfig: {fileID: 11400000, guid: e03c7a2d746431b4aa2d7f3c35fdeda6, type: 2}
+  _playerDeathConfig: {fileID: 11400000, guid: 7c3ec6338d8e4a2498c5df399b8bdb61, type: 2}
 --- !u!4 &175168502
 Transform:
   m_ObjectHideFlags: 0
