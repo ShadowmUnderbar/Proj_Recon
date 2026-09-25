@@ -7,7 +7,7 @@ using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
-    public class PlayerFocusDataStore : IPlayerFocusDataStore, IInitializable, ITickable
+    public class PlayerFocusDataStore : IPlayerFocusDataStore, IRunResettable, IInitializable, ITickable
     {
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
@@ -42,6 +42,15 @@ namespace App.Battle.DataStore
             RightFocusType.Value = AimFocusType.NotFocus;
             FocusLeftTargetId.Value = -1;
             FocusRightTargetId.Value = -1;
+        }
+
+        public void ResetRun()
+        {
+            IsFocusInput = false;
+            IsLeftFocusInput.Value = false;
+            IsRightFocusInput.Value = false;
+
+            Initialize();
         }
 
         public void Tick()

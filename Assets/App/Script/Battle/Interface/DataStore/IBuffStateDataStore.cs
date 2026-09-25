@@ -41,6 +41,5 @@ namespace App.Battle.Interface.DataStore
         /// <param name="penetrationIndex">同一弾内で何体目のヒットか（1始まり）</param>
         float CalcPenetrationMultiply(int penetrationIndex);
 
-        void Reset();
     }
 }

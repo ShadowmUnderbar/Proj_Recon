@@ -8,7 +8,8 @@ using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
-    public class PlayerDodgeParameterDataStore : IPlayerDodgeParameterDataStore, IInitializable, ITickable, IDisposable
+    public class PlayerDodgeParameterDataStore : IPlayerDodgeParameterDataStore, IRunResettable, IInitializable,
+        ITickable, IDisposable
     {
         private readonly IFreezeDataStore _freezeDataStore;
 
@@ -49,6 +50,19 @@ namespace App.Battle.DataStore
 
         public void Initialize()
         {
+            DodgeCount.Value = MaxDodgeCount.Value;
+        }
+
+        public void ResetRun()
+        {
+            // 移動中にゲームオーバーになってもフラグが立ったままにならないよう、回避状態ごと畳む
+            _isDodging.Value = false;
+            _dodgeStartPosition = Vector3.zero;
+            _dodgeTargetPosition = Vector3.zero;
+            _dodgeElapsed = 0f;
+            _dodgeCoolDown = 0f;
+
+            MaxDodgeCount.Value = BasePlayerParameter.DodgeCount;
             DodgeCount.Value = MaxDodgeCount.Value;
         }
 

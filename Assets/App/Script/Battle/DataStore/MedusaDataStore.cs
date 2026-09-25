@@ -12,7 +12,7 @@ namespace App.Battle.DataStore
     /// 一度スタンした敵には再発しない（同じ敵を捉え直しても発動しない）。
     /// レベルは累積せず、所持中の最高レベルのみを採用する。
     /// </summary>
-    public class MedusaDataStore : IMedusaDataStore
+    public class MedusaDataStore : IMedusaDataStore, IRunResettable
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
 
@@ -100,6 +100,14 @@ namespace App.Battle.DataStore
             }
 
             return _changes;
+        }
+
+        public void ResetRun()
+        {
+            _stunRemainingTime.Clear();
+
+            // 「一度スタンさせた敵」の記録もランごとに作り直す（敵Id自体が再抽選されるため）
+            _stunnedEnemyIds.Clear();
         }
 
         public void RemoveEnemy(int enemyId)

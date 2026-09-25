@@ -120,6 +120,9 @@ namespace App.Battle
             // アップグレード付与副作用の共通処理（ShopUseCase・RunStartUseCaseが利用）
             builder.Register<UpgradeSideEffectApplier>(Lifetime.Singleton);
 
+            // ラン状態の一括リセット（GameOverUseCaseのリスタートが利用）
+            builder.Register<RunResetUseCase>(Lifetime.Singleton);
+
             // 配信用カメラのフレーミング計算（StreamerCameraViewが利用）
             builder.Register<StreamerCameraFramingCalculator>(Lifetime.Singleton);
 

@@ -3,10 +3,15 @@ using R3;
 
 namespace App.Battle.DataStore
 {
-    public class PointDataStore : IPointDataStore
+    public class PointDataStore : IPointDataStore, IRunResettable
     {
         private readonly ReactiveProperty<int> _currentPoint = new(0);
         public ReadOnlyReactiveProperty<int> CurrentPoint => _currentPoint;
+
+        public void ResetRun()
+        {
+            _currentPoint.Value = 0;
+        }
 
         public void Add(int amount)
         {

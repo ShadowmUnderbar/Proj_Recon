@@ -8,7 +8,7 @@ using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
-    public class PlayerBulletParameterDataStore : IPlayerBulletParameterDataStore, ITickable
+    public class PlayerBulletParameterDataStore : IPlayerBulletParameterDataStore, IRunResettable, ITickable
     {
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
@@ -45,6 +45,12 @@ namespace App.Battle.DataStore
             _damageNodeDataStore = damageNodeDataStore;
             _shotConflictDataStore = shotConflictDataStore;
             _freezeDataStore = freezeDataStore;
+        }
+
+        public void ResetRun()
+        {
+            _leftShotCoolDown = 0f;
+            _rightShotCoolDown = 0f;
         }
 
         public void Tick()

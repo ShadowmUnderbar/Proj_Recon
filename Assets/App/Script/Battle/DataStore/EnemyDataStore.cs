@@ -11,7 +11,7 @@ using VContainer;
 
 namespace App.Battle.DataStore
 {
-    public class EnemyDataStore : IEnemyDataStore
+    public class EnemyDataStore : IEnemyDataStore, IRunResettable
     {
         private readonly EnemyDatabase _enemyDatabase;
         private readonly EnemySpawnDatabase _enemySpawnDatabase;
@@ -165,6 +165,14 @@ namespace App.Battle.DataStore
             {
                 _onEnemyRemoved.OnNext(id);
             }
+        }
+
+        public void ResetRun()
+        {
+            RemoveAllEnemyData();
+
+            // 「一度だけ出現する敵」の出現済み記録もランごとに作り直す
+            _onceSpawnedEnemyCodes.Clear();
         }
 
         public void Damage(HitData hitData)

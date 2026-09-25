@@ -11,7 +11,7 @@ namespace App.Battle.UseCase
     /// デメリットダメージは <see cref="IPlayerStateDataStore.TakeDamage"/> 経由で与えるため、
     /// 被弾を条件にする他アップグレード（レイジ等）も通常どおり発動する。
     /// </summary>
-    public class CareNodeUseCase : ITickable
+    public class CareNodeUseCase : IRunResettable, ITickable
     {
         // 効果の適用間隔（秒）
         private const float TickInterval = 1f;
@@ -35,6 +35,11 @@ namespace App.Battle.UseCase
             _careNodeDataStore = careNodeDataStore;
             _playerStateDataStore = playerStateDataStore;
             _waveManagerDataStore = waveManagerDataStore;
+        }
+
+        public void ResetRun()
+        {
+            _elapsed = 0f;
         }
 
         public void Tick()

@@ -14,7 +14,7 @@ namespace App.Battle.DataStore
     /// 回避中に巻き込んだ敵弾・敵を記録し、回避終了時に「終了地点を頂点とした扇形範囲」への
     /// 攻撃対象・ダメージ・接触敵の押し出し先を算出する。
     /// </summary>
-    public class DodgeCounterAttackDataStore : IDodgeCounterAttackDataStore, IDisposable
+    public class DodgeCounterAttackDataStore : IDodgeCounterAttackDataStore, IRunResettable, IDisposable
     {
         // 攻撃範囲・ダメージ加算・押し出し・接触判定の調整値（インスペクタで調整する）
         private readonly DodgeCounterAttackConfig _config;
@@ -106,6 +106,14 @@ namespace App.Battle.DataStore
             toEnemy.y = 0f;
 
             return toEnemy.sqrMagnitude <= _config.ContactRange * _config.ContactRange;
+        }
+
+        public void ResetRun()
+        {
+            ResetContacts();
+
+            // 敵ごと消えるため、敵Idに紐づくスタン残り時間も破棄する
+            _stunRemainingTime.Clear();
         }
 
         public void ResetContacts()

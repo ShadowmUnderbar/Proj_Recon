@@ -11,7 +11,7 @@ namespace App.Battle.DataStore
     /// 範囲外に出てから Value3 秒後に元へ戻る（再度捉え直せば猶予はリセットされる）。
     /// レベルは累積せず、所持中の最高レベルのみを採用する。
     /// </summary>
-    public class SnakeEyesDataStore : ISnakeEyesDataStore
+    public class SnakeEyesDataStore : ISnakeEyesDataStore, IRunResettable
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
 
@@ -105,6 +105,12 @@ namespace App.Battle.DataStore
             }
 
             return _changes;
+        }
+
+        public void ResetRun()
+        {
+            _slowRemainingTime.Clear();
+            _gazedEnemyIds.Clear();
         }
 
         public void RemoveEnemy(int enemyId)

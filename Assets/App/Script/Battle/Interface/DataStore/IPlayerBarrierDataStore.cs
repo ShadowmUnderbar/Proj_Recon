@@ -28,7 +28,5 @@ namespace App.Battle.Interface.DataStore
         /// </summary>
         void GrantFull(float maxHealth);
 
-        /// <summary>状態を初期化する。</summary>
-        void Reset();
     }
 }
