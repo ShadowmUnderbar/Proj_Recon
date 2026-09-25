@@ -13,10 +13,11 @@ Shader "App/PlayerLifeGauge"
         _TrackColor("空き部分の色", Color) = (0, 0, 0, 0.4)
         _BarrierColor("バリアの色", Color) = (0.35, 0.8, 1, 0.9)
 
-        _HealthInnerRadius("HP弧の内径", Range(0, 1)) = 0.74
+        // 半径はQuadの半分を1とした割合。弧は外径から内側へ太さぶん広がる
         _HealthOuterRadius("HP弧の外径", Range(0, 1)) = 0.9
-        _BarrierInnerRadius("バリア弧の内径", Range(0, 1)) = 0.93
+        _HealthThickness("HP弧の太さ", Range(0, 1)) = 0.26
         _BarrierOuterRadius("バリア弧の外径", Range(0, 1)) = 0.99
+        _BarrierThickness("バリア弧の太さ", Range(0, 1)) = 0.06
 
         _LowHealthThreshold("低HPとみなす割合", Range(0, 1)) = 0.3
         _BlinkFrequency("低HP時の点滅回数[回/秒]", Float) = 2
@@ -60,10 +61,10 @@ Shader "App/PlayerLifeGauge"
                 half4 _LowHealthColor;
                 half4 _TrackColor;
                 half4 _BarrierColor;
-                float _HealthInnerRadius;
                 float _HealthOuterRadius;
-                float _BarrierInnerRadius;
+                float _HealthThickness;
                 float _BarrierOuterRadius;
+                float _BarrierThickness;
                 float _LowHealthThreshold;
                 float _BlinkFrequency;
                 float _BlinkMinAlpha;
@@ -150,11 +151,11 @@ Shader "App/PlayerLifeGauge"
                 }
 
                 half4 health = lerp(_TrackColor, filledColor, FillMask(t, _HealthFill, aaT));
-                health.a *= RingMask(r, _HealthInnerRadius, _HealthOuterRadius, aaR);
+                health.a *= RingMask(r, _HealthOuterRadius - _HealthThickness, _HealthOuterRadius, aaR);
 
                 // バリアの弧。未取得なら丸ごと消す
                 half4 barrier = lerp(_TrackColor, _BarrierColor, FillMask(t, _BarrierFill, aaT));
-                barrier.a *= RingMask(r, _BarrierInnerRadius, _BarrierOuterRadius, aaR) * _BarrierVisible;
+                barrier.a *= RingMask(r, _BarrierOuterRadius - _BarrierThickness, _BarrierOuterRadius, aaR) * _BarrierVisible;
 
                 // 2本の弧は重ならないので、アルファで重み付けして1色にまとめる
                 half alpha = saturate(health.a + barrier.a);
