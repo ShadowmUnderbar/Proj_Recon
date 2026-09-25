@@ -75,6 +75,8 @@ MonoBehaviour:
   - {fileID: 355608269007723521}
   _nextWaveButton: {fileID: 3267749770751901559}
   _currentPointLabel: {fileID: 2277431334917837500}
+  _upgradeCardBoardView: {fileID: 1089500882415681085}
+  _panelBackground: {fileID: 7841195997977163389}
 --- !u!1 &447118685556760873
 GameObject:
   m_ObjectHideFlags: 0
@@ -1525,6 +1527,7 @@ MonoBehaviour:
   _columnCount: 5
   _cardSpacing: {x: 0.18, y: 0.26}
   _cardFacingRotation: {x: 0, y: 180, z: 0}
+  _pointerLocalPosition: {x: 0, y: 0, z: 1}
   _holdScale: 1.2
   _wristRollMultiplier: 2
   _followSpeed: 18
@@ -1532,7 +1535,7 @@ MonoBehaviour:
   _rayGrabDistance: 5
   _cardLayerMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 512
 --- !u!1 &3721443451190031052
 GameObject:
   m_ObjectHideFlags: 0

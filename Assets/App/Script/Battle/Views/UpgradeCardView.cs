@@ -22,6 +22,9 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("効果値などの説明")]
         private TextMeshPro _descriptionText;
 
+        [SerializeField, Tooltip("購入コストの表記")]
+        private TextMeshPro _costText;
+
         [SerializeField, Tooltip("掴み判定に使うコライダー")]
         private Collider _collider;
 
@@ -43,6 +46,9 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("レイで狙っているときの枠色")]
         private Color _hoveredColor = Color.yellow;
 
+        [SerializeField, Tooltip("ポイントが足りず買えないときの枠色・コスト文字色")]
+        private Color _unpurchasableColor = new(0.45f, 0.45f, 0.45f);
+
         /// <summary>持ち手が未設定のときに使う、手からカードまでのオフセット[m]</summary>
         private static readonly Vector3 FallbackHoldOffset = new(0f, 0.02f, 0.12f);
 
@@ -58,7 +64,16 @@ namespace App.Battle.Views
         /// <summary>掴み判定に使うコライダー</summary>
         public Collider Collider => _collider;
 
+        /// <summary>所持ポイントで買えるか。買えないカードは掴んで読めるが、確定はさせない</summary>
+        public bool IsPurchasable { get; private set; } = true;
+
         private MaterialPropertyBlock _propertyBlock;
+
+        /// <summary>現在の強調表示。購入可否が変わったときに色を塗り直すため覚えておく</summary>
+        private CardHighlight _currentHighlight;
+
+        /// <summary>コスト文字の既定色。買えないときに灰色へ落とし、戻すときに使う</summary>
+        private Color _defaultCostColor = Color.black;
 
         /// <summary>表示内容と定位置を設定する</summary>
         public void Setup(int index, UpgradeMasterData upgrade, Pose homePose)
@@ -82,6 +97,14 @@ namespace App.Battle.Views
                 _descriptionText.text = BuildDescription(upgrade);
             }
 
+            if (_costText != null)
+            {
+                _defaultCostColor = _costText.color;
+                _costText.text = $"{upgrade.Cost} P";
+            }
+
+            // 実際の購入可否は所持ポイントを見て後から SetPurchasable で入る
+            SetPurchasable(true);
             SetHighlight(CardHighlight.None);
         }
 
@@ -131,20 +154,41 @@ namespace App.Battle.Views
             transform.localScale = Vector3.Lerp(transform.localScale, targetScale, t);
         }
 
+        /// <summary>
+        /// 所持ポイントで買えるかを反映する。買えないカードは灰色にして、確定できないことを見て分かるようにする
+        /// </summary>
+        public void SetPurchasable(bool isPurchasable)
+        {
+            IsPurchasable = isPurchasable;
+
+            if (_costText != null)
+            {
+                _costText.color = isPurchasable ? _defaultCostColor : _unpurchasableColor;
+            }
+
+            // 枠色は購入可否でも変わるため塗り直す
+            SetHighlight(_currentHighlight);
+        }
+
         /// <summary>掴み・ホバー状態に応じて枠色を変える</summary>
         public void SetHighlight(CardHighlight highlight)
         {
+            _currentHighlight = highlight;
+
             if (_frameRenderer == null)
             {
                 return;
             }
 
-            var color = highlight switch
-            {
-                CardHighlight.Held => _heldColor,
-                CardHighlight.Hovered => _hoveredColor,
-                _ => _defaultColor
-            };
+            // 買えないカードは掴んでも狙っても灰色のままにし、確定できる候補と見分けられるようにする
+            var color = !IsPurchasable
+                ? _unpurchasableColor
+                : highlight switch
+                {
+                    CardHighlight.Held => _heldColor,
+                    CardHighlight.Hovered => _hoveredColor,
+                    _ => _defaultColor
+                };
 
             // マテリアルを複製しないよう MaterialPropertyBlock で色だけ差し替える
             _propertyBlock ??= new MaterialPropertyBlock();

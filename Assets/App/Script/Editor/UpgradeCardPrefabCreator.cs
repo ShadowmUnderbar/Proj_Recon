@@ -2,6 +2,7 @@ using App.Battle.Views;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace App.Editor
 {
@@ -19,6 +20,9 @@ namespace App.Editor
         private const string CardPrefabPath = "Assets/App/Prefub/UI/UpgradeCard.prefab";
         private const string ShopViewPrefabPath = "Assets/App/Prefub/UI/ShopView.prefab";
         private const string CardBoardObjectName = "UpgradeCardBoard";
+
+        /// <summary>ShopViewプレハブ内の背景パネルのパス</summary>
+        private const string PanelObjectPath = "ShopCanvas/Panel";
 
         /// <summary>カードの掴み判定用レイヤー。他のコライダーがレイ判定に混ざらないよう専用にしている</summary>
         private const string CardLayerName = "UpgradeCard";
@@ -87,9 +91,17 @@ namespace App.Editor
                 var descriptionText = CreateText(
                     "DescriptionText",
                     root.transform,
-                    new Vector2(CardWidth * 0.9f, CardHeight * 0.42f),
-                    new Vector3(0f, -CardHeight * 0.16f, CardThickness * 0.8f),
+                    new Vector2(CardWidth * 0.9f, CardHeight * 0.34f),
+                    new Vector3(0f, -CardHeight * 0.1f, CardThickness * 0.8f),
                     0.012f);
+
+                // 購入コストはカードの一番下。買えるかどうかを真っ先に見る情報なので独立して置く
+                var costText = CreateText(
+                    "CostText",
+                    root.transform,
+                    new Vector2(CardWidth * 0.9f, CardHeight * 0.14f),
+                    new Vector3(0f, -CardHeight * 0.4f, CardThickness * 0.8f),
+                    0.014f);
 
                 // 持ち手はカードの左右の端に置く。実際の持ち位置・角度はこのTransformを動かして調整する。
                 // 表をプレイヤー側へ向ける（アンカーをY180にする）ため、ローカル-Xがプレイヤーから見た右端になる。
@@ -102,7 +114,8 @@ namespace App.Editor
                 SetLayerRecursively(root, GetCardLayer());
 
                 var cardView = root.AddComponent<UpgradeCardView>();
-                AssignCardViewReferences(cardView, collider, frame, nameText, levelText, descriptionText);
+                AssignCardViewReferences(
+                    cardView, collider, frame, nameText, levelText, descriptionText, costText);
                 AssignGripAnchors(cardView, rightGripAnchor, leftGripAnchor);
 
                 var saved = PrefabUtility.SaveAsPrefabAsset(root, CardPrefabPath);
@@ -121,7 +134,8 @@ namespace App.Editor
             GameObject frame,
             TextMeshPro nameText,
             TextMeshPro levelText,
-            TextMeshPro descriptionText)
+            TextMeshPro descriptionText,
+            TextMeshPro costText)
         {
             var serialized = new SerializedObject(cardView);
             serialized.FindProperty("_collider").objectReferenceValue = collider;
@@ -129,6 +143,7 @@ namespace App.Editor
             serialized.FindProperty("_nameText").objectReferenceValue = nameText;
             serialized.FindProperty("_levelText").objectReferenceValue = levelText;
             serialized.FindProperty("_descriptionText").objectReferenceValue = descriptionText;
+            serialized.FindProperty("_costText").objectReferenceValue = costText;
             serialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
@@ -196,6 +211,21 @@ namespace App.Editor
 
                 var serializedShopView = new SerializedObject(shopView);
                 serializedShopView.FindProperty("_upgradeCardBoardView").objectReferenceValue = board;
+
+                // 背景パネルはカードを出すときに隠す対象。ShopView側から触れるよう参照を繋いでおく
+                var panel = root.transform.Find(PanelObjectPath);
+                var panelGraphic = panel != null ? panel.GetComponent<Graphic>() : null;
+
+                if (panelGraphic != null)
+                {
+                    serializedShopView.FindProperty("_panelBackground").objectReferenceValue = panelGraphic;
+                }
+                else
+                {
+                    // 参照が空のままだと、非VRでパネルがカードを覆い隠したまま気づけないため必ず警告する
+                    Debug.LogWarning($"背景パネル（Graphic）が見つかりませんでした: {PanelObjectPath}");
+                }
+
                 serializedShopView.ApplyModifiedPropertiesWithoutUndo();
 
                 PrefabUtility.SaveAsPrefabAsset(root, ShopViewPrefabPath);
