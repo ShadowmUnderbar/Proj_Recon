@@ -27,7 +27,8 @@ $f = "Tools/Playtest/対象ファイル.ps1"
 
 ## 前提・制約（2026-07時点、実装が進んだら要更新）
 
-- ゲームシーンは`Assets/Scenes/SampleScene.unity`の1本のみ
+- シーンは`Assets/Scenes/MainMenu.unity`（タイトル）と`Assets/Scenes/Battle.unity`（バトル）の2本。
+  **プレイテストは`Assets/Scenes/Battle.unity`を開いた状態で実行する**（ランナーは現在開いているシーンでPlayに入るため）
 - プレイヤーのHP減少は実装済み（PR #34）。敵の攻撃がプレイヤーの被弾受け（`PlayerDamageReceiverView`）に当たると`PlayerStateDataStore.Health`が減る
 - **ゲームオーバー判定は実装済み**（メタ進行Phase1）。HPが0になると`GameStateDataStore.IsGameOver`がtrueになり`GameOverUseCase`がウェーブをポーズ＋ゲームオーバー画面（`GameOverView`）を表示する。ランナーは`Get-WaveState`の`isGameOver`を監視し、**ゲームオーバーを検出したらスロット0保存ボタン（`Invoke-GameOverSlotSave`）を押してから正常終端**する（エラー扱いにはしない）。**スロット保存を押しても画面は閉じない**（保存とリスタートを分けたため）。画面を閉じるのは`RestartButton`で、押すとラン状態が初期化されビルド選択（`RunStartView`）へ戻る。この経路は`GameOverRestart`プローブで検証している。つまり終端は「目標ウェーブ到達」か「ゲームオーバー」のどちらか。ランダムドリルは被弾を避けないため、目標ウェーブ到達前にゲームオーバーで終わることがある（正常）。HP0まで到達させたくない検証（全ウェーブクリアの確認等）をしたい場合は将来的に無敵/回復手段の注入が要る
 - **HP0の直後にはゲームオーバー画面は出ない**。死亡演出（ヒットストップ→死亡アニメ→余韻、`PlayerDeathConfig`で調整）を挟むため、既定で約1.4秒遅れて表示される。ボタンを押す処理は固定待ちにせず`Wait-GameOverPanel`で表示を待つこと（`Invoke-GameOverSlotSave`は内部で待つ）。演出そのものは`PlayerDeath`プローブで検証している
