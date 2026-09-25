@@ -16,6 +16,7 @@ namespace App.Battle.UseCase
     /// プレイヤーHPが0になったらゲームオーバーにし、ゲームオーバー画面を表示する。
     /// 画面のスロット保存ボタンで、そのランで獲得したアップグレードをメタ進行スロットへ保存する。
     /// 保存は何度でも行え、リスタートボタンでラン状態を初期化してビルド選択へ戻る。
+    /// メインメニューボタンではシーンごと切り替えてタイトルへ戻る。
     /// 画面を出す前に死亡演出（ヒットストップ→死亡アニメ→余韻）を挟み、その完了を待つ。
     /// </summary>
     public class GameOverUseCase : IInitializable, IDisposable
@@ -29,6 +30,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly RunResetUseCase _runResetUseCase;
         private readonly IFreezeDataStore _freezeDataStore;
+        private readonly ISceneTransitionUseCase _sceneTransitionUseCase;
         private readonly PlayerDeathConfig _playerDeathConfig;
 
         private readonly CompositeDisposable _disposable = new();
@@ -47,6 +49,7 @@ namespace App.Battle.UseCase
             IPlayerControlPresenter playerControlPresenter,
             RunResetUseCase runResetUseCase,
             IFreezeDataStore freezeDataStore,
+            ISceneTransitionUseCase sceneTransitionUseCase,
             PlayerDeathConfig playerDeathConfig
         )
         {
@@ -59,6 +62,7 @@ namespace App.Battle.UseCase
             _playerControlPresenter = playerControlPresenter;
             _runResetUseCase = runResetUseCase;
             _freezeDataStore = freezeDataStore;
+            _sceneTransitionUseCase = sceneTransitionUseCase;
             _playerDeathConfig = playerDeathConfig;
         }
 
@@ -78,6 +82,11 @@ namespace App.Battle.UseCase
             // リスタートボタン
             _gameOverPresenter.OnRestart
                 .Subscribe(_ => OnRestart())
+                .AddTo(_disposable);
+
+            // メインメニューへ戻るボタン
+            _gameOverPresenter.OnReturnToMainMenu
+                .Subscribe(_ => OnReturnToMainMenu())
                 .AddTo(_disposable);
         }
 
@@ -225,6 +234,27 @@ namespace App.Battle.UseCase
 
             // リセット後のビルド選択UIの表示・ハンドレイの再有効化はRunStartUseCaseが行う
             _runResetUseCase.ResetRun();
+        }
+
+        // メインメニューシーンへ戻る。ラン状態はシーンごと破棄されるためリセットは行わない
+        private void OnReturnToMainMenu()
+        {
+            if (!_gameStateDataStore.IsGameOver.CurrentValue || _sceneTransitionUseCase.IsTransitioning)
+            {
+                return;
+            }
+
+            // 遷移を開始できてから画面を畳む。先に畳むと、遷移に失敗したときに
+            // 保存もリスタートもできない状態で取り残される
+            if (!_sceneTransitionUseCase.LoadMainMenu())
+            {
+                _gameOverPresenter.SetStatus("メインメニューへ移動できませんでした");
+                return;
+            }
+
+            _gameOverPresenter.Hide();
+            _playerControlPresenter.SetUiRayEnable(false);
+            StopDeathSequence();
         }
 
         private void RefreshAllSlotLabels()
