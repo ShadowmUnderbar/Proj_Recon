@@ -21,7 +21,7 @@ namespace App.Battle.Views
 
         public Observable<HitData> OnHitObservable => _onHitObservable;
 
-        public int Id { get; private set; } = BasePlayerParameter.PlayerId;
+        public int Id { get; private set; } = PlayerConstants.PlayerId;
         public HitDirectionType ResistanceDirectionType { get; private set; }
         public HitBoxType HitBoxType { get; private set; }
 

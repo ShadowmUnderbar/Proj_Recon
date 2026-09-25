@@ -1,3 +1,4 @@
+using App.Common.Data;
 using System;
 using System.Collections.Generic;
 using App.Battle.Data;
@@ -97,7 +98,7 @@ namespace App.Battle.UseCase
             var ray = new Ray(playerPosition + Vector3.up,
                 dodgeDirection.normalized);
 
-            if (Physics.Raycast(ray, out var hit, _playerDodgeParameterDataStore.DodgeRange, LayerMasks.FieldLayer))
+            if (Physics.Raycast(ray, out var hit, _playerDodgeParameterDataStore.DodgeRange, LayerConstants.Default))
             {
                 moveTarget = hit.point;
             }

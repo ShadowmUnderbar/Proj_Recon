@@ -12,6 +12,7 @@ namespace App.Battle.DataStore
         ITickable, IDisposable
     {
         private readonly IFreezeDataStore _freezeDataStore;
+        private readonly PlayerBaseParameterConfig _baseParameter;
 
         private float _dodgeCoolDown;
 
@@ -33,19 +34,21 @@ namespace App.Battle.DataStore
         public ReadOnlyReactiveProperty<bool> IsDodging => _isDodging;
 
         public ReactiveProperty<float> DodgeCount { get; } = new();
-        public ReactiveProperty<float> MaxDodgeCount { get; } = new(BasePlayerParameter.DodgeCount);
-        public float DodgeDamage => BasePlayerParameter.DodgeDamage;
+        public ReactiveProperty<float> MaxDodgeCount { get; }
+        public float DodgeDamage => _baseParameter.DodgeDamage;
 
         public bool CanDodge => DodgeCount.Value > 0;
 
-        public float DodgeRange => BasePlayerParameter.DodgeRange;
+        public float DodgeRange => _baseParameter.DodgeRange;
 
-        public float DodgeDuration => BasePlayerParameter.DodgeDuration;
+        public float DodgeDuration => _baseParameter.DodgeDuration;
 
         [Inject]
-        public PlayerDodgeParameterDataStore(IFreezeDataStore freezeDataStore)
+        public PlayerDodgeParameterDataStore(IFreezeDataStore freezeDataStore, PlayerBaseParameterConfig baseParameter)
         {
             _freezeDataStore = freezeDataStore;
+            _baseParameter = baseParameter;
+            MaxDodgeCount = new ReactiveProperty<float>(baseParameter.DodgeCount);
         }
 
         public void Initialize()
@@ -62,13 +65,13 @@ namespace App.Battle.DataStore
             _dodgeElapsed = 0f;
             _dodgeCoolDown = 0f;
 
-            MaxDodgeCount.Value = BasePlayerParameter.DodgeCount;
+            MaxDodgeCount.Value = _baseParameter.DodgeCount;
             DodgeCount.Value = MaxDodgeCount.Value;
         }
 
         public void SetCoolDownTime()
         {
-            _dodgeCoolDown = BasePlayerParameter.DodgeCooldown;
+            _dodgeCoolDown = _baseParameter.DodgeCooldown;
             DodgeCount.Value--;
 
             // 回避成立の通知（呼び出し元のPlayerDodgeUseCaseは可否判定を通過した後にのみ呼ぶ）

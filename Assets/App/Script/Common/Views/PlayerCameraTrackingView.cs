@@ -1,10 +1,14 @@
-using UnityEditor;
+using App.Common.Data;
 using UnityEngine;
 using UnityEngine.SpatialTracking;
 
-namespace App.Common.Data
+namespace App.Common.Views
 {
-    public class PlayerCameraData : MonoBehaviour
+    /// <summary>
+    /// プレイヤーカメラのHMD追従を、エディタの非VRモードでは切る。
+    /// 製品ビルドでは常にVRモードなので何もしない。
+    /// </summary>
+    public class PlayerCameraTrackingView : MonoBehaviour
     {
         [SerializeField] private TrackedPoseDriver trackedPoseDriver;
 

@@ -39,6 +39,9 @@ namespace App.Battle.DataStore
         private const int InitialCommonSpawnCounts = 2;
         private const float InitialMinorSpawnCounts = 1f;
 
+        // 大型敵が出るたびに小型敵の同時スポーン数へ掛ける増加率
+        private const float MinorSpawnCountGrowthRate = 1.5f;
+
         private float _commonSpawnCycle;
         private float CommonSpawnInterval => 4f;
         private int _commonSpawnCounts = InitialCommonSpawnCounts;
@@ -89,7 +92,7 @@ namespace App.Battle.DataStore
             if (_majorSpawnCycle >= MajorSpawnInterval)
             {
                 _majorSpawnCycle = 0f;
-                _minorSpawnCounts *= 1.5f;
+                _minorSpawnCounts *= MinorSpawnCountGrowthRate;
                 _onSpawnMajorEnemy.OnNext(Unit.Default);
             }
         }

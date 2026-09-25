@@ -163,7 +163,7 @@ namespace App.Battle.Views.Enemy.Bullet
         private void CollectPointParticles(Vector3 startPos, Vector3 endPos)
         {
             // 回収できるのはプレイヤーの弾だけ
-            if (_attackerId != BasePlayerParameter.PlayerId)
+            if (_attackerId != PlayerConstants.PlayerId)
             {
                 return;
             }
@@ -225,7 +225,7 @@ namespace App.Battle.Views.Enemy.Bullet
             // ポイント粒子は弾を止めずに通過させる。プレイヤーの弾だけが回収できる
             if (col.TryGetComponent<IPointParticleView>(out var pointParticle))
             {
-                if (_attackerId == BasePlayerParameter.PlayerId)
+                if (_attackerId == PlayerConstants.PlayerId)
                 {
                     // 撃った瞬間に消さず、プレイヤーへ吸い込まれてから回収される
                     pointParticle.StartPull();
