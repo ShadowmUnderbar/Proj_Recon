@@ -56,11 +56,19 @@ function Wait-GameOverPanel {
     # 固定待ちにすると演出時間の調整でボタンを押し損ねる
     param([int] $MaxAttempts = 30)
 
+    # パス形式のGameObject.Findは非アクティブも返すため、activeInHierarchyまで見る
+    $snippet = @'
+using UnityEngine;
+
+var panel = GameObject.Find("BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel");
+var panelShown = panel != null && panel.activeInHierarchy;
+
+return $"{{\"panelShown\":{panelShown.ToString().ToLower()}}}";
+'@
+
     for ($i = 0; $i -lt $MaxAttempts; $i++) {
-        $result = Invoke-Uloop -Command 'find-game-objects' -Params @{
-            'name-pattern' = 'RestartButton'; 'search-mode' = 'Exact'
-        }
-        if ($result.Success -and $result.Result -match 'RestartButton') { return $true }
+        $state = Invoke-UnityJson -Snippet $snippet
+        if ([bool]$state.panelShown) { return $true }
         Start-Sleep -Milliseconds 200
     }
 
