@@ -42,8 +42,11 @@ namespace App.Battle.UseCase
                 .Subscribe(_playerLifeGaugePresenter.SetHealthRatio)
                 .AddTo(_disposable);
 
+            // バリアはHPと同じ目盛りで見せるため最大HPを分母にする。
+            // バリア最大値が最大HPを上回るときだけ、弧からはみ出さないようバリア最大値を分母にする
             Observable.CombineLatest(_playerBarrierDataStore.CurrentBarrier, _playerBarrierDataStore.MaxBarrier,
-                    ToRatio)
+                    _playerStateDataStore.MaxHealth,
+                    (current, maxBarrier, maxHealth) => ToRatio(current, Math.Max(maxBarrier, maxHealth)))
                 .DistinctUntilChanged()
                 .Subscribe(_playerLifeGaugePresenter.SetBarrierRatio)
                 .AddTo(_disposable);
