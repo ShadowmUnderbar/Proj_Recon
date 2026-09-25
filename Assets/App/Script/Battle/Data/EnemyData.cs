@@ -5,13 +5,15 @@ namespace App.Battle.Data
 {
     public class EnemyData
     {
-        public EnemyData(int id, EnemyMasterData enemyMasterData, Pose pose)
+        /// <param name="hp">ウェーブ強化を適用済みのHP</param>
+        /// <param name="baseDamage">ウェーブ強化を適用済みの攻撃力</param>
+        public EnemyData(int id, EnemyMasterData enemyMasterData, Pose pose, float hp, float baseDamage)
         {
             Id = id;
             EnemyMasterDataId = enemyMasterData.EnemyMasterDataId;
             Pose = pose;
-            Hp = enemyMasterData.Hp;
-            BaseDamage = enemyMasterData.Damage;
+            Hp = hp;
+            BaseDamage = baseDamage;
             BaseBulletSpeed = enemyMasterData.BulletSpeed;
             IdleSpeed = enemyMasterData.IdleSpeed;
             AttackDistanceRange = enemyMasterData.AttackDistanceRange;

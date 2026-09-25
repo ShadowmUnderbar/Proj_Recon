@@ -15,3 +15,7 @@ MonoBehaviour:
   _waveDurationSeconds: 60
   _waveEnemyKillCount: 20
   _maxWaveCount: 0
+  _enemyScalingTiers:
+  - _fromWave: 1
+    _hpScalePerWave: 0.1
+    _damageScalePerWave: 0.05

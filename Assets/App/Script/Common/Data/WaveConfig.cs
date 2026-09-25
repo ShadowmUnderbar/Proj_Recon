@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace App.Common.Data
@@ -16,9 +17,15 @@ namespace App.Common.Data
         [SerializeField, Tooltip("最大ウェーブ数（0で無限ループ）")]
         private int _maxWaveCount = 0;
 
+        [Header("ウェーブ難易度スケーリング")]
+        [SerializeField, Tooltip("敵強化の増加率をウェーブ帯ごとに指定する。FromWaveの小さい順に区切られ、" +
+                                 "ウェーブ1は等倍。空の場合は強化しない")]
+        private List<EnemyWaveScalingTier> _enemyScalingTiers = new();
+
         public float WaveDurationSeconds => _waveDurationSeconds;
         public int WaveEnemyKillCount => _waveEnemyKillCount;
         public int MaxWaveCount => _maxWaveCount;
         public bool HasMaxWave => _maxWaveCount > 0;
+        public IReadOnlyList<EnemyWaveScalingTier> EnemyScalingTiers => _enemyScalingTiers;
     }
 }
