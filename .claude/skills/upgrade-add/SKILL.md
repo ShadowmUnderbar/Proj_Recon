@@ -174,6 +174,11 @@ BuffData.csv ヘッダー: `id,NameKey,ConditionType,ConditionValue,Duration,Eff
 - 追記前に `get` で同じキーが既に無いか確認する（重複キーは Unity 側で片方しか引けなくなる）
 - **`{valueN}` を使う場合**: 詳細説明の `{value1}`〜`{value3}` は、そのアップグレード自身の Value を `UpgradeDescriptionFormatter`（`Assets/App/Script/Battle/DataStore/UpgradeDescriptionFormatter.cs`）が表示用に変換して埋め込む。**新しい `UpgradeType` を足したとき（パターンB）は、その `ValueFormats` 表にも1行追加する**（`Raw`=そのまま / `Percent`=0.05→5 / `MultiplierDelta`=1.1→10）。未登録のタイプは `{valueN}` が置換されずに残る
 - GrantBuff型（パターンC）は数値がバフ側にあり `{valueN}` が使えないため、単一レベルなら数値を直書き、複数レベルなら数値なしの説明にする
+- **効果値の色**: `{valueN}` は値の `ValueNParameterType` に応じて自動で色が付く（Positive=強化色 / Negative=弱化色 / None=装飾なし）。色は `Assets/App/MasterData/UpgradeDescription/UpgradeDescriptionStyle.asset` で調整する
+- **任意の語に色を付けるタグ**（簡略説明・詳細説明のみ有効。処理は `EffectTextStyler.ApplyEffectTags`）: `<p>…</p>` で強化色、`<n>…</n>` で弱化色。例: `連射速度が<p>上がる</p>が、被ダメージが<n>増える</n>`。直書きの数値（GrantBuff型など）に色を付けたいときもこれを使う
+  - 開き・閉じが対になったものだけ変換される。閉じ忘れは `<p>` がそのまま文字で表示されるので、表示で気づける
+  - ja-JP と en の**両方の列に同じようにタグを書く**（片方だけだと言語によって色の有無が変わる）
+  - タグ内に `{valueN}` を入れた場合、数値部分は値自身の色が優先される
 - 既存の `NameKey` にレベルを足すだけ（パターンA）なら追記不要。ただしレベル表記キーは `$Level1_Upgrade`〜`$Level5_Upgrade` までしか無いので、**Lv6以上を作るときは `$Level{n}_Upgrade` も追記**する
 - Unity 側の String Table（`Assets/Localization/Upgrade_*.asset`）への取り込みはユーザー作業（PR本文で依頼する）
 

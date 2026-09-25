@@ -50,6 +50,9 @@ namespace App.Battle.Views
         /// <summary>3Dカードで候補を出しているか（VRかつボードが設定されている場合のみ）</summary>
         private bool _isCardMode;
 
+        /// <summary>フォールバックのボタン表示で文言と併記するため、候補ごとの購入コストを覚えておく</summary>
+        private readonly List<int> _buttonCosts = new();
+
         private void Awake()
         {
             for (var i = 0; i < _upgradeButtons.Length; i++)
@@ -92,6 +95,7 @@ namespace App.Battle.Views
             }
 
             // 候補ぶんだけボタンを表示し、余りは非表示（候補ゼロなら全非表示）
+            _buttonCosts.Clear();
             for (var i = 0; i < _upgradeButtons.Length; i++)
             {
                 var hasCandidate = i < upgrades.Count;
@@ -99,13 +103,34 @@ namespace App.Battle.Views
 
                 if (hasCandidate)
                 {
-                    // 購入コストを併記する（コスト0は無償の候補）
-                    _upgradeButtonLabels[i].text =
-                        $"{upgrades[i].NameKey}\nLv.{upgrades[i].Level}\n{upgrades[i].Cost} P";
+                    // 文言は SetUpgradeText で入るまでキーを仮表示する
+                    _buttonCosts.Add(upgrades[i].Cost);
+                    _upgradeButtonLabels[i].text = FormatButtonLabel(upgrades[i].NameKey, string.Empty, upgrades[i].Cost);
                     _upgradeButtons[i].interactable = true;
                 }
             }
         }
+
+        public void SetUpgradeText(int index, in UpgradeLocalizedText text)
+        {
+            if (_isCardMode)
+            {
+                _upgradeCardBoardView.SetText(index, text);
+                return;
+            }
+
+            if (index < 0 || index >= _upgradeButtonLabels.Length || index >= _buttonCosts.Count)
+            {
+                return;
+            }
+
+            _upgradeButtonLabels[index].text = FormatButtonLabel(text.Title, text.LevelLabel, _buttonCosts[index]);
+        }
+
+        // フォールバックのボタンは1つのラベルしか無いため、名前・レベル・購入コストをまとめて出す（コスト0は無償の候補）。
+        // レベル表記はローカライズ側で「-レベル1」のように区切り込みで定義されているため、名前の直後に続けて並べる
+        private static string FormatButtonLabel(string title, string levelLabel, int cost) =>
+            $"{title}{levelLabel}\n{cost} P";
 
         public void HideUpgradeButton(int index)
         {

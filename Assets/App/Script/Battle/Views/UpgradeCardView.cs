@@ -1,4 +1,4 @@
-using System.Text;
+using App.Battle.Data;
 using App.Common.Data;
 using App.Common.Data.MasterData;
 using TMPro;
@@ -13,13 +13,16 @@ namespace App.Battle.Views
     /// </summary>
     public class UpgradeCardView : MonoBehaviour
     {
-        [SerializeField, Tooltip("アップグレード名")]
+        [SerializeField, Tooltip("アップグレード名（ローカライズ: $Name）")]
         private TextMeshPro _nameText;
 
-        [SerializeField, Tooltip("レベル表記")]
+        [SerializeField, Tooltip("レベル表記（ローカライズ: $Level{n}_Upgrade）")]
         private TextMeshPro _levelText;
 
-        [SerializeField, Tooltip("効果値などの説明")]
+        [SerializeField, Tooltip("簡略説明（ローカライズ: $Name_SimpleDesc）")]
+        private TextMeshPro _simpleDescriptionText;
+
+        [SerializeField, Tooltip("詳細説明。効果値は埋め込み済み（ローカライズ: $Name_Desc）")]
         private TextMeshPro _descriptionText;
 
         [SerializeField, Tooltip("購入コストの表記")]
@@ -75,27 +78,15 @@ namespace App.Battle.Views
         /// <summary>コスト文字の既定色。買えないときに灰色へ落とし、戻すときに使う</summary>
         private Color _defaultCostColor = Color.black;
 
-        /// <summary>表示内容と定位置を設定する</summary>
+        /// <summary>
+        /// 表示内容と定位置を設定する。
+        /// 名前・説明などのローカライズ文言は <see cref="SetText"/> で後から入る（ロケール切替時も差し替わる）
+        /// </summary>
         public void Setup(int index, UpgradeMasterData upgrade, Pose homePose)
         {
             Index = index;
             HomePose = homePose;
             transform.SetPositionAndRotation(homePose.position, homePose.rotation);
-
-            if (_nameText != null)
-            {
-                _nameText.text = upgrade.NameKey;
-            }
-
-            if (_levelText != null)
-            {
-                _levelText.text = $"Lv.{upgrade.Level}";
-            }
-
-            if (_descriptionText != null)
-            {
-                _descriptionText.text = BuildDescription(upgrade);
-            }
 
             if (_costText != null)
             {
@@ -106,6 +97,15 @@ namespace App.Battle.Views
             // 実際の購入可否は所持ポイントを見て後から SetPurchasable で入る
             SetPurchasable(true);
             SetHighlight(CardHighlight.None);
+        }
+
+        /// <summary>ローカライズ済みの文言（名前・レベル・簡略説明・詳細説明）をそれぞれのテキストへ反映する</summary>
+        public void SetText(in UpgradeLocalizedText text)
+        {
+            SetTextIfAssigned(_nameText, text.Title);
+            SetTextIfAssigned(_levelText, text.LevelLabel);
+            SetTextIfAssigned(_simpleDescriptionText, text.SimpleDescription);
+            SetTextIfAssigned(_descriptionText, text.Description);
         }
 
         /// <summary>定位置へ向けて補間で戻す</summary>
@@ -197,37 +197,13 @@ namespace App.Battle.Views
             _frameRenderer.SetPropertyBlock(_propertyBlock);
         }
 
-        /// <summary>
-        /// カード裏面に載せる効果の説明。マスターデータには符号の種別しか無いため、
-        /// 値が設定されているものだけを符号付きで並べる（本実装までの仮表示）
-        /// </summary>
-        private static string BuildDescription(UpgradeMasterData upgrade)
+        /// <summary>テキストが未割り当て（レイアウト調整中にオブジェクトを外した等）でも落ちないように反映する</summary>
+        private static void SetTextIfAssigned(TextMeshPro target, string value)
         {
-            var builder = new StringBuilder();
-
-            AppendValue(builder, upgrade.Value1);
-            AppendValue(builder, upgrade.Value2);
-            AppendValue(builder, upgrade.Value3);
-            AppendValue(builder, upgrade.Value4);
-            AppendValue(builder, upgrade.Value5);
-
-            return builder.ToString();
-        }
-
-        private static void AppendValue(StringBuilder builder, (float value, ParameterType parameterType) parameter)
-        {
-            if (parameter.parameterType == ParameterType.None)
+            if (target != null)
             {
-                return;
+                target.text = value;
             }
-
-            if (builder.Length > 0)
-            {
-                builder.Append('\n');
-            }
-
-            var sign = parameter.parameterType == ParameterType.Negative ? "-" : "+";
-            builder.Append(sign).Append(Mathf.Abs(parameter.value).ToString("0.##"));
         }
     }
 }

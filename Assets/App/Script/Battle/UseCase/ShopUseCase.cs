@@ -35,6 +35,7 @@ namespace App.Battle.UseCase
         private readonly IShopPresenter _shopPresenter;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
+        private readonly IUpgradeLocalizationDataStore _upgradeLocalizationDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -54,7 +55,8 @@ namespace App.Battle.UseCase
             IPointDataStore pointDataStore,
             IShopPresenter shopPresenter,
             IPlayerControlPresenter playerControlPresenter,
-            IGameInputDataStore gameInputDataStore
+            IGameInputDataStore gameInputDataStore,
+            IUpgradeLocalizationDataStore upgradeLocalizationDataStore
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -66,6 +68,7 @@ namespace App.Battle.UseCase
             _shopPresenter = shopPresenter;
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
+            _upgradeLocalizationDataStore = upgradeLocalizationDataStore;
         }
 
         public void Initialize()
@@ -93,6 +96,11 @@ namespace App.Battle.UseCase
             _pointDataStore.CurrentPoint
                 .Subscribe(_ => OnCurrentPointChanged())
                 .AddTo(_disposable);
+
+            // ローカライズ表の読込完了・ロケール切替で、表示中のカードの文言を差し替える
+            _upgradeLocalizationDataStore.OnTableChanged
+                .Subscribe(_ => OnLocalizationChanged())
+                .AddTo(_disposable);
         }
 
         private void OpenShop()
@@ -102,6 +110,8 @@ namespace App.Battle.UseCase
             _currentCandidates.AddRange(_upgradeLotteryDataStore.DrawUpgrades(GetUpgradeChoiceCount()));
             _shopPresenter.Open(_currentCandidates);
             _isShopOpen = true;
+
+            RefreshUpgradeTexts();
 
             // ショップ中はグラブ・トリガーをカード操作に使うため、フォーカスの切り替えは止める
             _gameInputDataStore.SetFocusInputEnable(false);
@@ -126,6 +136,35 @@ namespace App.Battle.UseCase
 
             _waveManagerDataStore.SetWavePause(true);
             OpenShop();
+        }
+
+        private void OnLocalizationChanged()
+        {
+            // 閉じている間は反映先のカードが無い（次に開いたときに最新の文言で入る）
+            if (!_isShopOpen)
+            {
+                return;
+            }
+
+            RefreshUpgradeTexts();
+        }
+
+        /// <summary>
+        /// 候補ごとのローカライズ文言（名前・レベル・簡略説明・詳細説明）をViewへ反映する。
+        /// テーブル読込前はキー文字列が入り、読込完了の通知で差し替わる
+        /// </summary>
+        private void RefreshUpgradeTexts()
+        {
+            for (var i = 0; i < _currentCandidates.Count; i++)
+            {
+                // 購入済み（null）の枠はカードごと消えているため触らない
+                if (_currentCandidates[i] == null)
+                {
+                    continue;
+                }
+
+                _shopPresenter.SetUpgradeText(i, _upgradeLocalizationDataStore.GetText(_currentCandidates[i]));
+            }
         }
 
         private void OnCurrentPointChanged()

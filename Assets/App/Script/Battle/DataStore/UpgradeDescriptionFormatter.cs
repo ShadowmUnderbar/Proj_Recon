@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
+using App.Battle.Data;
+using App.Common.Data;
 using App.Common.Data.MasterData;
 
 namespace App.Battle.DataStore
@@ -99,7 +102,19 @@ namespace App.Battle.DataStore
             { UpgradeType.WaltzConflict, RawValue1To2 },
         };
 
-        public static string Format(string template, UpgradeMasterData upgrade)
+        // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む
+        private const string UnitSuffixPattern = "(%|倍|秒|m|個|回|x)?";
+
+        // {valueN}（＋直後の単位）を探す正規表現。添字0=value1
+        private static readonly Regex[] PlaceholderPatterns = CreatePlaceholderPatterns();
+
+        /// <param name="template">ローカライズ表の詳細説明（{valueN} を含む）</param>
+        /// <param name="upgrade">値の埋め込み元</param>
+        /// <param name="style">
+        /// 値の装飾設定。指定すると ParameterType が強化/弱化の値を色付き（TextMeshPro のリッチテキスト）にする。
+        /// null なら装飾せず数値だけを埋め込む
+        /// </param>
+        public static string Format(string template, UpgradeMasterData upgrade, UpgradeDescriptionStyle style = null)
         {
             if (string.IsNullOrEmpty(template) || !ValueFormats.TryGetValue(upgrade.UpgradeType, out var formats))
             {
@@ -114,25 +129,35 @@ namespace App.Battle.DataStore
                     continue;
                 }
 
-                var placeholder = string.Format(PlaceholderFormat, i + 1);
-                if (!result.Contains(placeholder))
-                {
-                    continue;
-                }
+                var (value, parameterType) = GetValue(upgrade, i);
+                var displayValue = ToDisplayString(value, formats[i]);
 
-                result = result.Replace(placeholder, ToDisplayString(GetValue(upgrade, i), formats[i]));
+                result = PlaceholderPatterns[i].Replace(result, match =>
+                    EffectTextStyler.Colorize(displayValue + match.Groups[1].Value, parameterType, style));
             }
 
             return result;
         }
 
-        private static float GetValue(UpgradeMasterData upgrade, int index) => index switch
+        private static Regex[] CreatePlaceholderPatterns()
         {
-            0 => upgrade.Value1.value,
-            1 => upgrade.Value2.value,
-            2 => upgrade.Value3.value,
-            3 => upgrade.Value4.value,
-            4 => upgrade.Value5.value,
+            var patterns = new Regex[ValueCount];
+            for (var i = 0; i < ValueCount; i++)
+            {
+                var placeholder = string.Format(PlaceholderFormat, i + 1);
+                patterns[i] = new Regex(Regex.Escape(placeholder) + UnitSuffixPattern, RegexOptions.Compiled);
+            }
+
+            return patterns;
+        }
+
+        private static (float value, ParameterType parameterType) GetValue(UpgradeMasterData upgrade, int index) => index switch
+        {
+            0 => upgrade.Value1,
+            1 => upgrade.Value2,
+            2 => upgrade.Value3,
+            3 => upgrade.Value4,
+            4 => upgrade.Value5,
             _ => throw new ArgumentOutOfRangeException(nameof(index), index, null)
         };
 
