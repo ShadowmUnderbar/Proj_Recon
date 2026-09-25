@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: CurvedWorldConfig_Battle
   m_EditorClassIdentifier: 
   _isEnabled: 1
-  _horizonDistance: 120
-  _cameraHeight: 18.6
-  _cameraBackOffset: 4.5
-  _cullingDropMargin: 60
+  _horizonDistance: 250
+  _cameraHeight: 42
+  _cameraBackOffset: 10
+  _cullingDropMargin: 140
   _maxLineSag: 0.1
   _horizonChangePerSecond: 20
   _groundSize: 600
