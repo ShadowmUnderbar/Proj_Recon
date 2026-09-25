@@ -1,0 +1,4 @@
+{
+  "status": "error",
+  "message": "{\"exception_type\": \"ValueError\", \"message\": \"max() iterable argument is empty\", \"traceback\": \"Traceback (most recent call last):\\n  File \\\"C:\\\\Users\\\\shado\\\\AppData\\\\Roaming\\\\Blender Foundation\\\\Blender\\\\5.2\\\\scripts\\\\addons\\\\addon.py\\\", line 2105, in execute_code\\n    exec(code, namespace)\\n    ~~~~^^^^^^^^^^^^^^^^^\\n  File \\\"<string>\\\", line 4, in <module>\\n  File \\\"<string>\\\", line 68, in solve\\nValueError: max() iterable argument is empty\\n\"}"
+}

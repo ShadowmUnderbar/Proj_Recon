@@ -1,0 +1,308 @@
+{
+  "ElseIf_Jacket_Front_L": {
+    "max_delta_mm": 2.2364048812152455
+  },
+  "ElseIf_Jacket_Front_R": {
+    "max_delta_mm": 2.2398116957674254
+  },
+  "ElseIf_Jacket_Back": {
+    "max_delta_mm": 2.0455151971739136
+  },
+  "ElseIf_Jacket_Sleeve_L": {
+    "max_delta_mm": 3.13985533991047
+  },
+  "ElseIf_Jacket_Sleeve_R": {
+    "max_delta_mm": 3.1414862889856865
+  },
+  "NaturalPose__ElseIf_Jacket_Front_L": {
+    "max_delta_mm": 2.2364048812152455
+  },
+  "NaturalPose__ElseIf_Jacket_Front_R": {
+    "max_delta_mm": 2.2398116957674254
+  },
+  "NaturalPose__ElseIf_Jacket_Back": {
+    "max_delta_mm": 2.0455151971739136
+  },
+  "NaturalPose__ElseIf_Jacket_Sleeve_L": {
+    "max_delta_mm": 3.13985533991047
+  },
+  "NaturalPose__ElseIf_Jacket_Sleeve_R": {
+    "max_delta_mm": 3.1414862889856865
+  },
+  "ElseIf_Shoe_L_Sole": {
+    "max_delta_mm": 6.445790204211759
+  },
+  "ElseIf_Shoe_L_Upper": {
+    "max_delta_mm": 7.084000322738533
+  },
+  "ElseIf_Shoe_L_AnkleCollar": {
+    "max_delta_mm": 7.176445105950626
+  },
+  "ElseIf_Shoe_L_Tongue": {
+    "max_delta_mm": 4.916049666641126
+  },
+  "ElseIf_Shoe_R_Sole": {
+    "max_delta_mm": 6.445788511023258
+  },
+  "ElseIf_Shoe_R_Upper": {
+    "max_delta_mm": 7.084000322738533
+  },
+  "ElseIf_Shoe_R_AnkleCollar": {
+    "max_delta_mm": 7.176445105950626
+  },
+  "ElseIf_Shoe_R_Tongue": {
+    "max_delta_mm": 4.916049666641126
+  },
+  "EL_Chest_AO": {
+    "surface_follow_mm": 0.14482237637176248
+  },
+  "EL_Chest_Rules": {
+    "surface_follow_mm": 0.05918146763062359
+  },
+  "EL_Back_Print_Base": {
+    "surface_follow_mm": 1.9133966639792723
+  },
+  "EL_Back_Reference_Artwork": {
+    "surface_follow_mm": 0.5315719401244128
+  },
+  "EL_Back_Webbing_L": {
+    "surface_follow_mm": 1.9966258818210747
+  },
+  "EL_Back_Buckle_L": {
+    "surface_follow_mm": 1.94114209352364
+  },
+  "EL_Back_BuckleInset_L": {
+    "surface_follow_mm": 2.000686462902124
+  },
+  "EL_Shoulder_Webbing_L": {
+    "surface_follow_mm": 1.9587450130896582
+  },
+  "EL_Back_Webbing_R": {
+    "surface_follow_mm": 2.007182057729243
+  },
+  "EL_Back_Buckle_R": {
+    "surface_follow_mm": 1.9395841282834443
+  },
+  "EL_Back_BuckleInset_R": {
+    "surface_follow_mm": 1.9969687846237254
+  },
+  "EL_Shoulder_Webbing_R": {
+    "surface_follow_mm": 1.9515264727943071
+  },
+  "EL_Sleeve_L_UpperBar_0": {
+    "surface_follow_mm": 0.052324707718198284
+  },
+  "EL_Sleeve_L_UpperBar_1": {
+    "surface_follow_mm": 0.006321311617762167
+  },
+  "EL_Sleeve_L_UpperBar_2": {
+    "surface_follow_mm": 0.0003579381748874281
+  },
+  "EL_Sleeve_L_UpperBar_3": {
+    "surface_follow_mm": 0.00023894913368392997
+  },
+  "EL_Sleeve_R_UpperBar_0": {
+    "surface_follow_mm": 0.05530220035709577
+  },
+  "EL_Sleeve_R_UpperBar_1": {
+    "surface_follow_mm": 0.006559905405279903
+  },
+  "EL_Sleeve_R_UpperBar_2": {
+    "surface_follow_mm": 0.0002559629587278051
+  },
+  "EL_Sleeve_R_UpperBar_3": {
+    "surface_follow_mm": 0.00016881939707053057
+  },
+  "EL_UpperArm_RearPatch": {
+    "surface_follow_mm": 0.04751825695062357
+  },
+  "EL_UpperArm_DUM": {
+    "surface_follow_mm": 0.0001383883924857282
+  },
+  "EL_Shoe_L_WhiteBand_0": {
+    "surface_follow_mm": 4.251907180857754
+  },
+  "EL_Shoe_L_WhiteBand_1": {
+    "surface_follow_mm": 2.4886627625389064
+  },
+  "EL_Shoe_L_WhiteBand_2": {
+    "surface_follow_mm": 2.645832261185738
+  },
+  "EL_Shoe_L_AnkleStrap": {
+    "surface_follow_mm": 5.0276451260602295
+  },
+  "EL_Shoe_L_BuckleFrame": {
+    "surface_follow_mm": 6.065766691530269
+  },
+  "EL_Shoe_L_BuckleInset": {
+    "surface_follow_mm": 5.026069194632568
+  },
+  "EL_Shoe_L_RedCross": {
+    "surface_follow_mm": 7.019918080379074
+  },
+  "EL_Shoe_L_SideWhite": {
+    "surface_follow_mm": 2.3305577100615555
+  },
+  "EL_Shoe_L_HeelWhite": {
+    "surface_follow_mm": 0.9912836816356392
+  },
+  "EL_Shoe_R_WhiteBand_0": {
+    "surface_follow_mm": 4.252194496039198
+  },
+  "EL_Shoe_R_WhiteBand_1": {
+    "surface_follow_mm": 2.488605339731021
+  },
+  "EL_Shoe_R_WhiteBand_2": {
+    "surface_follow_mm": 2.645943213677241
+  },
+  "EL_Shoe_R_AnkleStrap": {
+    "surface_follow_mm": 5.027592491845784
+  },
+  "EL_Shoe_R_BuckleFrame": {
+    "surface_follow_mm": 6.066337702247832
+  },
+  "EL_Shoe_R_BuckleInset": {
+    "surface_follow_mm": 5.0272932675406
+  },
+  "EL_Shoe_R_RedCross": {
+    "surface_follow_mm": 7.021369955325599
+  },
+  "EL_Shoe_R_SideWhite": {
+    "surface_follow_mm": 2.3272930376007523
+  },
+  "EL_Shoe_R_HeelWhite": {
+    "surface_follow_mm": 0.9908923716003926
+  },
+  "EL_Shoulder_Back_Connector_L": {
+    "surface_follow_mm": 2.069492222577177
+  },
+  "EL_Shoulder_Back_Connector_R": {
+    "surface_follow_mm": 2.069522436415928
+  },
+  "NaturalPose__EL_Chest_AO": {
+    "surface_follow_mm": 0.14476317890363488
+  },
+  "NaturalPose__EL_Chest_Rules": {
+    "surface_follow_mm": 0.059136763408058006
+  },
+  "NaturalPose__EL_Back_Print_Base": {
+    "surface_follow_mm": 1.9133802650264236
+  },
+  "NaturalPose__EL_Back_Reference_Artwork": {
+    "surface_follow_mm": 0.5315583258421458
+  },
+  "NaturalPose__EL_Back_Webbing_L": {
+    "surface_follow_mm": 1.9966333693485403
+  },
+  "NaturalPose__EL_Back_Buckle_L": {
+    "surface_follow_mm": 1.9411670721815566
+  },
+  "NaturalPose__EL_Back_BuckleInset_L": {
+    "surface_follow_mm": 2.0006964922980015
+  },
+  "NaturalPose__EL_Shoulder_Webbing_L": {
+    "surface_follow_mm": 1.9587287906602384
+  },
+  "NaturalPose__EL_Back_Webbing_R": {
+    "surface_follow_mm": 2.007113267242627
+  },
+  "NaturalPose__EL_Back_Buckle_R": {
+    "surface_follow_mm": 1.939605434365472
+  },
+  "NaturalPose__EL_Back_BuckleInset_R": {
+    "surface_follow_mm": 1.9970009354140938
+  },
+  "NaturalPose__EL_Shoulder_Webbing_R": {
+    "surface_follow_mm": 1.9513662239800396
+  },
+  "NaturalPose__EL_Sleeve_L_UpperBar_0": {
+    "surface_follow_mm": 0.052251246021488396
+  },
+  "NaturalPose__EL_Sleeve_L_UpperBar_1": {
+    "surface_follow_mm": 0.006324100254397822
+  },
+  "NaturalPose__EL_Sleeve_L_UpperBar_2": {
+    "surface_follow_mm": 0.0002467706078541159
+  },
+  "NaturalPose__EL_Sleeve_L_UpperBar_3": {
+    "surface_follow_mm": 0.00013391628465070346
+  },
+  "NaturalPose__EL_Sleeve_R_UpperBar_0": {
+    "surface_follow_mm": 0.054884511947521364
+  },
+  "NaturalPose__EL_Sleeve_R_UpperBar_1": {
+    "surface_follow_mm": 0.006680102021530737
+  },
+  "NaturalPose__EL_Sleeve_R_UpperBar_2": {
+    "surface_follow_mm": 0.0003596834822331967
+  },
+  "NaturalPose__EL_Sleeve_R_UpperBar_3": {
+    "surface_follow_mm": 0.0001299587156065733
+  },
+  "NaturalPose__EL_UpperArm_RearPatch": {
+    "surface_follow_mm": 0.047356115924354306
+  },
+  "NaturalPose__EL_UpperArm_DUM": {
+    "surface_follow_mm": 0.00012377834115800374
+  },
+  "NaturalPose__EL_Shoe_L_WhiteBand_0": {
+    "surface_follow_mm": 4.251907180857754
+  },
+  "NaturalPose__EL_Shoe_L_WhiteBand_1": {
+    "surface_follow_mm": 2.488662031628436
+  },
+  "NaturalPose__EL_Shoe_L_WhiteBand_2": {
+    "surface_follow_mm": 2.645831965778858
+  },
+  "NaturalPose__EL_Shoe_L_AnkleStrap": {
+    "surface_follow_mm": 5.0276451260602295
+  },
+  "NaturalPose__EL_Shoe_L_BuckleFrame": {
+    "surface_follow_mm": 6.065766627615862
+  },
+  "NaturalPose__EL_Shoe_L_BuckleInset": {
+    "surface_follow_mm": 5.026069194632568
+  },
+  "NaturalPose__EL_Shoe_L_RedCross": {
+    "surface_follow_mm": 7.019932601197973
+  },
+  "NaturalPose__EL_Shoe_L_SideWhite": {
+    "surface_follow_mm": 2.3305577100615555
+  },
+  "NaturalPose__EL_Shoe_L_HeelWhite": {
+    "surface_follow_mm": 0.9912798907585798
+  },
+  "NaturalPose__EL_Shoe_R_WhiteBand_0": {
+    "surface_follow_mm": 4.2521939078463005
+  },
+  "NaturalPose__EL_Shoe_R_WhiteBand_1": {
+    "surface_follow_mm": 2.488613722538553
+  },
+  "NaturalPose__EL_Shoe_R_WhiteBand_2": {
+    "surface_follow_mm": 2.6459451095720175
+  },
+  "NaturalPose__EL_Shoe_R_AnkleStrap": {
+    "surface_follow_mm": 5.027592539014212
+  },
+  "NaturalPose__EL_Shoe_R_BuckleFrame": {
+    "surface_follow_mm": 6.066335265968714
+  },
+  "NaturalPose__EL_Shoe_R_BuckleInset": {
+    "surface_follow_mm": 5.027290418185121
+  },
+  "NaturalPose__EL_Shoe_R_RedCross": {
+    "surface_follow_mm": 7.021369951868689
+  },
+  "NaturalPose__EL_Shoe_R_SideWhite": {
+    "surface_follow_mm": 2.327293087559268
+  },
+  "NaturalPose__EL_Shoe_R_HeelWhite": {
+    "surface_follow_mm": 0.9908923716003926
+  },
+  "NaturalPose__EL_Shoulder_Back_Connector_L": {
+    "surface_follow_mm": 2.0695252929742227
+  },
+  "NaturalPose__EL_Shoulder_Back_Connector_R": {
+    "surface_follow_mm": 2.0695892623670753
+  }
+}

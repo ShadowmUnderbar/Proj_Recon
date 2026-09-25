@@ -1,0 +1,622 @@
+[
+  {
+    "object": "Opt__ElseIf_Mannequin",
+    "protected_vertices": 4550,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Anatomy_Restoration",
+    "protected_vertices": 18014,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Shorts",
+    "protected_vertices": 5710,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Sock_L",
+    "protected_vertices": 6912,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Sock_R",
+    "protected_vertices": 6912,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Shoe_L_Sole",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Shoe_L_Upper",
+    "protected_vertices": 2882,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Shoe_R_Sole",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Shoe_R_Upper",
+    "protected_vertices": 2882,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Shoe_L_AnkleCollar",
+    "protected_vertices": 896,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Shoe_L_Tongue",
+    "protected_vertices": 338,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Shoe_R_AnkleCollar",
+    "protected_vertices": 896,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Shoe_R_Tongue",
+    "protected_vertices": 338,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Front_L",
+    "protected_vertices": 3733,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Front_R",
+    "protected_vertices": 3739,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Back",
+    "protected_vertices": 7259,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Sleeve_L",
+    "protected_vertices": 16464,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Sleeve_R",
+    "protected_vertices": 16464,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Stand_Collar",
+    "protected_vertices": 6630,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Hem_Facing",
+    "protected_vertices": 4186,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Cuff_L",
+    "protected_vertices": 1680,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Cuff_R",
+    "protected_vertices": 1680,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Closure_Tape",
+    "protected_vertices": 492,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Front_Facing_L",
+    "protected_vertices": 656,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Front_Facing_R",
+    "protected_vertices": 656,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Collar_Turnback",
+    "protected_vertices": 3096,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Hem_Turnback",
+    "protected_vertices": 3216,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Cuff_L_Turnback",
+    "protected_vertices": 2016,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__ElseIf_Jacket_Cuff_R_Turnback",
+    "protected_vertices": 2016,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Chest_AO",
+    "protected_vertices": 77,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Chest_Rules",
+    "protected_vertices": 18,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Zip_Pull_Red",
+    "protected_vertices": 56,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Zip_Slider",
+    "protected_vertices": 32,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Pocket_L_Welt",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Pocket_L_Opening",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Hem_L_Triangle",
+    "protected_vertices": 30,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Hem_L_Rule",
+    "protected_vertices": 8,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Pocket_R_Welt",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Pocket_R_Opening",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Hem_R_Triangle",
+    "protected_vertices": 30,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Hem_R_Rule",
+    "protected_vertices": 8,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Back_Print_Base",
+    "protected_vertices": 684,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Back_Reference_Artwork",
+    "protected_vertices": 323,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Back_Webbing_L",
+    "protected_vertices": 144,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Back_Buckle_L",
+    "protected_vertices": 40,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Back_BuckleInset_L",
+    "protected_vertices": 12,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoulder_Webbing_L",
+    "protected_vertices": 150,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Back_Webbing_R",
+    "protected_vertices": 144,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Back_Buckle_R",
+    "protected_vertices": 40,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Back_BuckleInset_R",
+    "protected_vertices": 12,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoulder_Webbing_R",
+    "protected_vertices": 150,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Back_Center_Tab",
+    "protected_vertices": 88,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Back_Center_Symbol",
+    "protected_vertices": 17,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_InkStrip",
+    "protected_vertices": 38,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_Icon_0",
+    "protected_vertices": 3,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_Icon_1",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_Box_1",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_Icon_2",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_Box_2",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_Icon_3",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_Box_3",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_UpperBar_0",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_UpperBar_1",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_UpperBar_2",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_UpperBar_3",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_RedTab",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_L_CuffTab",
+    "protected_vertices": 21,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_InkStrip",
+    "protected_vertices": 37,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_Icon_0",
+    "protected_vertices": 5,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_Icon_1",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_Box_1",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_Icon_2",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_Box_2",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_Icon_3",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_Box_3",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_UpperBar_0",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_UpperBar_1",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_UpperBar_2",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_UpperBar_3",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_RedTab",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sleeve_R_CuffTab",
+    "protected_vertices": 21,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_UpperArm_RearPatch",
+    "protected_vertices": 99,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_UpperArm_DUM",
+    "protected_vertices": 112,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Collar_A",
+    "protected_vertices": 17,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Collar_Fastener_-0.027",
+    "protected_vertices": 18,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Collar_Fastener_0.027",
+    "protected_vertices": 18,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Thigh_Band_L",
+    "protected_vertices": 392,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Thigh_Fastener_L",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Thigh_Tag_L",
+    "protected_vertices": 32,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_L_Mark_0",
+    "protected_vertices": 17,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_L_Rule_0",
+    "protected_vertices": 55,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_L_Mark_1",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_L_Rule_1",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_L_Mark_2",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_L_Rule_2",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_L_WhiteBand_0",
+    "protected_vertices": 104,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_L_WhiteBand_1",
+    "protected_vertices": 104,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_L_WhiteBand_2",
+    "protected_vertices": 104,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_L_AnkleStrap",
+    "protected_vertices": 120,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_L_BuckleFrame",
+    "protected_vertices": 50,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_L_BuckleInset",
+    "protected_vertices": 16,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_L_RedCross",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_L_SideWhite",
+    "protected_vertices": 85,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_L_HeelWhite",
+    "protected_vertices": 81,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Thigh_Band_R",
+    "protected_vertices": 392,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Thigh_Fastener_R",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Thigh_Tag_R",
+    "protected_vertices": 32,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_R_Mark_0",
+    "protected_vertices": 17,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_R_Rule_0",
+    "protected_vertices": 55,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_R_Mark_1",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_R_Rule_1",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_R_Mark_2",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Sock_R_Rule_2",
+    "protected_vertices": 0,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_R_WhiteBand_0",
+    "protected_vertices": 104,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_R_WhiteBand_1",
+    "protected_vertices": 104,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_R_WhiteBand_2",
+    "protected_vertices": 104,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_R_AnkleStrap",
+    "protected_vertices": 120,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_R_BuckleFrame",
+    "protected_vertices": 50,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_R_BuckleInset",
+    "protected_vertices": 16,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_R_RedCross",
+    "protected_vertices": 24,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_R_SideWhite",
+    "protected_vertices": 85,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoe_R_HeelWhite",
+    "protected_vertices": 81,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoulder_Back_Connector_L",
+    "protected_vertices": 75,
+    "max_missing_distance_mm": 0
+  },
+  {
+    "object": "Opt__EL_Shoulder_Back_Connector_R",
+    "protected_vertices": 75,
+    "max_missing_distance_mm": 0
+  }
+]

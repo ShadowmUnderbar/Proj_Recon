@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "Wrist rotation clearance increased; zero change in base pose.\n"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{\"scenes\": [[\"ElseIf_Basis_Construction\", 151], [\"ElseIf_NaturalPose_Validation\", 136], [\"ElseIf_Secondary_Raking_Basis\", 134], [\"ElseIf_Secondary_Raking_NaturalPose\", 135], [\"Startup_Untouched\", 3]], \"collections\": [[\"ElseIf_Game\", 126]], \"rigs\": [\"Armature\", \"ElseIf_Game_Humanoid\", \"ElseIf_Humanoid\", \"ElseIf_NaturalPose_Humanoid\"], \"objects\": [\"ElseIf_Game_Humanoid\", \"Game__ElseIf_Mannequin\", \"Game__ElseIf_Anatomy_Restoration\", \"Game__ElseIf_Shorts\", \"Game__ElseIf_Sock_L\"]}\n"
+  }
+}

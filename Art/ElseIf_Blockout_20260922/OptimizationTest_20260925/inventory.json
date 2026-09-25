@@ -1,0 +1,785 @@
+{
+  "file": "D:\\UnityProj\\Proj_Recon\\Art\\ElseIf_Blockout_20260922\\GameStage1_20260924\\ElseIf_Game_Stage1.blend",
+  "scene": "ElseIf_Game_Validation",
+  "scenes": [
+    "ElseIf_Basis_Construction",
+    "ElseIf_Game_Validation",
+    "ElseIf_NaturalPose_Validation",
+    "ElseIf_Secondary_Raking_Basis",
+    "ElseIf_Secondary_Raking_NaturalPose",
+    "Startup_Untouched"
+  ],
+  "collections": [
+    "Collection",
+    "ElseIf_Approved_Silhouette_20260924",
+    "ElseIf_Design_Basis",
+    "ElseIf_Design_NaturalPose",
+    "ElseIf_Fitting_Support",
+    "ElseIf_Game",
+    "ElseIf_Master",
+    "ElseIf_NaturalPose_TEMP_SKINNING",
+    "ElseIf_Primary_Construction",
+    "ElseIf_Review_Stage",
+    "ElseIf_Revision_Backups",
+    "ElseIf_Silhouette_Before_20260923",
+    "ElseIf_Source_VRM_UNTOUCHED"
+  ],
+  "game": [
+    {
+      "name": "ElseIf_Game_Humanoid",
+      "type": "ARMATURE",
+      "verts": 0,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Mannequin",
+      "type": "MESH",
+      "verts": 4550,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Anatomy_Restoration",
+      "type": "MESH",
+      "verts": 18014,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Shorts",
+      "type": "MESH",
+      "verts": 5710,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Sock_L",
+      "type": "MESH",
+      "verts": 13248,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Sock_R",
+      "type": "MESH",
+      "verts": 13248,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Shoe_L_Sole",
+      "type": "MESH",
+      "verts": 674,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Shoe_L_Upper",
+      "type": "MESH",
+      "verts": 2882,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Shoe_R_Sole",
+      "type": "MESH",
+      "verts": 674,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Shoe_R_Upper",
+      "type": "MESH",
+      "verts": 2882,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Shoe_L_AnkleCollar",
+      "type": "MESH",
+      "verts": 896,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Shoe_L_Tongue",
+      "type": "MESH",
+      "verts": 338,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Shoe_R_AnkleCollar",
+      "type": "MESH",
+      "verts": 896,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Shoe_R_Tongue",
+      "type": "MESH",
+      "verts": 338,
+      "keys": 0
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Front_L",
+      "type": "MESH",
+      "verts": 6380,
+      "keys": 7
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Front_R",
+      "type": "MESH",
+      "verts": 6380,
+      "keys": 6
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Back",
+      "type": "MESH",
+      "verts": 12418,
+      "keys": 7
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Sleeve_L",
+      "type": "MESH",
+      "verts": 16464,
+      "keys": 9
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Sleeve_R",
+      "type": "MESH",
+      "verts": 16464,
+      "keys": 8
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Stand_Collar",
+      "type": "MESH",
+      "verts": 6630,
+      "keys": 1
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Hem_Facing",
+      "type": "MESH",
+      "verts": 4186,
+      "keys": 1
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Cuff_L",
+      "type": "MESH",
+      "verts": 1680,
+      "keys": 3
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Cuff_R",
+      "type": "MESH",
+      "verts": 1680,
+      "keys": 3
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Closure_Tape",
+      "type": "MESH",
+      "verts": 870,
+      "keys": 1
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Front_Facing_L",
+      "type": "MESH",
+      "verts": 1160,
+      "keys": 1
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Front_Facing_R",
+      "type": "MESH",
+      "verts": 1160,
+      "keys": 1
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Collar_Turnback",
+      "type": "MESH",
+      "verts": 3096,
+      "keys": 1
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Hem_Turnback",
+      "type": "MESH",
+      "verts": 3216,
+      "keys": 1
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Cuff_L_Turnback",
+      "type": "MESH",
+      "verts": 2016,
+      "keys": 3
+    },
+    {
+      "name": "Game__ElseIf_Jacket_Cuff_R_Turnback",
+      "type": "MESH",
+      "verts": 2016,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Chest_AO",
+      "type": "MESH",
+      "verts": 77,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Chest_Rules",
+      "type": "MESH",
+      "verts": 18,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Zip_Pull_Red",
+      "type": "MESH",
+      "verts": 56,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Zip_Slider",
+      "type": "MESH",
+      "verts": 32,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Pocket_L_Welt",
+      "type": "MESH",
+      "verts": 190,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Pocket_L_Opening",
+      "type": "MESH",
+      "verts": 57,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Hem_L_Triangle",
+      "type": "MESH",
+      "verts": 30,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Hem_L_Rule",
+      "type": "MESH",
+      "verts": 8,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Pocket_R_Welt",
+      "type": "MESH",
+      "verts": 190,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Pocket_R_Opening",
+      "type": "MESH",
+      "verts": 57,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Hem_R_Triangle",
+      "type": "MESH",
+      "verts": 30,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Hem_R_Rule",
+      "type": "MESH",
+      "verts": 8,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Back_Print_Base",
+      "type": "MESH",
+      "verts": 1254,
+      "keys": 4
+    },
+    {
+      "name": "Game__EL_Back_Reference_Artwork",
+      "type": "MESH",
+      "verts": 589,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Back_Webbing_L",
+      "type": "MESH",
+      "verts": 368,
+      "keys": 2
+    },
+    {
+      "name": "Game__EL_Back_Buckle_L",
+      "type": "MESH",
+      "verts": 40,
+      "keys": 2
+    },
+    {
+      "name": "Game__EL_Back_BuckleInset_L",
+      "type": "MESH",
+      "verts": 12,
+      "keys": 2
+    },
+    {
+      "name": "Game__EL_Shoulder_Webbing_L",
+      "type": "MESH",
+      "verts": 150,
+      "keys": 5
+    },
+    {
+      "name": "Game__EL_Back_Webbing_R",
+      "type": "MESH",
+      "verts": 368,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Back_Buckle_R",
+      "type": "MESH",
+      "verts": 40,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Back_BuckleInset_R",
+      "type": "MESH",
+      "verts": 12,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Shoulder_Webbing_R",
+      "type": "MESH",
+      "verts": 150,
+      "keys": 4
+    },
+    {
+      "name": "Game__EL_Back_Center_Tab",
+      "type": "MESH",
+      "verts": 232,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Back_Center_Symbol",
+      "type": "MESH",
+      "verts": 17,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sleeve_L_InkStrip",
+      "type": "MESH",
+      "verts": 324,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_Icon_0",
+      "type": "MESH",
+      "verts": 17,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_Icon_1",
+      "type": "MESH",
+      "verts": 50,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_Box_1",
+      "type": "MESH",
+      "verts": 180,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_Icon_2",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_Box_2",
+      "type": "MESH",
+      "verts": 180,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_Icon_3",
+      "type": "MESH",
+      "verts": 17,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_Box_3",
+      "type": "MESH",
+      "verts": 180,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_UpperBar_0",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_UpperBar_1",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_UpperBar_2",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_UpperBar_3",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_RedTab",
+      "type": "MESH",
+      "verts": 48,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_L_CuffTab",
+      "type": "MESH",
+      "verts": 21,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_InkStrip",
+      "type": "MESH",
+      "verts": 324,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_Icon_0",
+      "type": "MESH",
+      "verts": 17,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_Icon_1",
+      "type": "MESH",
+      "verts": 50,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_Box_1",
+      "type": "MESH",
+      "verts": 180,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_Icon_2",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_Box_2",
+      "type": "MESH",
+      "verts": 180,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_Icon_3",
+      "type": "MESH",
+      "verts": 17,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_Box_3",
+      "type": "MESH",
+      "verts": 180,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_UpperBar_0",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_UpperBar_1",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_UpperBar_2",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_UpperBar_3",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_RedTab",
+      "type": "MESH",
+      "verts": 48,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_Sleeve_R_CuffTab",
+      "type": "MESH",
+      "verts": 21,
+      "keys": 3
+    },
+    {
+      "name": "Game__EL_UpperArm_RearPatch",
+      "type": "MESH",
+      "verts": 99,
+      "keys": 2
+    },
+    {
+      "name": "Game__EL_UpperArm_DUM",
+      "type": "MESH",
+      "verts": 112,
+      "keys": 2
+    },
+    {
+      "name": "Game__EL_Collar_A",
+      "type": "MESH",
+      "verts": 17,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Collar_Fastener_-0.027",
+      "type": "MESH",
+      "verts": 18,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Collar_Fastener_0.027",
+      "type": "MESH",
+      "verts": 18,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Thigh_Band_L",
+      "type": "MESH",
+      "verts": 392,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Thigh_Fastener_L",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Thigh_Tag_L",
+      "type": "MESH",
+      "verts": 32,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_L_Mark_0",
+      "type": "MESH",
+      "verts": 17,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_L_Rule_0",
+      "type": "MESH",
+      "verts": 110,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_L_Mark_1",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_L_Rule_1",
+      "type": "MESH",
+      "verts": 110,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_L_Mark_2",
+      "type": "MESH",
+      "verts": 17,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_L_Rule_2",
+      "type": "MESH",
+      "verts": 110,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_L_WhiteBand_0",
+      "type": "MESH",
+      "verts": 104,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_L_WhiteBand_1",
+      "type": "MESH",
+      "verts": 104,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_L_WhiteBand_2",
+      "type": "MESH",
+      "verts": 104,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_L_AnkleStrap",
+      "type": "MESH",
+      "verts": 120,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_L_BuckleFrame",
+      "type": "MESH",
+      "verts": 50,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_L_BuckleInset",
+      "type": "MESH",
+      "verts": 16,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_L_RedCross",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_L_SideWhite",
+      "type": "MESH",
+      "verts": 85,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_L_HeelWhite",
+      "type": "MESH",
+      "verts": 81,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Thigh_Band_R",
+      "type": "MESH",
+      "verts": 392,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Thigh_Fastener_R",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Thigh_Tag_R",
+      "type": "MESH",
+      "verts": 32,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_R_Mark_0",
+      "type": "MESH",
+      "verts": 17,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_R_Rule_0",
+      "type": "MESH",
+      "verts": 110,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_R_Mark_1",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_R_Rule_1",
+      "type": "MESH",
+      "verts": 110,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_R_Mark_2",
+      "type": "MESH",
+      "verts": 17,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Sock_R_Rule_2",
+      "type": "MESH",
+      "verts": 110,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_R_WhiteBand_0",
+      "type": "MESH",
+      "verts": 104,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_R_WhiteBand_1",
+      "type": "MESH",
+      "verts": 104,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_R_WhiteBand_2",
+      "type": "MESH",
+      "verts": 104,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_R_AnkleStrap",
+      "type": "MESH",
+      "verts": 120,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_R_BuckleFrame",
+      "type": "MESH",
+      "verts": 50,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_R_BuckleInset",
+      "type": "MESH",
+      "verts": 16,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_R_RedCross",
+      "type": "MESH",
+      "verts": 24,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_R_SideWhite",
+      "type": "MESH",
+      "verts": 85,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoe_R_HeelWhite",
+      "type": "MESH",
+      "verts": 81,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoulder_Back_Connector_L",
+      "type": "MESH",
+      "verts": 75,
+      "keys": 0
+    },
+    {
+      "name": "Game__EL_Shoulder_Back_Connector_R",
+      "type": "MESH",
+      "verts": 75,
+      "keys": 2
+    },
+    {
+      "name": "Game__HeadSocket",
+      "type": "EMPTY",
+      "verts": 0,
+      "keys": 0
+    }
+  ]
+}

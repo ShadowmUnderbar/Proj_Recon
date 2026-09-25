@@ -1,0 +1,110 @@
+[
+  {
+    "model": "Current",
+    "pose": "Base",
+    "file": "Current_Base_HighAngle.png",
+    "camera": "ElseIf_Cam_HighAngle"
+  },
+  {
+    "model": "Current",
+    "pose": "A_Natural",
+    "file": "Current_Natural_HighAngle.png",
+    "camera": "ElseIf_Cam_HighAngle"
+  },
+  {
+    "model": "Current",
+    "pose": "D_AsymmetricAim",
+    "file": "Current_AsymmetricAim.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Current",
+    "pose": "G_WideOpen",
+    "file": "Current_ArmsWide.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Current",
+    "pose": "E_Elbow90",
+    "file": "Current_Elbow90.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Current",
+    "pose": "F_OneArmBack",
+    "file": "Current_OneArmBack.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Current",
+    "pose": "J_WristTwist",
+    "file": "Current_WristTwist80.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Current",
+    "pose": "B_Side90",
+    "file": "Current_Arms90.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Current",
+    "pose": "Base",
+    "file": "Current_Back.png",
+    "camera": "ElseIf_Cam_Back"
+  },
+  {
+    "model": "Optimized",
+    "pose": "Base",
+    "file": "Optimized_Base_HighAngle.png",
+    "camera": "ElseIf_Cam_HighAngle"
+  },
+  {
+    "model": "Optimized",
+    "pose": "A_Natural",
+    "file": "Optimized_Natural_HighAngle.png",
+    "camera": "ElseIf_Cam_HighAngle"
+  },
+  {
+    "model": "Optimized",
+    "pose": "D_AsymmetricAim",
+    "file": "Optimized_AsymmetricAim.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Optimized",
+    "pose": "G_WideOpen",
+    "file": "Optimized_ArmsWide.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Optimized",
+    "pose": "E_Elbow90",
+    "file": "Optimized_Elbow90.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Optimized",
+    "pose": "F_OneArmBack",
+    "file": "Optimized_OneArmBack.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Optimized",
+    "pose": "J_WristTwist",
+    "file": "Optimized_WristTwist80.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Optimized",
+    "pose": "B_Side90",
+    "file": "Optimized_Arms90.png",
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "model": "Optimized",
+    "pose": "Base",
+    "file": "Optimized_Back.png",
+    "camera": "ElseIf_Cam_Back"
+  }
+]

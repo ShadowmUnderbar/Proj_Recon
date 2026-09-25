@@ -1,0 +1,50 @@
+[
+  {
+    "file": "Current_Wide.png",
+    "scene": "ElseIf_Current_Review",
+    "frame": 71,
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "file": "Optimized_Wide.png",
+    "scene": "ElseIf_Optimized_Review",
+    "frame": 71,
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "file": "Corrected_Base.png",
+    "scene": "ElseIf_Underarm_Review",
+    "frame": 1,
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "file": "Corrected_Arms45.png",
+    "scene": "ElseIf_Underarm_Review",
+    "frame": 111,
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "file": "Corrected_Arms90.png",
+    "scene": "ElseIf_Underarm_Review",
+    "frame": 21,
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "file": "Corrected_Wide.png",
+    "scene": "ElseIf_Underarm_Review",
+    "frame": 71,
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "file": "Corrected_AsymmetricAim.png",
+    "scene": "ElseIf_Underarm_Review",
+    "frame": 41,
+    "camera": "Game_Cam_Stress_HighAngle"
+  },
+  {
+    "file": "Corrected_OneArmBack.png",
+    "scene": "ElseIf_Underarm_Review",
+    "frame": 61,
+    "camera": "Game_Cam_Stress_HighAngle"
+  }
+]

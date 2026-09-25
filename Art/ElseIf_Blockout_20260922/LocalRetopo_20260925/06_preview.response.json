@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "['Camera', 'ElseIf_Cam_Back', 'ElseIf_Cam_BackQuarter', 'ElseIf_Cam_Front', 'ElseIf_Cam_HighAngle', 'ElseIf_Cam_Side', 'ElseIf_Cam_ThreeQuarter', 'Game_Cam_Stress_HighAngle', 'Game_Cam_Stress_ThreeQuarter']\n"
+  }
+}

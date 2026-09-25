@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「ElseIf_Optimization_Test.blend」で保存しました\nRefined: ['Opt__EL_Back_Print_Base', 'Opt__EL_Back_Reference_Artwork', 'Opt__EL_Back_Webbing_L', 'Opt__EL_Back_Webbing_R', 'Opt__ElseIf_Jacket_Back', 'Opt__ElseIf_Jacket_Front_L', 'Opt__ElseIf_Jacket_Front_R']\nTriangles 288752\n"
+  }
+}

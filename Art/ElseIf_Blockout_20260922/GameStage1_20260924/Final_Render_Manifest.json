@@ -1,0 +1,86 @@
+[
+  {
+    "pose": "Base",
+    "file": "Game_BasePose_HighAngle.png",
+    "camera": "ElseIf_Cam_HighAngle",
+    "frame": 1
+  },
+  {
+    "pose": "A_Natural",
+    "file": "Game_NaturalPose_HighAngle.png",
+    "camera": "ElseIf_Cam_HighAngle",
+    "frame": 11
+  },
+  {
+    "pose": "B_Side90",
+    "file": "Game_B_Side90_HighAngle.png",
+    "camera": "Game_Cam_Stress_HighAngle",
+    "frame": 21
+  },
+  {
+    "pose": "C_Forward",
+    "file": "Game_C_Forward_HighAngle.png",
+    "camera": "Game_Cam_Stress_HighAngle",
+    "frame": 31
+  },
+  {
+    "pose": "D_AsymmetricAim",
+    "file": "Game_D_AsymmetricAim_HighAngle.png",
+    "camera": "Game_Cam_Stress_HighAngle",
+    "frame": 41
+  },
+  {
+    "pose": "E_Elbow90",
+    "file": "Game_E_Elbow90_HighAngle.png",
+    "camera": "Game_Cam_Stress_HighAngle",
+    "frame": 51
+  },
+  {
+    "pose": "F_OneArmBack",
+    "file": "Game_F_OneArmBack_HighAngle.png",
+    "camera": "Game_Cam_Stress_HighAngle",
+    "frame": 61
+  },
+  {
+    "pose": "G_WideOpen",
+    "file": "Game_G_WideOpen_HighAngle.png",
+    "camera": "Game_Cam_Stress_HighAngle",
+    "frame": 71
+  },
+  {
+    "pose": "H_FrontNear",
+    "file": "Game_H_FrontNear_HighAngle.png",
+    "camera": "Game_Cam_Stress_HighAngle",
+    "frame": 81
+  },
+  {
+    "pose": "I_FrontBack",
+    "file": "Game_I_FrontBack_HighAngle.png",
+    "camera": "Game_Cam_Stress_HighAngle",
+    "frame": 91
+  },
+  {
+    "pose": "J_WristTwist",
+    "file": "Game_J_WristTwist_HighAngle.png",
+    "camera": "Game_Cam_Stress_HighAngle",
+    "frame": 101
+  },
+  {
+    "pose": "D_AsymmetricAim",
+    "file": "Game_D_AsymmetricAim_ThreeQuarter.png",
+    "camera": "Game_Cam_Stress_ThreeQuarter",
+    "frame": 41
+  },
+  {
+    "pose": "E_Elbow90",
+    "file": "Game_E_Elbow90_ThreeQuarter.png",
+    "camera": "Game_Cam_Stress_ThreeQuarter",
+    "frame": 51
+  },
+  {
+    "pose": "F_OneArmBack",
+    "file": "Game_F_OneArmBack_ThreeQuarter.png",
+    "camera": "Game_Cam_Stress_ThreeQuarter",
+    "frame": 61
+  }
+]

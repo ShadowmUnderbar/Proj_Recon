@@ -1,0 +1,47 @@
+[
+  {
+    "file": "Front.png",
+    "scene": "ElseIf_Basis_Construction",
+    "camera": "ElseIf_Cam_Front"
+  },
+  {
+    "file": "Side.png",
+    "scene": "ElseIf_Basis_Construction",
+    "camera": "ElseIf_Cam_Side"
+  },
+  {
+    "file": "Back.png",
+    "scene": "ElseIf_Basis_Construction",
+    "camera": "ElseIf_Cam_Back"
+  },
+  {
+    "file": "ThreeQuarter.png",
+    "scene": "ElseIf_Basis_Construction",
+    "camera": "ElseIf_Cam_ThreeQuarter"
+  },
+  {
+    "file": "BackQuarter.png",
+    "scene": "ElseIf_Basis_Construction",
+    "camera": "ElseIf_Cam_BackQuarter"
+  },
+  {
+    "file": "HighAngle.png",
+    "scene": "ElseIf_Basis_Construction",
+    "camera": "ElseIf_Cam_HighAngle"
+  },
+  {
+    "file": "NaturalPose_Front.png",
+    "scene": "ElseIf_NaturalPose_Validation",
+    "camera": "ElseIf_Cam_Front"
+  },
+  {
+    "file": "NaturalPose_ThreeQuarter.png",
+    "scene": "ElseIf_NaturalPose_Validation",
+    "camera": "ElseIf_Cam_ThreeQuarter"
+  },
+  {
+    "file": "NaturalPose_HighAngle.png",
+    "scene": "ElseIf_NaturalPose_Validation",
+    "camera": "ElseIf_Cam_HighAngle"
+  }
+]
