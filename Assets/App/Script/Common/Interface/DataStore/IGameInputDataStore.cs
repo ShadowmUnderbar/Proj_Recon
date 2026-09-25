@@ -23,6 +23,9 @@ namespace App.Common.Interface
         ReactiveProperty<bool> DebugNormal { get; }
         ReactiveProperty<bool> DebugWaltz { get; }
         ReactiveProperty<bool> DebugMerge { get; }
+
+        /// <summary>デバッグ: ショップ（アップグレード候補）を即座に開く（Shift+U、エディタのみ）</summary>
+        ReactiveProperty<bool> DebugOpenUpgradeShop { get; }
         public Vector2 MouseInputPosition { get; }
 
         /// <summary>

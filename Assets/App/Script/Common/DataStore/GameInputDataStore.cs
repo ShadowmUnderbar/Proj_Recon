@@ -44,6 +44,7 @@ namespace App.Common.DataStore
         public ReactiveProperty<bool> DebugNormal { get; } = new();
         public ReactiveProperty<bool> DebugWaltz { get; } = new();
         public ReactiveProperty<bool> DebugMerge { get; } = new();
+        public ReactiveProperty<bool> DebugOpenUpgradeShop { get; } = new();
         public Vector2 MouseInputPosition { get; private set; }
 
         private bool _isFocusInputEnabled = true;
@@ -112,6 +113,7 @@ namespace App.Common.DataStore
             DebugNormal.Value = Input.Debug.ShotModeNormal.inProgress;
             DebugWaltz.Value = Input.Debug.ShotModeWaltz.inProgress;
             DebugMerge.Value = Input.Debug.ShotModeMerge.inProgress;
+            DebugOpenUpgradeShop.Value = Input.Debug.OpenUpgradeShop.inProgress;
 #endif
         }
 

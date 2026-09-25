@@ -83,6 +83,12 @@ namespace App.Battle.UseCase
                 .Subscribe(_ => StartNextWave())
                 .AddTo(_disposable);
 
+            // デバッグ: Shift+U でウェーブ突破を待たずにショップを開く（押した瞬間のみ。入力はエディタ限定）
+            _gameInputDataStore.DebugOpenUpgradeShop
+                .Where(isPressed => isPressed)
+                .Subscribe(_ => OpenShopForDebug())
+                .AddTo(_disposable);
+
             // ショップ表示中も粒子は吸い寄せられて回収されるため、所持ポイントの変化を表示と購入可否へ反映する
             _pointDataStore.CurrentPoint
                 .Subscribe(_ => OnCurrentPointChanged())
@@ -104,6 +110,22 @@ namespace App.Battle.UseCase
 
             // UI表示中だけボタン選択用のハンドレイを出す
             _playerControlPresenter.SetUiRayEnable(true);
+        }
+
+        /// <summary>
+        /// デバッグ用にショップを開く。ウェーブ番号は進めず、ポーズして開くだけにする
+        /// （「次のウェーブへ」でポーズ解除され、同じウェーブの続きから再開する）。
+        /// ラン開始前のビルド選択中・ゲームオーバー中はポーズ中なので開かない
+        /// </summary>
+        private void OpenShopForDebug()
+        {
+            if (_isShopOpen || _waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
+            _waveManagerDataStore.SetWavePause(true);
+            OpenShop();
         }
 
         private void OnCurrentPointChanged()
