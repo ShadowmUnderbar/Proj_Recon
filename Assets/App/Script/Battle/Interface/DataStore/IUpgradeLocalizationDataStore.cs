@@ -13,7 +13,8 @@ namespace App.Battle.Interface.DataStore
         bool IsReady { get; }
 
         /// <summary>
-        /// テーブルの読込完了時・ロケール切替後の再読込完了時に発火する。
+        /// テーブルの読込完了時・ロケール切替後の再読込完了時（失敗して IsReady=false になった場合も含む）に発火する。
+        /// ロケール切替の再読込中は、完了するまで前ロケールの文言を返す。
         /// 表示側はこれを購読して文言を取り直す
         /// </summary>
         Observable<Unit> OnTableChanged { get; }

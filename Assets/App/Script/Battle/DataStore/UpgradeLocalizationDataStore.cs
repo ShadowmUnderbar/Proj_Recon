@@ -114,6 +114,10 @@ namespace App.Battle.DataStore
             if (handle.Status != AsyncOperationStatus.Succeeded || handle.Result == null)
             {
                 Debug.LogError($"[UpgradeLocalization] テーブル '{TableName}' の読込に失敗しました: {handle.OperationException}");
+
+                // 前ロケールのテーブルを使い続けると IsReady=true のまま別言語の文言を返すため破棄し、表示側にキー表示へ戻させる
+                _table = null;
+                _onTableChanged.OnNext(Unit.Default);
                 return;
             }
 

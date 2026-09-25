@@ -13,8 +13,8 @@ namespace App.Battle.Data
         public string SimpleDescription { get; }
 
         /// <summary>
-        /// 詳細説明。倍率系タイプは {value1} を増減率で埋め込み済み（例:「攻撃力の基礎値が10%アップ」）。
-        /// それ以外のタイプは変換規則が未定のため {valueN} のまま
+        /// 詳細説明。{valueN} はタイプごとの規則で表示用に変換済み（例:「攻撃力の基礎値が10%アップ」）。
+        /// 規則の無いタイプ・値は {valueN} のまま（UpgradeDescriptionFormatter 参照）
         /// </summary>
         public string Description { get; }
 
