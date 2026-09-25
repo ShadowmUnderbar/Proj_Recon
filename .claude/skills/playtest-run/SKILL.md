@@ -29,7 +29,7 @@ $f = "Tools/Playtest/対象ファイル.ps1"
 
 - ゲームシーンは`Assets/Scenes/SampleScene.unity`の1本のみ
 - プレイヤーのHP減少は実装済み（PR #34）。敵の攻撃がプレイヤーの被弾受け（`PlayerDamageReceiverView`）に当たると`PlayerStateDataStore.Health`が減る
-- **ゲームオーバー判定は実装済み**（メタ進行Phase1）。HPが0になると`GameStateDataStore.IsGameOver`がtrueになり`GameOverUseCase`がウェーブをポーズ＋ゲームオーバー画面（`GameOverView`）を表示する。ランナーは`Get-WaveState`の`isGameOver`を監視し、**ゲームオーバーを検出したらスロット0保存ボタン（`Invoke-GameOverSlotSave`）を押してから正常終端**する（エラー扱いにはしない）。つまり終端は「目標ウェーブ到達」か「ゲームオーバー」のどちらか。ランダムドリルは被弾を避けないため、目標ウェーブ到達前にゲームオーバーで終わることがある（正常）。HP0まで到達させたくない検証（全ウェーブクリアの確認等）をしたい場合は将来的に無敵/回復手段の注入が要る
+- **ゲームオーバー判定は実装済み**（メタ進行Phase1）。HPが0になると`GameStateDataStore.IsGameOver`がtrueになり`GameOverUseCase`がウェーブをポーズ＋ゲームオーバー画面（`GameOverView`）を表示する。ランナーは`Get-WaveState`の`isGameOver`を監視し、**ゲームオーバーを検出したらスロット0保存ボタン（`Invoke-GameOverSlotSave`）を押してから正常終端**する（エラー扱いにはしない）。**スロット保存を押しても画面は閉じない**（保存とリスタートを分けたため）。画面を閉じるのは`RestartButton`で、押すとラン状態が初期化されビルド選択（`RunStartView`）へ戻る。この経路は`GameOverRestart`プローブで検証している。つまり終端は「目標ウェーブ到達」か「ゲームオーバー」のどちらか。ランダムドリルは被弾を避けないため、目標ウェーブ到達前にゲームオーバーで終わることがある（正常）。HP0まで到達させたくない検証（全ウェーブクリアの確認等）をしたい場合は将来的に無敵/回復手段の注入が要る
 - **ラン開始時にセット選択ゲートがある**（メタ進行Phase2）。Play開始直後は`RunStartDataStore.IsSelecting=true`＋`IsWavePause=true`でゲームが停止し、セット選択UI（`RunStartView`）が出る。ランナーは`Get-WaveState`の`isSelectingRunStart`を見て、`Resolve-RunStartIfSelecting`で「使わずに開始」ボタンを押しランを始める（プレイテストはセットを読み込まずに開始する）。この解除を最優先で処理するため、`isSelectingRunStart`の間はショップ/ゲームオーバー処理より先に返す
 - ウェーブ数を表示するUIは存在しない → 状態はUIではなく`execute-dynamic-code`経由でDataStoreから読む
 - ショップの開閉状態を公開するプロパティはない → `IsWavePause`とショップUIプレハブ（`ShopView`）の出現で判断する
@@ -73,6 +73,11 @@ function PlaytestScenarioStep {
 & "Tools/Playtest/probe-effect.ps1" -Probe StreamerCameraShot
 ```
 終了コード0=全項目OK、1=検証NGまたはエラー検出、2=プローブ指定ミス。結果は`Tools/Playtest/Reports/probe_*.json`に保存される（最大10件、`.gitignore`済み）。
+
+### 表示判定とデバッグ設定の落とし穴（実証済み）
+
+- **パス形式の`GameObject.Find("A/B/C")`は非アクティブなオブジェクトも返す**。UIの表示/非表示を確かめるときは`activeInHierarchy`まで見ること（見ないと常にtrueになり、検証が素通りする）
+- **デバッグウィンドウの「開始時アップグレード」（EditorPrefs）が入ったままだと実測値がぶれる**。実際にバリアが致死ダメージを丸ごと吸収してHPを0にできなかった。期待値を固定したいプローブは`ProbePrepare`でEditorPrefsを退避・クリアし、`ProbeCleanup`で戻す（`Probes/GameOverRestart.ps1`が実例）
 
 ### 検証の組み立て方（実証済みのパターン）
 
