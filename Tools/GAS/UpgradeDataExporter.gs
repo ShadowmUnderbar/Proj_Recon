@@ -9,6 +9,7 @@ function onOpen() {
     .createMenu('マスターデータ')
     .addItem('UpgradeData CSVエクスポート', 'exportUpgradeCsv')
     .addItem('BuffData CSVエクスポート', 'exportBuffCsv')
+    .addItem('WaveScalingData CSVエクスポート', 'exportWaveScalingCsv')
     .addSeparator()
     .addItem('UpgradeType Enum C#エクスポート', 'exportUpgradeTypeEnumCs')
     .addItem('BuffConditionType Enum C#エクスポート', 'exportBuffConditionTypeEnumCs')
@@ -123,6 +124,13 @@ function exportUpgradeCsv() {
  */
 function exportBuffCsv() {
   exportDataCsv('BuffData');
+}
+
+/**
+ * WaveScalingDataシートをCSVとしてエクスポート（ラッパー）
+ */
+function exportWaveScalingCsv() {
+  exportDataCsv('WaveScalingData');
 }
 
 /**

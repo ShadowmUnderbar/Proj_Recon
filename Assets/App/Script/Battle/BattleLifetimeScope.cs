@@ -52,6 +52,9 @@ namespace App.Battle
                 .AsImplementedInterfaces().As<IPlayerAimDataStore>();
             builder.Register<PlayerShotTypeDataStore>(Lifetime.Singleton)
                 .AsImplementedInterfaces().As<IPlayerShotTypeDataStore>();
+            // 敵のスポーン時HP・攻撃力の決定に使う（EnemyDataStoreが依存）
+            builder.Register<EnemyWaveScalingCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IEnemyWaveScalingCalculatorDataStore>();
             builder.Register<EnemyDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IEnemyDataStore>();
             builder.Register<EnemyRandomSpawnCycleDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IEnemyRandomSpawnCycleDataStore>();

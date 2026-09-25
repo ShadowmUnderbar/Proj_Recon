@@ -604,6 +604,7 @@ MonoBehaviour:
   _enemySpawnDatabase: {fileID: 11400000, guid: f9b5961c17d333a438c79cb9285f564b, type: 2}
   _upgradeDatabase: {fileID: 11400000, guid: d9aef8c097885ae43a58b8faae724e81, type: 2}
   _buffDatabase: {fileID: 11400000, guid: 151c973fef82b9749b1aa9286ecd29de, type: 2}
+  _waveScalingDatabase: {fileID: 11400000, guid: 302016ccb39ccea4d8311d82fbd3f5a3, type: 2}
   _streamerModeConfig: {fileID: 11400000, guid: 48652d6077c903549a4d8fa114ea2a4f, type: 2}
 --- !u!4 &1576992900
 Transform:
