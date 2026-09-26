@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「ElseIf_Game_MobileVR_Test.blend」で保存しました\n{'mesh_details': [{'name': 'Mobile__Jacket', 'vertices': 35671, 'triangles': 66223, 'evaluated_triangles': 66223, 'material_slots': 7, 'modifiers': ['ARMATURE']}, {'name': 'Mobile__Body', 'vertices': 19111, 'triangles': 35345, 'evaluated_triangles': 35345, 'material_slots': 1, 'modifiers': ['ARMATURE']}, {'name': 'Mobile__Socks', 'vertices': 4298, 'triangles': 8368, 'evaluated_triangles': 8368, 'material_slots': 2, 'modifiers': ['ARMATURE']}, {'name': 'Mobile__Shoes', 'vertices': 2820, 'triangles': 5364, 'evaluated_triangles': 5364, 'material_slots': 6, 'modifiers': ['ARMATURE']}, {'name': 'Mobile__Shorts', 'vertices': 1720, 'triangles': 3356, 'evaluated_triangles': 3356, 'material_slots': 4, 'modifiers': ['ARMATURE']}], 'driver_targets': ['ElseIf_MobileVR_Humanoid'], 'skeleton_names_identical': True, 'textures': [{'name': 'Codex 画像 2026年9月8日 23_05_45.png', 'packed': True, 'path': 'C:\\\\Users\\\\shado\\\\Pictures\\\\Codex 画像 2026年9月8日 23_05_45.png'}]}\n"
+  }
+}

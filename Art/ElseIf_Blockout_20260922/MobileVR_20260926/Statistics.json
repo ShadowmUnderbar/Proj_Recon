@@ -692,11 +692,11 @@
     ]
   },
   "ElseIf_Game_MobileVR_Test": {
-    "vertices": 50549,
-    "triangles": 93848,
-    "mesh_objects": 8,
-    "skinned_mesh_objects": 8,
-    "material_slots": 29,
+    "vertices": 63620,
+    "triangles": 118656,
+    "mesh_objects": 5,
+    "skinned_mesh_objects": 5,
+    "material_slots": 20,
     "materials": 10,
     "textures": 1,
     "bones": 74,
@@ -706,71 +706,31 @@
     "shape_keys_with_basis": 28,
     "mesh_details": [
       {
-        "name": "Mobile__ElseIf_Mannequin",
-        "triangles": 5141,
-        "materials": 1
-      },
-      {
-        "name": "Mobile__ElseIf_Anatomy_Restoration",
-        "triangles": 11034,
-        "materials": 1
-      },
-      {
         "name": "Mobile__Shorts",
         "triangles": 3356,
         "materials": 4
       },
       {
-        "name": "Mobile__Socks_L",
-        "triangles": 4185,
+        "name": "Mobile__Socks",
+        "triangles": 8368,
         "materials": 2
       },
       {
-        "name": "Mobile__Socks_R",
-        "triangles": 4183,
-        "materials": 2
-      },
-      {
-        "name": "Mobile__Shoes_L",
-        "triangles": 2682,
+        "name": "Mobile__Shoes",
+        "triangles": 5364,
         "materials": 6
       },
       {
-        "name": "Mobile__Shoes_R",
-        "triangles": 2682,
-        "materials": 6
+        "name": "Mobile__Body",
+        "triangles": 35345,
+        "materials": 1
       },
       {
         "name": "Mobile__Jacket",
-        "triangles": 60585,
+        "triangles": 66223,
         "materials": 7
       }
     ]
   },
-  "protected_original_changes": [
-    "Backup__Fix__HeadSocket",
-    "Camera",
-    "ElseIf_Secondary_Raking_Basis_Fill",
-    "ElseIf_Secondary_Raking_Basis_Key",
-    "ElseIf_Secondary_Raking_Basis_Rim",
-    "ElseIf_Secondary_Raking_NaturalPose_Fill",
-    "ElseIf_Secondary_Raking_NaturalPose_Key",
-    "ElseIf_Secondary_Raking_NaturalPose_Rim",
-    "Fix__HeadSocket",
-    "Game__HeadSocket",
-    "HeadSocket",
-    "Light",
-    "Opt__HeadSocket",
-    "Quality__ElseIf_Cam_Back",
-    "Quality__ElseIf_Cam_BackQuarter",
-    "Quality__ElseIf_Cam_Front",
-    "Quality__ElseIf_Cam_HighAngle",
-    "Quality__ElseIf_Cam_Side",
-    "Quality__ElseIf_Cam_ThreeQuarter",
-    "Quality__HeadSocket",
-    "Quality__Review_Fill",
-    "Quality__Review_Key",
-    "Quality__Review_Rim",
-    "Topo__HeadSocket"
-  ]
+  "protected_original_changes": []
 }

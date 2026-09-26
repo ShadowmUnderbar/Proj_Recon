@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{\"Base\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 49}, \"A_Natural\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 60}, \"B_Side90\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 42}, \"C_Forward\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 45}, \"D_AsymmetricAim\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 44}, \"E_Elbow90\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 49}, \"F_OneArmBack\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 50}, \"G_WideOpen\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 41}, \"H_FrontNear\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 45}, \"I_FrontBack\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 54}, \"J_WristTwist\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 69}, \"K_Arms45\": {\"ElseIf_Mannequin\": 0, \"ElseIf_Anatomy_Restoration\": 70}}\n"
+  }
+}

@@ -1,0 +1,272 @@
+[
+  {
+    "name": "DLHN_ElbowVolume_L",
+    "classification": "required_deformation_corrective",
+    "role": "elbow_volume",
+    "nonzero_vertices": 4581,
+    "max_delta_mm": 26.96440437471375,
+    "max_test_activation": 1.0,
+    "driver": "min(1.35,2*(1-qw*qw))",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Wrist_Clearance_L",
+    "classification": "required_deformation_corrective",
+    "role": "wrist_sleeve_clearance",
+    "nonzero_vertices": 4898,
+    "max_delta_mm": 19.500055122643573,
+    "max_test_activation": 1.0,
+    "driver": "min(1.25,(1-qw*qw)/0.4131759)",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_L_B_Side90",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 161,
+    "max_delta_mm": 15.093236206711053,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.843391*u0)+(0.000000*u1)+(0.000000*u2)+(0.537300*u3))**2)+(1-((1.000000*l0)+(-0.000000*l1)+(0.000000*l2)+(0.000000*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_L_D_AsymmetricAim",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 127,
+    "max_delta_mm": 12.729477982332494,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.772661*u0)+(0.370620*u1)+(-0.000000*u2)+(0.515399*u3))**2)+(1-((0.965926*l0)+(0.228994*l1)+(0.000000*l2)+(-0.120620*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_L_F_OneArmBack",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 133,
+    "max_delta_mm": 3.205205369608049,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.867732*u0)+(-0.494065*u1)+(0.000000*u2)+(0.054228*u3))**2)+(1-((0.984808*l0)+(0.172704*l1)+(-0.000000*l2)+(0.018082*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_L_G_WideOpen",
+    "classification": "required_deformation_corrective",
+    "role": "shoulder_underarm_drape",
+    "nonzero_vertices": 253,
+    "max_delta_mm": 19.49400588949953,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.773709*u0)+(-0.103393*u1)+(0.000000*u2)+(0.625047*u3))**2)+(1-((0.999048*l0)+(0.043244*l1)+(-0.000000*l2)+(0.005711*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_L_I_FrontBack",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 390,
+    "max_delta_mm": 14.85228833388287,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.709216*u0)+(0.700950*u1)+(-0.000000*u2)+(0.075377*u3))**2)+(1-((0.991445*l0)+(-0.111055*l1)+(0.012978*l2)+(-0.067346*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_L_J_WristTwist",
+    "classification": "required_deformation_corrective",
+    "role": "wrist_sleeve_clearance",
+    "nonzero_vertices": 82,
+    "max_delta_mm": 10.845205807185897,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.996947*u0)+(0.075418*u1)+(-0.000000*u2)+(-0.020205*u3))**2)+(1-((0.953717*l0)+(0.300704*l1)+(-0.000000*l2)+(0.000927*l3))**2)+(1-((0.766044*h0)+(0.000000*h1)+(0.642788*h2)+(0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Wide_ClothEase_L",
+    "classification": "required_deformation_corrective",
+    "role": "shoulder_underarm_drape",
+    "nonzero_vertices": 5646,
+    "max_delta_mm": 12.718594396582024,
+    "max_test_activation": 1.0,
+    "driver": "min(1,max(0,(max((0.843391*q0+0.000000*q1+0.000000*q2+0.537300*q3)**2,(0.773709*q0+-0.103393*q1+0.000000*q2+0.625047*q3)**2)-.86)/.10))",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Wide_ClothEase_R",
+    "classification": "required_deformation_corrective",
+    "role": "shoulder_underarm_drape",
+    "nonzero_vertices": 5347,
+    "max_delta_mm": 12.97378519149726,
+    "max_test_activation": 1.0,
+    "driver": "min(1,max(0,(max((0.843391*q0+0.000000*q1+-0.000000*q2+-0.537300*q3)**2,(0.773709*q0+-0.103393*q1+-0.000000*q2+-0.625047*q3)**2)-.86)/.10))",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_L_B_Side90.001",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 283,
+    "max_delta_mm": 3.805463390982424,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.843391*u0)+(0.000000*u1)+(0.000000*u2)+(0.537300*u3))**2)+(1-((1.000000*l0)+(-0.000000*l1)+(0.000000*l2)+(0.000000*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_L_G_WideOpen.001",
+    "classification": "required_deformation_corrective",
+    "role": "shoulder_underarm_drape",
+    "nonzero_vertices": 265,
+    "max_delta_mm": 2.821751949630548,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.773709*u0)+(-0.103393*u1)+(0.000000*u2)+(0.625047*u3))**2)+(1-((0.999048*l0)+(0.043244*l1)+(-0.000000*l2)+(0.005711*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Underarm_Drape_L",
+    "classification": "required_deformation_corrective",
+    "role": "shoulder_underarm_drape",
+    "nonzero_vertices": 5286,
+    "max_delta_mm": 100.8926155755234,
+    "max_test_activation": 1.0,
+    "driver": "min(1,max(0,(max((0.843391*q0+0.000000*q1+0.000000*q2+0.537300*q3)**2,(0.773709*q0+-0.103393*q1+0.000000*q2+0.625047*q3)**2)-.90)/.07))",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_R_D_AsymmetricAim",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 139,
+    "max_delta_mm": 3.1219806848894662,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.844685*u0)+(-0.509729*u1)+(-0.000000*u2)+(-0.163354*u3))**2)+(1-((0.923880*l0)+(0.361571*l1)+(0.000000*l2)+(-0.125352*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_R_I_FrontBack",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 641,
+    "max_delta_mm": 11.47811152575945,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.734187*u0)+(-0.677109*u1)+(-0.000000*u2)+(-0.049921*u3))**2)+(1-((0.991445*l0)+(0.113664*l1)+(0.012978*l2)+(0.062843*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Underarm_Drape_R",
+    "classification": "required_deformation_corrective",
+    "role": "shoulder_underarm_drape",
+    "nonzero_vertices": 5290,
+    "max_delta_mm": 100.39998268833901,
+    "max_test_activation": 1.0,
+    "driver": "min(1,max(0,(max((0.843391*q0+0.000000*q1+-0.000000*q2+-0.537300*q3)**2,(0.773709*q0+-0.103393*q1+-0.000000*q2+-0.625047*q3)**2)-.90)/.07))",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_L_C_Forward",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 220,
+    "max_delta_mm": 6.519020498840615,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.748416*u0)+(0.658532*u1)+(-0.000000*u2)+(0.078794*u3))**2)+(1-((0.996195*l0)+(0.068649*l1)+(0.000000*l2)+(-0.053698*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_R_B_Side90",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 156,
+    "max_delta_mm": 15.10215976583255,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.843391*u0)+(0.000000*u1)+(-0.000000*u2)+(-0.537300*u3))**2)+(1-((1.000000*l0)+(0.000000*l1)+(0.000000*l2)+(0.000000*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_R_G_WideOpen",
+    "classification": "required_deformation_corrective",
+    "role": "shoulder_underarm_drape",
+    "nonzero_vertices": 245,
+    "max_delta_mm": 19.498331113438777,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.773709*u0)+(-0.103393*u1)+(-0.000000*u2)+(-0.625047*u3))**2)+(1-((0.999048*l0)+(0.043244*l1)+(0.000000*l2)+(-0.005711*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_R_B_Side90.001",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 275,
+    "max_delta_mm": 3.5104147664053214,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.843391*u0)+(0.000000*u1)+(-0.000000*u2)+(-0.537300*u3))**2)+(1-((1.000000*l0)+(0.000000*l1)+(0.000000*l2)+(0.000000*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_R_G_WideOpen.001",
+    "classification": "required_deformation_corrective",
+    "role": "shoulder_underarm_drape",
+    "nonzero_vertices": 243,
+    "max_delta_mm": 2.7320188526651172,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.773709*u0)+(-0.103393*u1)+(-0.000000*u2)+(-0.625047*u3))**2)+(1-((0.999048*l0)+(0.043244*l1)+(0.000000*l2)+(-0.005711*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_ElbowVolume_R",
+    "classification": "required_deformation_corrective",
+    "role": "elbow_volume",
+    "nonzero_vertices": 4410,
+    "max_delta_mm": 26.643229736967445,
+    "max_test_activation": 1.0,
+    "driver": "min(1.35,2*(1-qw*qw))",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Wrist_Clearance_R",
+    "classification": "required_deformation_corrective",
+    "role": "wrist_sleeve_clearance",
+    "nonzero_vertices": 4830,
+    "max_delta_mm": 19.500059159060942,
+    "max_test_activation": 1.0,
+    "driver": "min(1.25,(1-qw*qw)/0.4131759)",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_L_A_Natural",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 68,
+    "max_delta_mm": 4.304318232024456,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.999274*u0)+(0.017517*u1)+(-0.000000*u2)+(-0.033839*u3))**2)+(1-((0.997564*l0)+(0.069756*l1)+(-0.000000*l2)+(0.000083*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.0041065121419853415)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_R_A_Natural",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 115,
+    "max_delta_mm": 6.00731276219831,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.999274*u0)+(0.017517*u1)+(0.000000*u2)+(0.033838*u3))**2)+(1-((0.997564*l0)+(0.069756*l1)+(0.000000*l2)+(-0.000083*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.0041065121419853415)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_R_C_Forward",
+    "classification": "required_deformation_corrective",
+    "role": "pose_contact_correction",
+    "nonzero_vertices": 48,
+    "max_delta_mm": 6.199579725328596,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.748416*u0)+(0.658532*u1)+(0.000000*u2)+(-0.078794*u3))**2)+(1-((0.996195*l0)+(0.068649*l1)+(-0.000000*l2)+(0.053698*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  },
+  {
+    "name": "DLHN_Contact_R_J_WristTwist",
+    "classification": "required_deformation_corrective",
+    "role": "wrist_sleeve_clearance",
+    "nonzero_vertices": 73,
+    "max_delta_mm": 10.439141790357711,
+    "max_test_activation": 1.0,
+    "driver": "max(0,1-((1-((0.996947*u0)+(0.075418*u1)+(0.000000*u2)+(0.020205*u3))**2)+(1-((0.953717*l0)+(0.300704*l1)+(0.000000*l2)+(-0.000927*l3))**2)+(1-((0.766044*h0)+(-0.000000*h1)+(-0.642788*h2)+(-0.000000*h3))**2))/0.055)**2",
+    "decision": "retain"
+  }
+]

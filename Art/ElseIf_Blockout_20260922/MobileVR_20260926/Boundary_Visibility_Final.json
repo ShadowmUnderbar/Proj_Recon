@@ -1,0 +1,146 @@
+{
+  "Base": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  },
+  "A_Natural": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  },
+  "B_Side90": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  },
+  "C_Forward": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  },
+  "D_AsymmetricAim": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  },
+  "E_Elbow90": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  },
+  "F_OneArmBack": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  },
+  "G_WideOpen": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  },
+  "H_FrontNear": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  },
+  "I_FrontBack": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  },
+  "J_WristTwist": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  },
+  "K_Arms45": {
+    "ElseIf_Mannequin": {
+      "tested_boundary_edges": 0,
+      "uncovered_edges": 0,
+      "samples": []
+    },
+    "ElseIf_Anatomy_Restoration": {
+      "tested_boundary_edges": 390,
+      "uncovered_edges": 0,
+      "samples": []
+    }
+  }
+}

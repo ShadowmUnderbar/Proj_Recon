@@ -1,0 +1,17 @@
+{
+  "components": [
+    "ElseIf_Jacket_Collar_Turnback",
+    "ElseIf_Jacket_Cuff_L",
+    "ElseIf_Jacket_Cuff_L_Turnback",
+    "ElseIf_Jacket_Cuff_R",
+    "ElseIf_Jacket_Cuff_R_Turnback",
+    "ElseIf_Jacket_Front_Facing_L",
+    "ElseIf_Jacket_Front_Facing_R",
+    "ElseIf_Jacket_Hem_Facing",
+    "ElseIf_Jacket_Hem_Turnback",
+    "ElseIf_Jacket_Stand_Collar"
+  ],
+  "original_edge_triangles": 48406,
+  "edge_triangles_after_planar_dissolve": 23766,
+  "jacket_triangles": 66223
+}

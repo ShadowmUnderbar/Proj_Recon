@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{'source_triangles': 31358, 'retained_triangles': 30198, 'deleted_faces': 580, 'boundary_margin_rings': 4}\n"
+  }
+}

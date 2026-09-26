@@ -1,0 +1,34 @@
+{
+  "Mobile__Shorts": {
+    "zero_weight_vertices": 0,
+    "max_sum_error": 3.722379915416241e-08
+  },
+  "Mobile__Socks_L": {
+    "zero_weight_vertices": 0,
+    "max_sum_error": 2.9802322387695312e-08
+  },
+  "Mobile__Socks_R": {
+    "zero_weight_vertices": 0,
+    "max_sum_error": 2.9802322387695312e-08
+  },
+  "Mobile__Shoes_L": {
+    "zero_weight_vertices": 0,
+    "max_sum_error": 0.0
+  },
+  "Mobile__Shoes_R": {
+    "zero_weight_vertices": 0,
+    "max_sum_error": 0.0
+  },
+  "Mobile__ElseIf_Mannequin": {
+    "zero_weight_vertices": 0,
+    "max_sum_error": 1.2852251529693604e-07
+  },
+  "Mobile__ElseIf_Anatomy_Restoration": {
+    "zero_weight_vertices": 0,
+    "max_sum_error": 4.470348358154297e-08
+  },
+  "Mobile__Jacket": {
+    "zero_weight_vertices": 0,
+    "max_sum_error": 9.113550186157227e-05
+  }
+}

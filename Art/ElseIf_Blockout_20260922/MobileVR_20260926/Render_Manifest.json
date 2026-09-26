@@ -1,8 +1,85 @@
 [
   {
+    "file": "MobileVR_Base_HighAngle.png",
+    "frame": 1,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "MobileVR_Natural_HighAngle.png",
+    "frame": 11,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "MobileVR_ArmsWide.png",
+    "frame": 71,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "MobileVR_AsymmetricAim.png",
+    "frame": 41,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "MobileVR_Elbow90.png",
+    "frame": 51,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
     "file": "MobileVR_OneArmBack.png",
     "frame": 61,
     "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "MobileVR_WristTwist.png",
+    "frame": 101,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "MobileVR_Base_BackQuarter.png",
+    "frame": 1,
+    "camera": "ElseIf_Cam_BackQuarter",
     "resolution": [
       880,
       1120,

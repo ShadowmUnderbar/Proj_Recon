@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{'Mobile__Shorts': {'vertices_capped': 0, 'max_discarded_weight': 0}, 'Mobile__Socks_L': {'vertices_capped': 0, 'max_discarded_weight': 0}, 'Mobile__Socks_R': {'vertices_capped': 0, 'max_discarded_weight': 0}, 'Mobile__Shoes_L': {'vertices_capped': 0, 'max_discarded_weight': 0}, 'Mobile__Shoes_R': {'vertices_capped': 0, 'max_discarded_weight': 0}, 'Mobile__ElseIf_Mannequin': {'vertices_capped': 0, 'max_discarded_weight': 0}, 'Mobile__ElseIf_Anatomy_Restoration': {'vertices_capped': 0, 'max_discarded_weight': 0}, 'Mobile__Jacket': {'vertices_capped': 0, 'max_discarded_weight': 0}}\n"
+  }
+}

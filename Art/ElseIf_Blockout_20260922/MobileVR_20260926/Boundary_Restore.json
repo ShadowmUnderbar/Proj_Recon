@@ -1,0 +1,9 @@
+{
+  "boundary_vertices": [
+    776,
+    777,
+    781
+  ],
+  "restored_triangles": 132,
+  "reason": "Two exposed boundary candidates at B_Side90; preserve original body patch"
+}

@@ -1,0 +1,246 @@
+{
+  "LOD0__": {
+    "Base": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "A_Natural": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "B_Side90": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "C_Forward": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "D_AsymmetricAim": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "E_Elbow90": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "F_OneArmBack": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "G_WideOpen": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "H_FrontNear": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "I_FrontBack": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "J_WristTwist": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "K_Arms45": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    }
+  },
+  "Mobile__": {
+    "Base": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "A_Natural": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "B_Side90": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "C_Forward": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "D_AsymmetricAim": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "E_Elbow90": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "F_OneArmBack": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "G_WideOpen": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "H_FrontNear": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "I_FrontBack": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "J_WristTwist": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    },
+    "K_Arms45": {
+      "Game_Cam_Stress_HighAngle": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      },
+      "ElseIf_Cam_BackQuarter": {
+        "tested_hand_vertices": 1528,
+        "visible_samples_0_2mm": 0
+      }
+    }
+  }
+}
