@@ -14,6 +14,7 @@ namespace App.Battle.DataStore
         private readonly IBuffStateDataStore _buffStateDataStore;
         private readonly IEmergencyNodeDataStore _emergencyNodeDataStore;
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
+        private readonly PlayerBaseParameterConfig _baseParameter;
 
         // 軽減バフを適用しても最低これだけはダメージが通る（完全無敵化を防ぐ）
         private const float MinDamage = 1f;
@@ -23,13 +24,15 @@ namespace App.Battle.DataStore
             IPlayerBarrierDataStore playerBarrierDataStore,
             IBuffStateDataStore buffStateDataStore,
             IEmergencyNodeDataStore emergencyNodeDataStore,
-            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore
+            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
+            PlayerBaseParameterConfig baseParameter
         )
         {
             _playerBarrierDataStore = playerBarrierDataStore;
             _buffStateDataStore = buffStateDataStore;
             _emergencyNodeDataStore = emergencyNodeDataStore;
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
+            _baseParameter = baseParameter;
         }
 
         public ReactiveProperty<Vector3> Position { get; } = new();
@@ -45,10 +48,9 @@ namespace App.Battle.DataStore
         /// <summary>被弾したダメージ量を流す（HP減少と同時。被弾条件バフの駆動に使う）</summary>
         public Observable<float> OnDamaged => _onDamaged;
 
-        public float MoveSpeed => BaseSpeed * BasePlayerParameter.MoveSpeed;
+        public float MoveSpeed => _baseParameter.MoveSpeed;
         public UnlockCoreSkillType UnlockCoreSkillType { get; private set; } = UnlockCoreSkillType.First;
 
-        private const float BaseSpeed = 0.05f;
 
         public void Initialize()
         {
@@ -68,15 +70,15 @@ namespace App.Battle.DataStore
             // ここでは RefreshMaxHealth を呼ばず基礎値に戻すだけにする。
             // 他DataStoreのリセット順に依存せず常に同じ結果にするためで、
             // 強化の反映はセット読込（RunStartUseCase）・獲得時にあらためて行われる
-            MaxHealth.Value = BasePlayerParameter.Health;
-            Health.Value = BasePlayerParameter.Health;
+            MaxHealth.Value = _baseParameter.Health;
+            Health.Value = _baseParameter.Health;
 
             UnlockCoreSkillType = UnlockCoreSkillType.First;
         }
 
         public void RefreshMaxHealth()
         {
-            var newMaxHealth = BasePlayerParameter.Health *
+            var newMaxHealth = _baseParameter.Health *
                                _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.Health);
 
             var increased = newMaxHealth - MaxHealth.Value;

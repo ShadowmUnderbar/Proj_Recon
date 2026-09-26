@@ -24,7 +24,7 @@ namespace App.Battle.Views
         {
             var bullet = _playerBulletFactory.Instantiate(null);
 
-            bullet.Spawn(BasePlayerParameter.PlayerId, transform.ToPose(), bulletData, focusTargetId);
+            bullet.Spawn(PlayerConstants.PlayerId, transform.ToPose(), bulletData, focusTargetId);
         }
 
         public void SpawnBulletToward(BulletData bulletData, int focusTargetId, Vector3 targetPosition)
@@ -40,7 +40,7 @@ namespace App.Battle.Views
                 pose.rotation = Quaternion.LookRotation(direction.normalized);
             }
 
-            bullet.Spawn(BasePlayerParameter.PlayerId, pose, bulletData, focusTargetId);
+            bullet.Spawn(PlayerConstants.PlayerId, pose, bulletData, focusTargetId);
         }
     }
 }

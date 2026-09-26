@@ -60,7 +60,7 @@ When parsing CSV or spreadsheet data, always confirm the header/data start row w
 ## やってほしくないこと ❌
 
 ### 絶対にやらないこと
-- **静的クラスの乱用**: グローバルステートは避ける（既存の`BasePlayerParameter`等は要リファクタリング）
+- **静的クラスの乱用**: グローバルステートは避ける（バランス値は`PlayerBaseParameterConfig`のようにScriptableObject化して注入する）
 - **God Classの作成**: 1クラス1責務を守る
 - **レイヤー違反**: 下位レイヤーから上位レイヤーへの参照禁止
   - 例: DataStoreからPresenterへの参照は禁止
@@ -115,8 +115,11 @@ Assets/App/
 - `ISaveDataStore.cs`: インターフェース設計の参考
 
 ### 要リファクタリング（参考にしない）
-- `PlayerDataStore.cs`: God Class、責務分割が必要
-- `BasePlayerParameter.cs`: 静的クラス、ScriptableObject化が必要
+- `UpgradeCardBoardView.cs`: 責務が多い（掴み判定・配置・状態機械）。分割候補
+- `DebugConfig` の直接参照: DI経由に置き換え中。新規コードでは静的参照を増やさない
+
+### 全体像
+- `Docs/Architecture.md`: シーン×レイヤー別の構成・データフロー・残課題。構成を変えたら更新する
 
 
 ## その他

@@ -52,7 +52,7 @@ namespace App.Battle.Views
             var count = Physics.SphereCastNonAlloc(transform.position, Radius,
                 _platformHandRotation.Rotation * Vector3.forward,
                 _raycastHits, GameParamData.RayMaxDistance,
-                LayerConstants.Hitbox);
+                LayerConstants.Enemy);
 
             if (count <= 0)
             {

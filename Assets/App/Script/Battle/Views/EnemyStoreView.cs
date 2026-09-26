@@ -34,6 +34,9 @@ namespace App.Battle.Views
 
         private bool _isPause;
 
+        // 回避の通過判定に使う SphereCast の半径（m）
+        private const float DodgeHitRadius = 0.5f;
+
         [Inject]
         public void Construct(
             IHitBoxStoreView hitBoxStoreView,
@@ -111,8 +114,8 @@ namespace App.Battle.Views
         {
             _rayCastEnemyIds.Clear();
 
-            var count = Physics.SphereCastNonAlloc(playerPosition, 0.5f, direction.normalized, _hits, distance,
-                LayerMasks.EnemyLayer);
+            var count = Physics.SphereCastNonAlloc(playerPosition, DodgeHitRadius, direction.normalized, _hits, distance,
+                LayerConstants.Enemy);
 
             if (count <= 0)
             {
@@ -153,7 +156,7 @@ namespace App.Battle.Views
             results.Clear();
 
             var count = Physics.SphereCastNonAlloc(origin, radius, direction.normalized, hits, distance,
-                LayerMasks.EnemyLayer);
+                LayerConstants.Enemy);
 
             for (var i = 0; i < count; i++)
             {

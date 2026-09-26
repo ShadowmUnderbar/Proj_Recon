@@ -19,6 +19,7 @@ namespace App.Battle.DataStore
         private readonly IDamageNodeDataStore _damageNodeDataStore;
         private readonly IShotConflictDataStore _shotConflictDataStore;
         private readonly IFreezeDataStore _freezeDataStore;
+        private readonly PlayerBaseParameterConfig _baseParameter;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -33,7 +34,8 @@ namespace App.Battle.DataStore
             IAvalancheDataStore avalancheDataStore,
             IDamageNodeDataStore damageNodeDataStore,
             IShotConflictDataStore shotConflictDataStore,
-            IFreezeDataStore freezeDataStore
+            IFreezeDataStore freezeDataStore,
+            PlayerBaseParameterConfig baseParameter
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -45,6 +47,7 @@ namespace App.Battle.DataStore
             _damageNodeDataStore = damageNodeDataStore;
             _shotConflictDataStore = shotConflictDataStore;
             _freezeDataStore = freezeDataStore;
+            _baseParameter = baseParameter;
         }
 
         public void ResetRun()
@@ -74,19 +77,19 @@ namespace App.Battle.DataStore
 
         public void SetCoolDownTime(HandType handType, ShotType shotType, AimFocusType focusType)
         {
-            var coolDown = BasePlayerParameter.BaseFireRate;
+            var coolDown = _baseParameter.BaseFireRate;
 
             coolDown *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.FireRate);
 
             // バフによる連射速度倍率（倍率が大きいほど連射が速い＝クールダウンを短縮するため除算する）
             coolDown /= _buffStateDataStore.CalcMultiply(BuffEffectType.FireRate);
 
-            coolDown *= focusType == AimFocusType.Focus ? BasePlayerParameter.FocusFireRateMagnification : 1f;
+            coolDown *= focusType == AimFocusType.Focus ? _baseParameter.FocusFireRateMagnification : 1f;
 
             coolDown *= shotType switch
             {
-                ShotType.Merge => BasePlayerParameter.MergeFireRateMagnification,
-                ShotType.Waltz => BasePlayerParameter.WaltzFireRateMagnification,
+                ShotType.Merge => _baseParameter.MergeFireRateMagnification,
+                ShotType.Waltz => _baseParameter.WaltzFireRateMagnification,
                 _ => 1f
             };
 
@@ -170,9 +173,9 @@ namespace App.Battle.DataStore
             {
                 ShotType = shotType,
                 FocusType = focusType,
-                Speed = shotType == ShotType.Merge ? BasePlayerParameter.MergeBulletSpeed : 0, //プレイヤーは即着弾
+                Speed = shotType == ShotType.Merge ? _baseParameter.MergeBulletSpeed : 0, //プレイヤーは即着弾
                 Damage = damage,
-                Penetration = GetBulletPenetration(shotType, focusType),
+                Penetration = _baseParameter.BasePenetration,
                 Explosive = GetBulletExplosive(shotType, focusType),
                 ExplosiveDamage = GetBulletExplosiveDamage(shotType, damage)
             };
@@ -189,11 +192,11 @@ namespace App.Battle.DataStore
 
         private float GetBulletDamage(ShotType shotType, AimFocusType focusType)
         {
-            var damage = BasePlayerParameter.BaseDamage;
+            var damage = _baseParameter.BaseDamage;
             damage *= shotType switch
             {
-                ShotType.Merge => BasePlayerParameter.MergeDamageMagnification,
-                ShotType.Waltz => BasePlayerParameter.WaltzDamageMagnification,
+                ShotType.Merge => _baseParameter.MergeDamageMagnification,
+                ShotType.Waltz => _baseParameter.WaltzDamageMagnification,
                 _ => 1f
             };
 
@@ -213,18 +216,12 @@ namespace App.Battle.DataStore
             // バフによる攻撃力倍率（爆風ダメージは弾ダメージから算出するため爆風にも効く）
             damage *= _buffStateDataStore.CalcMultiply(BuffEffectType.AttackPower);
 
-            damage *= focusType == AimFocusType.Focus ? BasePlayerParameter.LongFocusDamageMagnification : 1f;
+            damage *= focusType == AimFocusType.Focus ? _baseParameter.FocusDamageMagnification : 1f;
 
             // コンフリクト系（射撃手段の封印と引き換えのダメージ強化）
             damage *= _shotConflictDataStore.GetDamageMultiplier();
 
             return damage;
-        }
-
-        private int GetBulletPenetration(ShotType shotType, AimFocusType focusType)
-        {
-            var penetration = (float)BasePlayerParameter.BasePenetration;
-            return Mathf.CeilToInt(penetration);
         }
 
         private float GetBulletExplosive(ShotType shotType, AimFocusType focusType)
@@ -233,7 +230,7 @@ namespace App.Battle.DataStore
 
             if (shotType == ShotType.Merge)
             {
-                explosive += BasePlayerParameter.MergeExplosiveScale;
+                explosive += _baseParameter.MergeExplosiveScale;
             }
 
             explosive *= _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.BombRange);
@@ -249,7 +246,7 @@ namespace App.Battle.DataStore
                 return 0f;
             }
 
-            return bulletDamage * BasePlayerParameter.MergeExplosiveDamageRate;
+            return bulletDamage * _baseParameter.MergeExplosiveDamageRate;
         }
     }
 }

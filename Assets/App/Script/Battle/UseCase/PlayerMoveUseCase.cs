@@ -66,7 +66,7 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            // MoveSpeedは既にBaseSpeed * BasePlayerParameter.MoveSpeedを含むため、そのまま使用
+            // MoveSpeedはPlayerBaseParameterConfigの値（1フレームあたりの移動量）なので、そのまま使用
             _playerStateDataStore.Move(_gameInputDataStore.V2LeftAxis,
                 _playerStateDataStore.MoveSpeed);
 

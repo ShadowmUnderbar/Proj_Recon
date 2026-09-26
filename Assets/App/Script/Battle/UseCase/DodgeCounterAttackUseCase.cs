@@ -1,3 +1,4 @@
+using App.Common.Data;
 using System;
 using System.Collections.Generic;
 using App.Battle.Data;
@@ -279,7 +280,7 @@ namespace App.Battle.UseCase
             // 球で判定すると床（フィールド）を拾ってしまうため、壁までの距離は細いレイで測る
             var ray = new Ray(origin + Vector3.up * _config.SightHeight, direction);
 
-            if (!Physics.Raycast(ray, out var hit, maxDistance, LayerMasks.FieldLayer))
+            if (!Physics.Raycast(ray, out var hit, maxDistance, LayerConstants.Default))
             {
                 return maxDistance;
             }

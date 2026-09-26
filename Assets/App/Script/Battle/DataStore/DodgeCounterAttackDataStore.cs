@@ -379,7 +379,7 @@ namespace App.Battle.DataStore
             var start = origin + Vector3.up * _config.SightHeight;
             var end = targetPosition + Vector3.up * _config.SightHeight;
 
-            return Physics.Linecast(start, end, LayerMasks.FieldLayer);
+            return Physics.Linecast(start, end, LayerConstants.Default);
         }
     }
 }

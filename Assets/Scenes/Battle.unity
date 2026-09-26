@@ -179,6 +179,7 @@ MonoBehaviour:
   _pointDropConfig: {fileID: 11400000, guid: e03c7a2d746431b4aa2d7f3c35fdeda6, type: 2}
   _playerDeathConfig: {fileID: 11400000, guid: 7c3ec6338d8e4a2498c5df399b8bdb61, type: 2}
   _upgradeDescriptionStyle: {fileID: 11400000, guid: 02d9350ccbe6a2f4397e58de142f6f80, type: 2}
+  _playerBaseParameterConfig: {fileID: 11400000, guid: 0f2aa746c929905408f65a5b2c2f4427, type: 2}
 --- !u!4 &175168502
 Transform:
   m_ObjectHideFlags: 0

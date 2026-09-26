@@ -100,9 +100,9 @@ Googleスプレッドシート（正本）
 
 > 🗑 **廃止済み**: `ParryingDagger`（パリングダガー）はアップグレードとして廃止し、**回避時跳ね返し攻撃としてデフォルト機能へ移行**した（`DodgeCounterAttackDataStore` / `DodgeCounterAttackUseCase`）。enum・CSV行・アセット・スプレッドシート行のすべてを削除済みで、`UpgradeType` の 32 は欠番。同様に「アップグレードを廃止してデフォルト化」する場合は、enum削除（スプレッドシートのenumシート → `UpgradeType.cs`）・CSV行削除・`Upgrade/*.asset` 削除・`UpgradeDatabase.asset` のguid参照削除・消費側コードの置き換えをセットで行う（保存済みセットの参照は `TryGetUpgradeMasterData` が空振りするだけなので安全）。
 
-> ⚠️ **未接続タイプ問題**: `DodgeDistance` / `DodgeCount` / `DodgeCooldown` / `Health` は enum・CSVには存在するが**どこからも Calc されておらず、効果が出ない**。特に `Health` はCSVに `$Health` 行があってもHP最大値に反映されない（`PlayerStateDataStore.Initialize` が `BasePlayerParameter.Health` を直接使うだけ）。**新タイプ追加＝消費側コードもセットで書く**ことを絶対に忘れない。
+> ⚠️ **未接続タイプ問題**: `DodgeDistance` / `DodgeCount` / `DodgeCooldown` / `Health` は enum・CSVには存在するが**どこからも Calc されておらず、効果が出ない**。特に `Health` はCSVに `$Health` 行があってもHP最大値に反映されない（`PlayerStateDataStore.ResetRun` が `PlayerBaseParameterConfig.Health` を直接使うだけ）。**新タイプ追加＝消費側コードもセットで書く**ことを絶対に忘れない。
 
-いずれも基礎値は静的クラス `BasePlayerParameter`（`Assets/App/Script/Battle/Data/BasePlayerParamater.cs`）。乗算補正として重なる。
+いずれも基礎値は ScriptableObject `PlayerBaseParameterConfig`（`Assets/App/Script/Battle/Data/PlayerBaseParameterConfig.cs`、アセットは `Assets/App/MasterData/Player/PlayerBaseParameterConfig.asset`）。各 DataStore にコンストラクタ注入され、乗算補正として重なる。
 
 ---
 
@@ -122,7 +122,7 @@ Googleスプレッドシート（正本）
 3. **消費側コードを実装**（このパターンの本体）:
    - 効果を効かせたい `Player*ParameterDataStore` に `IUpgradeEffectSimpleCalculatorDataStore` をDIで注入（VContainer。直接 `new` しない）
    - 基礎値に `CalcMultiply(UpgradeType.新規)`（倍率系）か `CalcAdd(...)`（加算系）を掛ける/足す
-   - HP・回避系のように「基礎値を `BasePlayerParameter` から直接代入している箇所」がある場合、そこに補正を差し込む改修が要る（未接続タイプ問題と同じ轍を踏まないこと）
+   - HP・回避系のように「基礎値を `PlayerBaseParameterConfig` から直接代入している箇所」がある場合、そこに補正を差し込む改修が要る（未接続タイプ問題と同じ轍を踏まないこと）
 4. 「ローカライズ表への追記」の3行を追加し、`{valueN}` を使うなら `UpgradeDescriptionFormatter.ValueFormats` に新タイプの変換規則を追加
 5. コンパイル（`uloop-compile` スキル）→ `playtest-run` で検証
 
