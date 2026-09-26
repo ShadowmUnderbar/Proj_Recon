@@ -28,6 +28,12 @@ namespace App.Common.Interface
         ReactiveProperty<bool> DebugOpenUpgradeShop { get; }
         public Vector2 MouseInputPosition { get; }
 
+        /// <summary>マウスの移動量[px]（前フレームからの差分）。マウスが無い環境では常にゼロ</summary>
+        Vector2 MouseDelta { get; }
+
+        /// <summary>マウス右ボタンを押している間true。マウスが無い環境では常にfalse</summary>
+        bool IsMouseRightButtonPressed { get; }
+
         /// <summary>
         /// フォーカス入力の受け付けを切り替える。UI操作でグラブ・トリガーを使う間に
         /// フォーカスが変化しないよう止めるために使う

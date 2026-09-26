@@ -46,6 +46,8 @@ namespace App.Common.DataStore
         public ReactiveProperty<bool> DebugMerge { get; } = new();
         public ReactiveProperty<bool> DebugOpenUpgradeShop { get; } = new();
         public Vector2 MouseInputPosition { get; private set; }
+        public Vector2 MouseDelta { get; private set; }
+        public bool IsMouseRightButtonPressed { get; private set; }
 
         private bool _isFocusInputEnabled = true;
 
@@ -107,6 +109,14 @@ namespace App.Common.DataStore
             if (Mouse.current != null)
             {
                 MouseInputPosition = Mouse.current.position.ReadValue();
+                MouseDelta = Mouse.current.delta.ReadValue();
+                IsMouseRightButtonPressed = Mouse.current.rightButton.isPressed;
+            }
+            else
+            {
+                // マウスを抜いたときに最後の値が残ると、視点が回り続けるなど入力が張り付くため戻す
+                MouseDelta = Vector2.zero;
+                IsMouseRightButtonPressed = false;
             }
 
 #if UNITY_EDITOR
