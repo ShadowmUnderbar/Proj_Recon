@@ -1,0 +1,4263 @@
+{
+  "file": "D:\\UnityProj\\Proj_Recon\\Art\\ElseIf_Blockout_20260922\\LocalRetopo_20260925\\ElseIf_LocalRetopo.blend",
+  "scenes": {
+    "ElseIf_Basis_Construction": {
+      "frame": 1,
+      "camera": "ElseIf_Cam_ThreeQuarter",
+      "resolution": [
+        880,
+        1120,
+        100
+      ],
+      "samples": 48,
+      "collections": [
+        [
+          "ElseIf_Source_VRM_UNTOUCHED",
+          true
+        ],
+        [
+          "ElseIf_Master",
+          false
+        ],
+        [
+          "ElseIf_Review_Stage",
+          false
+        ],
+        [
+          "ElseIf_Revision_Backups",
+          true
+        ],
+        [
+          "ElseIf_Fitting_Support",
+          false
+        ],
+        [
+          "ElseIf_Silhouette_Before_20260923",
+          true
+        ],
+        [
+          "ElseIf_Primary_Construction",
+          false
+        ],
+        [
+          "ElseIf_Approved_Silhouette_20260924",
+          true
+        ],
+        [
+          "ElseIf_Design_Basis",
+          false
+        ]
+      ],
+      "objects": [
+        {
+          "name": "ElseIf_Mannequin",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Armature",
+              "ARMATURE",
+              "ElseIf_Humanoid"
+            ],
+            [
+              "Hide_Source_Clothes_And_Head_NONDESTRUCTIVE",
+              "MASK",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Anatomy_Restoration",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Join_Only_Missing_Anatomy",
+              "REMESH",
+              null
+            ],
+            [
+              "Relax_Restored_Surface",
+              "SMOOTH",
+              null
+            ],
+            [
+              "Restoration_Surface",
+              "SUBSURF",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Shorts",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Cloth_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Sock_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Cloth_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Sock_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Cloth_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Shoe_L_Sole",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_L_Upper",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Cloth_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_R_Sole",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_R_Upper",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Cloth_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_L_AnkleCollar",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Soft_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_L_Tongue",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Soft_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_R_AnkleCollar",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Soft_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_R_Tongue",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Soft_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Cam_Front",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Cam_Side",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Cam_Back",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Cam_ThreeQuarter",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Cam_BackQuarter",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Cam_HighAngle",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "Review_Floor",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "Review_Key",
+          "type": "LIGHT",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "Review_Fill",
+          "type": "LIGHT",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "Review_Rim",
+          "type": "LIGHT",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Jacket_Front_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Secondary_Cloth_Weight_20260924",
+              1.0
+            ],
+            [
+              "Local_Shoulder_Armhole_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Jacket_Front_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Secondary_Cloth_Weight_20260924",
+              1.0
+            ],
+            [
+              "Local_Shoulder_Armhole_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Jacket_Back",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Secondary_Cloth_Weight_20260924",
+              1.0
+            ],
+            [
+              "Local_Shoulder_Armhole_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Jacket_Sleeve_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Secondary_Cloth_Weight_20260924",
+              1.0
+            ],
+            [
+              "Local_Shoulder_Armhole_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Jacket_Sleeve_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Secondary_Cloth_Weight_20260924",
+              1.0
+            ],
+            [
+              "Local_Shoulder_Armhole_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Jacket_Stand_Collar",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Jacket_Hem_Facing",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Jacket_Cuff_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Jacket_Cuff_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Jacket_Closure_Tape",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Jacket_Front_Facing_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Jacket_Front_Facing_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Jacket_Collar_Turnback",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Jacket_Hem_Turnback",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Jacket_Cuff_L_Turnback",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Jacket_Cuff_R_Turnback",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Primary_Construction",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Fabric_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Chest_AO",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Chest_Rules",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Zip_Pull_Red",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Zip_Slider",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Pocket_L_Welt",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Pocket_L_Opening",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Hem_L_Triangle",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Hem_L_Rule",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Pocket_R_Welt",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Pocket_R_Opening",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Hem_R_Triangle",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Hem_R_Rule",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Back_Print_Base",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Back_Reference_Artwork",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Back_Webbing_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Back_Buckle_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Back_BuckleInset_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoulder_Webbing_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Back_Webbing_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Back_Buckle_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Back_BuckleInset_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoulder_Webbing_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Back_Center_Tab",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Back_Center_Symbol",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_InkStrip",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_Icon_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_Icon_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_Box_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_Icon_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_Box_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_Icon_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_Box_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_UpperBar_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_UpperBar_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_UpperBar_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_UpperBar_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_RedTab",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_L_CuffTab",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_InkStrip",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_Icon_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_Icon_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_Box_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_Icon_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_Box_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_Icon_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_Box_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_UpperBar_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_UpperBar_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_UpperBar_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_UpperBar_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_RedTab",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Sleeve_R_CuffTab",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_UpperArm_RearPatch",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_UpperArm_DUM",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Collar_A",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Collar_Fastener_-0.027",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Collar_Fastener_0.027",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Thigh_Band_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Thigh_Fastener_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Thigh_Tag_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_L_Mark_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_L_Rule_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_L_Mark_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_L_Rule_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_L_Mark_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_L_Rule_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_L_WhiteBand_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_L_WhiteBand_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_L_WhiteBand_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_L_AnkleStrap",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_L_BuckleFrame",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_L_BuckleInset",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_L_RedCross",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_L_SideWhite",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_L_HeelWhite",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Thigh_Band_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Thigh_Fastener_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Thigh_Tag_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_R_Mark_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_R_Rule_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_R_Mark_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_R_Rule_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_R_Mark_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Sock_R_Rule_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_R_WhiteBand_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_R_WhiteBand_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_R_WhiteBand_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_R_AnkleStrap",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_R_BuckleFrame",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_R_BuckleInset",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_R_RedCross",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_R_SideWhite",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoe_R_HeelWhite",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoulder_Back_Connector_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "EL_Shoulder_Back_Connector_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_Basis"
+          ],
+          "modifiers": [],
+          "keys": []
+        }
+      ]
+    },
+    "ElseIf_NaturalPose_Validation": {
+      "frame": 1,
+      "camera": "ElseIf_Cam_ThreeQuarter",
+      "resolution": [
+        880,
+        1120,
+        100
+      ],
+      "samples": 48,
+      "collections": [
+        [
+          "ElseIf_NaturalPose_TEMP_SKINNING",
+          false
+        ],
+        [
+          "ElseIf_Design_NaturalPose",
+          false
+        ]
+      ],
+      "objects": [
+        {
+          "name": "ElseIf_Shorts",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Cloth_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Sock_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Cloth_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Sock_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Cloth_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Shoe_L_Sole",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_L_Upper",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Cloth_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_R_Sole",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_R_Upper",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Cloth_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_L_AnkleCollar",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Soft_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_L_Tongue",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Soft_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_R_AnkleCollar",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Soft_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Shoe_R_Tongue",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Master",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "Editable_Subdivision",
+              "SUBSURF",
+              null
+            ],
+            [
+              "Soft_Thickness",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Local_StreetShoe_Form_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "ElseIf_Cam_Front",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Cam_Side",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Cam_Back",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Cam_ThreeQuarter",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Cam_BackQuarter",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "ElseIf_Cam_HighAngle",
+          "type": "CAMERA",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "Review_Floor",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection",
+            "Scene Collection",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "Review_Key",
+          "type": "LIGHT",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "Review_Fill",
+          "type": "LIGHT",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "Review_Rim",
+          "type": "LIGHT",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Review_Stage",
+            "Scene Collection"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Mannequin",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Anatomy_Restoration",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Front_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ],
+            [
+              "TEMP_NaturalPose_Cloth_Clearance",
+              "NODES",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Secondary_Cloth_Weight_20260924",
+              1.0
+            ],
+            [
+              "Local_Shoulder_Armhole_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Front_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ],
+            [
+              "TEMP_NaturalPose_Cloth_Clearance",
+              "NODES",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Secondary_Cloth_Weight_20260924",
+              1.0
+            ],
+            [
+              "Local_Shoulder_Armhole_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Back",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ],
+            [
+              "TEMP_NaturalPose_Cloth_Clearance",
+              "NODES",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Secondary_Cloth_Weight_20260924",
+              1.0
+            ],
+            [
+              "Local_Shoulder_Armhole_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Sleeve_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ],
+            [
+              "TEMP_NaturalPose_Cloth_Clearance",
+              "NODES",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Secondary_Cloth_Weight_20260924",
+              1.0
+            ],
+            [
+              "Local_Shoulder_Armhole_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Sleeve_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ],
+            [
+              "TEMP_NaturalPose_Cloth_Clearance",
+              "NODES",
+              null
+            ]
+          ],
+          "keys": [
+            [
+              "Basis",
+              1.0
+            ],
+            [
+              "Secondary_Cloth_Weight_20260924",
+              1.0
+            ],
+            [
+              "Local_Shoulder_Armhole_20260924",
+              1.0
+            ]
+          ]
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Stand_Collar",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Hem_Facing",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Cuff_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Cuff_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Closure_Tape",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Front_Facing_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Front_Facing_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Collar_Turnback",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Hem_Turnback",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Cuff_L_Turnback",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__ElseIf_Jacket_Cuff_R_Turnback",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_NaturalPose_TEMP_SKINNING",
+            "Scene Collection"
+          ],
+          "modifiers": [
+            [
+              "TEMP_Clothing_Deformation_Test",
+              "ARMATURE",
+              "ElseIf_NaturalPose_Humanoid"
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Chest_AO",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Chest_Rules",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Zip_Pull_Red",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Zip_Slider",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Pocket_L_Welt",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Pocket_L_Opening",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Hem_L_Triangle",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Hem_L_Rule",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Pocket_R_Welt",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Pocket_R_Opening",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Hem_R_Triangle",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Hem_R_Rule",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Back_Print_Base",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Back_Reference_Artwork",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Back_Webbing_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Back_Buckle_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Back_BuckleInset_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoulder_Webbing_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Back_Webbing_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Back_Buckle_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Back_BuckleInset_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoulder_Webbing_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Back_Center_Tab",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Back_Center_Symbol",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_InkStrip",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_Icon_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_Icon_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_Box_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_Icon_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_Box_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_Icon_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_Box_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_UpperBar_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_UpperBar_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_UpperBar_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_UpperBar_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_RedTab",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_L_CuffTab",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_InkStrip",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_Icon_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_Icon_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_Box_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_Icon_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_Box_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_Icon_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_Box_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_UpperBar_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_UpperBar_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_UpperBar_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_UpperBar_3",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_RedTab",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sleeve_R_CuffTab",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_UpperArm_RearPatch",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_UpperArm_DUM",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Collar_A",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Collar_Fastener_-0.027",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Collar_Fastener_0.027",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Thigh_Band_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Thigh_Fastener_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Thigh_Tag_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_L_Mark_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_L_Rule_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_L_Mark_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_L_Rule_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_L_Mark_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_L_Rule_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_L_WhiteBand_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_L_WhiteBand_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_L_WhiteBand_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_L_AnkleStrap",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_L_BuckleFrame",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_L_BuckleInset",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_L_RedCross",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_L_SideWhite",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_L_HeelWhite",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Thigh_Band_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Thigh_Fastener_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Thigh_Tag_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_R_Mark_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_R_Rule_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_R_Mark_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_R_Rule_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_R_Mark_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Sock_R_Rule_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_R_WhiteBand_0",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_R_WhiteBand_1",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_R_WhiteBand_2",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_R_AnkleStrap",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_R_BuckleFrame",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [
+            [
+              "Thin_Fabric_Layer",
+              "SOLIDIFY",
+              null
+            ]
+          ],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_R_BuckleInset",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_R_RedCross",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_R_SideWhite",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoe_R_HeelWhite",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoulder_Back_Connector_L",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        },
+        {
+          "name": "NaturalPose__EL_Shoulder_Back_Connector_R",
+          "type": "MESH",
+          "hidden": false,
+          "visible": true,
+          "collections": [
+            "ElseIf_Design_NaturalPose"
+          ],
+          "modifiers": [],
+          "keys": []
+        }
+      ]
+    }
+  }
+}

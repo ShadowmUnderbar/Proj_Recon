@@ -1,0 +1,14 @@
+{
+  "LOD0__ElseIf_Mannequin": {
+    "before_triangles": 7520,
+    "deleted_triangles": 2373,
+    "after_triangles": 5147,
+    "deleted_faces": 2373
+  },
+  "LOD0__ElseIf_Anatomy_Restoration": {
+    "before_triangles": 36024,
+    "deleted_triangles": 4666,
+    "after_triangles": 31358,
+    "deleted_faces": 2333
+  }
+}

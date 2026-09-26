@@ -1,0 +1,194 @@
+[
+  {
+    "pose": "Base_HighAngle",
+    "reference": "Current",
+    "image_size": [
+      173,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.0457309730250484,
+    "rmse_rgb_255": 6.487216707629965,
+    "percent_pixels_over_10": 6.23419436416185,
+    "max_channel_difference": 148
+  },
+  {
+    "pose": "Base_HighAngle",
+    "reference": "Optimized",
+    "image_size": [
+      173,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.037188403179191,
+    "rmse_rgb_255": 6.495272221820201,
+    "percent_pixels_over_10": 6.211614884393064,
+    "max_channel_difference": 148
+  },
+  {
+    "pose": "Natural_HighAngle",
+    "reference": "Current",
+    "image_size": [
+      157,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.230087247876858,
+    "rmse_rgb_255": 6.930686101159289,
+    "percent_pixels_over_10": 7.026273885350318,
+    "max_channel_difference": 159
+  },
+  {
+    "pose": "Natural_HighAngle",
+    "reference": "Optimized",
+    "image_size": [
+      157,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.222963110403397,
+    "rmse_rgb_255": 6.937748054133466,
+    "percent_pixels_over_10": 6.986464968152866,
+    "max_channel_difference": 159
+  },
+  {
+    "pose": "ArmsWide",
+    "reference": "Current",
+    "image_size": [
+      225,
+      256
+    ],
+    "mean_absolute_rgb_255": 1.120451388888889,
+    "rmse_rgb_255": 4.9320263846880685,
+    "percent_pixels_over_10": 3.0850694444444446,
+    "max_channel_difference": 168
+  },
+  {
+    "pose": "ArmsWide",
+    "reference": "Optimized",
+    "image_size": [
+      225,
+      256
+    ],
+    "mean_absolute_rgb_255": 1.1145601851851852,
+    "rmse_rgb_255": 4.9305770735054715,
+    "percent_pixels_over_10": 3.0590277777777777,
+    "max_channel_difference": 168
+  },
+  {
+    "pose": "AsymmetricAim",
+    "reference": "Current",
+    "image_size": [
+      112,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.3529575892857144,
+    "rmse_rgb_255": 7.487095172496728,
+    "percent_pixels_over_10": 6.5185546875,
+    "max_channel_difference": 150
+  },
+  {
+    "pose": "AsymmetricAim",
+    "reference": "Optimized",
+    "image_size": [
+      112,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.3393322172619047,
+    "rmse_rgb_255": 7.474550696203689,
+    "percent_pixels_over_10": 6.501116071428571,
+    "max_channel_difference": 150
+  },
+  {
+    "pose": "Elbow90",
+    "reference": "Current",
+    "image_size": [
+      158,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.4203586497890295,
+    "rmse_rgb_255": 7.824052639771515,
+    "percent_pixels_over_10": 7.088113132911392,
+    "max_channel_difference": 139
+  },
+  {
+    "pose": "Elbow90",
+    "reference": "Optimized",
+    "image_size": [
+      158,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.400753230485232,
+    "rmse_rgb_255": 7.78305368374055,
+    "percent_pixels_over_10": 7.053500791139241,
+    "max_channel_difference": 139
+  },
+  {
+    "pose": "OneArmBack",
+    "reference": "Current",
+    "image_size": [
+      235,
+      256
+    ],
+    "mean_absolute_rgb_255": 1.7245511968085105,
+    "rmse_rgb_255": 6.575679942864685,
+    "percent_pixels_over_10": 4.660904255319149,
+    "max_channel_difference": 197
+  },
+  {
+    "pose": "OneArmBack",
+    "reference": "Optimized",
+    "image_size": [
+      235,
+      256
+    ],
+    "mean_absolute_rgb_255": 1.7193262411347519,
+    "rmse_rgb_255": 6.582907731552043,
+    "percent_pixels_over_10": 4.652593085106383,
+    "max_channel_difference": 197
+  },
+  {
+    "pose": "WristTwist",
+    "reference": "Current",
+    "image_size": [
+      164,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.345988948170732,
+    "rmse_rgb_255": 7.906402136297753,
+    "percent_pixels_over_10": 7.564786585365853,
+    "max_channel_difference": 159
+  },
+  {
+    "pose": "WristTwist",
+    "reference": "Optimized",
+    "image_size": [
+      164,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.3173748729674797,
+    "rmse_rgb_255": 7.8131889940086285,
+    "percent_pixels_over_10": 7.479039634146342,
+    "max_channel_difference": 161
+  },
+  {
+    "pose": "Base_BackQuarter",
+    "reference": "Current",
+    "image_size": [
+      120,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.0900499131944446,
+    "rmse_rgb_255": 7.295345054334685,
+    "percent_pixels_over_10": 5.013020833333333,
+    "max_channel_difference": 129
+  },
+  {
+    "pose": "Base_BackQuarter",
+    "reference": "Optimized",
+    "image_size": [
+      120,
+      256
+    ],
+    "mean_absolute_rgb_255": 2.0702799479166667,
+    "rmse_rgb_255": 7.271674229072009,
+    "percent_pixels_over_10": 4.934895833333333,
+    "max_channel_difference": 129
+  }
+]

@@ -1,0 +1,3583 @@
+{
+  "ElseIf_Game_Backup": [
+    {
+      "name": "Backup__ElseIf_Mannequin",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Anatomy_Restoration",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Shorts",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Sock_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Sock_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Shoe_L_Sole",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Shoe_L_Upper",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Shoe_R_Sole",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Shoe_R_Upper",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Shoe_L_AnkleCollar",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Shoe_L_Tongue",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Shoe_R_AnkleCollar",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Shoe_R_Tongue",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Front_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_A_Natural",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_B_Side90",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_C_Forward",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_D_AsymmetricAim",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_G_WideOpen",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Front_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_A_Natural",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_B_Side90",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_C_Forward",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_G_WideOpen",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Back",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_A_Natural",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_A_Natural",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_B_Side90",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_B_Side90",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_G_WideOpen",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_G_WideOpen",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Sleeve_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_B_Side90",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_D_AsymmetricAim",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_F_OneArmBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_G_WideOpen",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_J_WristTwist",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_B_Side90.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_G_WideOpen.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Sleeve_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_B_Side90",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_D_AsymmetricAim",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_G_WideOpen",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_J_WristTwist",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_B_Side90.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_G_WideOpen.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Stand_Collar",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Hem_Facing",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Cuff_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Cuff_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Closure_Tape",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Front_Facing_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Front_Facing_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Collar_Turnback",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Hem_Turnback",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Cuff_L_Turnback",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__ElseIf_Jacket_Cuff_R_Turnback",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Chest_AO",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_C_Forward",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Chest_Rules",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_C_Forward",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Zip_Pull_Red",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Zip_Slider",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Pocket_L_Welt",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Pocket_L_Opening",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Hem_L_Triangle",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Hem_L_Rule",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Pocket_R_Welt",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Pocket_R_Opening",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Hem_R_Triangle",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Hem_R_Rule",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Back_Print_Base",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_D_AsymmetricAim",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_F_OneArmBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Back_Reference_Artwork",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Back_Webbing_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_F_OneArmBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Back_Buckle_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_F_OneArmBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Back_BuckleInset_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_F_OneArmBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Shoulder_Webbing_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_B_Side90",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_D_AsymmetricAim",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_G_WideOpen",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_B_Side90.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_G_WideOpen.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Back_Webbing_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_D_AsymmetricAim",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Back_Buckle_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_D_AsymmetricAim",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Back_BuckleInset_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_D_AsymmetricAim",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Shoulder_Webbing_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_B_Side90",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_G_WideOpen",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_B_Side90.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_G_WideOpen.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Back_Center_Tab",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Back_Center_Symbol",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_InkStrip",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_Icon_0",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_Icon_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_Box_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_Icon_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_Box_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_Icon_3",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_Box_3",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_UpperBar_0",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_UpperBar_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_UpperBar_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_UpperBar_3",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_RedTab",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_L_CuffTab",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_InkStrip",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_Icon_0",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_Icon_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_Box_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_Icon_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_Box_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_Icon_3",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_Box_3",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_UpperBar_0",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_UpperBar_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_UpperBar_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_UpperBar_3",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_RedTab",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Sleeve_R_CuffTab",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_UpperArm_RearPatch",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_UpperArm_DUM",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Collar_A",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Collar_Fastener_-0.027",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Collar_Fastener_0.027",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Thigh_Band_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Thigh_Fastener_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Thigh_Tag_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_L_Mark_0",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_L_Rule_0",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_L_Mark_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_L_Rule_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_L_Mark_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_L_Rule_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_L_WhiteBand_0",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_L_WhiteBand_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_L_WhiteBand_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_L_AnkleStrap",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_L_BuckleFrame",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_L_BuckleInset",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_L_RedCross",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_L_SideWhite",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_L_HeelWhite",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Thigh_Band_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Thigh_Fastener_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Thigh_Tag_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_R_Mark_0",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_R_Rule_0",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_R_Mark_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_R_Rule_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_R_Mark_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Sock_R_Rule_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_R_WhiteBand_0",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_R_WhiteBand_1",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_R_WhiteBand_2",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_R_AnkleStrap",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_R_BuckleFrame",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_R_BuckleInset",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_R_RedCross",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_R_SideWhite",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoe_R_HeelWhite",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "Backup__EL_Shoulder_Back_Connector_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    },
+    {
+      "name": "Backup__EL_Shoulder_Back_Connector_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    }
+  ],
+  "ElseIf_Game_Optimized": [
+    {
+      "name": "LOD0__ElseIf_Mannequin",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "LOD0__ElseIf_Anatomy_Restoration",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "LOD0__Shorts",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "LOD0__Socks_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "LOD0__Socks_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "LOD0__Shoes_L",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "LOD0__Shoes_R",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": []
+    },
+    {
+      "name": "LOD0__Jacket",
+      "mods": [
+        {
+          "use_deform_preserve_volume": false,
+          "use_vertex_groups": true,
+          "use_bone_envelopes": false,
+          "vertex_group": "",
+          "invert_vertex_group": false,
+          "use_multi_modifier": false
+        }
+      ],
+      "keys": [
+        {
+          "name": "Basis",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_B_Side90",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_D_AsymmetricAim",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_F_OneArmBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_G_WideOpen",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_J_WristTwist",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wide_ClothEase_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_B_Side90.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_G_WideOpen.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_L",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_D_AsymmetricAim",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_I_FrontBack",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Underarm_Drape_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_C_Forward",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_B_Side90",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_G_WideOpen",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_B_Side90.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_G_WideOpen.001",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_ElbowVolume_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Wrist_Clearance_R",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_L_A_Natural",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_A_Natural",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_C_Forward",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        },
+        {
+          "name": "DLHN_Contact_R_J_WristTwist",
+          "vertex_group": "",
+          "mute": false,
+          "interpolation": "KEY_LINEAR"
+        }
+      ]
+    }
+  ]
+}

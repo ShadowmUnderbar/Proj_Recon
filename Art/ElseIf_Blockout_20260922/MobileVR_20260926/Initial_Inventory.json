@@ -1,0 +1,2986 @@
+{
+  "file": "D:\\UnityProj\\Proj_Recon\\Art\\Latest\\ElseIf_Game_LOD0_Candidate.blend",
+  "scene": "ElseIf_LOD0_Review",
+  "meshes": [
+    {
+      "name": "LOD0__Jacket",
+      "vertices": 84616,
+      "triangles": 164117,
+      "modifiers": [
+        [
+          "DLHN_Linear_Skinning",
+          "ARMATURE"
+        ]
+      ],
+      "materials": [
+        "EL_Design_GreyWhite_Print",
+        "EL_Design_Ink",
+        "EL_Design_Graphite",
+        "EL_Design_Red",
+        "EL_Design_Fastener",
+        "EL_Design_Ivory",
+        "EL_Design_Reference_BackPrint"
+      ],
+      "percent": 60.198145458280145
+    },
+    {
+      "name": "LOD0__ElseIf_Anatomy_Restoration",
+      "vertices": 16277,
+      "triangles": 31358,
+      "modifiers": [
+        [
+          "DLHN_Linear_Skinning",
+          "ARMATURE"
+        ]
+      ],
+      "materials": [
+        "Mannequin_Clay"
+      ],
+      "percent": 11.502120105051572
+    },
+    {
+      "name": "LOD0__Socks_L",
+      "vertices": 9484,
+      "triangles": 18770,
+      "modifiers": [
+        [
+          "DLHN_Linear_Skinning",
+          "ARMATURE"
+        ]
+      ],
+      "materials": [
+        "EL_Design_Sock",
+        "EL_Design_Ivory"
+      ],
+      "percent": 6.88483941488035
+    },
+    {
+      "name": "LOD0__Socks_R",
+      "vertices": 9474,
+      "triangles": 18748,
+      "modifiers": [
+        [
+          "DLHN_Linear_Skinning",
+          "ARMATURE"
+        ]
+      ],
+      "materials": [
+        "EL_Design_Sock",
+        "EL_Design_Ivory"
+      ],
+      "percent": 6.876769810877827
+    },
+    {
+      "name": "LOD0__Shorts",
+      "vertices": 6606,
+      "triangles": 13128,
+      "modifiers": [
+        [
+          "DLHN_Linear_Skinning",
+          "ARMATURE"
+        ]
+      ],
+      "materials": [
+        "EL_Design_Ink",
+        "EL_Design_Graphite",
+        "EL_Design_Fastener",
+        "EL_Design_Red"
+      ],
+      "percent": 4.815352788414983
+    },
+    {
+      "name": "LOD0__Shoes_L",
+      "vertices": 5414,
+      "triangles": 10680,
+      "modifiers": [
+        [
+          "DLHN_Linear_Skinning",
+          "ARMATURE"
+        ]
+      ],
+      "materials": [
+        "EL_Design_Ink",
+        "EL_Design_Graphite",
+        "EL_Design_Sole",
+        "EL_Design_Ivory",
+        "EL_Design_Fastener",
+        "EL_Design_Red"
+      ],
+      "percent": 3.9174259430432676
+    },
+    {
+      "name": "LOD0__Shoes_R",
+      "vertices": 5414,
+      "triangles": 10680,
+      "modifiers": [
+        [
+          "DLHN_Linear_Skinning",
+          "ARMATURE"
+        ]
+      ],
+      "materials": [
+        "EL_Design_Ink",
+        "EL_Design_Graphite",
+        "EL_Design_Sole",
+        "EL_Design_Ivory",
+        "EL_Design_Fastener",
+        "EL_Design_Red"
+      ],
+      "percent": 3.9174259430432676
+    },
+    {
+      "name": "LOD0__ElseIf_Mannequin",
+      "vertices": 3318,
+      "triangles": 5147,
+      "modifiers": [
+        [
+          "DLHN_Linear_Skinning",
+          "ARMATURE"
+        ]
+      ],
+      "materials": [
+        "Mannequin_Clay"
+      ],
+      "percent": 1.887920536408586
+    }
+  ],
+  "keys": [
+    {
+      "name": "Basis",
+      "value": 1.0,
+      "changed_vertices": 0,
+      "drivers": []
+    },
+    {
+      "name": "DLHN_ElbowVolume_L",
+      "value": 0.0,
+      "changed_vertices": 10276,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_ElbowVolume_L\"].value",
+          "expression": "min(1.35,2*(1-qw*qw))",
+          "variables": [
+            {
+              "name": "qw",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Wrist_Clearance_L",
+      "value": 0.0,
+      "changed_vertices": 11633,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Wrist_Clearance_L\"].value",
+          "expression": "min(1.25,(1-qw*qw)/0.4131759)",
+          "variables": [
+            {
+              "name": "qw",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_L_B_Side90",
+      "value": 0.0,
+      "changed_vertices": 313,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_L_B_Side90\"].value",
+          "expression": "max(0,1-((1-((0.843391*u0)+(0.000000*u1)+(0.000000*u2)+(0.537300*u3))**2)+(1-((1.000000*l0)+(-0.000000*l1)+(0.000000*l2)+(0.000000*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_L_D_AsymmetricAim",
+      "value": 0.0,
+      "changed_vertices": 307,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_L_D_AsymmetricAim\"].value",
+          "expression": "max(0,1-((1-((0.772661*u0)+(0.370620*u1)+(-0.000000*u2)+(0.515399*u3))**2)+(1-((0.965926*l0)+(0.228994*l1)+(0.000000*l2)+(-0.120620*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_L_F_OneArmBack",
+      "value": 0.0,
+      "changed_vertices": 148,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_L_F_OneArmBack\"].value",
+          "expression": "max(0,1-((1-((0.867732*u0)+(-0.494065*u1)+(0.000000*u2)+(0.054228*u3))**2)+(1-((0.984808*l0)+(0.172704*l1)+(-0.000000*l2)+(0.018082*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_L_G_WideOpen",
+      "value": 0.0,
+      "changed_vertices": 494,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_L_G_WideOpen\"].value",
+          "expression": "max(0,1-((1-((0.773709*u0)+(-0.103393*u1)+(0.000000*u2)+(0.625047*u3))**2)+(1-((0.999048*l0)+(0.043244*l1)+(-0.000000*l2)+(0.005711*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_L_I_FrontBack",
+      "value": 0.0,
+      "changed_vertices": 578,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_L_I_FrontBack\"].value",
+          "expression": "max(0,1-((1-((0.709216*u0)+(0.700950*u1)+(-0.000000*u2)+(0.075377*u3))**2)+(1-((0.991445*l0)+(-0.111055*l1)+(0.012978*l2)+(-0.067346*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_L_J_WristTwist",
+      "value": 0.0,
+      "changed_vertices": 165,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_L_J_WristTwist\"].value",
+          "expression": "max(0,1-((1-((0.996947*u0)+(0.075418*u1)+(-0.000000*u2)+(-0.020205*u3))**2)+(1-((0.953717*l0)+(0.300704*l1)+(-0.000000*l2)+(0.000927*l3))**2)+(1-((0.766044*h0)+(0.000000*h1)+(0.642788*h2)+(0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Wide_ClothEase_L",
+      "value": 0.0,
+      "changed_vertices": 9421,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Wide_ClothEase_L\"].value",
+          "expression": "min(1,max(0,(max((0.843391*q0+0.000000*q1+0.000000*q2+0.537300*q3)**2,(0.773709*q0+-0.103393*q1+0.000000*q2+0.625047*q3)**2)-.86)/.10))",
+          "variables": [
+            {
+              "name": "q0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "q1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "q2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "q3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Wide_ClothEase_R",
+      "value": 0.0,
+      "changed_vertices": 9122,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Wide_ClothEase_R\"].value",
+          "expression": "min(1,max(0,(max((0.843391*q0+0.000000*q1+-0.000000*q2+-0.537300*q3)**2,(0.773709*q0+-0.103393*q1+-0.000000*q2+-0.625047*q3)**2)-.86)/.10))",
+          "variables": [
+            {
+              "name": "q0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "q1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "q2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "q3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_L_B_Side90.001",
+      "value": 0.0,
+      "changed_vertices": 372,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_L_B_Side90.001\"].value",
+          "expression": "max(0,1-((1-((0.843391*u0)+(0.000000*u1)+(0.000000*u2)+(0.537300*u3))**2)+(1-((1.000000*l0)+(-0.000000*l1)+(0.000000*l2)+(0.000000*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_L_G_WideOpen.001",
+      "value": 0.0,
+      "changed_vertices": 346,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_L_G_WideOpen.001\"].value",
+          "expression": "max(0,1-((1-((0.773709*u0)+(-0.103393*u1)+(0.000000*u2)+(0.625047*u3))**2)+(1-((0.999048*l0)+(0.043244*l1)+(-0.000000*l2)+(0.005711*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Underarm_Drape_L",
+      "value": 0.0,
+      "changed_vertices": 6567,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Underarm_Drape_L\"].value",
+          "expression": "min(1,max(0,(max((0.843391*q0+0.000000*q1+0.000000*q2+0.537300*q3)**2,(0.773709*q0+-0.103393*q1+0.000000*q2+0.625047*q3)**2)-.90)/.07))",
+          "variables": [
+            {
+              "name": "q0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "q1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "q2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "q3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_R_D_AsymmetricAim",
+      "value": 0.0,
+      "changed_vertices": 154,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_R_D_AsymmetricAim\"].value",
+          "expression": "max(0,1-((1-((0.844685*u0)+(-0.509729*u1)+(-0.000000*u2)+(-0.163354*u3))**2)+(1-((0.923880*l0)+(0.361571*l1)+(0.000000*l2)+(-0.125352*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_R_I_FrontBack",
+      "value": 0.0,
+      "changed_vertices": 833,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_R_I_FrontBack\"].value",
+          "expression": "max(0,1-((1-((0.734187*u0)+(-0.677109*u1)+(-0.000000*u2)+(-0.049921*u3))**2)+(1-((0.991445*l0)+(0.113664*l1)+(0.012978*l2)+(0.062843*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Underarm_Drape_R",
+      "value": 0.0,
+      "changed_vertices": 6547,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Underarm_Drape_R\"].value",
+          "expression": "min(1,max(0,(max((0.843391*q0+0.000000*q1+-0.000000*q2+-0.537300*q3)**2,(0.773709*q0+-0.103393*q1+-0.000000*q2+-0.625047*q3)**2)-.90)/.07))",
+          "variables": [
+            {
+              "name": "q0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "q1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "q2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "q3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_L_C_Forward",
+      "value": 0.0,
+      "changed_vertices": 316,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_L_C_Forward\"].value",
+          "expression": "max(0,1-((1-((0.748416*u0)+(0.658532*u1)+(-0.000000*u2)+(0.078794*u3))**2)+(1-((0.996195*l0)+(0.068649*l1)+(0.000000*l2)+(-0.053698*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_R_B_Side90",
+      "value": 0.0,
+      "changed_vertices": 313,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_R_B_Side90\"].value",
+          "expression": "max(0,1-((1-((0.843391*u0)+(0.000000*u1)+(-0.000000*u2)+(-0.537300*u3))**2)+(1-((1.000000*l0)+(0.000000*l1)+(0.000000*l2)+(0.000000*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_R_G_WideOpen",
+      "value": 0.0,
+      "changed_vertices": 490,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_R_G_WideOpen\"].value",
+          "expression": "max(0,1-((1-((0.773709*u0)+(-0.103393*u1)+(-0.000000*u2)+(-0.625047*u3))**2)+(1-((0.999048*l0)+(0.043244*l1)+(0.000000*l2)+(-0.005711*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_R_B_Side90.001",
+      "value": 0.0,
+      "changed_vertices": 361,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_R_B_Side90.001\"].value",
+          "expression": "max(0,1-((1-((0.843391*u0)+(0.000000*u1)+(-0.000000*u2)+(-0.537300*u3))**2)+(1-((1.000000*l0)+(0.000000*l1)+(0.000000*l2)+(0.000000*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_R_G_WideOpen.001",
+      "value": 0.0,
+      "changed_vertices": 320,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_R_G_WideOpen.001\"].value",
+          "expression": "max(0,1-((1-((0.773709*u0)+(-0.103393*u1)+(-0.000000*u2)+(-0.625047*u3))**2)+(1-((0.999048*l0)+(0.043244*l1)+(0.000000*l2)+(-0.005711*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_ElbowVolume_R",
+      "value": 0.0,
+      "changed_vertices": 10057,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_ElbowVolume_R\"].value",
+          "expression": "min(1.35,2*(1-qw*qw))",
+          "variables": [
+            {
+              "name": "qw",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Wrist_Clearance_R",
+      "value": 0.0,
+      "changed_vertices": 11529,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Wrist_Clearance_R\"].value",
+          "expression": "min(1.25,(1-qw*qw)/0.4131759)",
+          "variables": [
+            {
+              "name": "qw",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_L_A_Natural",
+      "value": 0.0,
+      "changed_vertices": 188,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_L_A_Natural\"].value",
+          "expression": "max(0,1-((1-((0.999274*u0)+(0.017517*u1)+(-0.000000*u2)+(-0.033839*u3))**2)+(1-((0.997564*l0)+(0.069756*l1)+(-0.000000*l2)+(0.000083*l3))**2)+(1-((1.000000*h0)+(0.000000*h1)+(0.000000*h2)+(0.000000*h3))**2))/0.0041065121419853415)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_L_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_R_A_Natural",
+      "value": 0.0,
+      "changed_vertices": 291,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_R_A_Natural\"].value",
+          "expression": "max(0,1-((1-((0.999274*u0)+(0.017517*u1)+(0.000000*u2)+(0.033838*u3))**2)+(1-((0.997564*l0)+(0.069756*l1)+(0.000000*l2)+(-0.000083*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.0041065121419853415)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_R_C_Forward",
+      "value": 0.0,
+      "changed_vertices": 222,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_R_C_Forward\"].value",
+          "expression": "max(0,1-((1-((0.748416*u0)+(0.658532*u1)+(0.000000*u2)+(-0.078794*u3))**2)+(1-((0.996195*l0)+(0.068649*l1)+(-0.000000*l2)+(0.053698*l3))**2)+(1-((1.000000*h0)+(-0.000000*h1)+(0.000000*h2)+(-0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DLHN_Contact_R_J_WristTwist",
+      "value": 0.0,
+      "changed_vertices": 151,
+      "drivers": [
+        {
+          "path": "key_blocks[\"DLHN_Contact_R_J_WristTwist\"].value",
+          "expression": "max(0,1-((1-((0.996947*u0)+(0.075418*u1)+(0.000000*u2)+(0.020205*u3))**2)+(1-((0.953717*l0)+(0.300704*l1)+(0.000000*l2)+(-0.000927*l3))**2)+(1-((0.766044*h0)+(-0.000000*h1)+(-0.642788*h2)+(-0.000000*h3))**2))/0.055)**2",
+          "variables": [
+            {
+              "name": "u0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "u1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "u2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "u3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_UpperArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "l0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "l1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "l2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "l3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_LowerArm\"].rotation_quaternion[3]"
+                }
+              ]
+            },
+            {
+              "name": "h0",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[0]"
+                }
+              ]
+            },
+            {
+              "name": "h1",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[1]"
+                }
+              ]
+            },
+            {
+              "name": "h2",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[2]"
+                }
+              ]
+            },
+            {
+              "name": "h3",
+              "targets": [
+                {
+                  "id": "ElseIf_LOD0_Humanoid",
+                  "bone": "",
+                  "path": "pose.bones[\"J_Bip_R_Hand\"].rotation_quaternion[3]"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+[
+  {
+    "file": "Front.png",
+    "scene": "ElseIf_Master_Quality_Review",
+    "camera": "Quality__ElseIf_Cam_Front",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Side.png",
+    "scene": "ElseIf_Master_Quality_Review",
+    "camera": "Quality__ElseIf_Cam_Side",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Back.png",
+    "scene": "ElseIf_Master_Quality_Review",
+    "camera": "Quality__ElseIf_Cam_Back",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "ThreeQuarter.png",
+    "scene": "ElseIf_Master_Quality_Review",
+    "camera": "Quality__ElseIf_Cam_ThreeQuarter",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "BackQuarter.png",
+    "scene": "ElseIf_Master_Quality_Review",
+    "camera": "Quality__ElseIf_Cam_BackQuarter",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "HighAngle.png",
+    "scene": "ElseIf_Master_Quality_Review",
+    "camera": "Quality__ElseIf_Cam_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "NaturalPose_Front.png",
+    "scene": "ElseIf_Master_Quality_NaturalPose",
+    "camera": "Quality__ElseIf_Cam_Front",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "NaturalPose_ThreeQuarter.png",
+    "scene": "ElseIf_Master_Quality_NaturalPose",
+    "camera": "Quality__ElseIf_Cam_ThreeQuarter",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "NaturalPose_HighAngle.png",
+    "scene": "ElseIf_Master_Quality_NaturalPose",
+    "camera": "Quality__ElseIf_Cam_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  }
+]

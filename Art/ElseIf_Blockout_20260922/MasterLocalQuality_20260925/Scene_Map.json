@@ -1,0 +1,10 @@
+{
+  "ElseIf_Master_Quality_Review": {
+    "source": "ElseIf_Basis_Construction",
+    "collection": "ElseIf_Master_Quality"
+  },
+  "ElseIf_Master_Quality_NaturalPose": {
+    "source": "ElseIf_NaturalPose_Validation",
+    "collection": "ElseIf_Master_Quality_NaturalPose"
+  }
+}

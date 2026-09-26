@@ -1,0 +1,10 @@
+{
+  "vertices_percent": 5.081988240138791,
+  "triangles_percent": 5.584030586801125,
+  "mesh_objects_percent": 93.5483870967742,
+  "material_slots_percent": 77.34375,
+  "body_before_triangles": 43544,
+  "body_after_triangles": 36505,
+  "body_removed_triangles": 7039,
+  "body_reduction_percent": 16.165258129707883
+}

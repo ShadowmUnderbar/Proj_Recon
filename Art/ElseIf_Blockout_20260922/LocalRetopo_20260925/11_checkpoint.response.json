@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: コピーを「ElseIf_LocalRetopo_Unfinished_Checkpoint.blend」で保存しました\n{\"checkpoint\": \"D:/UnityProj/Proj_Recon/Art/ElseIf_Blockout_20260922/LocalRetopo_20260925/ElseIf_LocalRetopo_Unfinished_Checkpoint.blend\", \"active_file\": \"D:\\\\UnityProj\\\\Proj_Recon\\\\Art\\\\ElseIf_Blockout_20260922\\\\LocalRetopo_20260925\\\\ElseIf_LocalRetopo.blend\", \"status\": \"unfinished; awaiting clarification; not promoted to Latest\", \"bodies\": {\"Topo__ElseIf_Anatomy_Restoration\": 36024, \"Topo__ElseIf_Mannequin\": 7520}}\n"
+  }
+}

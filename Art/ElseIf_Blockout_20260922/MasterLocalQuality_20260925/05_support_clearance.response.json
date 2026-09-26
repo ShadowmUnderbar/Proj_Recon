@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{'Quality__ElseIf_Jacket_Back': 0, 'Quality__ElseIf_Jacket_Front_L': 1, 'Quality__ElseIf_Jacket_Front_R': 2, 'Quality__ElseIf_Jacket_Sleeve_L': 174, 'Quality__ElseIf_Jacket_Sleeve_R': 173, 'Quality__NaturalPose__ElseIf_Jacket_Back': 6, 'Quality__NaturalPose__ElseIf_Jacket_Front_L': 8, 'Quality__NaturalPose__ElseIf_Jacket_Front_R': 8, 'Quality__NaturalPose__ElseIf_Jacket_Sleeve_L': 425, 'Quality__NaturalPose__ElseIf_Jacket_Sleeve_R': 423}\n"
+  }
+}

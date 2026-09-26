@@ -1,0 +1,1498 @@
+[
+  {
+    "object": "LOD0__ElseIf_Mannequin",
+    "before_vertices": 3317,
+    "after_vertices": 3317,
+    "before_triangles": 5141,
+    "after_triangles": 5141,
+    "priority_vertices": {
+      "1": 0,
+      "2": 3317,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Anatomy_Restoration",
+    "before_vertices": 16077,
+    "after_vertices": 16077,
+    "before_triangles": 30918,
+    "after_triangles": 30918,
+    "priority_vertices": {
+      "1": 0,
+      "2": 16077,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Shorts",
+    "before_vertices": 5710,
+    "after_vertices": 5710,
+    "before_triangles": 11424,
+    "after_triangles": 11424,
+    "priority_vertices": {
+      "1": 0,
+      "2": 5710,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Sock_L",
+    "before_vertices": 10469,
+    "after_vertices": 9294,
+    "before_triangles": 20938,
+    "after_triangles": 18588,
+    "priority_vertices": {
+      "1": 3557,
+      "2": 6912,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Sock_R",
+    "before_vertices": 10464,
+    "after_vertices": 9282,
+    "before_triangles": 20928,
+    "after_triangles": 18564,
+    "priority_vertices": {
+      "1": 3552,
+      "2": 6912,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Shoe_L_Sole",
+    "before_vertices": 664,
+    "after_vertices": 610,
+    "before_triangles": 1324,
+    "after_triangles": 1216,
+    "priority_vertices": {
+      "1": 664,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Shoe_L_Upper",
+    "before_vertices": 2882,
+    "after_vertices": 2882,
+    "before_triangles": 5760,
+    "after_triangles": 5760,
+    "priority_vertices": {
+      "1": 0,
+      "2": 2882,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Shoe_R_Sole",
+    "before_vertices": 664,
+    "after_vertices": 610,
+    "before_triangles": 1324,
+    "after_triangles": 1216,
+    "priority_vertices": {
+      "1": 664,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Shoe_R_Upper",
+    "before_vertices": 2882,
+    "after_vertices": 2882,
+    "before_triangles": 5760,
+    "after_triangles": 5760,
+    "priority_vertices": {
+      "1": 0,
+      "2": 2882,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Shoe_L_AnkleCollar",
+    "before_vertices": 896,
+    "after_vertices": 896,
+    "before_triangles": 1792,
+    "after_triangles": 1792,
+    "priority_vertices": {
+      "1": 0,
+      "2": 896,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Shoe_L_Tongue",
+    "before_vertices": 338,
+    "after_vertices": 338,
+    "before_triangles": 672,
+    "after_triangles": 672,
+    "priority_vertices": {
+      "1": 0,
+      "2": 338,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Shoe_R_AnkleCollar",
+    "before_vertices": 896,
+    "after_vertices": 896,
+    "before_triangles": 1792,
+    "after_triangles": 1792,
+    "priority_vertices": {
+      "1": 0,
+      "2": 896,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Shoe_R_Tongue",
+    "before_vertices": 338,
+    "after_vertices": 338,
+    "before_triangles": 672,
+    "after_triangles": 672,
+    "priority_vertices": {
+      "1": 0,
+      "2": 338,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Front_L",
+    "before_vertices": 5613,
+    "after_vertices": 5141,
+    "before_triangles": 11222,
+    "after_triangles": 10278,
+    "priority_vertices": {
+      "1": 1880,
+      "2": 806,
+      "3": 2927
+    },
+    "protection": "Original priority, arm influences, all corrective support"
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Front_R",
+    "before_vertices": 5530,
+    "after_vertices": 5110,
+    "before_triangles": 11056,
+    "after_triangles": 10216,
+    "priority_vertices": {
+      "1": 1791,
+      "2": 806,
+      "3": 2933
+    },
+    "protection": "Original priority, arm influences, all corrective support"
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Back",
+    "before_vertices": 10821,
+    "after_vertices": 10037,
+    "before_triangles": 21638,
+    "after_triangles": 20070,
+    "priority_vertices": {
+      "1": 3562,
+      "2": 1914,
+      "3": 5345
+    },
+    "protection": "Original priority, arm influences, all corrective support"
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Sleeve_L",
+    "before_vertices": 16464,
+    "after_vertices": 16464,
+    "before_triangles": 32928,
+    "after_triangles": 32928,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 16464
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Sleeve_R",
+    "before_vertices": 16464,
+    "after_vertices": 16464,
+    "before_triangles": 32928,
+    "after_triangles": 32928,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 16464
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Stand_Collar",
+    "before_vertices": 6630,
+    "after_vertices": 6630,
+    "before_triangles": 13256,
+    "after_triangles": 13256,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 6630
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Hem_Facing",
+    "before_vertices": 4186,
+    "after_vertices": 4186,
+    "before_triangles": 8368,
+    "after_triangles": 8368,
+    "priority_vertices": {
+      "1": 0,
+      "2": 4186,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Cuff_L",
+    "before_vertices": 1680,
+    "after_vertices": 1680,
+    "before_triangles": 3360,
+    "after_triangles": 3360,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 1680
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Cuff_R",
+    "before_vertices": 1680,
+    "after_vertices": 1680,
+    "before_triangles": 3360,
+    "after_triangles": 3360,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 1680
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Closure_Tape",
+    "before_vertices": 524,
+    "after_vertices": 524,
+    "before_triangles": 1044,
+    "after_triangles": 1044,
+    "priority_vertices": {
+      "1": 32,
+      "2": 144,
+      "3": 348
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Front_Facing_L",
+    "before_vertices": 717,
+    "after_vertices": 717,
+    "before_triangles": 1430,
+    "after_triangles": 1430,
+    "priority_vertices": {
+      "1": 61,
+      "2": 192,
+      "3": 464
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Front_Facing_R",
+    "before_vertices": 698,
+    "after_vertices": 698,
+    "before_triangles": 1392,
+    "after_triangles": 1392,
+    "priority_vertices": {
+      "1": 42,
+      "2": 192,
+      "3": 464
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Collar_Turnback",
+    "before_vertices": 3096,
+    "after_vertices": 3096,
+    "before_triangles": 5160,
+    "after_triangles": 5160,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 3096
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Hem_Turnback",
+    "before_vertices": 3216,
+    "after_vertices": 3216,
+    "before_triangles": 5360,
+    "after_triangles": 5360,
+    "priority_vertices": {
+      "1": 0,
+      "2": 3216,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Cuff_L_Turnback",
+    "before_vertices": 2016,
+    "after_vertices": 2016,
+    "before_triangles": 3360,
+    "after_triangles": 3360,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 2016
+    }
+  },
+  {
+    "object": "LOD0__ElseIf_Jacket_Cuff_R_Turnback",
+    "before_vertices": 2016,
+    "after_vertices": 2016,
+    "before_triangles": 3360,
+    "after_triangles": 3360,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 2016
+    }
+  },
+  {
+    "object": "LOD0__EL_Chest_AO",
+    "before_vertices": 77,
+    "after_vertices": 77,
+    "before_triangles": 77,
+    "after_triangles": 77,
+    "priority_vertices": {
+      "1": 0,
+      "2": 77,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Chest_Rules",
+    "before_vertices": 18,
+    "after_vertices": 18,
+    "before_triangles": 14,
+    "after_triangles": 14,
+    "priority_vertices": {
+      "1": 0,
+      "2": 18,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Zip_Pull_Red",
+    "before_vertices": 56,
+    "after_vertices": 56,
+    "before_triangles": 108,
+    "after_triangles": 108,
+    "priority_vertices": {
+      "1": 0,
+      "2": 56,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Zip_Slider",
+    "before_vertices": 32,
+    "after_vertices": 32,
+    "before_triangles": 60,
+    "after_triangles": 60,
+    "priority_vertices": {
+      "1": 0,
+      "2": 32,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Pocket_L_Welt",
+    "before_vertices": 148,
+    "after_vertices": 103,
+    "before_triangles": 292,
+    "after_triangles": 202,
+    "priority_vertices": {
+      "1": 148,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Pocket_L_Opening",
+    "before_vertices": 57,
+    "after_vertices": 57,
+    "before_triangles": 72,
+    "after_triangles": 72,
+    "priority_vertices": {
+      "1": 57,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Hem_L_Triangle",
+    "before_vertices": 30,
+    "after_vertices": 30,
+    "before_triangles": 22,
+    "after_triangles": 22,
+    "priority_vertices": {
+      "1": 0,
+      "2": 30,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Hem_L_Rule",
+    "before_vertices": 8,
+    "after_vertices": 8,
+    "before_triangles": 6,
+    "after_triangles": 6,
+    "priority_vertices": {
+      "1": 0,
+      "2": 8,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Pocket_R_Welt",
+    "before_vertices": 180,
+    "after_vertices": 146,
+    "before_triangles": 356,
+    "after_triangles": 288,
+    "priority_vertices": {
+      "1": 180,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Pocket_R_Opening",
+    "before_vertices": 57,
+    "after_vertices": 57,
+    "before_triangles": 72,
+    "after_triangles": 72,
+    "priority_vertices": {
+      "1": 57,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Hem_R_Triangle",
+    "before_vertices": 30,
+    "after_vertices": 30,
+    "before_triangles": 22,
+    "after_triangles": 22,
+    "priority_vertices": {
+      "1": 0,
+      "2": 30,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Hem_R_Rule",
+    "before_vertices": 8,
+    "after_vertices": 8,
+    "before_triangles": 6,
+    "after_triangles": 6,
+    "priority_vertices": {
+      "1": 0,
+      "2": 8,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Back_Print_Base",
+    "before_vertices": 1100,
+    "after_vertices": 1003,
+    "before_triangles": 2196,
+    "after_triangles": 2002,
+    "priority_vertices": {
+      "1": 416,
+      "2": 684,
+      "3": 0
+    },
+    "protection": "Original priority, arm influences, all corrective support"
+  },
+  {
+    "object": "LOD0__EL_Back_Reference_Artwork",
+    "before_vertices": 507,
+    "after_vertices": 484,
+    "before_triangles": 928,
+    "after_triangles": 885,
+    "priority_vertices": {
+      "1": 184,
+      "2": 323,
+      "3": 0
+    },
+    "protection": "Original priority, arm influences, all corrective support"
+  },
+  {
+    "object": "LOD0__EL_Back_Webbing_L",
+    "before_vertices": 328,
+    "after_vertices": 275,
+    "before_triangles": 652,
+    "after_triangles": 546,
+    "priority_vertices": {
+      "1": 184,
+      "2": 144,
+      "3": 0
+    },
+    "protection": "Original priority, arm influences, all corrective support"
+  },
+  {
+    "object": "LOD0__EL_Back_Buckle_L",
+    "before_vertices": 40,
+    "after_vertices": 40,
+    "before_triangles": 76,
+    "after_triangles": 76,
+    "priority_vertices": {
+      "1": 0,
+      "2": 40,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Back_BuckleInset_L",
+    "before_vertices": 12,
+    "after_vertices": 12,
+    "before_triangles": 12,
+    "after_triangles": 12,
+    "priority_vertices": {
+      "1": 0,
+      "2": 12,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoulder_Webbing_L",
+    "before_vertices": 150,
+    "after_vertices": 150,
+    "before_triangles": 296,
+    "after_triangles": 296,
+    "priority_vertices": {
+      "1": 0,
+      "2": 129,
+      "3": 21
+    }
+  },
+  {
+    "object": "LOD0__EL_Back_Webbing_R",
+    "before_vertices": 302,
+    "after_vertices": 260,
+    "before_triangles": 600,
+    "after_triangles": 516,
+    "priority_vertices": {
+      "1": 158,
+      "2": 144,
+      "3": 0
+    },
+    "protection": "Original priority, arm influences, all corrective support"
+  },
+  {
+    "object": "LOD0__EL_Back_Buckle_R",
+    "before_vertices": 40,
+    "after_vertices": 40,
+    "before_triangles": 76,
+    "after_triangles": 76,
+    "priority_vertices": {
+      "1": 0,
+      "2": 40,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Back_BuckleInset_R",
+    "before_vertices": 12,
+    "after_vertices": 12,
+    "before_triangles": 12,
+    "after_triangles": 12,
+    "priority_vertices": {
+      "1": 0,
+      "2": 12,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoulder_Webbing_R",
+    "before_vertices": 150,
+    "after_vertices": 150,
+    "before_triangles": 296,
+    "after_triangles": 296,
+    "priority_vertices": {
+      "1": 0,
+      "2": 129,
+      "3": 21
+    }
+  },
+  {
+    "object": "LOD0__EL_Back_Center_Tab",
+    "before_vertices": 108,
+    "after_vertices": 108,
+    "before_triangles": 212,
+    "after_triangles": 212,
+    "priority_vertices": {
+      "1": 20,
+      "2": 88,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Back_Center_Symbol",
+    "before_vertices": 17,
+    "after_vertices": 17,
+    "before_triangles": 17,
+    "after_triangles": 17,
+    "priority_vertices": {
+      "1": 0,
+      "2": 17,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_InkStrip",
+    "before_vertices": 286,
+    "after_vertices": 286,
+    "before_triangles": 492,
+    "after_triangles": 492,
+    "priority_vertices": {
+      "1": 248,
+      "2": 2,
+      "3": 36
+    },
+    "protection": "Original priority, arm influences, all corrective support"
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_Icon_0",
+    "before_vertices": 17,
+    "after_vertices": 17,
+    "before_triangles": 17,
+    "after_triangles": 17,
+    "priority_vertices": {
+      "1": 14,
+      "2": 0,
+      "3": 3
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_Icon_1",
+    "before_vertices": 50,
+    "after_vertices": 50,
+    "before_triangles": 48,
+    "after_triangles": 48,
+    "priority_vertices": {
+      "1": 50,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_Box_1",
+    "before_vertices": 75,
+    "after_vertices": 75,
+    "before_triangles": 71,
+    "after_triangles": 71,
+    "priority_vertices": {
+      "1": 75,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_Icon_2",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 22,
+    "after_triangles": 22,
+    "priority_vertices": {
+      "1": 24,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_Box_2",
+    "before_vertices": 47,
+    "after_vertices": 47,
+    "before_triangles": 43,
+    "after_triangles": 43,
+    "priority_vertices": {
+      "1": 47,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_Icon_3",
+    "before_vertices": 17,
+    "after_vertices": 17,
+    "before_triangles": 17,
+    "after_triangles": 17,
+    "priority_vertices": {
+      "1": 17,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_Box_3",
+    "before_vertices": 56,
+    "after_vertices": 56,
+    "before_triangles": 52,
+    "after_triangles": 52,
+    "priority_vertices": {
+      "1": 56,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_UpperBar_0",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 28,
+    "after_triangles": 28,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 24
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_UpperBar_1",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 28,
+    "after_triangles": 28,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 24
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_UpperBar_2",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 28,
+    "after_triangles": 28,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 24
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_UpperBar_3",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 28,
+    "after_triangles": 28,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 24
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_RedTab",
+    "before_vertices": 48,
+    "after_vertices": 48,
+    "before_triangles": 92,
+    "after_triangles": 92,
+    "priority_vertices": {
+      "1": 48,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_L_CuffTab",
+    "before_vertices": 21,
+    "after_vertices": 21,
+    "before_triangles": 24,
+    "after_triangles": 24,
+    "priority_vertices": {
+      "1": 0,
+      "2": 21,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_InkStrip",
+    "before_vertices": 299,
+    "after_vertices": 175,
+    "before_triangles": 518,
+    "after_triangles": 300,
+    "priority_vertices": {
+      "1": 262,
+      "2": 1,
+      "3": 36
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_Icon_0",
+    "before_vertices": 17,
+    "after_vertices": 17,
+    "before_triangles": 17,
+    "after_triangles": 17,
+    "priority_vertices": {
+      "1": 12,
+      "2": 0,
+      "3": 5
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_Icon_1",
+    "before_vertices": 50,
+    "after_vertices": 50,
+    "before_triangles": 48,
+    "after_triangles": 48,
+    "priority_vertices": {
+      "1": 50,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_Box_1",
+    "before_vertices": 80,
+    "after_vertices": 80,
+    "before_triangles": 76,
+    "after_triangles": 76,
+    "priority_vertices": {
+      "1": 80,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_Icon_2",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 22,
+    "after_triangles": 22,
+    "priority_vertices": {
+      "1": 24,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_Box_2",
+    "before_vertices": 31,
+    "after_vertices": 31,
+    "before_triangles": 27,
+    "after_triangles": 27,
+    "priority_vertices": {
+      "1": 31,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_Icon_3",
+    "before_vertices": 17,
+    "after_vertices": 17,
+    "before_triangles": 17,
+    "after_triangles": 17,
+    "priority_vertices": {
+      "1": 17,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_Box_3",
+    "before_vertices": 58,
+    "after_vertices": 58,
+    "before_triangles": 54,
+    "after_triangles": 54,
+    "priority_vertices": {
+      "1": 58,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_UpperBar_0",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 28,
+    "after_triangles": 28,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 24
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_UpperBar_1",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 28,
+    "after_triangles": 28,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 24
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_UpperBar_2",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 28,
+    "after_triangles": 28,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 24
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_UpperBar_3",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 28,
+    "after_triangles": 28,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 24
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_RedTab",
+    "before_vertices": 48,
+    "after_vertices": 48,
+    "before_triangles": 92,
+    "after_triangles": 92,
+    "priority_vertices": {
+      "1": 48,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sleeve_R_CuffTab",
+    "before_vertices": 21,
+    "after_vertices": 21,
+    "before_triangles": 24,
+    "after_triangles": 24,
+    "priority_vertices": {
+      "1": 0,
+      "2": 21,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_UpperArm_RearPatch",
+    "before_vertices": 99,
+    "after_vertices": 99,
+    "before_triangles": 160,
+    "after_triangles": 160,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 99
+    }
+  },
+  {
+    "object": "LOD0__EL_UpperArm_DUM",
+    "before_vertices": 112,
+    "after_vertices": 112,
+    "before_triangles": 108,
+    "after_triangles": 108,
+    "priority_vertices": {
+      "1": 0,
+      "2": 0,
+      "3": 112
+    }
+  },
+  {
+    "object": "LOD0__EL_Collar_A",
+    "before_vertices": 17,
+    "after_vertices": 17,
+    "before_triangles": 17,
+    "after_triangles": 17,
+    "priority_vertices": {
+      "1": 0,
+      "2": 17,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Collar_Fastener_-0.027",
+    "before_vertices": 18,
+    "after_vertices": 18,
+    "before_triangles": 32,
+    "after_triangles": 32,
+    "priority_vertices": {
+      "1": 0,
+      "2": 18,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Collar_Fastener_0.027",
+    "before_vertices": 18,
+    "after_vertices": 18,
+    "before_triangles": 32,
+    "after_triangles": 32,
+    "priority_vertices": {
+      "1": 0,
+      "2": 18,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Thigh_Band_L",
+    "before_vertices": 392,
+    "after_vertices": 392,
+    "before_triangles": 780,
+    "after_triangles": 780,
+    "priority_vertices": {
+      "1": 0,
+      "2": 392,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Thigh_Fastener_L",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 30,
+    "after_triangles": 30,
+    "priority_vertices": {
+      "1": 0,
+      "2": 24,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Thigh_Tag_L",
+    "before_vertices": 32,
+    "after_vertices": 32,
+    "before_triangles": 42,
+    "after_triangles": 42,
+    "priority_vertices": {
+      "1": 0,
+      "2": 32,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_L_Mark_0",
+    "before_vertices": 17,
+    "after_vertices": 17,
+    "before_triangles": 17,
+    "after_triangles": 17,
+    "priority_vertices": {
+      "1": 0,
+      "2": 17,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_L_Rule_0",
+    "before_vertices": 110,
+    "after_vertices": 110,
+    "before_triangles": 108,
+    "after_triangles": 108,
+    "priority_vertices": {
+      "1": 55,
+      "2": 55,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_L_Mark_1",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 22,
+    "after_triangles": 22,
+    "priority_vertices": {
+      "1": 24,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_L_Rule_1",
+    "before_vertices": 13,
+    "after_vertices": 13,
+    "before_triangles": 11,
+    "after_triangles": 11,
+    "priority_vertices": {
+      "1": 13,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_L_Mark_2",
+    "before_vertices": 17,
+    "after_vertices": 17,
+    "before_triangles": 17,
+    "after_triangles": 17,
+    "priority_vertices": {
+      "1": 17,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_L_Rule_2",
+    "before_vertices": 9,
+    "after_vertices": 9,
+    "before_triangles": 7,
+    "after_triangles": 7,
+    "priority_vertices": {
+      "1": 9,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_L_WhiteBand_0",
+    "before_vertices": 104,
+    "after_vertices": 104,
+    "before_triangles": 204,
+    "after_triangles": 204,
+    "priority_vertices": {
+      "1": 0,
+      "2": 104,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_L_WhiteBand_1",
+    "before_vertices": 104,
+    "after_vertices": 104,
+    "before_triangles": 204,
+    "after_triangles": 204,
+    "priority_vertices": {
+      "1": 0,
+      "2": 104,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_L_WhiteBand_2",
+    "before_vertices": 104,
+    "after_vertices": 104,
+    "before_triangles": 204,
+    "after_triangles": 204,
+    "priority_vertices": {
+      "1": 0,
+      "2": 104,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_L_AnkleStrap",
+    "before_vertices": 120,
+    "after_vertices": 120,
+    "before_triangles": 236,
+    "after_triangles": 236,
+    "priority_vertices": {
+      "1": 0,
+      "2": 120,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_L_BuckleFrame",
+    "before_vertices": 50,
+    "after_vertices": 50,
+    "before_triangles": 96,
+    "after_triangles": 96,
+    "priority_vertices": {
+      "1": 0,
+      "2": 50,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_L_BuckleInset",
+    "before_vertices": 16,
+    "after_vertices": 16,
+    "before_triangles": 18,
+    "after_triangles": 18,
+    "priority_vertices": {
+      "1": 0,
+      "2": 16,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_L_RedCross",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 22,
+    "after_triangles": 22,
+    "priority_vertices": {
+      "1": 0,
+      "2": 24,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_L_SideWhite",
+    "before_vertices": 85,
+    "after_vertices": 85,
+    "before_triangles": 128,
+    "after_triangles": 128,
+    "priority_vertices": {
+      "1": 0,
+      "2": 85,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_L_HeelWhite",
+    "before_vertices": 81,
+    "after_vertices": 81,
+    "before_triangles": 128,
+    "after_triangles": 128,
+    "priority_vertices": {
+      "1": 0,
+      "2": 81,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Thigh_Band_R",
+    "before_vertices": 392,
+    "after_vertices": 392,
+    "before_triangles": 780,
+    "after_triangles": 780,
+    "priority_vertices": {
+      "1": 0,
+      "2": 392,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Thigh_Fastener_R",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 30,
+    "after_triangles": 30,
+    "priority_vertices": {
+      "1": 0,
+      "2": 24,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Thigh_Tag_R",
+    "before_vertices": 32,
+    "after_vertices": 32,
+    "before_triangles": 42,
+    "after_triangles": 42,
+    "priority_vertices": {
+      "1": 0,
+      "2": 32,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_R_Mark_0",
+    "before_vertices": 17,
+    "after_vertices": 17,
+    "before_triangles": 17,
+    "after_triangles": 17,
+    "priority_vertices": {
+      "1": 0,
+      "2": 17,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_R_Rule_0",
+    "before_vertices": 110,
+    "after_vertices": 110,
+    "before_triangles": 108,
+    "after_triangles": 108,
+    "priority_vertices": {
+      "1": 55,
+      "2": 55,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_R_Mark_1",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 22,
+    "after_triangles": 22,
+    "priority_vertices": {
+      "1": 24,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_R_Rule_1",
+    "before_vertices": 12,
+    "after_vertices": 12,
+    "before_triangles": 10,
+    "after_triangles": 10,
+    "priority_vertices": {
+      "1": 12,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_R_Mark_2",
+    "before_vertices": 17,
+    "after_vertices": 17,
+    "before_triangles": 17,
+    "after_triangles": 17,
+    "priority_vertices": {
+      "1": 17,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Sock_R_Rule_2",
+    "before_vertices": 12,
+    "after_vertices": 12,
+    "before_triangles": 10,
+    "after_triangles": 10,
+    "priority_vertices": {
+      "1": 12,
+      "2": 0,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_R_WhiteBand_0",
+    "before_vertices": 104,
+    "after_vertices": 104,
+    "before_triangles": 204,
+    "after_triangles": 204,
+    "priority_vertices": {
+      "1": 0,
+      "2": 104,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_R_WhiteBand_1",
+    "before_vertices": 104,
+    "after_vertices": 104,
+    "before_triangles": 204,
+    "after_triangles": 204,
+    "priority_vertices": {
+      "1": 0,
+      "2": 104,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_R_WhiteBand_2",
+    "before_vertices": 104,
+    "after_vertices": 104,
+    "before_triangles": 204,
+    "after_triangles": 204,
+    "priority_vertices": {
+      "1": 0,
+      "2": 104,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_R_AnkleStrap",
+    "before_vertices": 120,
+    "after_vertices": 120,
+    "before_triangles": 236,
+    "after_triangles": 236,
+    "priority_vertices": {
+      "1": 0,
+      "2": 120,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_R_BuckleFrame",
+    "before_vertices": 50,
+    "after_vertices": 50,
+    "before_triangles": 96,
+    "after_triangles": 96,
+    "priority_vertices": {
+      "1": 0,
+      "2": 50,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_R_BuckleInset",
+    "before_vertices": 16,
+    "after_vertices": 16,
+    "before_triangles": 18,
+    "after_triangles": 18,
+    "priority_vertices": {
+      "1": 0,
+      "2": 16,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_R_RedCross",
+    "before_vertices": 24,
+    "after_vertices": 24,
+    "before_triangles": 22,
+    "after_triangles": 22,
+    "priority_vertices": {
+      "1": 0,
+      "2": 24,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_R_SideWhite",
+    "before_vertices": 85,
+    "after_vertices": 85,
+    "before_triangles": 128,
+    "after_triangles": 128,
+    "priority_vertices": {
+      "1": 0,
+      "2": 85,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoe_R_HeelWhite",
+    "before_vertices": 81,
+    "after_vertices": 81,
+    "before_triangles": 128,
+    "after_triangles": 128,
+    "priority_vertices": {
+      "1": 0,
+      "2": 81,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoulder_Back_Connector_L",
+    "before_vertices": 75,
+    "after_vertices": 75,
+    "before_triangles": 112,
+    "after_triangles": 112,
+    "priority_vertices": {
+      "1": 0,
+      "2": 75,
+      "3": 0
+    }
+  },
+  {
+    "object": "LOD0__EL_Shoulder_Back_Connector_R",
+    "before_vertices": 75,
+    "after_vertices": 75,
+    "before_triangles": 112,
+    "after_triangles": 112,
+    "priority_vertices": {
+      "1": 0,
+      "2": 75,
+      "3": 0
+    }
+  }
+]

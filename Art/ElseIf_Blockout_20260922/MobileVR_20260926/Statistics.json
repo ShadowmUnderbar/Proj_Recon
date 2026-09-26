@@ -1,0 +1,776 @@
+{
+  "ElseIf_Game_Backup": {
+    "vertices": 148131,
+    "triangles": 288752,
+    "mesh_objects": 124,
+    "skinned_mesh_objects": 124,
+    "material_slots": 128,
+    "materials": 10,
+    "textures": 1,
+    "bones": 74,
+    "max_bone_influence": 4,
+    "shape_keys_without_basis": 190,
+    "shape_key_names": 27,
+    "shape_keys_with_basis": 250,
+    "mesh_details": [
+      {
+        "name": "Backup__ElseIf_Mannequin",
+        "triangles": 7520,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Anatomy_Restoration",
+        "triangles": 36024,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Shorts",
+        "triangles": 11424,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Sock_L",
+        "triangles": 20938,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Sock_R",
+        "triangles": 20928,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Shoe_L_Sole",
+        "triangles": 1324,
+        "materials": 2
+      },
+      {
+        "name": "Backup__ElseIf_Shoe_L_Upper",
+        "triangles": 5760,
+        "materials": 2
+      },
+      {
+        "name": "Backup__ElseIf_Shoe_R_Sole",
+        "triangles": 1324,
+        "materials": 2
+      },
+      {
+        "name": "Backup__ElseIf_Shoe_R_Upper",
+        "triangles": 5760,
+        "materials": 2
+      },
+      {
+        "name": "Backup__ElseIf_Shoe_L_AnkleCollar",
+        "triangles": 1792,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Shoe_L_Tongue",
+        "triangles": 672,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Shoe_R_AnkleCollar",
+        "triangles": 1792,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Shoe_R_Tongue",
+        "triangles": 672,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Front_L",
+        "triangles": 11222,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Front_R",
+        "triangles": 11056,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Back",
+        "triangles": 21638,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Sleeve_L",
+        "triangles": 32928,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Sleeve_R",
+        "triangles": 32928,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Stand_Collar",
+        "triangles": 13256,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Hem_Facing",
+        "triangles": 8368,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Cuff_L",
+        "triangles": 3360,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Cuff_R",
+        "triangles": 3360,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Closure_Tape",
+        "triangles": 1044,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Front_Facing_L",
+        "triangles": 1430,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Front_Facing_R",
+        "triangles": 1392,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Collar_Turnback",
+        "triangles": 5160,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Hem_Turnback",
+        "triangles": 5360,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Cuff_L_Turnback",
+        "triangles": 3360,
+        "materials": 1
+      },
+      {
+        "name": "Backup__ElseIf_Jacket_Cuff_R_Turnback",
+        "triangles": 3360,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Chest_AO",
+        "triangles": 77,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Chest_Rules",
+        "triangles": 14,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Zip_Pull_Red",
+        "triangles": 108,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Zip_Slider",
+        "triangles": 60,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Pocket_L_Welt",
+        "triangles": 292,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Pocket_L_Opening",
+        "triangles": 72,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Hem_L_Triangle",
+        "triangles": 22,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Hem_L_Rule",
+        "triangles": 6,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Pocket_R_Welt",
+        "triangles": 356,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Pocket_R_Opening",
+        "triangles": 72,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Hem_R_Triangle",
+        "triangles": 22,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Hem_R_Rule",
+        "triangles": 6,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Back_Print_Base",
+        "triangles": 2196,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Back_Reference_Artwork",
+        "triangles": 928,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Back_Webbing_L",
+        "triangles": 652,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Back_Buckle_L",
+        "triangles": 76,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Back_BuckleInset_L",
+        "triangles": 12,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoulder_Webbing_L",
+        "triangles": 296,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Back_Webbing_R",
+        "triangles": 600,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Back_Buckle_R",
+        "triangles": 76,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Back_BuckleInset_R",
+        "triangles": 12,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoulder_Webbing_R",
+        "triangles": 296,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Back_Center_Tab",
+        "triangles": 212,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Back_Center_Symbol",
+        "triangles": 17,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_InkStrip",
+        "triangles": 492,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_Icon_0",
+        "triangles": 17,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_Icon_1",
+        "triangles": 48,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_Box_1",
+        "triangles": 71,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_Icon_2",
+        "triangles": 22,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_Box_2",
+        "triangles": 43,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_Icon_3",
+        "triangles": 17,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_Box_3",
+        "triangles": 52,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_UpperBar_0",
+        "triangles": 28,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_UpperBar_1",
+        "triangles": 28,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_UpperBar_2",
+        "triangles": 28,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_UpperBar_3",
+        "triangles": 28,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_RedTab",
+        "triangles": 92,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_L_CuffTab",
+        "triangles": 24,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_InkStrip",
+        "triangles": 518,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_Icon_0",
+        "triangles": 17,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_Icon_1",
+        "triangles": 48,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_Box_1",
+        "triangles": 76,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_Icon_2",
+        "triangles": 22,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_Box_2",
+        "triangles": 27,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_Icon_3",
+        "triangles": 17,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_Box_3",
+        "triangles": 54,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_UpperBar_0",
+        "triangles": 28,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_UpperBar_1",
+        "triangles": 28,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_UpperBar_2",
+        "triangles": 28,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_UpperBar_3",
+        "triangles": 28,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_RedTab",
+        "triangles": 92,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sleeve_R_CuffTab",
+        "triangles": 24,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_UpperArm_RearPatch",
+        "triangles": 160,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_UpperArm_DUM",
+        "triangles": 108,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Collar_A",
+        "triangles": 17,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Collar_Fastener_-0.027",
+        "triangles": 32,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Collar_Fastener_0.027",
+        "triangles": 32,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Thigh_Band_L",
+        "triangles": 780,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Thigh_Fastener_L",
+        "triangles": 30,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Thigh_Tag_L",
+        "triangles": 42,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_L_Mark_0",
+        "triangles": 17,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_L_Rule_0",
+        "triangles": 108,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_L_Mark_1",
+        "triangles": 22,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_L_Rule_1",
+        "triangles": 11,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_L_Mark_2",
+        "triangles": 17,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_L_Rule_2",
+        "triangles": 7,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_L_WhiteBand_0",
+        "triangles": 204,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_L_WhiteBand_1",
+        "triangles": 204,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_L_WhiteBand_2",
+        "triangles": 204,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_L_AnkleStrap",
+        "triangles": 236,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_L_BuckleFrame",
+        "triangles": 96,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_L_BuckleInset",
+        "triangles": 18,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_L_RedCross",
+        "triangles": 22,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_L_SideWhite",
+        "triangles": 128,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_L_HeelWhite",
+        "triangles": 128,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Thigh_Band_R",
+        "triangles": 780,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Thigh_Fastener_R",
+        "triangles": 30,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Thigh_Tag_R",
+        "triangles": 42,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_R_Mark_0",
+        "triangles": 17,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_R_Rule_0",
+        "triangles": 108,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_R_Mark_1",
+        "triangles": 22,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_R_Rule_1",
+        "triangles": 10,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_R_Mark_2",
+        "triangles": 17,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Sock_R_Rule_2",
+        "triangles": 10,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_R_WhiteBand_0",
+        "triangles": 204,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_R_WhiteBand_1",
+        "triangles": 204,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_R_WhiteBand_2",
+        "triangles": 204,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_R_AnkleStrap",
+        "triangles": 236,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_R_BuckleFrame",
+        "triangles": 96,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_R_BuckleInset",
+        "triangles": 18,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_R_RedCross",
+        "triangles": 22,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_R_SideWhite",
+        "triangles": 128,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoe_R_HeelWhite",
+        "triangles": 128,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoulder_Back_Connector_L",
+        "triangles": 112,
+        "materials": 1
+      },
+      {
+        "name": "Backup__EL_Shoulder_Back_Connector_R",
+        "triangles": 112,
+        "materials": 1
+      }
+    ]
+  },
+  "ElseIf_Game_Optimized": {
+    "vertices": 140603,
+    "triangles": 272628,
+    "mesh_objects": 8,
+    "skinned_mesh_objects": 8,
+    "material_slots": 29,
+    "materials": 10,
+    "textures": 1,
+    "bones": 74,
+    "max_bone_influence": 4,
+    "shape_keys_without_basis": 27,
+    "shape_key_names": 27,
+    "shape_keys_with_basis": 28,
+    "mesh_details": [
+      {
+        "name": "LOD0__ElseIf_Mannequin",
+        "triangles": 5147,
+        "materials": 1
+      },
+      {
+        "name": "LOD0__ElseIf_Anatomy_Restoration",
+        "triangles": 31358,
+        "materials": 1
+      },
+      {
+        "name": "LOD0__Shorts",
+        "triangles": 13128,
+        "materials": 4
+      },
+      {
+        "name": "LOD0__Socks_L",
+        "triangles": 18770,
+        "materials": 2
+      },
+      {
+        "name": "LOD0__Socks_R",
+        "triangles": 18748,
+        "materials": 2
+      },
+      {
+        "name": "LOD0__Shoes_L",
+        "triangles": 10680,
+        "materials": 6
+      },
+      {
+        "name": "LOD0__Shoes_R",
+        "triangles": 10680,
+        "materials": 6
+      },
+      {
+        "name": "LOD0__Jacket",
+        "triangles": 164117,
+        "materials": 7
+      }
+    ]
+  },
+  "ElseIf_Game_MobileVR_Test": {
+    "vertices": 50549,
+    "triangles": 93848,
+    "mesh_objects": 8,
+    "skinned_mesh_objects": 8,
+    "material_slots": 29,
+    "materials": 10,
+    "textures": 1,
+    "bones": 74,
+    "max_bone_influence": 4,
+    "shape_keys_without_basis": 27,
+    "shape_key_names": 27,
+    "shape_keys_with_basis": 28,
+    "mesh_details": [
+      {
+        "name": "Mobile__ElseIf_Mannequin",
+        "triangles": 5141,
+        "materials": 1
+      },
+      {
+        "name": "Mobile__ElseIf_Anatomy_Restoration",
+        "triangles": 11034,
+        "materials": 1
+      },
+      {
+        "name": "Mobile__Shorts",
+        "triangles": 3356,
+        "materials": 4
+      },
+      {
+        "name": "Mobile__Socks_L",
+        "triangles": 4185,
+        "materials": 2
+      },
+      {
+        "name": "Mobile__Socks_R",
+        "triangles": 4183,
+        "materials": 2
+      },
+      {
+        "name": "Mobile__Shoes_L",
+        "triangles": 2682,
+        "materials": 6
+      },
+      {
+        "name": "Mobile__Shoes_R",
+        "triangles": 2682,
+        "materials": 6
+      },
+      {
+        "name": "Mobile__Jacket",
+        "triangles": 60585,
+        "materials": 7
+      }
+    ]
+  },
+  "protected_original_changes": [
+    "Backup__Fix__HeadSocket",
+    "Camera",
+    "ElseIf_Secondary_Raking_Basis_Fill",
+    "ElseIf_Secondary_Raking_Basis_Key",
+    "ElseIf_Secondary_Raking_Basis_Rim",
+    "ElseIf_Secondary_Raking_NaturalPose_Fill",
+    "ElseIf_Secondary_Raking_NaturalPose_Key",
+    "ElseIf_Secondary_Raking_NaturalPose_Rim",
+    "Fix__HeadSocket",
+    "Game__HeadSocket",
+    "HeadSocket",
+    "Light",
+    "Opt__HeadSocket",
+    "Quality__ElseIf_Cam_Back",
+    "Quality__ElseIf_Cam_BackQuarter",
+    "Quality__ElseIf_Cam_Front",
+    "Quality__ElseIf_Cam_HighAngle",
+    "Quality__ElseIf_Cam_Side",
+    "Quality__ElseIf_Cam_ThreeQuarter",
+    "Quality__HeadSocket",
+    "Quality__Review_Fill",
+    "Quality__Review_Key",
+    "Quality__Review_Rim",
+    "Topo__HeadSocket"
+  ]
+}

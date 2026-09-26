@@ -1,0 +1,622 @@
+{
+  "0": {
+    "source": "EL_Back_BuckleInset_L",
+    "object_before": "LOD0__EL_Back_BuckleInset_L",
+    "vertices": 12
+  },
+  "1": {
+    "source": "EL_Back_BuckleInset_R",
+    "object_before": "LOD0__EL_Back_BuckleInset_R",
+    "vertices": 12
+  },
+  "2": {
+    "source": "EL_Back_Buckle_L",
+    "object_before": "LOD0__EL_Back_Buckle_L",
+    "vertices": 40
+  },
+  "3": {
+    "source": "EL_Back_Buckle_R",
+    "object_before": "LOD0__EL_Back_Buckle_R",
+    "vertices": 40
+  },
+  "4": {
+    "source": "EL_Back_Center_Symbol",
+    "object_before": "LOD0__EL_Back_Center_Symbol",
+    "vertices": 17
+  },
+  "5": {
+    "source": "EL_Back_Center_Tab",
+    "object_before": "LOD0__EL_Back_Center_Tab",
+    "vertices": 108
+  },
+  "6": {
+    "source": "EL_Back_Print_Base",
+    "object_before": "LOD0__EL_Back_Print_Base",
+    "vertices": 1003
+  },
+  "7": {
+    "source": "EL_Back_Reference_Artwork",
+    "object_before": "LOD0__EL_Back_Reference_Artwork",
+    "vertices": 484
+  },
+  "8": {
+    "source": "EL_Back_Webbing_L",
+    "object_before": "LOD0__EL_Back_Webbing_L",
+    "vertices": 275
+  },
+  "9": {
+    "source": "EL_Back_Webbing_R",
+    "object_before": "LOD0__EL_Back_Webbing_R",
+    "vertices": 260
+  },
+  "10": {
+    "source": "EL_Chest_AO",
+    "object_before": "LOD0__EL_Chest_AO",
+    "vertices": 77
+  },
+  "11": {
+    "source": "EL_Chest_Rules",
+    "object_before": "LOD0__EL_Chest_Rules",
+    "vertices": 18
+  },
+  "12": {
+    "source": "EL_Collar_A",
+    "object_before": "LOD0__EL_Collar_A",
+    "vertices": 17
+  },
+  "13": {
+    "source": "EL_Collar_Fastener_-0.027",
+    "object_before": "LOD0__EL_Collar_Fastener_-0.027",
+    "vertices": 18
+  },
+  "14": {
+    "source": "EL_Collar_Fastener_0.027",
+    "object_before": "LOD0__EL_Collar_Fastener_0.027",
+    "vertices": 18
+  },
+  "15": {
+    "source": "EL_Hem_L_Rule",
+    "object_before": "LOD0__EL_Hem_L_Rule",
+    "vertices": 8
+  },
+  "16": {
+    "source": "EL_Hem_L_Triangle",
+    "object_before": "LOD0__EL_Hem_L_Triangle",
+    "vertices": 30
+  },
+  "17": {
+    "source": "EL_Hem_R_Rule",
+    "object_before": "LOD0__EL_Hem_R_Rule",
+    "vertices": 8
+  },
+  "18": {
+    "source": "EL_Hem_R_Triangle",
+    "object_before": "LOD0__EL_Hem_R_Triangle",
+    "vertices": 30
+  },
+  "19": {
+    "source": "EL_Pocket_L_Opening",
+    "object_before": "LOD0__EL_Pocket_L_Opening",
+    "vertices": 57
+  },
+  "20": {
+    "source": "EL_Pocket_L_Welt",
+    "object_before": "LOD0__EL_Pocket_L_Welt",
+    "vertices": 103
+  },
+  "21": {
+    "source": "EL_Pocket_R_Opening",
+    "object_before": "LOD0__EL_Pocket_R_Opening",
+    "vertices": 57
+  },
+  "22": {
+    "source": "EL_Pocket_R_Welt",
+    "object_before": "LOD0__EL_Pocket_R_Welt",
+    "vertices": 146
+  },
+  "23": {
+    "source": "EL_Shoe_L_AnkleStrap",
+    "object_before": "LOD0__EL_Shoe_L_AnkleStrap",
+    "vertices": 120
+  },
+  "24": {
+    "source": "EL_Shoe_L_BuckleFrame",
+    "object_before": "LOD0__EL_Shoe_L_BuckleFrame",
+    "vertices": 50
+  },
+  "25": {
+    "source": "EL_Shoe_L_BuckleInset",
+    "object_before": "LOD0__EL_Shoe_L_BuckleInset",
+    "vertices": 16
+  },
+  "26": {
+    "source": "EL_Shoe_L_HeelWhite",
+    "object_before": "LOD0__EL_Shoe_L_HeelWhite",
+    "vertices": 81
+  },
+  "27": {
+    "source": "EL_Shoe_L_RedCross",
+    "object_before": "LOD0__EL_Shoe_L_RedCross",
+    "vertices": 24
+  },
+  "28": {
+    "source": "EL_Shoe_L_SideWhite",
+    "object_before": "LOD0__EL_Shoe_L_SideWhite",
+    "vertices": 85
+  },
+  "29": {
+    "source": "EL_Shoe_L_WhiteBand_0",
+    "object_before": "LOD0__EL_Shoe_L_WhiteBand_0",
+    "vertices": 104
+  },
+  "30": {
+    "source": "EL_Shoe_L_WhiteBand_1",
+    "object_before": "LOD0__EL_Shoe_L_WhiteBand_1",
+    "vertices": 104
+  },
+  "31": {
+    "source": "EL_Shoe_L_WhiteBand_2",
+    "object_before": "LOD0__EL_Shoe_L_WhiteBand_2",
+    "vertices": 104
+  },
+  "32": {
+    "source": "EL_Shoe_R_AnkleStrap",
+    "object_before": "LOD0__EL_Shoe_R_AnkleStrap",
+    "vertices": 120
+  },
+  "33": {
+    "source": "EL_Shoe_R_BuckleFrame",
+    "object_before": "LOD0__EL_Shoe_R_BuckleFrame",
+    "vertices": 50
+  },
+  "34": {
+    "source": "EL_Shoe_R_BuckleInset",
+    "object_before": "LOD0__EL_Shoe_R_BuckleInset",
+    "vertices": 16
+  },
+  "35": {
+    "source": "EL_Shoe_R_HeelWhite",
+    "object_before": "LOD0__EL_Shoe_R_HeelWhite",
+    "vertices": 81
+  },
+  "36": {
+    "source": "EL_Shoe_R_RedCross",
+    "object_before": "LOD0__EL_Shoe_R_RedCross",
+    "vertices": 24
+  },
+  "37": {
+    "source": "EL_Shoe_R_SideWhite",
+    "object_before": "LOD0__EL_Shoe_R_SideWhite",
+    "vertices": 85
+  },
+  "38": {
+    "source": "EL_Shoe_R_WhiteBand_0",
+    "object_before": "LOD0__EL_Shoe_R_WhiteBand_0",
+    "vertices": 104
+  },
+  "39": {
+    "source": "EL_Shoe_R_WhiteBand_1",
+    "object_before": "LOD0__EL_Shoe_R_WhiteBand_1",
+    "vertices": 104
+  },
+  "40": {
+    "source": "EL_Shoe_R_WhiteBand_2",
+    "object_before": "LOD0__EL_Shoe_R_WhiteBand_2",
+    "vertices": 104
+  },
+  "41": {
+    "source": "EL_Shoulder_Back_Connector_L",
+    "object_before": "LOD0__EL_Shoulder_Back_Connector_L",
+    "vertices": 75
+  },
+  "42": {
+    "source": "EL_Shoulder_Back_Connector_R",
+    "object_before": "LOD0__EL_Shoulder_Back_Connector_R",
+    "vertices": 75
+  },
+  "43": {
+    "source": "EL_Shoulder_Webbing_L",
+    "object_before": "LOD0__EL_Shoulder_Webbing_L",
+    "vertices": 150
+  },
+  "44": {
+    "source": "EL_Shoulder_Webbing_R",
+    "object_before": "LOD0__EL_Shoulder_Webbing_R",
+    "vertices": 150
+  },
+  "45": {
+    "source": "EL_Sleeve_L_Box_1",
+    "object_before": "LOD0__EL_Sleeve_L_Box_1",
+    "vertices": 75
+  },
+  "46": {
+    "source": "EL_Sleeve_L_Box_2",
+    "object_before": "LOD0__EL_Sleeve_L_Box_2",
+    "vertices": 47
+  },
+  "47": {
+    "source": "EL_Sleeve_L_Box_3",
+    "object_before": "LOD0__EL_Sleeve_L_Box_3",
+    "vertices": 56
+  },
+  "48": {
+    "source": "EL_Sleeve_L_CuffTab",
+    "object_before": "LOD0__EL_Sleeve_L_CuffTab",
+    "vertices": 21
+  },
+  "49": {
+    "source": "EL_Sleeve_L_Icon_0",
+    "object_before": "LOD0__EL_Sleeve_L_Icon_0",
+    "vertices": 17
+  },
+  "50": {
+    "source": "EL_Sleeve_L_Icon_1",
+    "object_before": "LOD0__EL_Sleeve_L_Icon_1",
+    "vertices": 50
+  },
+  "51": {
+    "source": "EL_Sleeve_L_Icon_2",
+    "object_before": "LOD0__EL_Sleeve_L_Icon_2",
+    "vertices": 24
+  },
+  "52": {
+    "source": "EL_Sleeve_L_Icon_3",
+    "object_before": "LOD0__EL_Sleeve_L_Icon_3",
+    "vertices": 17
+  },
+  "53": {
+    "source": "EL_Sleeve_L_InkStrip",
+    "object_before": "LOD0__EL_Sleeve_L_InkStrip",
+    "vertices": 286
+  },
+  "54": {
+    "source": "EL_Sleeve_L_RedTab",
+    "object_before": "LOD0__EL_Sleeve_L_RedTab",
+    "vertices": 48
+  },
+  "55": {
+    "source": "EL_Sleeve_L_UpperBar_0",
+    "object_before": "LOD0__EL_Sleeve_L_UpperBar_0",
+    "vertices": 24
+  },
+  "56": {
+    "source": "EL_Sleeve_L_UpperBar_1",
+    "object_before": "LOD0__EL_Sleeve_L_UpperBar_1",
+    "vertices": 24
+  },
+  "57": {
+    "source": "EL_Sleeve_L_UpperBar_2",
+    "object_before": "LOD0__EL_Sleeve_L_UpperBar_2",
+    "vertices": 24
+  },
+  "58": {
+    "source": "EL_Sleeve_L_UpperBar_3",
+    "object_before": "LOD0__EL_Sleeve_L_UpperBar_3",
+    "vertices": 24
+  },
+  "59": {
+    "source": "EL_Sleeve_R_Box_1",
+    "object_before": "LOD0__EL_Sleeve_R_Box_1",
+    "vertices": 80
+  },
+  "60": {
+    "source": "EL_Sleeve_R_Box_2",
+    "object_before": "LOD0__EL_Sleeve_R_Box_2",
+    "vertices": 31
+  },
+  "61": {
+    "source": "EL_Sleeve_R_Box_3",
+    "object_before": "LOD0__EL_Sleeve_R_Box_3",
+    "vertices": 58
+  },
+  "62": {
+    "source": "EL_Sleeve_R_CuffTab",
+    "object_before": "LOD0__EL_Sleeve_R_CuffTab",
+    "vertices": 21
+  },
+  "63": {
+    "source": "EL_Sleeve_R_Icon_0",
+    "object_before": "LOD0__EL_Sleeve_R_Icon_0",
+    "vertices": 17
+  },
+  "64": {
+    "source": "EL_Sleeve_R_Icon_1",
+    "object_before": "LOD0__EL_Sleeve_R_Icon_1",
+    "vertices": 50
+  },
+  "65": {
+    "source": "EL_Sleeve_R_Icon_2",
+    "object_before": "LOD0__EL_Sleeve_R_Icon_2",
+    "vertices": 24
+  },
+  "66": {
+    "source": "EL_Sleeve_R_Icon_3",
+    "object_before": "LOD0__EL_Sleeve_R_Icon_3",
+    "vertices": 17
+  },
+  "67": {
+    "source": "EL_Sleeve_R_InkStrip",
+    "object_before": "LOD0__EL_Sleeve_R_InkStrip",
+    "vertices": 175
+  },
+  "68": {
+    "source": "EL_Sleeve_R_RedTab",
+    "object_before": "LOD0__EL_Sleeve_R_RedTab",
+    "vertices": 48
+  },
+  "69": {
+    "source": "EL_Sleeve_R_UpperBar_0",
+    "object_before": "LOD0__EL_Sleeve_R_UpperBar_0",
+    "vertices": 24
+  },
+  "70": {
+    "source": "EL_Sleeve_R_UpperBar_1",
+    "object_before": "LOD0__EL_Sleeve_R_UpperBar_1",
+    "vertices": 24
+  },
+  "71": {
+    "source": "EL_Sleeve_R_UpperBar_2",
+    "object_before": "LOD0__EL_Sleeve_R_UpperBar_2",
+    "vertices": 24
+  },
+  "72": {
+    "source": "EL_Sleeve_R_UpperBar_3",
+    "object_before": "LOD0__EL_Sleeve_R_UpperBar_3",
+    "vertices": 24
+  },
+  "73": {
+    "source": "EL_Sock_L_Mark_0",
+    "object_before": "LOD0__EL_Sock_L_Mark_0",
+    "vertices": 17
+  },
+  "74": {
+    "source": "EL_Sock_L_Mark_1",
+    "object_before": "LOD0__EL_Sock_L_Mark_1",
+    "vertices": 24
+  },
+  "75": {
+    "source": "EL_Sock_L_Mark_2",
+    "object_before": "LOD0__EL_Sock_L_Mark_2",
+    "vertices": 17
+  },
+  "76": {
+    "source": "EL_Sock_L_Rule_0",
+    "object_before": "LOD0__EL_Sock_L_Rule_0",
+    "vertices": 110
+  },
+  "77": {
+    "source": "EL_Sock_L_Rule_1",
+    "object_before": "LOD0__EL_Sock_L_Rule_1",
+    "vertices": 13
+  },
+  "78": {
+    "source": "EL_Sock_L_Rule_2",
+    "object_before": "LOD0__EL_Sock_L_Rule_2",
+    "vertices": 9
+  },
+  "79": {
+    "source": "EL_Sock_R_Mark_0",
+    "object_before": "LOD0__EL_Sock_R_Mark_0",
+    "vertices": 17
+  },
+  "80": {
+    "source": "EL_Sock_R_Mark_1",
+    "object_before": "LOD0__EL_Sock_R_Mark_1",
+    "vertices": 24
+  },
+  "81": {
+    "source": "EL_Sock_R_Mark_2",
+    "object_before": "LOD0__EL_Sock_R_Mark_2",
+    "vertices": 17
+  },
+  "82": {
+    "source": "EL_Sock_R_Rule_0",
+    "object_before": "LOD0__EL_Sock_R_Rule_0",
+    "vertices": 110
+  },
+  "83": {
+    "source": "EL_Sock_R_Rule_1",
+    "object_before": "LOD0__EL_Sock_R_Rule_1",
+    "vertices": 12
+  },
+  "84": {
+    "source": "EL_Sock_R_Rule_2",
+    "object_before": "LOD0__EL_Sock_R_Rule_2",
+    "vertices": 12
+  },
+  "85": {
+    "source": "EL_Thigh_Band_L",
+    "object_before": "LOD0__EL_Thigh_Band_L",
+    "vertices": 392
+  },
+  "86": {
+    "source": "EL_Thigh_Band_R",
+    "object_before": "LOD0__EL_Thigh_Band_R",
+    "vertices": 392
+  },
+  "87": {
+    "source": "EL_Thigh_Fastener_L",
+    "object_before": "LOD0__EL_Thigh_Fastener_L",
+    "vertices": 24
+  },
+  "88": {
+    "source": "EL_Thigh_Fastener_R",
+    "object_before": "LOD0__EL_Thigh_Fastener_R",
+    "vertices": 24
+  },
+  "89": {
+    "source": "EL_Thigh_Tag_L",
+    "object_before": "LOD0__EL_Thigh_Tag_L",
+    "vertices": 32
+  },
+  "90": {
+    "source": "EL_Thigh_Tag_R",
+    "object_before": "LOD0__EL_Thigh_Tag_R",
+    "vertices": 32
+  },
+  "91": {
+    "source": "EL_UpperArm_DUM",
+    "object_before": "LOD0__EL_UpperArm_DUM",
+    "vertices": 112
+  },
+  "92": {
+    "source": "EL_UpperArm_RearPatch",
+    "object_before": "LOD0__EL_UpperArm_RearPatch",
+    "vertices": 99
+  },
+  "93": {
+    "source": "EL_Zip_Pull_Red",
+    "object_before": "LOD0__EL_Zip_Pull_Red",
+    "vertices": 56
+  },
+  "94": {
+    "source": "EL_Zip_Slider",
+    "object_before": "LOD0__EL_Zip_Slider",
+    "vertices": 32
+  },
+  "95": {
+    "source": "ElseIf_Anatomy_Restoration",
+    "object_before": "LOD0__ElseIf_Anatomy_Restoration",
+    "vertices": 16277
+  },
+  "96": {
+    "source": "ElseIf_Jacket_Back",
+    "object_before": "LOD0__ElseIf_Jacket_Back",
+    "vertices": 10037
+  },
+  "97": {
+    "source": "ElseIf_Jacket_Closure_Tape",
+    "object_before": "LOD0__ElseIf_Jacket_Closure_Tape",
+    "vertices": 524
+  },
+  "98": {
+    "source": "ElseIf_Jacket_Collar_Turnback",
+    "object_before": "LOD0__ElseIf_Jacket_Collar_Turnback",
+    "vertices": 3096
+  },
+  "99": {
+    "source": "ElseIf_Jacket_Cuff_L",
+    "object_before": "LOD0__ElseIf_Jacket_Cuff_L",
+    "vertices": 1680
+  },
+  "100": {
+    "source": "ElseIf_Jacket_Cuff_L_Turnback",
+    "object_before": "LOD0__ElseIf_Jacket_Cuff_L_Turnback",
+    "vertices": 2016
+  },
+  "101": {
+    "source": "ElseIf_Jacket_Cuff_R",
+    "object_before": "LOD0__ElseIf_Jacket_Cuff_R",
+    "vertices": 1680
+  },
+  "102": {
+    "source": "ElseIf_Jacket_Cuff_R_Turnback",
+    "object_before": "LOD0__ElseIf_Jacket_Cuff_R_Turnback",
+    "vertices": 2016
+  },
+  "103": {
+    "source": "ElseIf_Jacket_Front_Facing_L",
+    "object_before": "LOD0__ElseIf_Jacket_Front_Facing_L",
+    "vertices": 717
+  },
+  "104": {
+    "source": "ElseIf_Jacket_Front_Facing_R",
+    "object_before": "LOD0__ElseIf_Jacket_Front_Facing_R",
+    "vertices": 698
+  },
+  "105": {
+    "source": "ElseIf_Jacket_Front_L",
+    "object_before": "LOD0__ElseIf_Jacket_Front_L",
+    "vertices": 5141
+  },
+  "106": {
+    "source": "ElseIf_Jacket_Front_R",
+    "object_before": "LOD0__ElseIf_Jacket_Front_R",
+    "vertices": 5110
+  },
+  "107": {
+    "source": "ElseIf_Jacket_Hem_Facing",
+    "object_before": "LOD0__ElseIf_Jacket_Hem_Facing",
+    "vertices": 4186
+  },
+  "108": {
+    "source": "ElseIf_Jacket_Hem_Turnback",
+    "object_before": "LOD0__ElseIf_Jacket_Hem_Turnback",
+    "vertices": 3216
+  },
+  "109": {
+    "source": "ElseIf_Jacket_Sleeve_L",
+    "object_before": "LOD0__ElseIf_Jacket_Sleeve_L",
+    "vertices": 16464
+  },
+  "110": {
+    "source": "ElseIf_Jacket_Sleeve_R",
+    "object_before": "LOD0__ElseIf_Jacket_Sleeve_R",
+    "vertices": 16464
+  },
+  "111": {
+    "source": "ElseIf_Jacket_Stand_Collar",
+    "object_before": "LOD0__ElseIf_Jacket_Stand_Collar",
+    "vertices": 6630
+  },
+  "112": {
+    "source": "ElseIf_Mannequin",
+    "object_before": "LOD0__ElseIf_Mannequin",
+    "vertices": 3318
+  },
+  "113": {
+    "source": "ElseIf_Shoe_L_AnkleCollar",
+    "object_before": "LOD0__ElseIf_Shoe_L_AnkleCollar",
+    "vertices": 896
+  },
+  "114": {
+    "source": "ElseIf_Shoe_L_Sole",
+    "object_before": "LOD0__ElseIf_Shoe_L_Sole",
+    "vertices": 610
+  },
+  "115": {
+    "source": "ElseIf_Shoe_L_Tongue",
+    "object_before": "LOD0__ElseIf_Shoe_L_Tongue",
+    "vertices": 338
+  },
+  "116": {
+    "source": "ElseIf_Shoe_L_Upper",
+    "object_before": "LOD0__ElseIf_Shoe_L_Upper",
+    "vertices": 2882
+  },
+  "117": {
+    "source": "ElseIf_Shoe_R_AnkleCollar",
+    "object_before": "LOD0__ElseIf_Shoe_R_AnkleCollar",
+    "vertices": 896
+  },
+  "118": {
+    "source": "ElseIf_Shoe_R_Sole",
+    "object_before": "LOD0__ElseIf_Shoe_R_Sole",
+    "vertices": 610
+  },
+  "119": {
+    "source": "ElseIf_Shoe_R_Tongue",
+    "object_before": "LOD0__ElseIf_Shoe_R_Tongue",
+    "vertices": 338
+  },
+  "120": {
+    "source": "ElseIf_Shoe_R_Upper",
+    "object_before": "LOD0__ElseIf_Shoe_R_Upper",
+    "vertices": 2882
+  },
+  "121": {
+    "source": "ElseIf_Shorts",
+    "object_before": "LOD0__ElseIf_Shorts",
+    "vertices": 5710
+  },
+  "122": {
+    "source": "ElseIf_Sock_L",
+    "object_before": "LOD0__ElseIf_Sock_L",
+    "vertices": 9294
+  },
+  "123": {
+    "source": "ElseIf_Sock_R",
+    "object_before": "LOD0__ElseIf_Sock_R",
+    "vertices": 9282
+  }
+}

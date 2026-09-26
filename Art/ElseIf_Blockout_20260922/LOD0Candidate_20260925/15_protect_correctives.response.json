@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "['LOD0__EL_Back_Print_Base', 'LOD0__EL_Back_Reference_Artwork', 'LOD0__EL_Back_Webbing_L', 'LOD0__EL_Back_Webbing_R', 'LOD0__EL_Sleeve_L_InkStrip', 'LOD0__ElseIf_Jacket_Back', 'LOD0__ElseIf_Jacket_Front_L', 'LOD0__ElseIf_Jacket_Front_R']\n情報: 「ElseIf_Game_LOD0_Candidate.blend」で保存しました\n"
+  }
+}

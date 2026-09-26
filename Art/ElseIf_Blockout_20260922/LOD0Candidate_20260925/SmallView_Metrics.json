@@ -1,0 +1,90 @@
+[
+  {
+    "pose": "Base_HighAngle",
+    "image_size": [
+      173,
+      256
+    ],
+    "mean_absolute_rgb_255": 0.08260326348747592,
+    "rmse_rgb_255": 0.5576757371824633,
+    "percent_pixels_over_10": 0.027095375722543353,
+    "max_channel_difference": 31
+  },
+  {
+    "pose": "Natural_HighAngle",
+    "image_size": [
+      157,
+      256
+    ],
+    "mean_absolute_rgb_255": 0.09209958864118896,
+    "rmse_rgb_255": 0.5743762771471931,
+    "percent_pixels_over_10": 0.05224920382165605,
+    "max_channel_difference": 28
+  },
+  {
+    "pose": "ArmsWide",
+    "image_size": [
+      225,
+      256
+    ],
+    "mean_absolute_rgb_255": 0.03810185185185185,
+    "rmse_rgb_255": 0.3326033673912518,
+    "percent_pixels_over_10": 0.015625,
+    "max_channel_difference": 24
+  },
+  {
+    "pose": "AsymmetricAim",
+    "image_size": [
+      112,
+      256
+    ],
+    "mean_absolute_rgb_255": 0.08830915178571429,
+    "rmse_rgb_255": 0.5568290525376707,
+    "percent_pixels_over_10": 0.06626674107142858,
+    "max_channel_difference": 17
+  },
+  {
+    "pose": "Elbow90",
+    "image_size": [
+      158,
+      256
+    ],
+    "mean_absolute_rgb_255": 0.1040595332278481,
+    "rmse_rgb_255": 0.6525886157230357,
+    "percent_pixels_over_10": 0.08405854430379747,
+    "max_channel_difference": 25
+  },
+  {
+    "pose": "OneArmBack",
+    "image_size": [
+      235,
+      256
+    ],
+    "mean_absolute_rgb_255": 0.062228501773049644,
+    "rmse_rgb_255": 0.47466276756008724,
+    "percent_pixels_over_10": 0.02992021276595745,
+    "max_channel_difference": 26
+  },
+  {
+    "pose": "WristTwist",
+    "image_size": [
+      164,
+      256
+    ],
+    "mean_absolute_rgb_255": 0.11499618902439024,
+    "rmse_rgb_255": 1.3869068258896078,
+    "percent_pixels_over_10": 0.11194740853658537,
+    "max_channel_difference": 137
+  },
+  {
+    "pose": "Base_BackQuarter",
+    "image_size": [
+      120,
+      256
+    ],
+    "mean_absolute_rgb_255": 0.062109375,
+    "rmse_rgb_255": 0.4790534286486216,
+    "percent_pixels_over_10": 0.052083333333333336,
+    "max_channel_difference": 19
+  }
+]

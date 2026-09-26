@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{'exact_vertices': 13162, 'ambiguous_vertices': 954}\n"
+  }
+}

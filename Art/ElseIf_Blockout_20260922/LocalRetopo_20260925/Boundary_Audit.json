@@ -1,0 +1,216 @@
+{
+  "regions": {
+    "Topo__ElseIf_Mannequin": {
+      "deleted_triangles_by_region": {
+        "Pelvis": 1076,
+        "LowerLeg": 106,
+        "UpperLeg": 2,
+        "Foot": 96
+      },
+      "new_cut_edges": 368
+    },
+    "Topo__ElseIf_Anatomy_Restoration": {
+      "deleted_triangles_by_region": {
+        "Torso": 1602
+      },
+      "new_cut_edges": 338
+    }
+  },
+  "poses": {
+    "Base": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 0.019048389047384262
+      }
+    },
+    "A_Natural": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [
+          296
+        ],
+        "minimum_ray_clearance_m": 0.019048389047384262
+      }
+    },
+    "B_Side90": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [
+          101,
+          102,
+          173,
+          177
+        ],
+        "minimum_ray_clearance_m": 0.019048389047384262
+      }
+    },
+    "C_Forward": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [
+          38
+        ],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [
+          253,
+          301,
+          303,
+          304,
+          311,
+          335,
+          337
+        ],
+        "minimum_ray_clearance_m": 0.019048389047384262
+      }
+    },
+    "D_AsymmetricAim": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [
+          110,
+          111,
+          174,
+          175,
+          176
+        ],
+        "minimum_ray_clearance_m": 0.019048389047384262
+      }
+    },
+    "E_Elbow90": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 0.019048389047384262
+      }
+    },
+    "F_OneArmBack": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 0.016491560265421867
+      }
+    },
+    "G_WideOpen": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [
+          64,
+          65,
+          104,
+          107,
+          108
+        ],
+        "minimum_ray_clearance_m": 0.019048389047384262
+      }
+    },
+    "H_FrontNear": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [
+          301,
+          302,
+          303,
+          304
+        ],
+        "minimum_ray_clearance_m": 0.019048389047384262
+      }
+    },
+    "I_FrontBack": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [
+          35,
+          88,
+          89,
+          174,
+          175,
+          253,
+          303,
+          304,
+          305,
+          306,
+          311
+        ],
+        "minimum_ray_clearance_m": 0.019048389047384262
+      }
+    },
+    "J_WristTwist": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 0.019048389047384262
+      }
+    },
+    "K_Arms45": {
+      "Topo__ElseIf_Mannequin": {
+        "cut_edges": 368,
+        "unoccluded_cut_edges": [],
+        "minimum_ray_clearance_m": 4.855684778704017e-07
+      },
+      "Topo__ElseIf_Anatomy_Restoration": {
+        "cut_edges": 338,
+        "unoccluded_cut_edges": [
+          301,
+          302,
+          303,
+          304
+        ],
+        "minimum_ray_clearance_m": 0.019048389047384262
+      }
+    }
+  }
+}

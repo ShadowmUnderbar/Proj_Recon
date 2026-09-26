@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「ElseIf_Game_LOD0_Candidate.blend」で保存しました\n{\"shape_data_repair\": {\"LOD0__Jacket\": {\"repaired_key_vertices\": 229812, \"max_key_data_difference_mm\": 2.3939955037329352}}, \"poses\": {\"Base\": {\"max_position_change_mm\": 0, \"nonzero_components\": {}}, \"A_Natural\": {\"max_position_change_mm\": 0, \"nonzero_components\": {}}, \"B_Side90\": {\"max_position_change_mm\": 0, \"nonzero_components\": {}}, \"C_Forward\": {\"max_position_change_mm\": 1.4901161193847656e-05, \"nonzero_components\": {}}, \"D_AsymmetricAim\": {\"max_position_change_mm\": 0, \"nonzero_components\": {}}, \"E_Elbow90\": {\"max_position_change_mm\": 0, \"nonzero_components\": {}}, \"F_OneArmBack\": {\"max_position_change_mm\": 0, \"nonzero_components\": {}}, \"G_WideOpen\": {\"max_position_change_mm\": 0.00016858739115832577, \"nonzero_components\": {}}, \"H_FrontNear\": {\"max_position_change_mm\": 0, \"nonzero_components\": {}}, \"I_FrontBack\": {\"max_position_change_mm\": 2.2351741790771484e-05, \"nonzero_components\": {}}, \"J_WristTwist\": {\"max_position_change_mm\": 0, \"nonzero_components\": {}}, \"K_Arms45\": {\"max_position_change_mm\": 0, \"nonzero_components\": {}}}}\n"
+  }
+}

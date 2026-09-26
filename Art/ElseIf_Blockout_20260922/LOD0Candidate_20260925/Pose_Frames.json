@@ -1,0 +1,14 @@
+{
+  "Base": 1,
+  "A_Natural": 11,
+  "B_Side90": 21,
+  "C_Forward": 31,
+  "D_AsymmetricAim": 41,
+  "E_Elbow90": 51,
+  "F_OneArmBack": 61,
+  "G_WideOpen": 71,
+  "H_FrontNear": 81,
+  "I_FrontBack": 91,
+  "J_WristTwist": 101,
+  "K_Arms45": 111
+}

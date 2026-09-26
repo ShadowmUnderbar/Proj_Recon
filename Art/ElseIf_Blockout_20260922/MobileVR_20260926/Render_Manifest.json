@@ -1,0 +1,13 @@
+[
+  {
+    "file": "MobileVR_OneArmBack.png",
+    "frame": 61,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  }
+]

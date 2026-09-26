@@ -1,0 +1,14 @@
+{
+  "Mobile__ElseIf_Mannequin": {
+    "before_triangles": 5147,
+    "deleted_triangles": 0,
+    "after_triangles": 5147,
+    "deleted_faces": 0
+  },
+  "Mobile__ElseIf_Anatomy_Restoration": {
+    "before_triangles": 31358,
+    "deleted_triangles": 196,
+    "after_triangles": 31162,
+    "deleted_faces": 98
+  }
+}

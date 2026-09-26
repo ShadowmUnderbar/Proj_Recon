@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「ElseIf_Game_LOD0_Candidate.blend」で保存しました\n{'LOD0__ElseIf_Mannequin': {'before_triangles': 7520, 'deleted_triangles': 2379, 'after_triangles': 5141, 'deleted_faces': 2379}, 'LOD0__ElseIf_Anatomy_Restoration': {'before_triangles': 36024, 'deleted_triangles': 5106, 'after_triangles': 30918, 'deleted_faces': 2553}}\n"
+  }
+}

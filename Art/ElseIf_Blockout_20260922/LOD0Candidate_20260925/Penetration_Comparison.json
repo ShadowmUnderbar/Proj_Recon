@@ -1,0 +1,74 @@
+{
+  "Base": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  },
+  "A_Natural": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  },
+  "B_Side90": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  },
+  "C_Forward": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  },
+  "D_AsymmetricAim": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  },
+  "E_Elbow90": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  },
+  "F_OneArmBack": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  },
+  "G_WideOpen": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  },
+  "H_FrontNear": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  },
+  "I_FrontBack": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  },
+  "J_WristTwist": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  },
+  "K_Arms45": {
+    "baseline_intersected_body_faces": 360,
+    "optimized_intersected_body_faces": 144,
+    "new_intersected_body_faces": 0,
+    "new_details": []
+  }
+}

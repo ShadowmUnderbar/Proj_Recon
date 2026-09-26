@@ -1,0 +1,17 @@
+{
+  "Jacket": {
+    "refined_faces": 714,
+    "vertices_before": 32816,
+    "vertices_after": 34271
+  },
+  "Socks_L": {
+    "refined_faces": 38,
+    "vertices_before": 2149,
+    "vertices_after": 2232
+  },
+  "Socks_R": {
+    "refined_faces": 35,
+    "vertices_before": 2149,
+    "vertices_after": 2224
+  }
+}

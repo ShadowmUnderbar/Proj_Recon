@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{\"ElseIf_Game_Current\": {\"vertices\": 159887, \"triangles\": 311109, \"meshes\": 124, \"skinned_meshes\": 124, \"material_slots\": 128, \"materials\": 10, \"textures\": 1, \"bones\": 74, \"max_bone_influence\": 4, \"shape_key_placements\": 122, \"shape_key_names\": 19, \"non_bone_vertex_groups\": [\"Visible_Anatomy_Only\"]}, \"ElseIf_Game_Optimized_Corrected\": {\"vertices\": 148131, \"triangles\": 288752, \"meshes\": 124, \"skinned_meshes\": 124, \"material_slots\": 128, \"materials\": 10, \"textures\": 1, \"bones\": 74, \"max_bone_influence\": 4, \"shape_key_placements\": 190, \"shape_key_names\": 27, \"non_bone_vertex_groups\": [\"Visible_Anatomy_Only\"]}, \"ElseIf_Game_LocalRetopo\": {\"vertices\": 143809, \"triangles\": 280108, \"meshes\": 124, \"skinned_meshes\": 124, \"material_slots\": 128, \"materials\": 10, \"textures\": 1, \"bones\": 74, \"max_bone_influence\": 4, \"shape_key_placements\": 143, \"shape_key_names\": 23, \"non_bone_vertex_groups\": [\"Visible_Anatomy_Only\"]}}\n"
+  }
+}

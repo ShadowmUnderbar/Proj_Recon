@@ -1,0 +1,12 @@
+{
+  "Jacket": {
+    "refined_faces": 906,
+    "vertices_before": 34271,
+    "vertices_after": 36120
+  },
+  "ElseIf_Anatomy_Restoration": {
+    "refined_faces": 244,
+    "vertices_before": 5578,
+    "vertices_after": 6090
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{\"ElseIf_Basis_Construction\": {\"frame\": 1, \"camera\": \"ElseIf_Cam_ThreeQuarter\", \"resolution\": [880, 1120, 100], \"samples\": 48, \"collections\": [[\"ElseIf_Source_VRM_UNTOUCHED\", true], [\"ElseIf_Master\", false], [\"ElseIf_Review_Stage\", false], [\"ElseIf_Revision_Backups\", true], [\"ElseIf_Fitting_Support\", false], [\"ElseIf_Silhouette_Before_20260923\", true], [\"ElseIf_Primary_Construction\", false], [\"ElseIf_Approved_Silhouette_20260924\", true], [\"ElseIf_Design_Basis\", false]]}, \"ElseIf_NaturalPose_Validation\": {\"frame\": 1, \"camera\": \"ElseIf_Cam_ThreeQuarter\", \"resolution\": [880, 1120, 100], \"samples\": 48, \"collections\": [[\"ElseIf_NaturalPose_TEMP_SKINNING\", false], [\"ElseIf_Design_NaturalPose\", false]]}}\n{'ElseIf_Basis_Construction': 134, 'ElseIf_NaturalPose_Validation': 134}\n"
+  }
+}

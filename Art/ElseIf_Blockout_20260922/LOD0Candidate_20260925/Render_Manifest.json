@@ -1,0 +1,194 @@
+[
+  {
+    "file": "Current_Base_HighAngle.png",
+    "scene": "ElseIf_Game_Backup_Review",
+    "frame": 1,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Optimized_Base_HighAngle.png",
+    "scene": "ElseIf_LOD0_Review",
+    "frame": 1,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Current_Natural_HighAngle.png",
+    "scene": "ElseIf_Game_Backup_Review",
+    "frame": 11,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Optimized_Natural_HighAngle.png",
+    "scene": "ElseIf_LOD0_Review",
+    "frame": 11,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Current_ArmsWide.png",
+    "scene": "ElseIf_Game_Backup_Review",
+    "frame": 71,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Optimized_ArmsWide.png",
+    "scene": "ElseIf_LOD0_Review",
+    "frame": 71,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Current_AsymmetricAim.png",
+    "scene": "ElseIf_Game_Backup_Review",
+    "frame": 41,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Optimized_AsymmetricAim.png",
+    "scene": "ElseIf_LOD0_Review",
+    "frame": 41,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Current_Elbow90.png",
+    "scene": "ElseIf_Game_Backup_Review",
+    "frame": 51,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Optimized_Elbow90.png",
+    "scene": "ElseIf_LOD0_Review",
+    "frame": 51,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Current_OneArmBack.png",
+    "scene": "ElseIf_Game_Backup_Review",
+    "frame": 61,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Optimized_OneArmBack.png",
+    "scene": "ElseIf_LOD0_Review",
+    "frame": 61,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Current_WristTwist.png",
+    "scene": "ElseIf_Game_Backup_Review",
+    "frame": 101,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Optimized_WristTwist.png",
+    "scene": "ElseIf_LOD0_Review",
+    "frame": 101,
+    "camera": "Game_Cam_Stress_HighAngle",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Current_Base_BackQuarter.png",
+    "scene": "ElseIf_Game_Backup_Review",
+    "frame": 1,
+    "camera": "ElseIf_Cam_BackQuarter",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  },
+  {
+    "file": "Optimized_Base_BackQuarter.png",
+    "scene": "ElseIf_LOD0_Review",
+    "frame": 1,
+    "camera": "ElseIf_Cam_BackQuarter",
+    "resolution": [
+      880,
+      1120,
+      100
+    ],
+    "samples": 48
+  }
+]

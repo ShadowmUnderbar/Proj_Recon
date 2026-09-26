@@ -1,0 +1,856 @@
+[
+  {
+    "mesh": "Mobile__Shorts",
+    "component": "EL_Thigh_Band_L",
+    "before": 780,
+    "after": 350,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Shorts",
+    "component": "EL_Thigh_Band_R",
+    "before": 780,
+    "after": 350,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Shorts",
+    "component": "EL_Thigh_Fastener_L",
+    "before": 30,
+    "after": 30,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Shorts",
+    "component": "EL_Thigh_Fastener_R",
+    "before": 30,
+    "after": 30,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Shorts",
+    "component": "EL_Thigh_Tag_L",
+    "before": 42,
+    "after": 42,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Shorts",
+    "component": "EL_Thigh_Tag_R",
+    "before": 42,
+    "after": 42,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Shorts",
+    "component": "ElseIf_Shorts",
+    "before": 11424,
+    "after": 2512,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_L",
+    "component": "EL_Sock_L_Mark_0",
+    "before": 17,
+    "after": 17,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_L",
+    "component": "EL_Sock_L_Mark_1",
+    "before": 22,
+    "after": 22,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_L",
+    "component": "EL_Sock_L_Mark_2",
+    "before": 17,
+    "after": 17,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_L",
+    "component": "EL_Sock_L_Rule_0",
+    "before": 108,
+    "after": 23,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_L",
+    "component": "EL_Sock_L_Rule_1",
+    "before": 11,
+    "after": 11,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_L",
+    "component": "EL_Sock_L_Rule_2",
+    "before": 7,
+    "after": 7,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_L",
+    "component": "ElseIf_Sock_L",
+    "before": 18588,
+    "after": 4088,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_R",
+    "component": "EL_Sock_R_Mark_0",
+    "before": 17,
+    "after": 17,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_R",
+    "component": "EL_Sock_R_Mark_1",
+    "before": 22,
+    "after": 22,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_R",
+    "component": "EL_Sock_R_Mark_2",
+    "before": 17,
+    "after": 17,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_R",
+    "component": "EL_Sock_R_Rule_0",
+    "before": 108,
+    "after": 23,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_R",
+    "component": "EL_Sock_R_Rule_1",
+    "before": 10,
+    "after": 10,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_R",
+    "component": "EL_Sock_R_Rule_2",
+    "before": 10,
+    "after": 10,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Socks_R",
+    "component": "ElseIf_Sock_R",
+    "before": 18564,
+    "after": 4084,
+    "requested_ratio": 0.22
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "EL_Shoe_L_AnkleStrap",
+    "before": 236,
+    "after": 58,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "EL_Shoe_L_BuckleFrame",
+    "before": 96,
+    "after": 96,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "EL_Shoe_L_BuckleInset",
+    "before": 18,
+    "after": 18,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "EL_Shoe_L_HeelWhite",
+    "before": 128,
+    "after": 32,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "EL_Shoe_L_RedCross",
+    "before": 22,
+    "after": 22,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "EL_Shoe_L_SideWhite",
+    "before": 128,
+    "after": 32,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "EL_Shoe_L_WhiteBand_0",
+    "before": 204,
+    "after": 50,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "EL_Shoe_L_WhiteBand_1",
+    "before": 204,
+    "after": 50,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "EL_Shoe_L_WhiteBand_2",
+    "before": 204,
+    "after": 50,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "ElseIf_Shoe_L_AnkleCollar",
+    "before": 1792,
+    "after": 448,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "ElseIf_Shoe_L_Sole",
+    "before": 1216,
+    "after": 218,
+    "requested_ratio": 0.18
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "ElseIf_Shoe_L_Tongue",
+    "before": 672,
+    "after": 168,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_L",
+    "component": "ElseIf_Shoe_L_Upper",
+    "before": 5760,
+    "after": 1440,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "EL_Shoe_R_AnkleStrap",
+    "before": 236,
+    "after": 58,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "EL_Shoe_R_BuckleFrame",
+    "before": 96,
+    "after": 96,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "EL_Shoe_R_BuckleInset",
+    "before": 18,
+    "after": 18,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "EL_Shoe_R_HeelWhite",
+    "before": 128,
+    "after": 32,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "EL_Shoe_R_RedCross",
+    "before": 22,
+    "after": 22,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "EL_Shoe_R_SideWhite",
+    "before": 128,
+    "after": 32,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "EL_Shoe_R_WhiteBand_0",
+    "before": 204,
+    "after": 50,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "EL_Shoe_R_WhiteBand_1",
+    "before": 204,
+    "after": 50,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "EL_Shoe_R_WhiteBand_2",
+    "before": 204,
+    "after": 50,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "ElseIf_Shoe_R_AnkleCollar",
+    "before": 1792,
+    "after": 448,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "ElseIf_Shoe_R_Sole",
+    "before": 1216,
+    "after": 218,
+    "requested_ratio": 0.18
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "ElseIf_Shoe_R_Tongue",
+    "before": 672,
+    "after": 168,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Shoes_R",
+    "component": "ElseIf_Shoe_R_Upper",
+    "before": 5760,
+    "after": 1440,
+    "requested_ratio": 0.25
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Back_BuckleInset_L",
+    "before": 12,
+    "after": 12,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Back_BuckleInset_R",
+    "before": 12,
+    "after": 12,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Back_Buckle_L",
+    "before": 76,
+    "after": 76,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Back_Buckle_R",
+    "before": 76,
+    "after": 76,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Back_Center_Symbol",
+    "before": 17,
+    "after": 17,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Back_Center_Tab",
+    "before": 212,
+    "after": 94,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Back_Print_Base",
+    "before": 2002,
+    "after": 1000,
+    "requested_ratio": 0.5
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Back_Reference_Artwork",
+    "before": 885,
+    "after": 441,
+    "requested_ratio": 0.5
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Back_Webbing_L",
+    "before": 546,
+    "after": 244,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Back_Webbing_R",
+    "before": 516,
+    "after": 232,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Chest_AO",
+    "before": 77,
+    "after": 77,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Chest_Rules",
+    "before": 14,
+    "after": 14,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Collar_A",
+    "before": 17,
+    "after": 17,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Collar_Fastener_-0.027",
+    "before": 32,
+    "after": 32,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Collar_Fastener_0.027",
+    "before": 32,
+    "after": 32,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Hem_L_Rule",
+    "before": 6,
+    "after": 6,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Hem_L_Triangle",
+    "before": 22,
+    "after": 22,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Hem_R_Rule",
+    "before": 6,
+    "after": 6,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Hem_R_Triangle",
+    "before": 22,
+    "after": 22,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Pocket_L_Opening",
+    "before": 72,
+    "after": 72,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Pocket_L_Welt",
+    "before": 202,
+    "after": 90,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Pocket_R_Opening",
+    "before": 72,
+    "after": 72,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Pocket_R_Welt",
+    "before": 288,
+    "after": 128,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Shoulder_Back_Connector_L",
+    "before": 112,
+    "after": 50,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Shoulder_Back_Connector_R",
+    "before": 112,
+    "after": 50,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Shoulder_Webbing_L",
+    "before": 296,
+    "after": 132,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Shoulder_Webbing_R",
+    "before": 296,
+    "after": 132,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_Box_1",
+    "before": 71,
+    "after": 71,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_Box_2",
+    "before": 43,
+    "after": 43,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_Box_3",
+    "before": 52,
+    "after": 52,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_CuffTab",
+    "before": 24,
+    "after": 24,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_Icon_0",
+    "before": 17,
+    "after": 17,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_Icon_1",
+    "before": 48,
+    "after": 48,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_Icon_2",
+    "before": 22,
+    "after": 22,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_Icon_3",
+    "before": 17,
+    "after": 17,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_InkStrip",
+    "before": 492,
+    "after": 220,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_RedTab",
+    "before": 92,
+    "after": 92,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_UpperBar_0",
+    "before": 28,
+    "after": 28,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_UpperBar_1",
+    "before": 28,
+    "after": 28,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_UpperBar_2",
+    "before": 28,
+    "after": 28,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_L_UpperBar_3",
+    "before": 28,
+    "after": 28,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_Box_1",
+    "before": 76,
+    "after": 76,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_Box_2",
+    "before": 27,
+    "after": 27,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_Box_3",
+    "before": 54,
+    "after": 54,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_CuffTab",
+    "before": 24,
+    "after": 24,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_Icon_0",
+    "before": 17,
+    "after": 17,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_Icon_1",
+    "before": 48,
+    "after": 48,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_Icon_2",
+    "before": 22,
+    "after": 22,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_Icon_3",
+    "before": 17,
+    "after": 17,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_InkStrip",
+    "before": 300,
+    "after": 134,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_RedTab",
+    "before": 92,
+    "after": 92,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_UpperBar_0",
+    "before": 28,
+    "after": 28,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_UpperBar_1",
+    "before": 28,
+    "after": 28,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_UpperBar_2",
+    "before": 28,
+    "after": 28,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Sleeve_R_UpperBar_3",
+    "before": 28,
+    "after": 28,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_UpperArm_DUM",
+    "before": 108,
+    "after": 48,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_UpperArm_RearPatch",
+    "before": 160,
+    "after": 72,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Zip_Pull_Red",
+    "before": 108,
+    "after": 48,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "EL_Zip_Slider",
+    "before": 60,
+    "after": 60,
+    "requested_ratio": 0.45
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Back",
+    "before": 20070,
+    "after": 4616,
+    "requested_ratio": 0.23
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Closure_Tape",
+    "before": 1044,
+    "after": 240,
+    "requested_ratio": 0.23
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Collar_Turnback",
+    "before": 5160,
+    "after": 2064,
+    "requested_ratio": 0.4
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Cuff_L",
+    "before": 3360,
+    "after": 1612,
+    "requested_ratio": 0.48
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Cuff_L_Turnback",
+    "before": 3360,
+    "after": 1612,
+    "requested_ratio": 0.48
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Cuff_R",
+    "before": 3360,
+    "after": 1612,
+    "requested_ratio": 0.48
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Cuff_R_Turnback",
+    "before": 3360,
+    "after": 1612,
+    "requested_ratio": 0.48
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Front_Facing_L",
+    "before": 1430,
+    "after": 328,
+    "requested_ratio": 0.23
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Front_Facing_R",
+    "before": 1392,
+    "after": 320,
+    "requested_ratio": 0.23
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Front_L",
+    "before": 10278,
+    "after": 2362,
+    "requested_ratio": 0.23
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Front_R",
+    "before": 10216,
+    "after": 2348,
+    "requested_ratio": 0.23
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Hem_Facing",
+    "before": 8368,
+    "after": 3346,
+    "requested_ratio": 0.4
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Hem_Turnback",
+    "before": 5360,
+    "after": 2144,
+    "requested_ratio": 0.4
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Sleeve_L",
+    "before": 32928,
+    "after": 13170,
+    "requested_ratio": 0.4
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Sleeve_R",
+    "before": 32928,
+    "after": 13170,
+    "requested_ratio": 0.4
+  },
+  {
+    "mesh": "Mobile__Jacket",
+    "component": "ElseIf_Jacket_Stand_Collar",
+    "before": 13256,
+    "after": 5302,
+    "requested_ratio": 0.4
+  }
+]

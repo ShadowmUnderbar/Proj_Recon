@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: コピーを「ElseIf_Game_Backup.blend」で保存しました\n情報: 「ElseIf_Game_LOD0_Candidate.blend」で保存しました\n{\"baseline\": \"Verified UnderarmCorrected Game + approved Master local quality deltas\", \"transferred_objects\": 50, \"optimized_collection\": \"ElseIf_Game_Optimized\", \"backup_collection\": \"ElseIf_Game_Backup\"}\n"
+  }
+}

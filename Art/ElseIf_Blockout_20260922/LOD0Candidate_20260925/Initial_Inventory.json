@@ -1,0 +1,450 @@
+{
+  "file": "D:\\UnityProj\\Proj_Recon\\Art\\ElseIf_Blockout_20260922\\MasterLocalQuality_20260925\\ElseIf_Master_LocalQuality.blend",
+  "collections": {
+    "ElseIf_Game_Current": {
+      "meshes": 124,
+      "vertices": 159887,
+      "triangles": 311109,
+      "skinned": 124,
+      "armatures": [
+        "ElseIf_Game_Humanoid"
+      ],
+      "shapes": {
+        "Game__ElseIf_Jacket_Sleeve_L": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Contact_L_B_Side90",
+          "DLHN_Contact_L_D_AsymmetricAim",
+          "DLHN_Contact_L_F_OneArmBack",
+          "DLHN_Contact_L_G_WideOpen",
+          "DLHN_Contact_L_I_FrontBack",
+          "DLHN_Contact_L_J_WristTwist"
+        ],
+        "Game__EL_Sleeve_L_InkStrip": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_Icon_0": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_Icon_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_Box_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_Icon_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_Box_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_Icon_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_Box_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_UpperBar_0": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_UpperBar_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_UpperBar_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_UpperBar_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_RedTab": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Game__EL_Sleeve_L_CuffTab": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ]
+      },
+      "body": {
+        "Game__ElseIf_Mannequin": 7520,
+        "Game__ElseIf_Anatomy_Restoration": 36024
+      }
+    },
+    "ElseIf_Game_Optimized_Test": {
+      "meshes": 124,
+      "vertices": 148131,
+      "triangles": 288752,
+      "skinned": 124,
+      "armatures": [
+        "ElseIf_Optimized_Humanoid"
+      ],
+      "shapes": {
+        "Opt__ElseIf_Jacket_Sleeve_L": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Contact_L_B_Side90",
+          "DLHN_Contact_L_D_AsymmetricAim",
+          "DLHN_Contact_L_F_OneArmBack",
+          "DLHN_Contact_L_G_WideOpen",
+          "DLHN_Contact_L_I_FrontBack",
+          "DLHN_Contact_L_J_WristTwist",
+          "DLHN_Wide_ClothEase_L",
+          "DLHN_Wide_ClothEase_R",
+          "DLHN_Contact_L_B_Side90.001",
+          "DLHN_Contact_L_G_WideOpen.001"
+        ],
+        "Opt__EL_Sleeve_L_InkStrip": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Opt__EL_Sleeve_L_Icon_0": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Opt__EL_Sleeve_L_Icon_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Opt__EL_Sleeve_L_Box_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Opt__EL_Sleeve_L_Icon_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Opt__EL_Sleeve_L_Box_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Opt__EL_Sleeve_L_Icon_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Opt__EL_Sleeve_L_Box_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Opt__EL_Sleeve_L_UpperBar_0": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Opt__EL_Sleeve_L_UpperBar_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Opt__EL_Sleeve_L_UpperBar_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Opt__EL_Sleeve_L_UpperBar_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Opt__EL_Sleeve_L_RedTab": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Opt__EL_Sleeve_L_CuffTab": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ]
+      },
+      "body": {
+        "Opt__ElseIf_Mannequin": 7520,
+        "Opt__ElseIf_Anatomy_Restoration": 36024
+      }
+    },
+    "ElseIf_Game_Optimized_Corrected": {
+      "meshes": 124,
+      "vertices": 148131,
+      "triangles": 288752,
+      "skinned": 124,
+      "armatures": [
+        "ElseIf_Underarm_Humanoid"
+      ],
+      "shapes": {
+        "Fix__ElseIf_Jacket_Sleeve_L": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Contact_L_B_Side90",
+          "DLHN_Contact_L_D_AsymmetricAim",
+          "DLHN_Contact_L_F_OneArmBack",
+          "DLHN_Contact_L_G_WideOpen",
+          "DLHN_Contact_L_I_FrontBack",
+          "DLHN_Contact_L_J_WristTwist",
+          "DLHN_Wide_ClothEase_L",
+          "DLHN_Wide_ClothEase_R",
+          "DLHN_Contact_L_B_Side90.001",
+          "DLHN_Contact_L_G_WideOpen.001",
+          "DLHN_Underarm_Drape_L"
+        ],
+        "Fix__EL_Sleeve_L_InkStrip": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Fix__EL_Sleeve_L_Icon_0": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Fix__EL_Sleeve_L_Icon_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Fix__EL_Sleeve_L_Box_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Fix__EL_Sleeve_L_Icon_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Fix__EL_Sleeve_L_Box_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Fix__EL_Sleeve_L_Icon_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Fix__EL_Sleeve_L_Box_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Fix__EL_Sleeve_L_UpperBar_0": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Fix__EL_Sleeve_L_UpperBar_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Fix__EL_Sleeve_L_UpperBar_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Fix__EL_Sleeve_L_UpperBar_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Wide_ClothEase_L"
+        ],
+        "Fix__EL_Sleeve_L_RedTab": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Fix__EL_Sleeve_L_CuffTab": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ]
+      },
+      "body": {
+        "Fix__ElseIf_Mannequin": 7520,
+        "Fix__ElseIf_Anatomy_Restoration": 36024
+      }
+    },
+    "ElseIf_Game_LocalRetopo": {
+      "meshes": 124,
+      "vertices": 143809,
+      "triangles": 280108,
+      "skinned": 124,
+      "armatures": [
+        "ElseIf_Topology_Humanoid"
+      ],
+      "shapes": {
+        "Topo__ElseIf_Jacket_Sleeve_L": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L",
+          "DLHN_Contact_L_J_WristTwist",
+          "DLHN_NewTopology_Clearance_L_A_Natural",
+          "DLHN_NewTopology_Clearance_L_B_Side90",
+          "DLHN_NewTopology_Clearance_L_C_Forward",
+          "DLHN_NewTopology_Clearance_L_D_AsymmetricAim",
+          "DLHN_NewTopology_Clearance_L_F_OneArmBack",
+          "DLHN_NewTopology_Clearance_L_G_WideOpen",
+          "DLHN_NewTopology_Clearance_L_H_FrontNear",
+          "DLHN_NewTopology_Clearance_L_I_FrontBack",
+          "DLHN_NewTopology_Clearance_L_K_Arms45"
+        ],
+        "Topo__EL_Sleeve_L_InkStrip": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_Icon_0": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_Icon_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_Box_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_Icon_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_Box_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_Icon_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_Box_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_UpperBar_0": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_UpperBar_1": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_UpperBar_2": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_UpperBar_3": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_RedTab": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ],
+        "Topo__EL_Sleeve_L_CuffTab": [
+          "Basis",
+          "DLHN_ElbowVolume_L",
+          "DLHN_Wrist_Clearance_L"
+        ]
+      },
+      "body": {
+        "Topo__ElseIf_Mannequin": 7520,
+        "Topo__ElseIf_Anatomy_Restoration": 36024
+      }
+    },
+    "ElseIf_Master_Quality": {
+      "meshes": 125,
+      "vertices": 65334,
+      "triangles": 110896,
+      "skinned": 1,
+      "armatures": [
+        "Quality__Armature",
+        "Quality__ElseIf_Humanoid"
+      ],
+      "shapes": {
+        "Quality__ElseIf_Jacket_Sleeve_L": [
+          "Basis",
+          "Secondary_Cloth_Weight_20260924",
+          "Local_Shoulder_Armhole_20260924",
+          "Quality_Shoulder_Armhole_20260925"
+        ]
+      },
+      "body": {
+        "Quality__ElseIf_Mannequin": 14287,
+        "Quality__ElseIf_Anatomy_Restoration": 1748
+      }
+    }
+  },
+  "scenes": [
+    "ElseIf_Basis_Construction",
+    "ElseIf_Current_Review",
+    "ElseIf_Game_Validation",
+    "ElseIf_Master_Quality_NaturalPose",
+    "ElseIf_Master_Quality_Review",
+    "ElseIf_NaturalPose_Validation",
+    "ElseIf_Optimized_Review",
+    "ElseIf_Secondary_Raking_Basis",
+    "ElseIf_Secondary_Raking_NaturalPose",
+    "ElseIf_Topology_Review",
+    "ElseIf_Underarm_Review",
+    "Startup_Untouched"
+  ]
+}

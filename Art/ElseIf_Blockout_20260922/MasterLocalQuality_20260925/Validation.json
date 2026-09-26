@@ -1,0 +1,68 @@
+{
+  "protected_changes": [],
+  "poses": {
+    "ElseIf_Master_Quality_Review": {
+      "cloth_body_intersections": [],
+      "design_body_intersections": [],
+      "hands": {
+        "L": {
+          "points": 764,
+          "outside": 0
+        },
+        "R": {
+          "points": 764,
+          "outside": 0
+        }
+      },
+      "thigh_coverage": {
+        "points": 204,
+        "outside": 0
+      },
+      "foot_coverage": {
+        "L": {
+          "points": 279,
+          "outside": 0,
+          "sample": []
+        },
+        "R": {
+          "points": 279,
+          "outside": 0,
+          "sample": []
+        }
+      }
+    },
+    "ElseIf_Master_Quality_NaturalPose": {
+      "cloth_body_intersections": [],
+      "design_body_intersections": [],
+      "hands": {
+        "L": {
+          "points": 764,
+          "outside": 0
+        },
+        "R": {
+          "points": 764,
+          "outside": 0
+        }
+      },
+      "thigh_coverage": {
+        "points": 204,
+        "outside": 0
+      },
+      "foot_coverage": {
+        "L": {
+          "points": 279,
+          "outside": 0,
+          "sample": []
+        },
+        "R": {
+          "points": 279,
+          "outside": 0,
+          "sample": []
+        }
+      }
+    }
+  },
+  "topology_unchanged": true,
+  "material_slots_unchanged": true,
+  "protected_duplicate_changes": []
+}

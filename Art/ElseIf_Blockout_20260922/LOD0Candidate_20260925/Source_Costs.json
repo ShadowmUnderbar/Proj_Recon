@@ -1,0 +1,1916 @@
+{
+  "ElseIf_Game_Current": {
+    "vertices": 159887,
+    "triangles": 311109,
+    "meshes": 124,
+    "skinned_meshes": 124,
+    "material_slots": 128,
+    "materials": 10,
+    "textures": 1,
+    "bones": 74,
+    "max_bone_influence": 4,
+    "shape_key_placements": 122,
+    "shape_key_names": 19,
+    "mesh_breakdown": [
+      {
+        "name": "Game__ElseIf_Mannequin",
+        "triangles": 7520,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Anatomy_Restoration",
+        "triangles": 36024,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Shorts",
+        "triangles": 11424,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Sock_L",
+        "triangles": 26496,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Sock_R",
+        "triangles": 26496,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Shoe_L_Sole",
+        "triangles": 1344,
+        "slots": 2
+      },
+      {
+        "name": "Game__ElseIf_Shoe_L_Upper",
+        "triangles": 5760,
+        "slots": 2
+      },
+      {
+        "name": "Game__ElseIf_Shoe_R_Sole",
+        "triangles": 1344,
+        "slots": 2
+      },
+      {
+        "name": "Game__ElseIf_Shoe_R_Upper",
+        "triangles": 5760,
+        "slots": 2
+      },
+      {
+        "name": "Game__ElseIf_Shoe_L_AnkleCollar",
+        "triangles": 1792,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Shoe_L_Tongue",
+        "triangles": 672,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Shoe_R_AnkleCollar",
+        "triangles": 1792,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Shoe_R_Tongue",
+        "triangles": 672,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Front_L",
+        "triangles": 12756,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Front_R",
+        "triangles": 12756,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Back",
+        "triangles": 24832,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Sleeve_L",
+        "triangles": 32928,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Sleeve_R",
+        "triangles": 32928,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Stand_Collar",
+        "triangles": 13256,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Hem_Facing",
+        "triangles": 8368,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Cuff_L",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Cuff_R",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Closure_Tape",
+        "triangles": 1736,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Front_Facing_L",
+        "triangles": 2316,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Front_Facing_R",
+        "triangles": 2316,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Collar_Turnback",
+        "triangles": 5160,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Hem_Turnback",
+        "triangles": 5360,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Cuff_L_Turnback",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Game__ElseIf_Jacket_Cuff_R_Turnback",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Chest_AO",
+        "triangles": 77,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Chest_Rules",
+        "triangles": 14,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Zip_Pull_Red",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Zip_Slider",
+        "triangles": 60,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Pocket_L_Welt",
+        "triangles": 376,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Pocket_L_Opening",
+        "triangles": 72,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Hem_L_Triangle",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Hem_L_Rule",
+        "triangles": 6,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Pocket_R_Welt",
+        "triangles": 376,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Pocket_R_Opening",
+        "triangles": 72,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Hem_R_Triangle",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Hem_R_Rule",
+        "triangles": 6,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Back_Print_Base",
+        "triangles": 2504,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Back_Reference_Artwork",
+        "triangles": 1080,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Back_Webbing_L",
+        "triangles": 732,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Back_Buckle_L",
+        "triangles": 76,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Back_BuckleInset_L",
+        "triangles": 12,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoulder_Webbing_L",
+        "triangles": 296,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Back_Webbing_R",
+        "triangles": 732,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Back_Buckle_R",
+        "triangles": 76,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Back_BuckleInset_R",
+        "triangles": 12,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoulder_Webbing_R",
+        "triangles": 296,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Back_Center_Tab",
+        "triangles": 460,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Back_Center_Symbol",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_InkStrip",
+        "triangles": 560,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_Icon_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_Icon_1",
+        "triangles": 48,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_Box_1",
+        "triangles": 176,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_Icon_2",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_Box_2",
+        "triangles": 176,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_Icon_3",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_Box_3",
+        "triangles": 176,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_UpperBar_0",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_UpperBar_1",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_UpperBar_2",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_UpperBar_3",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_RedTab",
+        "triangles": 92,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_L_CuffTab",
+        "triangles": 24,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_InkStrip",
+        "triangles": 560,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_Icon_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_Icon_1",
+        "triangles": 48,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_Box_1",
+        "triangles": 176,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_Icon_2",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_Box_2",
+        "triangles": 176,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_Icon_3",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_Box_3",
+        "triangles": 176,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_UpperBar_0",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_UpperBar_1",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_UpperBar_2",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_UpperBar_3",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_RedTab",
+        "triangles": 92,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sleeve_R_CuffTab",
+        "triangles": 24,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_UpperArm_RearPatch",
+        "triangles": 160,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_UpperArm_DUM",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Collar_A",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Collar_Fastener_-0.027",
+        "triangles": 32,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Collar_Fastener_0.027",
+        "triangles": 32,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Thigh_Band_L",
+        "triangles": 780,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Thigh_Fastener_L",
+        "triangles": 30,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Thigh_Tag_L",
+        "triangles": 42,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_L_Mark_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_L_Rule_0",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_L_Mark_1",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_L_Rule_1",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_L_Mark_2",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_L_Rule_2",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_L_WhiteBand_0",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_L_WhiteBand_1",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_L_WhiteBand_2",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_L_AnkleStrap",
+        "triangles": 236,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_L_BuckleFrame",
+        "triangles": 96,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_L_BuckleInset",
+        "triangles": 18,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_L_RedCross",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_L_SideWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_L_HeelWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Thigh_Band_R",
+        "triangles": 780,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Thigh_Fastener_R",
+        "triangles": 30,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Thigh_Tag_R",
+        "triangles": 42,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_R_Mark_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_R_Rule_0",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_R_Mark_1",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_R_Rule_1",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_R_Mark_2",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Sock_R_Rule_2",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_R_WhiteBand_0",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_R_WhiteBand_1",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_R_WhiteBand_2",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_R_AnkleStrap",
+        "triangles": 236,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_R_BuckleFrame",
+        "triangles": 96,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_R_BuckleInset",
+        "triangles": 18,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_R_RedCross",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_R_SideWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoe_R_HeelWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoulder_Back_Connector_L",
+        "triangles": 112,
+        "slots": 1
+      },
+      {
+        "name": "Game__EL_Shoulder_Back_Connector_R",
+        "triangles": 112,
+        "slots": 1
+      }
+    ],
+    "non_bone_vertex_groups": [
+      "Visible_Anatomy_Only"
+    ]
+  },
+  "ElseIf_Game_Optimized_Corrected": {
+    "vertices": 148131,
+    "triangles": 288752,
+    "meshes": 124,
+    "skinned_meshes": 124,
+    "material_slots": 128,
+    "materials": 10,
+    "textures": 1,
+    "bones": 74,
+    "max_bone_influence": 4,
+    "shape_key_placements": 190,
+    "shape_key_names": 27,
+    "mesh_breakdown": [
+      {
+        "name": "Fix__ElseIf_Mannequin",
+        "triangles": 7520,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Anatomy_Restoration",
+        "triangles": 36024,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Shorts",
+        "triangles": 11424,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Sock_L",
+        "triangles": 20938,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Sock_R",
+        "triangles": 20928,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Shoe_L_Sole",
+        "triangles": 1324,
+        "slots": 2
+      },
+      {
+        "name": "Fix__ElseIf_Shoe_L_Upper",
+        "triangles": 5760,
+        "slots": 2
+      },
+      {
+        "name": "Fix__ElseIf_Shoe_R_Sole",
+        "triangles": 1324,
+        "slots": 2
+      },
+      {
+        "name": "Fix__ElseIf_Shoe_R_Upper",
+        "triangles": 5760,
+        "slots": 2
+      },
+      {
+        "name": "Fix__ElseIf_Shoe_L_AnkleCollar",
+        "triangles": 1792,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Shoe_L_Tongue",
+        "triangles": 672,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Shoe_R_AnkleCollar",
+        "triangles": 1792,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Shoe_R_Tongue",
+        "triangles": 672,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Front_L",
+        "triangles": 11222,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Front_R",
+        "triangles": 11056,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Back",
+        "triangles": 21638,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Sleeve_L",
+        "triangles": 32928,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Sleeve_R",
+        "triangles": 32928,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Stand_Collar",
+        "triangles": 13256,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Hem_Facing",
+        "triangles": 8368,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Cuff_L",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Cuff_R",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Closure_Tape",
+        "triangles": 1044,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Front_Facing_L",
+        "triangles": 1430,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Front_Facing_R",
+        "triangles": 1392,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Collar_Turnback",
+        "triangles": 5160,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Hem_Turnback",
+        "triangles": 5360,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Cuff_L_Turnback",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Fix__ElseIf_Jacket_Cuff_R_Turnback",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Chest_AO",
+        "triangles": 77,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Chest_Rules",
+        "triangles": 14,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Zip_Pull_Red",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Zip_Slider",
+        "triangles": 60,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Pocket_L_Welt",
+        "triangles": 292,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Pocket_L_Opening",
+        "triangles": 72,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Hem_L_Triangle",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Hem_L_Rule",
+        "triangles": 6,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Pocket_R_Welt",
+        "triangles": 356,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Pocket_R_Opening",
+        "triangles": 72,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Hem_R_Triangle",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Hem_R_Rule",
+        "triangles": 6,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Back_Print_Base",
+        "triangles": 2196,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Back_Reference_Artwork",
+        "triangles": 928,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Back_Webbing_L",
+        "triangles": 652,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Back_Buckle_L",
+        "triangles": 76,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Back_BuckleInset_L",
+        "triangles": 12,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoulder_Webbing_L",
+        "triangles": 296,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Back_Webbing_R",
+        "triangles": 600,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Back_Buckle_R",
+        "triangles": 76,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Back_BuckleInset_R",
+        "triangles": 12,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoulder_Webbing_R",
+        "triangles": 296,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Back_Center_Tab",
+        "triangles": 212,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Back_Center_Symbol",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_InkStrip",
+        "triangles": 492,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_Icon_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_Icon_1",
+        "triangles": 48,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_Box_1",
+        "triangles": 71,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_Icon_2",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_Box_2",
+        "triangles": 43,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_Icon_3",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_Box_3",
+        "triangles": 52,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_UpperBar_0",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_UpperBar_1",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_UpperBar_2",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_UpperBar_3",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_RedTab",
+        "triangles": 92,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_L_CuffTab",
+        "triangles": 24,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_InkStrip",
+        "triangles": 518,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_Icon_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_Icon_1",
+        "triangles": 48,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_Box_1",
+        "triangles": 76,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_Icon_2",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_Box_2",
+        "triangles": 27,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_Icon_3",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_Box_3",
+        "triangles": 54,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_UpperBar_0",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_UpperBar_1",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_UpperBar_2",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_UpperBar_3",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_RedTab",
+        "triangles": 92,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sleeve_R_CuffTab",
+        "triangles": 24,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_UpperArm_RearPatch",
+        "triangles": 160,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_UpperArm_DUM",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Collar_A",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Collar_Fastener_-0.027",
+        "triangles": 32,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Collar_Fastener_0.027",
+        "triangles": 32,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Thigh_Band_L",
+        "triangles": 780,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Thigh_Fastener_L",
+        "triangles": 30,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Thigh_Tag_L",
+        "triangles": 42,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_L_Mark_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_L_Rule_0",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_L_Mark_1",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_L_Rule_1",
+        "triangles": 11,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_L_Mark_2",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_L_Rule_2",
+        "triangles": 7,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_L_WhiteBand_0",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_L_WhiteBand_1",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_L_WhiteBand_2",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_L_AnkleStrap",
+        "triangles": 236,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_L_BuckleFrame",
+        "triangles": 96,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_L_BuckleInset",
+        "triangles": 18,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_L_RedCross",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_L_SideWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_L_HeelWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Thigh_Band_R",
+        "triangles": 780,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Thigh_Fastener_R",
+        "triangles": 30,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Thigh_Tag_R",
+        "triangles": 42,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_R_Mark_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_R_Rule_0",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_R_Mark_1",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_R_Rule_1",
+        "triangles": 10,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_R_Mark_2",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Sock_R_Rule_2",
+        "triangles": 10,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_R_WhiteBand_0",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_R_WhiteBand_1",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_R_WhiteBand_2",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_R_AnkleStrap",
+        "triangles": 236,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_R_BuckleFrame",
+        "triangles": 96,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_R_BuckleInset",
+        "triangles": 18,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_R_RedCross",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_R_SideWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoe_R_HeelWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoulder_Back_Connector_L",
+        "triangles": 112,
+        "slots": 1
+      },
+      {
+        "name": "Fix__EL_Shoulder_Back_Connector_R",
+        "triangles": 112,
+        "slots": 1
+      }
+    ],
+    "non_bone_vertex_groups": [
+      "Visible_Anatomy_Only"
+    ]
+  },
+  "ElseIf_Game_LocalRetopo": {
+    "vertices": 143809,
+    "triangles": 280108,
+    "meshes": 124,
+    "skinned_meshes": 124,
+    "material_slots": 128,
+    "materials": 10,
+    "textures": 1,
+    "bones": 74,
+    "max_bone_influence": 4,
+    "shape_key_placements": 143,
+    "shape_key_names": 23,
+    "mesh_breakdown": [
+      {
+        "name": "Topo__ElseIf_Mannequin",
+        "triangles": 7520,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Anatomy_Restoration",
+        "triangles": 36024,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Shorts",
+        "triangles": 11424,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Sock_L",
+        "triangles": 20938,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Sock_R",
+        "triangles": 20928,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Shoe_L_Sole",
+        "triangles": 1324,
+        "slots": 2
+      },
+      {
+        "name": "Topo__ElseIf_Shoe_L_Upper",
+        "triangles": 5760,
+        "slots": 2
+      },
+      {
+        "name": "Topo__ElseIf_Shoe_R_Sole",
+        "triangles": 1324,
+        "slots": 2
+      },
+      {
+        "name": "Topo__ElseIf_Shoe_R_Upper",
+        "triangles": 5760,
+        "slots": 2
+      },
+      {
+        "name": "Topo__ElseIf_Shoe_L_AnkleCollar",
+        "triangles": 1792,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Shoe_L_Tongue",
+        "triangles": 672,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Shoe_R_AnkleCollar",
+        "triangles": 1792,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Shoe_R_Tongue",
+        "triangles": 672,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Front_L",
+        "triangles": 10272,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Front_R",
+        "triangles": 10264,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Back",
+        "triangles": 21174,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Sleeve_L",
+        "triangles": 29710,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Sleeve_R",
+        "triangles": 29708,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Stand_Collar",
+        "triangles": 13256,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Hem_Facing",
+        "triangles": 8368,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Cuff_L",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Cuff_R",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Closure_Tape",
+        "triangles": 1044,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Front_Facing_L",
+        "triangles": 1430,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Front_Facing_R",
+        "triangles": 1392,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Collar_Turnback",
+        "triangles": 5160,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Hem_Turnback",
+        "triangles": 5360,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Cuff_L_Turnback",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Topo__ElseIf_Jacket_Cuff_R_Turnback",
+        "triangles": 3360,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Chest_AO",
+        "triangles": 77,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Chest_Rules",
+        "triangles": 14,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Zip_Pull_Red",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Zip_Slider",
+        "triangles": 60,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Pocket_L_Welt",
+        "triangles": 292,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Pocket_L_Opening",
+        "triangles": 72,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Hem_L_Triangle",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Hem_L_Rule",
+        "triangles": 6,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Pocket_R_Welt",
+        "triangles": 356,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Pocket_R_Opening",
+        "triangles": 72,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Hem_R_Triangle",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Hem_R_Rule",
+        "triangles": 6,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Back_Print_Base",
+        "triangles": 2196,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Back_Reference_Artwork",
+        "triangles": 928,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Back_Webbing_L",
+        "triangles": 652,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Back_Buckle_L",
+        "triangles": 76,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Back_BuckleInset_L",
+        "triangles": 12,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoulder_Webbing_L",
+        "triangles": 296,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Back_Webbing_R",
+        "triangles": 600,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Back_Buckle_R",
+        "triangles": 76,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Back_BuckleInset_R",
+        "triangles": 12,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoulder_Webbing_R",
+        "triangles": 296,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Back_Center_Tab",
+        "triangles": 212,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Back_Center_Symbol",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_InkStrip",
+        "triangles": 492,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_Icon_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_Icon_1",
+        "triangles": 48,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_Box_1",
+        "triangles": 71,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_Icon_2",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_Box_2",
+        "triangles": 43,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_Icon_3",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_Box_3",
+        "triangles": 52,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_UpperBar_0",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_UpperBar_1",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_UpperBar_2",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_UpperBar_3",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_RedTab",
+        "triangles": 92,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_L_CuffTab",
+        "triangles": 24,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_InkStrip",
+        "triangles": 518,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_Icon_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_Icon_1",
+        "triangles": 48,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_Box_1",
+        "triangles": 76,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_Icon_2",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_Box_2",
+        "triangles": 27,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_Icon_3",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_Box_3",
+        "triangles": 54,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_UpperBar_0",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_UpperBar_1",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_UpperBar_2",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_UpperBar_3",
+        "triangles": 28,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_RedTab",
+        "triangles": 92,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sleeve_R_CuffTab",
+        "triangles": 24,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_UpperArm_RearPatch",
+        "triangles": 160,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_UpperArm_DUM",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Collar_A",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Collar_Fastener_-0.027",
+        "triangles": 32,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Collar_Fastener_0.027",
+        "triangles": 32,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Thigh_Band_L",
+        "triangles": 780,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Thigh_Fastener_L",
+        "triangles": 30,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Thigh_Tag_L",
+        "triangles": 42,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_L_Mark_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_L_Rule_0",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_L_Mark_1",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_L_Rule_1",
+        "triangles": 11,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_L_Mark_2",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_L_Rule_2",
+        "triangles": 7,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_L_WhiteBand_0",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_L_WhiteBand_1",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_L_WhiteBand_2",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_L_AnkleStrap",
+        "triangles": 236,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_L_BuckleFrame",
+        "triangles": 96,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_L_BuckleInset",
+        "triangles": 18,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_L_RedCross",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_L_SideWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_L_HeelWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Thigh_Band_R",
+        "triangles": 780,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Thigh_Fastener_R",
+        "triangles": 30,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Thigh_Tag_R",
+        "triangles": 42,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_R_Mark_0",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_R_Rule_0",
+        "triangles": 108,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_R_Mark_1",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_R_Rule_1",
+        "triangles": 10,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_R_Mark_2",
+        "triangles": 17,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Sock_R_Rule_2",
+        "triangles": 10,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_R_WhiteBand_0",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_R_WhiteBand_1",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_R_WhiteBand_2",
+        "triangles": 204,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_R_AnkleStrap",
+        "triangles": 236,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_R_BuckleFrame",
+        "triangles": 96,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_R_BuckleInset",
+        "triangles": 18,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_R_RedCross",
+        "triangles": 22,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_R_SideWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoe_R_HeelWhite",
+        "triangles": 128,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoulder_Back_Connector_L",
+        "triangles": 112,
+        "slots": 1
+      },
+      {
+        "name": "Topo__EL_Shoulder_Back_Connector_R",
+        "triangles": 112,
+        "slots": 1
+      }
+    ],
+    "non_bone_vertex_groups": [
+      "Visible_Anatomy_Only"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "object": "LOD0__Jacket",
+  "active_uv": "DesignUV",
+  "render_uv": "DesignUV",
+  "source_uv": "Backup__EL_Back_Reference_Artwork / DesignUV",
+  "geometry_or_material_changes": false
+}

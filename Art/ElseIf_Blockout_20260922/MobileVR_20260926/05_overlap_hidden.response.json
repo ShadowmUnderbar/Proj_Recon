@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "Base {'Mobile__ElseIf_Anatomy_Restoration': 10392}\nA_Natural {'Mobile__ElseIf_Anatomy_Restoration': 9786}\nB_Side90 {'Mobile__ElseIf_Anatomy_Restoration': 6079}\nC_Forward {'Mobile__ElseIf_Anatomy_Restoration': 5283}\nD_AsymmetricAim {'Mobile__ElseIf_Anatomy_Restoration': 4522}\nE_Elbow90 {'Mobile__ElseIf_Anatomy_Restoration': 4516}\nF_OneArmBack {'Mobile__ElseIf_Anatomy_Restoration': 4271}\nG_WideOpen {'Mobile__ElseIf_Anatomy_Restoration': 3655}\nH_FrontNear {'Mobile__ElseIf_Anatomy_Restoration': 3441}\nI_FrontBack {'Mobile__ElseIf_Anatomy_Restoration': 3164}\nJ_WristTwist {'Mobile__ElseIf_Anatomy_Restoration': 3074}\nK_Arms45 {'Mobile__ElseIf_Anatomy_Restoration': 2679}\n情報: 「ElseIf_Game_MobileVR_Test.blend」で保存しました\n{'Mobile__ElseIf_Anatomy_Restoration': {'before_triangles': 31162, 'deleted_triangles': 1116, 'after_triangles': 30046, 'deleted_faces': 558}}\n"
+  }
+}
