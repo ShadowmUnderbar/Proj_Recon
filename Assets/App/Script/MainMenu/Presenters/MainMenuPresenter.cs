@@ -9,6 +9,7 @@ namespace App.MainMenu.Presenters
         private readonly IMainMenuView _mainMenuView;
 
         public Observable<Unit> OnStart => _mainMenuView.OnStart;
+        public Observable<Unit> OnOption => _mainMenuView.OnOption;
 
         [Inject]
         public MainMenuPresenter(IMainMenuView mainMenuView)
@@ -17,5 +18,9 @@ namespace App.MainMenu.Presenters
         }
 
         public void SetInteractable(bool interactable) => _mainMenuView.SetInteractable(interactable);
+
+        public void ShowMainPanel() => _mainMenuView.ShowMainPanel();
+
+        public void ShowOptionPanel() => _mainMenuView.ShowOptionPanel();
     }
 }

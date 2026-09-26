@@ -13,6 +13,9 @@ namespace App.MainMenu.Interface
 
         Observable<int> OnSnapTurnAngleChanged { get; }
 
+        /// <summary>閉じるボタンが押された</summary>
+        Observable<Unit> OnClose { get; }
+
         void SetDominantHand(HandType hand);
 
         void SetLocomotion(LocomotionType locomotion);
