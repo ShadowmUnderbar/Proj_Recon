@@ -18,6 +18,8 @@ namespace App.MainMenu.Presenters
 
         public void SnapTurn(float angleDegrees) => _menuLocomotionView.SnapTurn(angleDegrees);
 
+        public void Look(float yawDegrees, float pitchDegrees) => _menuLocomotionView.Look(yawDegrees, pitchDegrees);
+
         public void SetTeleportAiming(bool aiming) => _menuLocomotionView.SetTeleportAiming(aiming);
 
         public bool TeleportToAim() => _menuLocomotionView.TeleportToAim();

@@ -41,8 +41,14 @@ namespace App.MainMenu.Views
         [SerializeField, Min(0.1f), Tooltip("カプセルの最低の高さ[m]。HMDを床近くまで下げても潰れないようにする")]
         private float _minCapsuleHeight = 0.6f;
 
+        [SerializeField, Range(0f, 89f), Tooltip("非VRの視点操作で上下に向ける最大角度[deg]")]
+        private float _maxPitchDegrees = 85f;
+
         /// <summary>床とみなす面の傾き。法線のY成分がこれ以上なら着地できる</summary>
         private const float GroundNormalThreshold = 0.7f;
+
+        /// <summary>非VRの視点操作で頭に与えている上下の角度[deg]。正で上向き</summary>
+        private float _pitchDegrees;
 
         private CharacterController _characterController;
 
@@ -82,7 +88,31 @@ namespace App.MainMenu.Views
             _characterController.Move(motion * Time.deltaTime);
         }
 
-        public void SnapTurn(float angleDegrees)
+        public void SnapTurn(float angleDegrees) => RotateAroundHead(angleDegrees);
+
+        public void Look(float yawDegrees, float pitchDegrees)
+        {
+            // 上下だけ動かしている間にCharacterControllerを毎フレーム切り替えないようにする
+            if (yawDegrees != 0f)
+            {
+                RotateAroundHead(yawDegrees);
+            }
+
+            if (_head == null)
+            {
+                return;
+            }
+
+            // 非VRではHMD追従が切れているので頭の回転を直接書き換えられる。
+            // 累積角をこちらで持ち、Transformから読み戻さないことで360度をまたぐ揺らぎを避ける
+            _pitchDegrees = Mathf.Clamp(_pitchDegrees + pitchDegrees, -_maxPitchDegrees, _maxPitchDegrees);
+
+            // Unityの回転は左手系なので、上を向くにはX軸まわりに負の角度をかける
+            _head.localRotation = Quaternion.Euler(-_pitchDegrees, 0f, 0f);
+        }
+
+        /// <summary>頭の位置を軸にリグ全体を水平に回す</summary>
+        private void RotateAroundHead(float angleDegrees)
         {
             // リグ原点ではなく頭を軸に回さないと、その場で回ったつもりが body ごと振り回されて酔う。
             // 頭がリグ原点からずれていると回転で位置も動くため、テレポートと同じく

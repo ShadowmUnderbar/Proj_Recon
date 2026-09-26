@@ -16,6 +16,14 @@ namespace App.MainMenu.Interface
         /// <summary>その場で指定角度だけ向きを変える。回転の中心はHMDの位置</summary>
         void SnapTurn(float angleDegrees);
 
+        /// <summary>
+        /// 非VR向けの視点操作。ヨーはリグごと頭を軸に回し、ピッチは頭（カメラ）だけを上下に向ける。
+        /// VRでは頭の向きはHMDが決めるため呼ばないこと
+        /// </summary>
+        /// <param name="yawDegrees">左右の回転量[deg]。正で右回り</param>
+        /// <param name="pitchDegrees">上下の回転量[deg]。正で上向き</param>
+        void Look(float yawDegrees, float pitchDegrees);
+
         /// <summary>テレポート先の照準（レイとマーカー）の表示を切り替える</summary>
         void SetTeleportAiming(bool aiming);
 
