@@ -1,6 +1,6 @@
 using R3;
 
-namespace App.Battle.Interface
+namespace App.Common.Interface
 {
     public interface IRunStartPresenter
     {
@@ -9,6 +9,9 @@ namespace App.Battle.Interface
 
         /// <summary>「使わずに開始」ボタン押下</summary>
         Observable<Unit> OnStartWithoutLoad { get; }
+
+        /// <summary>「戻る」ボタン押下。ボタンを持たない画面では流れない</summary>
+        Observable<Unit> OnBack { get; }
 
         void Show(string headline);
         void SetSlot(int index, string label, bool interactable);

@@ -1,13 +1,14 @@
-using App.Battle.Interface;
+using App.Common.Interface;
 using R3;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace App.Battle.Views
+namespace App.Common.Views
 {
     /// <summary>
-    /// ラン開始時のセット選択UI（最小実装）。
+    /// ラン開始前のセット選択UI（最小実装）。
     /// 保存済みスロット3つ（空は押下不可）と「使わずに開始」ボタンを表示する。
+    /// 「戻る」ボタンは任意で、メインメニューのパネルにだけ付けている。
     /// </summary>
     public class RunStartView : MonoBehaviour, IRunStartView
     {
@@ -26,11 +27,17 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("使わずに開始ボタン")]
         private Button _startWithoutLoadButton;
 
+        [SerializeField, Tooltip("戻るボタン（任意。無い画面では未設定のままでよい）")]
+        private Button _backButton;
+
         private readonly Subject<int> _onSlotSelected = new();
         public Observable<int> OnSlotSelected => _onSlotSelected;
 
         private readonly Subject<Unit> _onStartWithoutLoad = new();
         public Observable<Unit> OnStartWithoutLoad => _onStartWithoutLoad;
+
+        private readonly Subject<Unit> _onBack = new();
+        public Observable<Unit> OnBack => _onBack;
 
         private void Awake()
         {
@@ -43,6 +50,11 @@ namespace App.Battle.Views
             if (_startWithoutLoadButton != null)
             {
                 _startWithoutLoadButton.onClick.AddListener(() => _onStartWithoutLoad.OnNext(Unit.Default));
+            }
+
+            if (_backButton != null)
+            {
+                _backButton.onClick.AddListener(() => _onBack.OnNext(Unit.Default));
             }
 
             // 初期状態は非表示
@@ -79,6 +91,7 @@ namespace App.Battle.Views
         {
             _onSlotSelected.Dispose();
             _onStartWithoutLoad.Dispose();
+            _onBack.Dispose();
         }
     }
 }

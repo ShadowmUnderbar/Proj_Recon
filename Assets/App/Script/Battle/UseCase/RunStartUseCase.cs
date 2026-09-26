@@ -15,15 +15,19 @@ using VContainer.Unity;
 namespace App.Battle.UseCase
 {
     /// <summary>
-    /// ラン開始時にセット選択UIを出し、選択されたスロットのアップグレードを最初から装備してランを開始する。
-    /// 選択中はゲームを停止（IsWavePause=true）し、選択完了で解除してウェーブ1を開始する。
-    /// 表示のきっかけは <see cref="IRunStartDataStore.IsSelecting"/> なので、
-    /// ゲームオーバーからのリスタート（RunResetUseCase）でも同じ導線で選択画面へ戻れる。
+    /// ラン開始時に、メインメニューで選ばれたアップグレードセット（<see cref="IRunLoadoutDataStore"/>）を
+    /// 最初から装備してランを開始する。
+    /// メインメニューを経由せずバトルシーンを直接再生した場合は選択が無いので、
+    /// 従来どおりバトル内でセット選択UIを出し、選択完了でランを開始する。
+    /// 選択中はゲームを停止（IsWavePause=true）し、開始で解除してウェーブ1を始める。
+    /// 開始のきっかけは <see cref="IRunStartDataStore.IsSelecting"/> なので、
+    /// ゲームオーバーからのリスタート（RunResetUseCase）でも同じ導線（同じセット）で再開できる。
     /// </summary>
     public class RunStartUseCase : IInitializable, IDisposable
     {
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IRunStartDataStore _runStartDataStore;
+        private readonly IRunLoadoutDataStore _runLoadoutDataStore;
         private readonly IMetaProgressionDataStore _metaProgressionDataStore;
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
         private readonly UpgradeSideEffectApplier _upgradeSideEffectApplier;
@@ -38,6 +42,7 @@ namespace App.Battle.UseCase
         public RunStartUseCase(
             IWaveManagerDataStore waveManagerDataStore,
             IRunStartDataStore runStartDataStore,
+            IRunLoadoutDataStore runLoadoutDataStore,
             IMetaProgressionDataStore metaProgressionDataStore,
             IUpgradeSessionDataStore upgradeSessionDataStore,
             UpgradeSideEffectApplier upgradeSideEffectApplier,
@@ -49,6 +54,7 @@ namespace App.Battle.UseCase
         {
             _waveManagerDataStore = waveManagerDataStore;
             _runStartDataStore = runStartDataStore;
+            _runLoadoutDataStore = runLoadoutDataStore;
             _metaProgressionDataStore = metaProgressionDataStore;
             _upgradeSessionDataStore = upgradeSessionDataStore;
             _upgradeSideEffectApplier = upgradeSideEffectApplier;
@@ -68,7 +74,7 @@ namespace App.Battle.UseCase
                 .Subscribe(_ => StartRun())
                 .AddTo(_disposable);
 
-            // 選択開始のたびにUIを出す。シーン開始時もリスタート時もここを通る
+            // 開始のたびにここを通る。シーン開始時もリスタート時も同じ
             _runStartDataStore.IsSelecting
                 .Where(isSelecting => isSelecting)
                 .Subscribe(_ => OnBeginSelecting())
@@ -77,7 +83,10 @@ namespace App.Battle.UseCase
             _runStartDataStore.SetSelecting(true);
         }
 
-        /// <summary>セット選択の開始。ゲームを止めてスロット一覧を表示する</summary>
+        /// <summary>
+        /// ラン開始の準備。ゲームを止め、メインメニューで選択済みならそのセットを装備してすぐ開始する。
+        /// 未選択（バトルシーンを直接再生）ならスロット一覧を表示して選択を待つ。
+        /// </summary>
         private void OnBeginSelecting()
         {
             // デバッグ用: エディタで選択したアップグレードを最初から所持させる
@@ -85,11 +94,34 @@ namespace App.Battle.UseCase
 
             _waveManagerDataStore.SetWavePause(true);
 
+            if (_runLoadoutDataStore.HasSelection)
+            {
+                ApplySelectedLoadout();
+                StartRun();
+                return;
+            }
+
             _runStartPresenter.Show("セット選択\nスロットを選ぶと最初から装備で開始 / 使わずに開始も可");
             RefreshAllSlotLabels();
 
             // UI表示中だけボタン選択用のハンドレイを出す
             _playerControlPresenter.SetUiRayEnable(true);
+        }
+
+        /// <summary>
+        /// メインメニューで選ばれたセットを装備する。「使わずに開始」なら何もしない。
+        /// スロットを読み直さず選択時のID一覧を使うため、ゲームオーバーでスロットを上書きした後の
+        /// リスタートでも開始時と同じセットになる。
+        /// </summary>
+        private void ApplySelectedLoadout()
+        {
+            var upgradeIds = _runLoadoutDataStore.SelectedUpgradeIds;
+            if (upgradeIds.Count == 0)
+            {
+                return;
+            }
+
+            PreloadUpgrades(upgradeIds, warnOnMissing: false);
         }
 
         private void OnSlotSelected(int slotIndex)
@@ -99,16 +131,19 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            // 空スロットは読み込まない（View側でも押下不可だが二重に防ぐ）
+            PreloadSlot(slotIndex);
+            StartRun();
+        }
+
+        /// <summary>指定スロットのセットを装備する。空スロットは読み込まない（View側でも押下不可だが二重に防ぐ）</summary>
+        private void PreloadSlot(int slotIndex)
+        {
             if (_metaProgressionDataStore.IsSlotEmpty(slotIndex))
             {
-                StartRun();
                 return;
             }
 
             PreloadUpgrades(_metaProgressionDataStore.GetSlotUpgradeIds(slotIndex), warnOnMissing: false);
-
-            StartRun();
         }
 
         /// <summary>
