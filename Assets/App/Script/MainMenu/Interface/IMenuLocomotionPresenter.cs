@@ -8,6 +8,8 @@ namespace App.MainMenu.Interface
 
         void SnapTurn(float angleDegrees);
 
+        void Look(float yawDegrees, float pitchDegrees);
+
         void SetTeleportAiming(bool aiming);
 
         bool TeleportToAim();

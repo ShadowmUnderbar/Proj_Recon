@@ -15,6 +15,10 @@ namespace App.MainMenu.UseCase
     /// スムーズ移動: 左スティックで歩き、右スティックの左右でスナップターン。
     /// テレポート: 左スティックを倒している間だけ照準を出し、離した瞬間に着地点へ跳ぶ。
     /// どちらの方式でもスナップターンは共通で使える。
+    ///
+    /// 非VR（エディタのデスクトップ確認）: マウス右ボタンを押しながら動かすと視点が回る。
+    /// パネルはマウスクリックで操作するため、常時視点が回るとボタンが押しづらくなる。
+    /// そこで右ドラッグの間だけ視点操作にしている。
     /// </summary>
     public class MenuLocomotionUseCase : IInitializable, ITickable, IDisposable
     {
@@ -33,6 +37,9 @@ namespace App.MainMenu.UseCase
 
         /// <summary>テレポートの照準を出すスティックの倒し量</summary>
         private const float TeleportAimThreshold = 0.5f;
+
+        /// <summary>非VRの視点操作で、マウス移動1pxあたりに回す角度[deg/px]</summary>
+        private const float MouseLookSensitivity = 0.15f;
 
         /// <summary>スナップターンを1回ぶん消費済みか。倒しっぱなしで回り続けないようにする</summary>
         private bool _isSnapTurnConsumed;
@@ -64,6 +71,11 @@ namespace App.MainMenu.UseCase
 
         public void Tick()
         {
+            if (!DebugConfig.IsVRMode)
+            {
+                UpdateMouseLook();
+            }
+
             UpdateSnapTurn(_gameInputDataStore.V2RightAxis);
 
             var moveInput = _gameInputDataStore.V2LeftAxis;
@@ -131,6 +143,25 @@ namespace App.MainMenu.UseCase
 
             _isSnapTurnConsumed = true;
             _menuLocomotionPresenter.SnapTurn(Mathf.Sign(horizontal) * _playerSettingDataStore.SnapTurnAngle.Value);
+        }
+
+        /// <summary>マウス右ドラッグで視点を回す（非VRのみ）</summary>
+        private void UpdateMouseLook()
+        {
+            if (!_gameInputDataStore.IsMouseRightButtonPressed)
+            {
+                return;
+            }
+
+            var delta = _gameInputDataStore.MouseDelta;
+
+            if (delta == Vector2.zero)
+            {
+                return;
+            }
+
+            // マウスを右へ動かすと右を向き、上へ動かすと上を向く
+            _menuLocomotionPresenter.Look(delta.x * MouseLookSensitivity, delta.y * MouseLookSensitivity);
         }
 
         private void CancelTeleportAim()
