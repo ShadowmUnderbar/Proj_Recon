@@ -38,15 +38,20 @@ namespace App.MainMenu.Views
         [SerializeField, Tooltip("スナップターン角度の数値表示")]
         private TMP_Text _snapTurnAngleLabel;
 
+        [SerializeField, Tooltip("オプションを閉じてメインパネルへ戻るボタン")]
+        private Button _closeButton;
+
         private readonly Subject<HandType> _onDominantHandChanged = new();
         private readonly Subject<LocomotionType> _onLocomotionChanged = new();
         private readonly Subject<float> _onMoveSpeedChanged = new();
         private readonly Subject<int> _onSnapTurnAngleChanged = new();
+        private readonly Subject<Unit> _onClose = new();
 
         public Observable<HandType> OnDominantHandChanged => _onDominantHandChanged;
         public Observable<LocomotionType> OnLocomotionChanged => _onLocomotionChanged;
         public Observable<float> OnMoveSpeedChanged => _onMoveSpeedChanged;
         public Observable<int> OnSnapTurnAngleChanged => _onSnapTurnAngleChanged;
+        public Observable<Unit> OnClose => _onClose;
 
         private void Awake()
         {
@@ -69,6 +74,11 @@ namespace App.MainMenu.Views
             {
                 _teleportLocomotionButton.onClick.AddListener(
                     () => _onLocomotionChanged.OnNext(LocomotionType.Teleport));
+            }
+
+            if (_closeButton != null)
+            {
+                _closeButton.onClick.AddListener(() => _onClose.OnNext(Unit.Default));
             }
 
             ConfigureSliders();
@@ -192,6 +202,7 @@ namespace App.MainMenu.Views
             _onLocomotionChanged.Dispose();
             _onMoveSpeedChanged.Dispose();
             _onSnapTurnAngleChanged.Dispose();
+            _onClose.Dispose();
         }
     }
 }
