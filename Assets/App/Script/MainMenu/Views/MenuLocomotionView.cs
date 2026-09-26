@@ -1,3 +1,4 @@
+using App.Common.Data;
 using App.MainMenu.Interface;
 using UnityEngine;
 
@@ -42,9 +43,6 @@ namespace App.MainMenu.Views
 
         /// <summary>床とみなす面の傾き。法線のY成分がこれ以上なら着地できる</summary>
         private const float GroundNormalThreshold = 0.7f;
-
-        /// <summary>方向ベクトルが実質ゼロかを判定するしきい値</summary>
-        private const float DirectionEpsilon = 1e-6f;
 
         private CharacterController _characterController;
 
@@ -204,14 +202,14 @@ namespace App.MainMenu.Views
             var forward = _head.forward;
             forward.y = 0f;
 
-            if (forward.sqrMagnitude < DirectionEpsilon)
+            if (forward.sqrMagnitude < VectorConstants.DirectionEpsilon)
             {
                 // 真下（真上）を向いていて水平成分が消えたときは、頭の上方向を前方とみなす
                 forward = _head.up;
                 forward.y = 0f;
             }
 
-            if (forward.sqrMagnitude < DirectionEpsilon)
+            if (forward.sqrMagnitude < VectorConstants.DirectionEpsilon)
             {
                 return Vector3.zero;
             }

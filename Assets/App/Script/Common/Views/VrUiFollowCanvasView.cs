@@ -58,8 +58,6 @@ namespace App.Common.Views
         private Vector3 _nonVrLocalPosition = new(0f, 0f, 1.2f);
 
         /// <summary>方向ベクトルが実質ゼロかを判定するしきい値。Mathf.Epsilonでは小さすぎて機能しない</summary>
-        private const float DirectionEpsilon = 1e-6f;
-
         private Canvas _canvas;
         private Camera _targetCamera;
 
@@ -166,7 +164,7 @@ namespace App.Common.Views
             var yaw = Vector3.Slerp(from, to, t);
             yaw.y = 0f;
 
-            return yaw.sqrMagnitude > DirectionEpsilon ? yaw.normalized : to;
+            return yaw.sqrMagnitude > VectorConstants.DirectionEpsilon ? yaw.normalized : to;
         }
 
         /// <summary>
@@ -178,7 +176,7 @@ namespace App.Common.Views
             var reference = Quaternion.AngleAxis(-_pitchAngle, cameraTransform.right) * cameraTransform.forward;
             reference.y = 0f;
 
-            if (reference.sqrMagnitude > DirectionEpsilon)
+            if (reference.sqrMagnitude > VectorConstants.DirectionEpsilon)
             {
                 return reference.normalized;
             }
@@ -195,7 +193,7 @@ namespace App.Common.Views
         {
             var right = Vector3.Cross(Vector3.up, _placedYawForward);
 
-            if (right.sqrMagnitude <= DirectionEpsilon)
+            if (right.sqrMagnitude <= VectorConstants.DirectionEpsilon)
             {
                 return;
             }
