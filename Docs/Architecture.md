@@ -1,6 +1,6 @@
 # RECON 実装構成ドキュメント（引き継ぎ用）
 
-> **最終更新**: 2026-09-26（PR: feature/refactor_overall）
+> **最終更新**: 2026-09-26（PR #109 全体リファクタリング / PR #110 UpgradeCardBoardView 分割）
 > **目的**: 実コードと突き合わせながら、バトル／メインメニューの各シーンが「どのレイヤーに何があり、どう繋がっているか」を把握できるようにする。
 > **読み方**: 1章で全体の約束事、2〜3章で各シーンをレイヤー別に、4章で両シーン共通の常駐部分、5章で開発ツール、6〜7章で今回の変更と残っている負債をまとめる。クラス名は原則ファイル名と一致し、`Assets/App/Script/` 配下にある。
 
@@ -210,6 +210,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 |---|---|
 | `RunStartView` | セット選択（スロット3＋「使わずに開始」） |
 | `ShopView` + `UpgradeCardBoardView` + `UpgradeCardView` + `CardHighlight` | ウェーブ間ショップ。VR は 3D カードを掴んでトリガー確定、PC はマウスクリック。Canvas ボタンはフォールバック |
+| └ `UpgradeCardBoardLayout` / `UpgradeCardFinder` / `UpgradeCardHandInteraction` / `UpgradeCardPointerInteraction` | ボードの内部分担（plain C#、DI 対象外）。配置の純粋計算／近接・レイ・UI越しの検索／VR両手の掴み・ひねり・確定の状態機械／非VRのホバー・クリック確定。Inspector 値は `UpgradeCardHoldSettings` / `UpgradeCardGrabSettings` に毎フレーム束ねて渡す |
 | `GameOverView` | スロット保存／リスタート／メインメニューへ |
 | `PointParticleStoreView` / `PointParticleView` | ポイント粒子（一括更新、粒子ごとの Update 無し） |
 | `StreamerCameraView` | 配信用カメラ（HMD 映像に干渉しない）。`StreamerModeConfig` で既定 OFF |
@@ -361,7 +362,7 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | Database（ScriptableObject） | `EnemyDatabase`, `EnemySpawnDatabase`, `UpgradeDatabase`, `BuffDatabase`, `WaveScalingDatabase` |
 | MasterData（ScriptableObject、シート由来） | `EnemyMasterData`, `UpgradeMasterData`, `BuffMasterData`, `WaveScalingMasterData` |
 | Config（ScriptableObject） | `WaveConfig`, `StreamerModeConfig`, `CurvedWorldConfig`, `EnemyHitFeedbackConfig` |
-| 定数・設定 | `DebugConfig`（EditorPrefs）, `SceneNames`, `LayerConstants`（`Default` / `Enemy` / `PointParticle`、名前から引く）, `TagConstants`, `GameParamData`, `PlayerSettingRange` |
+| 定数・設定 | `DebugConfig`（EditorPrefs）, `SceneNames`, `LayerConstants`（`Default` / `Enemy` / `PointParticle`、名前から引く）, `TagConstants`, `GameParamData`, `PlayerSettingRange`, `VectorConstants`（`DirectionEpsilon`、各 View の方向判定で共用） |
 | セーブ | `SaveData`, `UpgradeSetSlot` |
 | enum | `AimFocusType`, `ShotType`, `HandType`, `LocomotionType`, `PlatformType`, `EnemyRankType`, `HitDirectionType`, `UpgradeType`, `BuffConditionType`, `BuffEffectType`, `ParameterType`, `PlayerUnlockType`, `UnlockCoreSkillType` |
 
@@ -396,6 +397,7 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | 6 | マジックナンバー | `EnemyRandomSpawnCycleDataStore` の `1.5f` → `MinorSpawnCountGrowthRate`、`EnemyStoreView` の回避判定半径 `0.5f` → `DodgeHitRadius`、`PlayerStateDataStore` の `BaseSpeed(0.05)` を Config の `MoveSpeed` に集約 |
 | 6' | 安全策 | `LayerConstants` は未定義レイヤー名で例外を投げる（`1 << -1` で黙って壊れない）。`PlayerBaseParameterConfig` の各値に `[Min]` を付け、インスペクタから 0 や負値を入れられないようにした |
 | 7 | 文書 | 本ドキュメント新設、`CLAUDE.md` の古い参照（`PlayerDataStore.cs` / `BasePlayerParameter.cs`）を更新 |
+| 8 | God Class 分割（PR #110） | `UpgradeCardBoardView`（789 行）を `UpgradeCardBoardLayout` / `UpgradeCardFinder` / `UpgradeCardHandInteraction` / `UpgradeCardPointerInteraction` に分割（本体は約 230 行）。`SerializeField` 名と公開 API は据え置きでプレハブ変更なし。移動の過程で、両手が同じカードを狙って片方が外れると強調表示が戻らない旧バグを修正。`DirectionEpsilon` の 4 重定義を `VectorConstants` に集約 |
 
 ---
 
@@ -406,7 +408,7 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | 優先 | 項目 | 現状 | 提案 |
 |---|---|---|---|
 | 高 | **`DebugConfig` の直接参照**（22 ファイル） | `IsVRMode` を DataStore / UseCase / View が静的に読む。View の一部は DI 対象外のシーン配置物 | `IPlatformModeProvider`（仮）を Common スコープに登録し、DataStore/UseCase から順に注入へ置き換える。DI 対象外の View（`PlatformHandRotation`, `VrUiRayView` 等）は `RegisterComponentInHierarchy` か `[Inject]` メソッド化が要る。**一括でやると差分が大きいので、UseCase → DataStore → View の順に 2〜3 PR に分ける** |
-| 高 | `UpgradeCardBoardView`（789 行） | 手・ポインタの状態機械（`HandState` / `PointerState`）とカード配置・カメラ取得が同居 | 掴み判定を `UpgradeCardHandInteraction`、配置を `UpgradeCardLayout` へ分離。VR 実機での掴み挙動確認が必須なので、実機で触れるタイミングに合わせる |
+| 高 | `UpgradeCardBoardView` 分割後の VR 実機確認 | PR #110 で分割済み。式・閾値は変えていないが、掴み・手首ひねり・両手の取り合いは PC のプレイテストでは通らない | Quest 実機でショップを開き、近接掴み／レイ掴み／ひねりで裏面確認／両手で同じカードを狙う、を一通り確認する |
 | 中 | セーブデータのパス | `Application.dataPath/DLHN/SaveData.json`（Assets 配下。ビルドでは書き込み不可） | `Application.persistentDataPath` へ。既存メモ `project-meta-upgrade-set-save` の残タスク |
 | 中 | `PlayerBulletParameterDataStore` の倍率乗算 | 全倍率を 1 メソッドに順に掛けている。加算・減算が混ざる変更をするときは事前相談（`feedback_damage_calc_additive`） | 倍率の「出典」ごとに計算クラスへ分けると読みやすいが、現状の順序に依存した仕様があるので急がない |
 | 中 | `CurvedWorldPrototype.unity` が Build Settings に入っている | プロトタイプ用シーン・View（`CurvedWorldPrototypeMoveView` / `CurvedWorldTunerView`）が本編ビルドに含まれる | 実機調整が終わったら Build Settings から外す。View は `Editor` か `Prototype` フォルダへ隔離 |

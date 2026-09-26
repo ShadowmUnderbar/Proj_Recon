@@ -113,9 +113,9 @@ Assets/App/
 ### 良い例
 - `CoreSkillUnlockDataStore.cs`: DIの良い例
 - `ISaveDataStore.cs`: インターフェース設計の参考
+- `UpgradeCardBoardView.cs` と `UpgradeCard*` 群: MonoBehaviour は生成・破棄と Inspector 値だけを持ち、計算・検索・状態機械を plain C# に分けた例
 
 ### 要リファクタリング（参考にしない）
-- `UpgradeCardBoardView.cs`: 責務が多い（掴み判定・配置・状態機械）。分割候補
 - `DebugConfig` の直接参照: DI経由に置き換え中。新規コードでは静的参照を増やさない
 
 ### 全体像
