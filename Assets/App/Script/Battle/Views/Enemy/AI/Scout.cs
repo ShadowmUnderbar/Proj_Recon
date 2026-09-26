@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using App.Common.Views;
 using UnityEngine;
 
@@ -31,7 +32,24 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.IdleState();
 
+            // base側で索敵に成功すると戦闘状態へ遷移し、その時点の自分の位置を目的地にする。
+            // その後にプレイヤー位置で上書きすると戦闘速度で突っ込んでしまうため、待機のままのときだけ追う
+            if (State.Value != EnemyAIState.Idle)
+            {
+                return;
+            }
+
             SetAgentDestination(PlayerTransform.position);
+        }
+
+        protected override void OnUpdateBattleState()
+        {
+            base.OnUpdateBattleState();
+
+            // 待機中に向かっていたプレイヤー位置を目的地に残したまま戦闘速度に切り替わると、
+            // 次の攻撃（逃げ先の設定）までプレイヤーへ突っ込んでしまう。
+            // 戦闘に入った時点の自分の位置を目的地にしてその場で止める
+            SetAgentDestination(transform.position);
         }
 
         protected override void BattleState()
