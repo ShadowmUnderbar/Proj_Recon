@@ -6,9 +6,8 @@ namespace App.Common.Interface
     /// 次のランで最初から装備するアップグレードセット（ビルド）の選択結果。
     /// メインメニューのSTART後に選び、バトルシーンの RunStartUseCase が読み取って適用する。
     /// シーンをまたいで運ぶため常駐スコープ（CommonLifetimeScope）に置く。
-    ///
-    /// スロット番号ではなく選んだ時点のID一覧を持つ。ゲームオーバー画面で同じスロットを上書き保存してから
-    /// リスタートしても、開始時に選んだセットのまま再開できるようにするため。
+    /// バトル開始時に1回だけ使い、使ったら <see cref="Clear"/> で消費する（リスタートではバトル内で選び直す）。
+    /// スロット番号ではなく選んだ時点のID一覧を持ち、選択後にスロットが書き換わっても影響を受けない。
     /// </summary>
     public interface IRunLoadoutDataStore
     {
@@ -27,7 +26,7 @@ namespace App.Common.Interface
         /// <summary>セットを使わずに開始する</summary>
         void SelectNone();
 
-        /// <summary>選択を未選択に戻す。メインメニューに入ったときに呼び、前回の選択を持ち越さない</summary>
+        /// <summary>選択を未選択に戻す。バトル開始時の消費と、メインメニューに入ったときの持ち越し防止に使う</summary>
         void Clear();
     }
 }

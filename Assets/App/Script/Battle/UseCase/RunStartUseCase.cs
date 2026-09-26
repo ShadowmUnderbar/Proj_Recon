@@ -16,12 +16,12 @@ namespace App.Battle.UseCase
 {
     /// <summary>
     /// ラン開始時に、メインメニューで選ばれたアップグレードセット（<see cref="IRunLoadoutDataStore"/>）を
-    /// 最初から装備してランを開始する。
-    /// メインメニューを経由せずバトルシーンを直接再生した場合は選択が無いので、
-    /// 従来どおりバトル内でセット選択UIを出し、選択完了でランを開始する。
+    /// 最初から装備してランを開始する。この選択はシーン開始の1回だけ使い、使ったら消費する。
+    /// 選択が無いとき（バトルシーンを直接再生した場合、およびゲームオーバーからのリスタート）は
+    /// バトル内でセット選択UIを出し、選択完了でランを開始する。
     /// 選択中はゲームを停止（IsWavePause=true）し、開始で解除してウェーブ1を始める。
     /// 開始のきっかけは <see cref="IRunStartDataStore.IsSelecting"/> なので、
-    /// ゲームオーバーからのリスタート（RunResetUseCase）でも同じ導線（同じセット）で再開できる。
+    /// リスタート（RunResetUseCase）でも同じ導線でセット選択へ戻れる。
     /// </summary>
     public class RunStartUseCase : IInitializable, IDisposable
     {
@@ -85,7 +85,7 @@ namespace App.Battle.UseCase
 
         /// <summary>
         /// ラン開始の準備。ゲームを止め、メインメニューで選択済みならそのセットを装備してすぐ開始する。
-        /// 未選択（バトルシーンを直接再生）ならスロット一覧を表示して選択を待つ。
+        /// 未選択（バトルシーンを直接再生・リスタート）ならスロット一覧を表示して選択を待つ。
         /// </summary>
         private void OnBeginSelecting()
         {
@@ -97,6 +97,11 @@ namespace App.Battle.UseCase
             if (_runLoadoutDataStore.HasSelection)
             {
                 ApplySelectedLoadout();
+
+                // メインメニューの選択はシーン開始の1回だけ使う。
+                // 消費しておくことで、リスタート時はバトル内のセット選択に戻れる
+                _runLoadoutDataStore.Clear();
+
                 StartRun();
                 return;
             }
@@ -108,11 +113,7 @@ namespace App.Battle.UseCase
             _playerControlPresenter.SetUiRayEnable(true);
         }
 
-        /// <summary>
-        /// メインメニューで選ばれたセットを装備する。「使わずに開始」なら何もしない。
-        /// スロットを読み直さず選択時のID一覧を使うため、ゲームオーバーでスロットを上書きした後の
-        /// リスタートでも開始時と同じセットになる。
-        /// </summary>
+        /// <summary>メインメニューで選ばれたセットを装備する。「使わずに開始」なら何もしない</summary>
         private void ApplySelectedLoadout()
         {
             var upgradeIds = _runLoadoutDataStore.SelectedUpgradeIds;

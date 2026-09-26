@@ -66,10 +66,10 @@ VContainerSettings.RootLifetimeScope = CommonLifetimeScope.prefab  ← DontDestr
   → CommonLifetimeScope 生成: SaveDataStore.Load → 各 DataStore が値を反映、XRInitUseCase が XR 起動
   → MainMenuLifetimeScope: START ボタン → MainMenuUseCase がセット選択 UI（RunStartView）を出す
        → スロット選択／使わずに開始 → RunLoadoutDataStore（常駐）に選択を積む → ISceneTransitionUseCase.LoadBattle()
-  → BattleLifetimeScope: RunStartUseCase が RunLoadoutDataStore の選択を装備してすぐウェーブ1 開始
-       （選択が無い＝Battle シーンを直接再生したときだけ、バトル内でセット選択 UI を出す。IsWavePause=true）
+  → BattleLifetimeScope: RunStartUseCase が RunLoadoutDataStore の選択を装備（1回で消費）してすぐウェーブ1 開始
+       （選択が無い＝Battle シーンを直接再生したときは、バトル内でセット選択 UI を出す。IsWavePause=true）
   → … → HP0 → GameOverUseCase
-       ├ リスタート: RunResetUseCase → 全 IRunResettable.ResetRun() → 同じ選択で再開（直接再生時はセット選択へ）
+       ├ リスタート: RunResetUseCase → 全 IRunResettable.ResetRun() → バトル内のセット選択へ
        └ メインメニューへ: ISceneTransitionUseCase.LoadMainMenu()
 ```
 
@@ -174,15 +174,15 @@ RunStartView.OnBack → MainMenuUseCase → タイトル表示へ戻す
 
 ```
 RunStartUseCase  : RunLoadoutDataStore（メインメニューの選択）の UpgradeIds を UpgradeSessionDataStore.Preload
-                   → UpgradeSideEffectApplier で副作用適用 → IsWavePause=false でウェーブ1開始
-                   選択が無い（Battle シーン直接再生）ときだけセット選択 UI（RunStartView）を出して待つ
+                   → UpgradeSideEffectApplier で副作用適用 → 選択を Clear（消費）→ IsWavePause=false でウェーブ1開始
+                   選択が無い（Battle シーン直接再生・リスタート）ときはセット選択 UI（RunStartView）を出して待つ
 WaveManagerUseCase: 経過時間 or キル数が WaveConfig に達したら AdvanceWave
                    （IsWavePause=true → スポーン周期リセット → 弾・粒子全消去 → OnWaveAdvanced）
 ShopUseCase      : OnWaveAdvanced でショップを開く。UpgradeLotteryDataStore で抽選、ポイントで購入
                    → 「次のウェーブへ」で IsWavePause=false
 GameOverUseCase  : PlayerState.Health<=0 → 死亡演出（PlayerDeathConfig）→ GameOverView
                    → スロット保存（MetaProgressionDataStore） / リスタート（RunResetUseCase） / メインメニューへ
-RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・弾・粒子を消す → RunStartDataStore.IsSelecting=true（同じ選択で再開）
+RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・弾・粒子を消す → RunStartDataStore.IsSelecting=true（セット選択へ）
 ```
 
 `IRunResettable` は VContainer の登録から自動で集めるため、**ラン限りの状態を持つ DataStore を足すときは実装するだけでよい**。
@@ -216,7 +216,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 
 | クラス | 責務 |
 |---|---|
-| （共通）`RunStartView` | 直接再生時のセット選択（スロット3＋「使わずに開始」）。実装は `Common/Views`、プレハブは `UI/RunStartView.prefab` |
+| （共通）`RunStartView` | 直接再生時・リスタート時のセット選択（スロット3＋「使わずに開始」）。実装は `Common/Views`、プレハブは `UI/RunStartView.prefab` |
 | `ShopView` + `UpgradeCardBoardView` + `UpgradeCardView` + `CardHighlight` | ウェーブ間ショップ。VR は 3D カードを掴んでトリガー確定、PC はマウスクリック。Canvas ボタンはフォールバック |
 | └ `UpgradeCardBoardLayout` / `UpgradeCardFinder` / `UpgradeCardHandInteraction` / `UpgradeCardPointerInteraction` | ボードの内部分担（plain C#、DI 対象外）。配置の純粋計算／近接・レイ・UI越しの検索／VR両手の掴み・ひねり・確定の状態機械／非VRのホバー・クリック確定。Inspector 値は `UpgradeCardHoldSettings` / `UpgradeCardGrabSettings` に毎フレーム束ねて渡す |
 | `GameOverView` | スロット保存／リスタート／メインメニューへ |
@@ -344,7 +344,7 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | `PlayerSettingDataStore` | 利き手・移動方式・移動速度・スナップターン角。非 VR では利き手を左に固定 |
 | `CoreSkillUnlockDataStore` | コアスキル解放状態（`SaveData.UnlockType`、`DebugConfig.IsAllUnLock` で全解放） |
 | `MetaProgressionDataStore` | アップグレードセットのスロット保存（3 スロット） |
-| `RunLoadoutDataStore` | メインメニューで選んだ次ランのセット（選択時点のアップグレード ID 一覧のコピー／使わない／未選択）。スロット番号ではなく ID を持つので、ゲームオーバーでスロットを上書きした後のリスタートでも開始時のセットで再開する。永続化なし。メニューに入るたび `Clear()` |
+| `RunLoadoutDataStore` | メインメニューで選んだ次ランのセット（選択時点のアップグレード ID 一覧のコピー／使わない／未選択）。バトル開始時に装備したら `Clear()` で消費する（リスタートはバトル内で選び直す）。永続化なし。メニューに入るたびにも `Clear()` |
 | `GameInputDataStore` | 1.4 参照 |
 
 ### 4.2 UseCase（`Common/UseCase`）
@@ -359,7 +359,7 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 
 | クラス | 内容 |
 |---|---|
-| `RunStartView` / `RunStartPresenter` | アップグレードセット選択 UI（スロット3＋「使わずに開始」＋任意の「戻る」）。メインメニューとバトル（直接再生時）で共用 |
+| `RunStartView` / `RunStartPresenter` | アップグレードセット選択 UI（スロット3＋「使わずに開始」＋任意の「戻る」）。メインメニュー（START 後）とバトル（直接再生時・リスタート時）で共用 |
 | `VrUiFollowCanvasView` / `VrUiRayView` / `VrUiRayAlwaysOnView` | VR 向け UI 基盤（遅延追従キャンバス・ハンドレイ） |
 | `ForwardRayView` / `HandForwardRayView` / `PlatformHandRotation` | 手・照準のレイ表示、プラットフォーム別の手の回転補正 |
 | `PlayerCameraTrackingView` | エディタ非 VR 時に `TrackedPoseDriver` を切る（旧 `PlayerCameraData`、`Camera.prefab` に付く） |
