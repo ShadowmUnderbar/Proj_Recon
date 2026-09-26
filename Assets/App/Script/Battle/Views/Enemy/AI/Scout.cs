@@ -12,6 +12,9 @@ namespace App.Battle.Views.Enemy.AI
 
         private static float EscapeDistance => 30f;
 
+        /// <summary>射程外から近づくとき、射程ぎりぎりで止まって攻撃判定に入らないのを防ぐための余裕[m]</summary>
+        private static float ApproachMargin => 1f;
+
         protected override void Update()
         {
             base.Update();
@@ -63,6 +66,28 @@ namespace App.Battle.Views.Enemy.AI
 
             transform.LookAt(PlayerTransform.position, Vector3.up);
             transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+
+            // 索敵内だが射程外なら、プレイヤーへ向かって射程に入る地点まで近づく
+            if (State.Value == EnemyAIState.Battle && !IsAttackDistanceRange())
+            {
+                ApproachToAttackRange();
+            }
+        }
+
+        /// <summary>
+        /// プレイヤーから射程距離だけ手前の地点を目的地にする。
+        /// プレイヤー位置そのものを目的地にすると射程に入っても止まらず突っ込むため、
+        /// 射程の内側に少し入った地点で止まるようにしている
+        /// </summary>
+        private void ApproachToAttackRange()
+        {
+            var toSelf = transform.position - PlayerTransform.position;
+            toSelf.y = 0f;
+
+            var stopDistance = Mathf.Max(0f, EnemyData.AttackDistanceRange - ApproachMargin);
+            var destination = PlayerTransform.position + toSelf.normalized * stopDistance;
+
+            SetAgentDestination(destination);
         }
 
         protected override void Attack()
