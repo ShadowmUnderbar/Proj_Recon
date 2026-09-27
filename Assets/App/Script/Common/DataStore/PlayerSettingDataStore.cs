@@ -19,6 +19,9 @@ namespace App.Common.DataStore
         public ReactiveProperty<float> MoveSpeed { get; } = new(PlayerSettingRange.DefaultMoveSpeed);
         public ReactiveProperty<int> SnapTurnAngle { get; } = new(PlayerSettingRange.DefaultSnapTurnAngle);
 
+        public ReadOnlyReactiveProperty<bool> IsTutorialReplayEnabled => _isTutorialReplayEnabled;
+        private readonly ReactiveProperty<bool> _isTutorialReplayEnabled = new(false);
+
         private readonly CompositeDisposable _disposable = new();
 
         [Inject]
@@ -51,6 +54,7 @@ namespace App.Common.DataStore
             Locomotion.Value = _saveDataStore.SaveData.Locomotion;
             MoveSpeed.Value = ClampMoveSpeed(_saveDataStore.SaveData.MoveSpeed);
             SnapTurnAngle.Value = ClampSnapTurnAngle(_saveDataStore.SaveData.SnapTurnAngle);
+            _isTutorialReplayEnabled.Value = _saveDataStore.SaveData.IsTutorialReplayEnabled;
         }
 
         public void SetDominantHand(HandType hand)
@@ -109,6 +113,17 @@ namespace App.Common.DataStore
             _saveDataStore.Save();
         }
 
+        public void SetTutorialReplayEnabled(bool enabled)
+        {
+            if (_saveDataStore.SaveData.IsTutorialReplayEnabled == enabled)
+            {
+                return;
+            }
+
+            _saveDataStore.SaveData.IsTutorialReplayEnabled = enabled;
+            _saveDataStore.Save();
+        }
+
         private static float ClampMoveSpeed(float moveSpeed) =>
             Mathf.Clamp(moveSpeed, PlayerSettingRange.MinMoveSpeed, PlayerSettingRange.MaxMoveSpeed);
 
@@ -124,6 +139,7 @@ namespace App.Common.DataStore
         public void Dispose()
         {
             _disposable?.Dispose();
+            _isTutorialReplayEnabled?.Dispose();
         }
     }
 }

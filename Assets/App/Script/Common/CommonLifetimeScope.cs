@@ -33,6 +33,9 @@ namespace App.Common
             // メインメニューで選んだアップグレードセットをバトルシーンへ運ぶ（シーンをまたぐので常駐）
             builder.Register<RunLoadoutDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IRunLoadoutDataStore>();
+            // チュートリアルの閲覧回数（セーブデータ）と再表示設定から表示要否を判定する
+            builder.Register<TutorialProgressDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ITutorialProgressDataStore>();
             builder.RegisterEntryPoint<GameInputDataStore>()
                 .As<IGameInputDataStore>();
 
