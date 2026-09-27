@@ -1,0 +1,545 @@
+{
+  "summary": {
+    "rotation_poses": 48,
+    "rotation_contact_poses": [],
+    "max_pairs": 0,
+    "face_vs_shell_overlap_pairs": 0,
+    "uv": {
+      "uv_layers": [
+        "FaceUV"
+      ],
+      "min": [
+        0.0,
+        0.0
+      ],
+      "max": [
+        1.0,
+        1.0
+      ],
+      "zero_area": 0,
+      "negative_area": 0
+    },
+    "root_local": {
+      "loc": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rot": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "parent": "Mobile__LOD0__Backup__Fix__HeadSocket"
+    },
+    "children": {
+      "ElseIf_HeadShell": {
+        "parent": "HeadPart_ElseIf_Monitor01",
+        "loc": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rot": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mats": [
+          "ElseIf_HeadShell",
+          "ElseIf_HeadJoint",
+          "ElseIf_HeadAccent"
+        ]
+      },
+      "ElseIf_FaceMonitor": {
+        "parent": "HeadPart_ElseIf_Monitor01",
+        "loc": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rot": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mats": [
+          "ElseIf_FaceMonitor"
+        ]
+      },
+      "ElseIf_HeadCableHair": {
+        "parent": "HeadPart_ElseIf_Monitor01",
+        "loc": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rot": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "mats": [
+          "ElseIf_HeadCable"
+        ]
+      }
+    },
+    "protected_checked": 1176,
+    "protected_changed": [],
+    "world_top": 1.725805401802063
+  },
+  "rows": [
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 0,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 15,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 30,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 45,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 60,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 75,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 90,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 105,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 120,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 135,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 150,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 165,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 180,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 195,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 210,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 225,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 240,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 255,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 270,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 285,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 300,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 315,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 330,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 0,
+      "yaw": 345,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": -30,
+      "roll": 0,
+      "yaw": 0,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": -30,
+      "roll": 0,
+      "yaw": 90,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": -30,
+      "roll": 0,
+      "yaw": 180,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": -30,
+      "roll": 0,
+      "yaw": 270,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": -15,
+      "roll": 0,
+      "yaw": 0,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": -15,
+      "roll": 0,
+      "yaw": 90,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": -15,
+      "roll": 0,
+      "yaw": 180,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": -15,
+      "roll": 0,
+      "yaw": 270,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 15,
+      "roll": 0,
+      "yaw": 0,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 15,
+      "roll": 0,
+      "yaw": 90,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 15,
+      "roll": 0,
+      "yaw": 180,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 15,
+      "roll": 0,
+      "yaw": 270,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 30,
+      "roll": 0,
+      "yaw": 0,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 30,
+      "roll": 0,
+      "yaw": 90,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 30,
+      "roll": 0,
+      "yaw": 180,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 30,
+      "roll": 0,
+      "yaw": 270,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": -15,
+      "yaw": 0,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": -15,
+      "yaw": 90,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": -15,
+      "yaw": 180,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": -15,
+      "yaw": 270,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 15,
+      "yaw": 0,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 15,
+      "yaw": 90,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 15,
+      "yaw": 180,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    },
+    {
+      "pitch": 0,
+      "roll": 15,
+      "yaw": 270,
+      "ElseIf_HeadShell": 0,
+      "ElseIf_FaceMonitor": 0,
+      "ElseIf_HeadCableHair": 0,
+      "total": 0
+    }
+  ]
+}

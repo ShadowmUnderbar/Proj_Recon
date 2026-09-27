@@ -18,9 +18,8 @@ namespace App.MainMenu.Presenters
         }
 
         public void SetInteractable(bool interactable) => _mainMenuView.SetInteractable(interactable);
-
+		public void SetStartVisible(bool visible) => _mainMenuView.SetStartVisible(visible);
         public void ShowMainPanel() => _mainMenuView.ShowMainPanel();
-
         public void ShowOptionPanel() => _mainMenuView.ShowOptionPanel();
     }
 }

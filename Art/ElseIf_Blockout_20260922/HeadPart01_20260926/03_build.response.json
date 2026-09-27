@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「ElseIf_MobileVR_HeadPart01.blend」で保存しました\n{'root': 'HeadPart_ElseIf_Monitor01', 'socket': 'Mobile__LOD0__Backup__Fix__HeadSocket', 'root_local_location': [0.0, 0.0, 0.0], 'root_local_rotation': [0.0, 0.0, 0.0], 'root_local_scale': [1.0, 1.0, 1.0], 'cameras': {'Front': 'Head01_Cam_Front', 'Side': 'Head01_Cam_Side', 'Back': 'Head01_Cam_Back', 'ThreeQuarter': 'Head01_Cam_ThreeQuarter', 'HighAngle': 'Head01_Cam_HighAngle'}, 'shell_dimensions': [0.18799999356269836, 0.16850002110004425, 0.24900008738040924], 'monitor_dimensions': [0.16599999368190765, 0.0035000001080334187, 0.14600005745887756], 'head_world_top': 1.6641532182693481, 'triangles': 1992, 'vertices': 1201}\n"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{\"rotation_poses\": 48, \"rotation_contact_poses\": [], \"max_pairs\": 0, \"face_vs_shell_overlap_pairs\": 0, \"uv\": {\"uv_layers\": [\"FaceUV\"], \"min\": [0.0, 0.0], \"max\": [1.0, 1.0], \"zero_area\": 0, \"negative_area\": 0}, \"root_local\": {\"loc\": [0.0, 0.0, 0.0], \"rot\": [0.0, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"parent\": \"Mobile__LOD0__Backup__Fix__HeadSocket\"}, \"children\": {\"ElseIf_HeadShell\": {\"parent\": \"HeadPart_ElseIf_Monitor01\", \"loc\": [0.0, 0.0, 0.0], \"rot\": [0.0, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"mats\": [\"ElseIf_HeadShell\", \"ElseIf_HeadJoint\", \"ElseIf_HeadAccent\"]}, \"ElseIf_FaceMonitor\": {\"parent\": \"HeadPart_ElseIf_Monitor01\", \"loc\": [0.0, 0.0, 0.0], \"rot\": [0.0, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"mats\": [\"ElseIf_FaceMonitor\"]}, \"ElseIf_HeadCableHair\": {\"parent\": \"HeadPart_ElseIf_Monitor01\", \"loc\": [0.0, 0.0, 0.0], \"rot\": [0.0, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"mats\": [\"ElseIf_HeadCable\"]}}, \"protected_checked\": 1176, \"protected_changed\": [], \"world_top\": 1.725805401802063}\n"
+  }
+}

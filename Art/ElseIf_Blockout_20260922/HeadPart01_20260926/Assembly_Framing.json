@@ -1,0 +1,29 @@
+[
+  {
+    "camera": "Head01_Assembly_Cam_Front",
+    "ortho_scale": 1.8733071088790894,
+    "location": [
+      -8.091330528259277e-05,
+      -3.9982166290283203,
+      0.9239226579666138
+    ]
+  },
+  {
+    "camera": "Head01_Assembly_Cam_ThreeQuarter",
+    "ortho_scale": 1.8651729822158813,
+    "location": [
+      2.9900026321411133,
+      -3.9814250469207764,
+      2.31976056098938
+    ]
+  },
+  {
+    "camera": "Head01_Assembly_Cam_BackQuarter",
+    "ortho_scale": 1.8653044700622559,
+    "location": [
+      2.9842352867126465,
+      3.9842255115509033,
+      2.323840856552124
+    ]
+  }
+]

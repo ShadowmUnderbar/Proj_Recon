@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{'source_triangles': 31358, 'retained_triangles': 30046, 'deleted_faces': 656, 'decision': 'Retain original topology in uncertain neck/upper-chest restoration; apply verified hidden-face deletion only'}\n"
+  }
+}

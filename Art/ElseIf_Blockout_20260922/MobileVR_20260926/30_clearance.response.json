@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「ElseIf_Game_MobileVR_Test.blend」で保存しました\n[{\"iteration\": 0, \"intersections_before\": {\"Base\": 0, \"A_Natural\": 0, \"B_Side90\": 0, \"C_Forward\": 0, \"D_AsymmetricAim\": 0, \"E_Elbow90\": 0, \"F_OneArmBack\": 0, \"G_WideOpen\": 2, \"H_FrontNear\": 0, \"I_FrontBack\": 45, \"J_WristTwist\": 4, \"K_Arms45\": 0}, \"changed_vertices\": 38, \"max_delta_mm\": 2.451767485905228}, {\"iteration\": 1, \"intersections_before\": {\"Base\": 0, \"A_Natural\": 0, \"B_Side90\": 0, \"C_Forward\": 0, \"D_AsymmetricAim\": 0, \"E_Elbow90\": 0, \"F_OneArmBack\": 0, \"G_WideOpen\": 0, \"H_FrontNear\": 0, \"I_FrontBack\": 39, \"J_WristTwist\": 4, \"K_Arms45\": 0}, \"changed_vertices\": 20, \"max_delta_mm\": 0.6742698633760251}, {\"iteration\": 2, \"intersections_before\": {\"Base\": 0, \"A_Natural\": 0, \"B_Side90\": 0, \"C_Forward\": 0, \"D_AsymmetricAim\": 0, \"E_Elbow90\": 0, \"F_OneArmBack\": 0, \"G_WideOpen\": 0, \"H_FrontNear\": 0, \"I_FrontBack\": 41, \"J_WristTwist\": 4, \"K_Arms45\": 0}, \"changed_vertices\": 20, \"max_delta_mm\": 0.6742698633760251}]\n"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "\nFBX export starting... 'D:/UnityProj/Proj_Recon/Art/ElseIf_Blockout_20260922/Claude_HeadPart01_20260926/Export/ElseIf_HeadPart_Monitor01_NoCable.fbx'\nexport finished in 0.0260 sec.\n{\"fbx\": \"D:/UnityProj/Proj_Recon/Art/ElseIf_Blockout_20260922/Claude_HeadPart01_20260926/Export/ElseIf_HeadPart_Monitor01_NoCable.fbx\", \"size_kb\": 99.9, \"objects\": [\"HeadPart_ElseIf_Monitor01\", \"ElseIf_HeadShell\", \"ElseIf_FaceMonitor\"], \"tris\": {\"ElseIf_HeadShell\": 2776, \"ElseIf_FaceMonitor\": 336}, \"total\": 3112, \"verts\": 1646, \"materials\": [\"ElseIf_FaceMonitor\", \"ElseIf_HeadAccent\", \"ElseIf_HeadJoint\", \"ElseIf_HeadShell\"], \"uv\": [\"FaceUV\"], \"textures\": [\"ElseIf_Expression_Test_Normal.png\", \"ElseIf_Expression_Test_Joy.png\", \"ElseIf_Expression_Test_Cry.png\"]}\n"
+  }
+}

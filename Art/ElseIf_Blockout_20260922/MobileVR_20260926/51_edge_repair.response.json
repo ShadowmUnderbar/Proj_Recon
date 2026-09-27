@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「Before_Edge_Repair.blend」で保存しました\n情報: 「ElseIf_Game_MobileVR_Test.blend」で保存しました\n{'components': ['ElseIf_Jacket_Collar_Turnback', 'ElseIf_Jacket_Cuff_L', 'ElseIf_Jacket_Cuff_L_Turnback', 'ElseIf_Jacket_Cuff_R', 'ElseIf_Jacket_Cuff_R_Turnback', 'ElseIf_Jacket_Front_Facing_L', 'ElseIf_Jacket_Front_Facing_R', 'ElseIf_Jacket_Hem_Facing', 'ElseIf_Jacket_Hem_Turnback', 'ElseIf_Jacket_Stand_Collar'], 'original_edge_triangles': 48406, 'edge_triangles_after_planar_dissolve': 37498, 'jacket_triangles': 79955}\n"
+  }
+}

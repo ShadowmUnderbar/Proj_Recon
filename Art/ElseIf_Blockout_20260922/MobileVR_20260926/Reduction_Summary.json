@@ -1,0 +1,14 @@
+{
+  "triangles": 118656,
+  "reduction_from_current_percent": 58.907297611791435,
+  "reduction_from_optimized_percent": 56.47695761257098,
+  "body_before": 36505,
+  "body_after": 35345,
+  "body_deleted": 1160,
+  "target_range": [
+    60000,
+    100000
+  ],
+  "target_reached": false,
+  "reason": "Opening and hem quality protection after visible artifacts in ~104k candidate"
+}

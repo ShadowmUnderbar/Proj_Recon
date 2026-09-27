@@ -30,6 +30,9 @@ namespace App.Common
                 .As<ICoreSkillUnlockDataStore>();
             builder.Register<MetaProgressionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IMetaProgressionDataStore>();
+            // メインメニューで選んだアップグレードセットをバトルシーンへ運ぶ（シーンをまたぐので常駐）
+            builder.Register<RunLoadoutDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IRunLoadoutDataStore>();
             builder.RegisterEntryPoint<GameInputDataStore>()
                 .As<IGameInputDataStore>();
 

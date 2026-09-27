@@ -1,0 +1,122 @@
+{
+  "Base": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 1
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    }
+  },
+  "A_Natural": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 2
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    }
+  },
+  "B_Side90": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 32
+    }
+  },
+  "C_Forward": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 27
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    }
+  },
+  "D_AsymmetricAim": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    }
+  },
+  "E_Elbow90": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 21
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    }
+  },
+  "F_OneArmBack": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    }
+  },
+  "G_WideOpen": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 10
+    }
+  },
+  "H_FrontNear": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 27
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    }
+  },
+  "I_FrontBack": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 25
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    }
+  },
+  "J_WristTwist": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 16
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    }
+  },
+  "K_Arms45": {
+    "L": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    },
+    "R": {
+      "hand_points": 764,
+      "outside_closed_sleeve_envelope": 0
+    }
+  }
+}

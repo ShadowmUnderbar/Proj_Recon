@@ -75,6 +75,14 @@ namespace App.MainMenu.Views
             }
         }
 
+        public void SetStartVisible(bool visible)
+        {
+            if (_startButton != null)
+            {
+                _startButton.gameObject.SetActive(visible);
+            }
+        }
+
         private void OnDestroy()
         {
             _onStart.Dispose();

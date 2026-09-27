@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{\"ElseIf_Game_Backup\": {\"vertices\": 148131, \"triangles\": 288752, \"mesh_objects\": 124, \"skinned_mesh_objects\": 124, \"material_slots\": 128, \"materials\": 10, \"textures\": 1, \"bones\": 74, \"max_bone_influence\": 4, \"shape_keys_without_basis\": 190, \"shape_key_names\": 27, \"shape_keys_with_basis\": 250}, \"ElseIf_Game_Optimized\": {\"vertices\": 140603, \"triangles\": 272628, \"mesh_objects\": 8, \"skinned_mesh_objects\": 8, \"material_slots\": 29, \"materials\": 10, \"textures\": 1, \"bones\": 74, \"max_bone_influence\": 4, \"shape_keys_without_basis\": 27, \"shape_key_names\": 27, \"shape_keys_with_basis\": 28}, \"ElseIf_Game_MobileVR_Test\": {\"vertices\": 63620, \"triangles\": 118656, \"mesh_objects\": 5, \"skinned_mesh_objects\": 5, \"material_slots\": 20, \"materials\": 10, \"textures\": 1, \"bones\": 74, \"max_bone_influence\": 4, \"shape_keys_without_basis\": 27, \"shape_key_names\": 27, \"shape_keys_with_basis\": 28}, \"protected_original_changes\": []}\n"
+  }
+}

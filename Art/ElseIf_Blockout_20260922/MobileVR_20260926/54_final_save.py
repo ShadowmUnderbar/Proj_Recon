@@ -1,0 +1,8 @@
+import bpy,json
+from pathlib import Path
+P=Path('D:/UnityProj/Proj_Recon/Art/ElseIf_Blockout_20260922/MobileVR_20260926');s=bpy.data.scenes['ElseIf_MobileVR_Review'];bpy.context.window.scene=s;s.frame_set(1);s.camera=bpy.data.objects['Game_Cam_Stress_HighAngle'];col=bpy.data.collections['ElseIf_Game_MobileVR_Test'];rows=[]
+for o in col.objects:
+ if o.type!='MESH':continue
+ e=o.evaluated_get(bpy.context.evaluated_depsgraph_get());m=e.to_mesh();m.calc_loop_triangles();rows.append({'name':o.name,'vertices':len(o.data.vertices),'triangles':sum(len(f.vertices)-2 for f in o.data.polygons),'evaluated_triangles':len(m.loop_triangles),'material_slots':len(o.data.materials),'modifiers':[x.type for x in o.modifiers]});e.to_mesh_clear()
+keys=bpy.data.objects['Mobile__Jacket'].data.shape_keys;targets=sorted({t.id.name for d in keys.animation_data.drivers for v in d.driver.variables for t in v.targets if t.id});rig=bpy.data.objects['ElseIf_MobileVR_Humanoid'];source=bpy.data.objects['ElseIf_LOD0_Humanoid'];assert set(b.name for b in rig.data.bones)==set(b.name for b in source.data.bones);assert all(x['triangles']==x['evaluated_triangles'] for x in rows)
+mats={m for o in col.objects if o.type=='MESH' for m in o.data.materials if m};images={n.image for m in mats if m.use_nodes for n in m.node_tree.nodes if n.type=='TEX_IMAGE' and n.image};r={'mesh_details':sorted(rows,key=lambda r:-r['triangles']),'driver_targets':targets,'skeleton_names_identical':True,'textures':[{'name':i.name,'packed':bool(i.packed_file),'path':i.filepath} for i in images]};(P/'Final_Validation.json').write_text(json.dumps(r,indent=2));bpy.ops.wm.save_as_mainfile(filepath=str(P/'ElseIf_Game_MobileVR_Test.blend'));print(r)

@@ -1,0 +1,135 @@
+{
+  "meshes": [
+    {
+      "name": "ElseIf_HeadShell",
+      "vertices": 1008,
+      "triangles": 1656,
+      "materials": [
+        "ElseIf_HeadShell",
+        "ElseIf_HeadJoint"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "ElseIf_FaceMonitor",
+      "vertices": 193,
+      "triangles": 336,
+      "materials": [
+        "ElseIf_FaceMonitor"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "vertices": 1201,
+  "triangles": 1992,
+  "mesh_count": 2,
+  "material_count": 3,
+  "material_slots": 3,
+  "socket_name": "Mobile__LOD0__Backup__Fix__HeadSocket",
+  "socket_world_matrix": [
+    [
+      1.0,
+      8.526512829121202e-14,
+      -1.0880185641326534e-14,
+      2.9721847205621543e-10
+    ],
+    [
+      -1.1368683772161603e-13,
+      1.0000001192092896,
+      1.4901161193847656e-08,
+      0.023843660950660706
+    ],
+    [
+      6.66134344170686e-16,
+      -3.3527612686157227e-08,
+      1.0000003576278687,
+      1.4681531190872192
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "root_local_location": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "root_local_rotation": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "root_local_scale": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "monitor_material": "ElseIf_FaceMonitor",
+  "monitor_uv": "FaceUV",
+  "textures": [
+    {
+      "name": "ElseIf_Expression_Test_Cry",
+      "size": [
+        512,
+        512
+      ],
+      "packed": true
+    },
+    {
+      "name": "ElseIf_Expression_Test_Joy",
+      "size": [
+        512,
+        512
+      ],
+      "packed": true
+    },
+    {
+      "name": "ElseIf_Expression_Test_Normal",
+      "size": [
+        512,
+        512
+      ],
+      "packed": true
+    }
+  ],
+  "casing_world_top": 1.6761531829833984,
+  "protected_existing_objects_checked": 1176,
+  "protected_existing_changes": [],
+  "highangle_crop": [
+    235,
+    222,
+    413,
+    690
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「Claude_HeadPart01_Work.blend」を保存\n{\"engine\": \"CYCLES\", \"samples\": 48, \"device\": \"GPU\", \"sec\": 3.9, \"file\": \"D:\\\\UnityProj\\\\Proj_Recon\\\\Art\\\\ElseIf_Blockout_20260922\\\\Claude_HeadPart01_20260926\\\\Claude_HeadPart01_Work.blend\"}\n"
+  }
+}

@@ -3,8 +3,8 @@ using R3;
 namespace App.MainMenu.Interface
 {
     /// <summary>
-    /// メインメニュー画面のUI。STARTボタンとオプションを開くボタン、
-    /// メインパネル／オプションパネルの表示切替を持つ。
+    /// メインメニュー画面のUI。タイトルと「START」ボタンを持つ。
+    /// START後のアップグレードセット選択は同じパネル内の RunStartView が担当する。
     /// </summary>
     public interface IMainMenuView
     {
@@ -17,10 +17,14 @@ namespace App.MainMenu.Interface
         /// <summary>ボタン操作の可否。遷移中の二重押しを防ぐために使う</summary>
         void SetInteractable(bool interactable);
 
+        /// <summary>「START」ボタンの表示切替。セット選択中は隠す</summary>
+        void SetStartVisible(bool visible);
+    
         /// <summary>メインパネルを表示し、オプションパネルを隠す</summary>
         void ShowMainPanel();
 
         /// <summary>オプションパネルを表示し、メインパネルを隠す</summary>
         void ShowOptionPanel();
-    }
+
+        }
 }

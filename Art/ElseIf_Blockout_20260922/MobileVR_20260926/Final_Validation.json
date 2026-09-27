@@ -1,0 +1,65 @@
+{
+  "mesh_details": [
+    {
+      "name": "Mobile__Jacket",
+      "vertices": 35671,
+      "triangles": 66223,
+      "evaluated_triangles": 66223,
+      "material_slots": 7,
+      "modifiers": [
+        "ARMATURE"
+      ]
+    },
+    {
+      "name": "Mobile__Body",
+      "vertices": 19111,
+      "triangles": 35345,
+      "evaluated_triangles": 35345,
+      "material_slots": 1,
+      "modifiers": [
+        "ARMATURE"
+      ]
+    },
+    {
+      "name": "Mobile__Socks",
+      "vertices": 4298,
+      "triangles": 8368,
+      "evaluated_triangles": 8368,
+      "material_slots": 2,
+      "modifiers": [
+        "ARMATURE"
+      ]
+    },
+    {
+      "name": "Mobile__Shoes",
+      "vertices": 2820,
+      "triangles": 5364,
+      "evaluated_triangles": 5364,
+      "material_slots": 6,
+      "modifiers": [
+        "ARMATURE"
+      ]
+    },
+    {
+      "name": "Mobile__Shorts",
+      "vertices": 1720,
+      "triangles": 3356,
+      "evaluated_triangles": 3356,
+      "material_slots": 4,
+      "modifiers": [
+        "ARMATURE"
+      ]
+    }
+  ],
+  "driver_targets": [
+    "ElseIf_MobileVR_Humanoid"
+  ],
+  "skeleton_names_identical": true,
+  "textures": [
+    {
+      "name": "Codex \u753b\u50cf 2026\u5e749\u67088\u65e5 23_05_45.png",
+      "packed": true,
+      "path": "C:\\Users\\shado\\Pictures\\Codex \u753b\u50cf 2026\u5e749\u67088\u65e5 23_05_45.png"
+    }
+  ]
+}

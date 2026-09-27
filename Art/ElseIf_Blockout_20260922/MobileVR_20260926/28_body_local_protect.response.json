@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「ElseIf_Game_MobileVR_Test.blend」で保存しました\n{'before_triangles': 27830, 'after_triangles': 15988, 'protected_points': 8555, 'max_protected_vertex_distance_mm': 0.0}\n"
+  }
+}
