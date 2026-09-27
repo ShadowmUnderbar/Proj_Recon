@@ -36,6 +36,9 @@ namespace App.Common
             // チュートリアルの閲覧回数（セーブデータ）と再表示設定から表示要否を判定する
             builder.Register<TutorialProgressDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ITutorialProgressDataStore>();
+            // チュートリアル文言（Localization の TutorialText テーブル）。メインメニュー・バトル双方で使うため常駐
+            builder.RegisterEntryPoint<TutorialLocalizationDataStore>()
+                .As<ITutorialLocalizationDataStore>();
             builder.RegisterEntryPoint<GameInputDataStore>()
                 .As<IGameInputDataStore>();
 

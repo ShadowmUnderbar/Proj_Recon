@@ -17,6 +17,12 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: ecada455082285e4092355f6fb5ad257
   m_SerializeEntries:
+  - m_GUID: 197d8eafe2d4d814bb0651e1a58d23b9
+    m_Address: TutorialText_ja-JP
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ja-JP
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: edc4dcdf949dc8941a0572b767074eff
     m_Address: Upgrade_ja-JP
     m_ReadOnly: 1
