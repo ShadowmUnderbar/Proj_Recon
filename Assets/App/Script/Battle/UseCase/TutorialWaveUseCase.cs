@@ -12,6 +12,7 @@ namespace App.Battle.UseCase
     /// <summary>
     /// ウェーブ開始時に <see cref="TutorialWaveConfig"/> で割り当てたチュートリアルを表示する。
     /// ウェーブの開始は「ポーズ解除」で判定する（ウェーブ1はセット選択の解除、以降はショップの「次のウェーブへ」）。
+    /// 購読した時点で既に解けていれば（メインメニュー経由で即開始）その場でウェーブ1として扱う。
     /// 閲覧済み（規定回数）のものは再表示設定が有効でない限り出さず、表示したら閲覧回数を記録する。
     /// 割り当てのないウェーブでは前のメッセージをそのまま残す（消すのは新しいメッセージか明示の Hide のみ）
     /// </summary>
@@ -39,9 +40,10 @@ namespace App.Battle.UseCase
 
         public void Initialize()
         {
-            // 初期値（ポーズ中）は無視し、ポーズが解けた瞬間だけをウェーブ開始として扱う
+            // ポーズが解けている状態をウェーブ開始として扱う。
+            // メインメニュー経由やスロットが全部空のときは RunStartUseCase の初期化中に
+            // ウェーブ1が始まる（このクラスより先に初期化される）ため、購読時点で既に解けていれば即座に扱う
             _waveManagerDataStore.IsWavePause
-                .Skip(1)
                 .Where(isPause => !isPause)
                 .Subscribe(_ => OnWaveStarted(_waveManagerDataStore.CurrentWave.CurrentValue))
                 .AddTo(_disposable);

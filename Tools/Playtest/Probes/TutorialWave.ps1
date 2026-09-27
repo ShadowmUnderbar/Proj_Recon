@@ -135,6 +135,44 @@ return $"{{\"before\":\"{before}\",\"phase\":\"{view.Phase}\",\"count\":{progres
             -Detail "(before: $($fresh.before) → after: $($fresh.phase))" | Out-Null
         Assert-ProbeValue -Name '表示で閲覧回数が1になる' -Actual ([double]$fresh.count) -Expected 1 | Out-Null
 
+        # --- 2b. 購読時点で既にポーズが解けていれば即座に出る（メインメニュー経由・スロット全空の即開始と同じ状況） ---
+        $immediate = Invoke-UnityJson -Snippet @'
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Data;
+using App.Battle.Interface;
+using App.Battle.Interface.DataStore;
+using App.Battle.UseCase;
+using App.Common.Data;
+using App.Common.Interface;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var view = scope.Container.Resolve<ITutorialMessageView>();
+var progress = scope.Container.Resolve<ITutorialProgressDataStore>();
+var wave = scope.Container.Resolve<IWaveManagerDataStore>();
+var message = scope.Container.Resolve<ITutorialMessageUseCase>();
+var type = (TutorialType)System.Enum.Parse(typeof(TutorialType), "__TYPE__");
+
+progress.ResetProgress(type);
+message.Hide();
+var before = view.Phase.ToString();
+var pausedBefore = wave.IsWavePause.CurrentValue;
+
+// ウェーブ1が既に始まっている状態で、後から初期化される UseCase を作って購読させる
+using (var late = new TutorialWaveUseCase(
+    scope.Container.Resolve<TutorialWaveConfig>(), wave, progress, message))
+{
+    late.Initialize();
+}
+
+return $"{{\"before\":\"{before}\",\"pausedBefore\":{pausedBefore.ToString().ToLower()},\"phase\":\"{view.Phase}\",\"count\":{progress.GetViewCount(type)}}}";
+'@.Replace('__TYPE__', $config.type)
+
+        Assert-ProbeTrue -Name '既に始まっているウェーブ1に後から購読しても即座に出る' `
+            -Condition ($immediate.before -eq 'Hidden' -and -not [bool]$immediate.pausedBefore -and $immediate.phase -eq 'HeadFollow') `
+            -Detail "(before: $($immediate.before), pausedBefore: $($immediate.pausedBefore), after: $($immediate.phase))" | Out-Null
+
         # --- 3. 規定回数まで閲覧済みにすると出ない ---
         $completed = Invoke-UnityJson -Snippet @'
 using VContainer;
