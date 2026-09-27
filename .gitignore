@@ -97,8 +97,8 @@ Art/**/Renders/
 Art/**/*.log
 # 参考資料（キャラクターシートの切り抜きなど）
 Art/**/Reference/
-# 部屋アセットの書き出し結果（build_room_assets.pyで再生成でき、Unityへ取り込んだ後はAssets側で管理する）
-Art/ElseIf_Room_20260927/Export/
+# 書き出し結果（FBX・テクスチャ）。Blenderの原本やスクリプトから再生成でき、Unityへ取り込んだ後はAssets側で管理する
+Art/**/Export/
 # 最新の原本のみ Art/Latest/ に置いてLFSで追跡する
 !Art/Latest/*.blend
 !Art/Latest/**/*.blend
