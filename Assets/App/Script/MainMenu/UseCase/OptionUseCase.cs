@@ -58,6 +58,10 @@ namespace App.MainMenu.UseCase
                 .Subscribe(angle => _optionPanelPresenter.SetSnapTurnAngle(angle))
                 .AddTo(_disposable);
 
+            _playerSettingDataStore.IsTutorialReplayEnabled
+                .Subscribe(enabled => _optionPanelPresenter.SetTutorialReplay(enabled))
+                .AddTo(_disposable);
+
             #endregion
 
             #region パネル操作 → 設定の保存
@@ -68,6 +72,10 @@ namespace App.MainMenu.UseCase
 
             _optionPanelPresenter.OnLocomotionChanged
                 .Subscribe(locomotion => _playerSettingDataStore.SetLocomotion(locomotion))
+                .AddTo(_disposable);
+
+            _optionPanelPresenter.OnTutorialReplayChanged
+                .Subscribe(enabled => _playerSettingDataStore.SetTutorialReplayEnabled(enabled))
                 .AddTo(_disposable);
 
             _optionPanelPresenter.OnMoveSpeedChanged

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 namespace App.MainMenu.Views
 {
     /// <summary>
-    /// 部屋に固定設置したオプションパネル。利き手とVRの移動設定を変更する。
+    /// 部屋に固定設置したオプションパネル。利き手・VRの移動設定・チュートリアル再表示を変更する。
     /// 選択中の項目はボタンを押せない状態にして、いま選ばれているものが分かるようにしている。
     /// 操作可否の制御（近づいたときだけ押せる）は<see cref="MenuPanelProximityView"/>が担当する。
     /// </summary>
@@ -38,6 +38,12 @@ namespace App.MainMenu.Views
         [SerializeField, Tooltip("スナップターン角度の数値表示")]
         private TMP_Text _snapTurnAngleLabel;
 
+        [SerializeField, Tooltip("チュートリアル再表示をオンにするボタン")]
+        private Button _tutorialReplayOnButton;
+
+        [SerializeField, Tooltip("チュートリアル再表示をオフにするボタン")]
+        private Button _tutorialReplayOffButton;
+
         [SerializeField, Tooltip("オプションを閉じてメインパネルへ戻るボタン")]
         private Button _closeButton;
 
@@ -45,12 +51,14 @@ namespace App.MainMenu.Views
         private readonly Subject<LocomotionType> _onLocomotionChanged = new();
         private readonly Subject<float> _onMoveSpeedChanged = new();
         private readonly Subject<int> _onSnapTurnAngleChanged = new();
+        private readonly Subject<bool> _onTutorialReplayChanged = new();
         private readonly Subject<Unit> _onClose = new();
 
         public Observable<HandType> OnDominantHandChanged => _onDominantHandChanged;
         public Observable<LocomotionType> OnLocomotionChanged => _onLocomotionChanged;
         public Observable<float> OnMoveSpeedChanged => _onMoveSpeedChanged;
         public Observable<int> OnSnapTurnAngleChanged => _onSnapTurnAngleChanged;
+        public Observable<bool> OnTutorialReplayChanged => _onTutorialReplayChanged;
         public Observable<Unit> OnClose => _onClose;
 
         private void Awake()
@@ -74,6 +82,16 @@ namespace App.MainMenu.Views
             {
                 _teleportLocomotionButton.onClick.AddListener(
                     () => _onLocomotionChanged.OnNext(LocomotionType.Teleport));
+            }
+
+            if (_tutorialReplayOnButton != null)
+            {
+                _tutorialReplayOnButton.onClick.AddListener(() => _onTutorialReplayChanged.OnNext(true));
+            }
+
+            if (_tutorialReplayOffButton != null)
+            {
+                _tutorialReplayOffButton.onClick.AddListener(() => _onTutorialReplayChanged.OnNext(false));
             }
 
             if (_closeButton != null)
@@ -146,6 +164,12 @@ namespace App.MainMenu.Views
             SetSelected(_teleportLocomotionButton, locomotion == LocomotionType.Teleport);
         }
 
+        public void SetTutorialReplay(bool enabled)
+        {
+            SetSelected(_tutorialReplayOnButton, enabled);
+            SetSelected(_tutorialReplayOffButton, !enabled);
+        }
+
         public void SetMoveSpeed(float moveSpeed)
         {
             ConfigureSliders();
@@ -202,6 +226,7 @@ namespace App.MainMenu.Views
             _onLocomotionChanged.Dispose();
             _onMoveSpeedChanged.Dispose();
             _onSnapTurnAngleChanged.Dispose();
+            _onTutorialReplayChanged.Dispose();
             _onClose.Dispose();
         }
     }

@@ -13,6 +13,7 @@ namespace App.MainMenu.Presenters
         public Observable<LocomotionType> OnLocomotionChanged => _optionPanelView.OnLocomotionChanged;
         public Observable<float> OnMoveSpeedChanged => _optionPanelView.OnMoveSpeedChanged;
         public Observable<int> OnSnapTurnAngleChanged => _optionPanelView.OnSnapTurnAngleChanged;
+        public Observable<bool> OnTutorialReplayChanged => _optionPanelView.OnTutorialReplayChanged;
         public Observable<Unit> OnClose => _optionPanelView.OnClose;
 
         [Inject]
@@ -28,5 +29,7 @@ namespace App.MainMenu.Presenters
         public void SetMoveSpeed(float moveSpeed) => _optionPanelView.SetMoveSpeed(moveSpeed);
 
         public void SetSnapTurnAngle(int angle) => _optionPanelView.SetSnapTurnAngle(angle);
+
+        public void SetTutorialReplay(bool enabled) => _optionPanelView.SetTutorialReplay(enabled);
     }
 }
