@@ -148,7 +148,59 @@ return $"{{\"hiddenResult\":{hiddenResult.ToString().ToLower()},\"hiddenPhase\":
     Assert-ProbeTrue -Name '[計算] 再 Begin で視点正面からやり直す' -Condition ($logic.restartPhase -eq 'HeadFollow') | Out-Null
     Assert-ProbeTrue -Name '[計算] End で非表示になる' -Condition ($logic.endPhase -eq 'Hidden') | Out-Null
 
-    # --- 2. 表示前の状態と設定値 ---
+    # --- 1b. 追従の遅延: 頭の移動は即時、向きの変化だけ遅れて追いつく ---
+    $lag = Invoke-UnityJson -Snippet @'
+using UnityEngine;
+using App.Battle.Data;
+using App.Battle.Views;
+using App.Common.Data;
+
+var settings = new TutorialMessagePlacementSettings(
+    headFollowDuration: 100f,
+    headOffset: new Vector3(0f, -0.1f, 1f),
+    handOffset: Vector3.zero,
+    followSpeed: 6f);
+var dt = 1f / 90f;
+var hand = new Pose(Vector3.zero, Quaternion.identity);
+
+var placement = new TutorialMessagePlacement();
+placement.Begin();
+var head = new Pose(new Vector3(0f, 1.6f, 0f), Quaternion.identity);
+placement.TryUpdate(dt, new TutorialMessageAnchor(head, HandType.Left, hand, true), settings, out var start);
+
+// 頭が向きを変えずに 1m 移動 → 同じフレームで 1m 付いてくる（遅延なし）
+head = new Pose(head.position + new Vector3(1f, 0f, 0f), head.rotation);
+placement.TryUpdate(dt, new TutorialMessageAnchor(head, HandType.Left, hand, true), settings, out var moved);
+var moveError = Vector3.Distance(moved.position, start.position + new Vector3(1f, 0f, 0f));
+
+// 頭が 90 度回る → 同じフレームでは目標に届かず、向きも遅れている
+head = new Pose(head.position, Quaternion.Euler(0f, 90f, 0f));
+placement.TryUpdate(dt, new TutorialMessageAnchor(head, HandType.Left, hand, true), settings, out var turned);
+var turnTarget = head.position + head.rotation * settings.HeadOffset;
+var turnGap = Vector3.Distance(turned.position, turnTarget);
+var turnRotGap = Quaternion.Angle(turned.rotation, head.rotation);
+
+// 時間が経てば追いつく
+Pose settled = turned;
+for (var i = 0; i < 600; i++)
+{
+    placement.TryUpdate(dt, new TutorialMessageAnchor(head, HandType.Left, hand, true), settings, out settled);
+}
+var settledGap = Vector3.Distance(settled.position, turnTarget);
+var settledRotGap = Quaternion.Angle(settled.rotation, head.rotation);
+
+return $"{{\"moveError\":{moveError},\"turnGap\":{turnGap},\"turnRotGap\":{turnRotGap},\"settledGap\":{settledGap},\"settledRotGap\":{settledRotGap}}}";
+'@
+
+    Assert-ProbeValue -Name '[計算] 頭の移動には遅延なく付いてくる[m]' -Actual ([double]$lag.moveError) -Expected 0 -Tolerance 0.001 | Out-Null
+    Assert-ProbeTrue -Name '[計算] 首を回した直後は位置が遅れている' -Condition ([double]$lag.turnGap -gt 0.5) `
+        -Detail "(目標との距離: $([math]::Round([double]$lag.turnGap, 3))m)" | Out-Null
+    Assert-ProbeTrue -Name '[計算] 首を回した直後は向きが遅れている' -Condition ([double]$lag.turnRotGap -gt 45) `
+        -Detail "(目標との角度: $([math]::Round([double]$lag.turnRotGap, 1))deg)" | Out-Null
+    Assert-ProbeValue -Name '[計算] 時間が経てば位置が追いつく[m]' -Actual ([double]$lag.settledGap) -Expected 0 -Tolerance 0.001 | Out-Null
+    Assert-ProbeValue -Name '[計算] 時間が経てば向きが追いつく[deg]' -Actual ([double]$lag.settledRotGap) -Expected 0 -Tolerance 0.1 | Out-Null
+
+    # --- 2. 初期状態と設定値。ウェーブ1開始時に TutorialWaveConfig の割り当てで自動表示されているので、一旦消して素の状態にする ---
     $setup = Invoke-UnityJson -Snippet @'
 using System.Reflection;
 using UnityEngine;
@@ -164,15 +216,19 @@ var scope = LifetimeScope.Find<BattleLifetimeScope>();
 var view = scope.Container.Resolve<ITutorialMessageView>() as TutorialMessageView;
 if (view == null) throw new System.Exception("ITutorialMessageView を TutorialMessageView として解決できません");
 
+var autoShownPhase = view.Phase.ToString();
+scope.Container.Resolve<ITutorialMessageUseCase>().Hide();
+
 var flags = BindingFlags.NonPublic | BindingFlags.Instance;
 var root = (GameObject)typeof(TutorialMessageView).GetField("_root", flags).GetValue(view);
 var duration = (float)typeof(TutorialMessageView).GetField("_headFollowDuration", flags).GetValue(view);
 var setting = scope.Container.Resolve<IPlayerSettingDataStore>();
 
-return $"{{\"phase\":\"{view.Phase}\",\"rootActive\":{root.activeInHierarchy.ToString().ToLower()},\"duration\":{duration},\"nonDominant\":\"{setting.NonDominantHand}\",\"isVr\":{DebugConfig.IsVRMode.ToString().ToLower()}}}";
+return $"{{\"autoShownPhase\":\"{autoShownPhase}\",\"phase\":\"{view.Phase}\",\"rootActive\":{root.activeInHierarchy.ToString().ToLower()},\"duration\":{duration},\"nonDominant\":\"{setting.NonDominantHand}\",\"isVr\":{DebugConfig.IsVRMode.ToString().ToLower()}}}";
 '@
 
-    Assert-ProbeTrue -Name '表示前は非表示' -Condition ($setup.phase -eq 'Hidden' -and -not [bool]$setup.rootActive) `
+    Write-Host "ウェーブ1開始時の自動表示: $($setup.autoShownPhase)（未閲覧なら表示、閲覧済みなら Hidden。詳細は TutorialWave プローブ）"
+    Assert-ProbeTrue -Name 'Hide で非表示になる（初期化）' -Condition ($setup.phase -eq 'Hidden' -and -not [bool]$setup.rootActive) `
         -Detail "(phase: $($setup.phase), 非利き手: $($setup.nonDominant), VR: $($setup.isVr))" | Out-Null
 
     if (-not [bool]$setup.isVr) {

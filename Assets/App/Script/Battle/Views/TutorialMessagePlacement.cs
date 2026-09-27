@@ -10,7 +10,9 @@ namespace App.Battle.Views
     /// 手の姿勢が使えない（非VR）間は視点の正面に留まり続ける。
     ///
     /// 目標位置はフェーズごとに毎フレーム決め直し、実際の姿勢はそこへ指数補間で追いつかせる。
-    /// フェーズ切り替えの瞬間に跳ばず、手ぶれもそのまま伝わらないようにするため
+    /// フェーズ切り替えの瞬間に跳ばず、手ぶれもそのまま伝わらないようにするため。
+    /// ただし追従先（頭または手）の「移動」ぶんは補間せず毎フレームそのまま足す。
+    /// プレイヤーが歩いてカメラが動いたときはぴたりと付いてきて、首を回した（向きが変わった）ぶんだけが遅れて追いつく
     /// </summary>
     public class TutorialMessagePlacement
     {
@@ -24,6 +26,9 @@ namespace App.Battle.Views
 
         private Vector3 _position;
         private Quaternion _rotation = Quaternion.identity;
+
+        /// <summary>前フレームの追従先の位置。移動ぶんを即時反映するための差分の基準</summary>
+        private Vector3 _previousAnchorPosition;
 
         /// <summary>表示を開始し、視点正面フェーズからやり直す</summary>
         public void Begin()
@@ -58,13 +63,14 @@ namespace App.Battle.Views
                 _elapsed += deltaTime;
             }
 
+            var previousPhase = Phase;
             Phase = anchor.IsHandAvailable && _elapsed >= settings.HeadFollowDuration
                 ? TutorialMessagePhase.HandFollow
                 : TutorialMessagePhase.HeadFollow;
 
-            var target = Phase == TutorialMessagePhase.HandFollow
-                ? GetHandFollowPose(anchor, settings)
-                : GetHeadFollowPose(anchor, settings);
+            var isHandFollow = Phase == TutorialMessagePhase.HandFollow;
+            var target = isHandFollow ? GetHandFollowPose(anchor, settings) : GetHeadFollowPose(anchor, settings);
+            var anchorPosition = isHandFollow ? anchor.HandPose.position : anchor.HeadPose.position;
 
             if (!_isPlaced || settings.FollowSpeed <= 0f)
             {
@@ -74,11 +80,20 @@ namespace App.Battle.Views
             }
             else
             {
-                // フレームレートに依存しないよう指数補間で追いつかせる
+                // 追従先の移動ぶんはそのまま足す（歩いたときにぴたりと付いてくる）。
+                // フェーズが切り替わった直後は追従先が頭から手へ変わるので、その差分は移動として扱わない
+                if (Phase == previousPhase)
+                {
+                    _position += anchorPosition - _previousAnchorPosition;
+                }
+
+                // 残り（向きの変化や切り替えによるずれ）はフレームレートに依存しないよう指数補間で追いつかせる
                 var t = 1f - Mathf.Exp(-settings.FollowSpeed * deltaTime);
                 _position = Vector3.Lerp(_position, target.position, t);
                 _rotation = Quaternion.Slerp(_rotation, target.rotation, t);
             }
+
+            _previousAnchorPosition = anchorPosition;
 
             pose = new Pose(_position, _rotation);
             return true;
