@@ -17,6 +17,9 @@ namespace App.Common.Interface
         /// <summary>スナップターン1回あたりの角度[deg]</summary>
         ReactiveProperty<int> SnapTurnAngle { get; }
 
+        /// <summary>閲覧済みのチュートリアルも再表示するか</summary>
+        ReadOnlyReactiveProperty<bool> IsTutorialReplayEnabled { get; }
+
         /// <summary>利き手を変更して保存する</summary>
         void SetDominantHand(HandType hand);
 
@@ -28,5 +31,8 @@ namespace App.Common.Interface
 
         /// <summary>スナップターン角度を変更して保存する。範囲外の値はクランプされる</summary>
         void SetSnapTurnAngle(int angle);
+
+        /// <summary>チュートリアル再表示の有無を変更して保存する</summary>
+        void SetTutorialReplayEnabled(bool enabled);
     }
 }

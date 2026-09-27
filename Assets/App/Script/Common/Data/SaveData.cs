@@ -21,5 +21,11 @@ namespace App.Common.Data
         // メタ進行: 保存済みアップグレードセット（スロット制）。
         // スロット数の正規化・アクセスは MetaProgressionDataStore が担う。
         public List<UpgradeSetSlot> UpgradeSetSlots = new();
+
+        // チュートリアル: 種類ごとの閲覧回数。判定は TutorialProgressDataStore が担う
+        public List<TutorialViewRecord> TutorialViews = new();
+
+        // 設定: 閲覧済みのチュートリアルも再表示するか
+        public bool IsTutorialReplayEnabled = false;
     }
 }
