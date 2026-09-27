@@ -63,8 +63,10 @@ namespace App.Common.DataStore
                 // ファイルが存在しない場合は新規データを返す
                 if (!File.Exists(SaveDataPath))
                 {
+                    SaveData = new SaveData();
+                    ApplyDebugOverride();
                     _onLoad.OnNext(Unit.Default);
-                    return new SaveData();
+                    return SaveData;
                 }
 
                 // usingでStreamReaderを管理
@@ -76,6 +78,7 @@ namespace App.Common.DataStore
 
                 // JSONデシリアライズ
                 SaveData = JsonUtility.FromJson<SaveData>(json);
+                ApplyDebugOverride();
                 _onLoad.OnNext(Unit.Default);
                 return SaveData;
             }
@@ -85,8 +88,33 @@ namespace App.Common.DataStore
 
                 // 失敗時は新規データを返す
                 SaveData = new SaveData();
+                ApplyDebugOverride();
                 _onLoad.OnNext(Unit.Default);
                 return SaveData;
+            }
+        }
+
+        /// <summary>
+        /// デバッグ用: 「App/デバッグ: セーブデータ」で設定した内容を読み込み直後のセーブデータへ上書きする。
+        /// ファイルには書かず、メモリ上の値だけ差し替える（次に Save されれば上書き後の値が残る）。
+        /// 製品ビルドでは <see cref="DebugConfig.SaveDataOverrideJson"/> が常に null なので何も起きない。
+        /// </summary>
+        private void ApplyDebugOverride()
+        {
+            var json = DebugConfig.SaveDataOverrideJson;
+            if (string.IsNullOrEmpty(json))
+            {
+                return;
+            }
+
+            try
+            {
+                JsonUtility.FromJsonOverwrite(json, SaveData);
+                Debug.Log("[SaveDataStore] デバッグ設定でセーブデータを上書きしました（App/デバッグ: セーブデータ）");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[SaveDataStore] デバッグ用セーブデータ上書きに失敗しました: {e.Message}");
             }
         }
 
