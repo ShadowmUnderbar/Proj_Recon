@@ -171,6 +171,7 @@ MonoBehaviour:
   _playerLifeGaugeView: {fileID: 5981154650532844316, guid: 1ac4b34c535afc145b905b8e64821484, type: 3}
   _runStartView: {fileID: 3004351885307919908, guid: 8ebf5f0ac3c8ed04cb74f5e38f38685f, type: 3}
   _tutorialMessageView: {fileID: 4176996918077282331, guid: d94229389494d134a8dcca0daf6df484, type: 3}
+  _tutorialWaveConfig: {fileID: 11400000, guid: 40b11f405d2442746b2424e1de13720a, type: 2}
   _waveConfig: {fileID: 11400000, guid: 59d998123a56c164e8af04f7758af639, type: 2}
   _streamerCameraView: {fileID: 2502214490595356515, guid: 845639cd75498d24d9ca347c81c38cb3, type: 3}
   _streamerCameraTriggerConfig: {fileID: 11400000, guid: fbd42e5c1d1fea24486e558b5a17babd, type: 2}

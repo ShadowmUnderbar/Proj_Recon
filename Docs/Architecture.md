@@ -260,7 +260,8 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `WaveManagerUseCase` / `ShopUseCase` / `RunStartUseCase` / `GameOverUseCase` / `RunResetUseCase` | 3.2 参照 | |
 | `UpgradeSideEffectApplier` | アップグレード付与の副作用（バフ起動・バリア満タン）。Shop と RunStart の共通処理 | BuffState, PlayerBarrier |
 | `StreamerCameraUseCase` | ウェーブ進行・ボス・マルチキルで配信カメラの演出をトリガー | StreamerCamera, Enemy |
-| `TutorialMessageUseCase` | チュートリアルメッセージを出す手段。`ITutorialMessageUseCase`（`Show(TutorialType)` / `Hide()`）として登録し、呼び出し側が注入する。リスタートでセット選択へ戻ると自動で消す。文言は `TutorialLocalizationDataStore`、頭は `TryGetGazePose`、手は `NonDominantHand` 側の Pose を毎フレーム View へ渡す。表示のきっかけと `MarkViewed` は呼び出し側の責務で、現状は呼び出し元が未接続 | TutorialLocalization, PlayerSetting, PlayerControl |
+| `TutorialMessageUseCase` | チュートリアルメッセージを出す手段。`ITutorialMessageUseCase`（`Show(TutorialType)` / `Hide()`）として登録し、呼び出し側が注入する。リスタートでセット選択へ戻ると自動で消す。文言は `TutorialLocalizationDataStore`、頭は `TryGetGazePose`、手は `NonDominantHand` 側の Pose を毎フレーム View へ渡す。表示のきっかけと `MarkViewed` は呼び出し側の責務 | TutorialLocalization, PlayerSetting, PlayerControl |
+| `TutorialWaveUseCase` | ウェーブ開始（`IsWavePause` が false になった瞬間）に `TutorialWaveConfig` の割り当てを引き、`ShouldShow` なら `ITutorialMessageUseCase.Show` して `MarkViewed`。割り当てのないウェーブでは前のメッセージを残す | WaveManager, TutorialProgress, TutorialMessage |
 
 ### 3.6 DataStore（`Battle/DataStore`）
 
@@ -306,7 +307,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 
 | 種別 | クラス |
 |---|---|
-| ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `UpgradeDescriptionStyle` |
+| ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle` |
 | 定数 | `PlayerConstants.PlayerId`（**今回新設**）, `ThemeColors` |
 | POCO / struct | `EnemyData`, `HitData`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `TutorialMessageAnchor`, `UpgradeLocalizedText` |
 | enum | `EnemyAIState`, `HitBoxType`, `StreamerCameraShotType`, `TutorialMessagePhase` |

@@ -44,6 +44,7 @@ namespace App.Battle
         [SerializeField] private PlayerDeathConfig _playerDeathConfig;
         [SerializeField] private UpgradeDescriptionStyle _upgradeDescriptionStyle;
         [SerializeField] private PlayerBaseParameterConfig _playerBaseParameterConfig;
+        [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -166,6 +167,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<StreamerCameraUseCase>();
             // チュートリアルメッセージの表示手段。表示のきっかけを持つ側が ITutorialMessageUseCase を注入して Show/Hide を呼ぶ
             builder.RegisterEntryPoint<TutorialMessageUseCase>().As<ITutorialMessageUseCase>();
+            // ウェーブ開始時に TutorialWaveConfig の割り当てに従ってチュートリアルを出す
+            builder.RegisterEntryPoint<TutorialWaveUseCase>();
 
             #endregion
 
@@ -280,6 +283,8 @@ namespace App.Battle
             builder.RegisterInstance(_playerBaseParameterConfig);
             // アップグレード詳細説明の効果値の装飾（UpgradeLocalizationDataStore が利用）
             builder.RegisterInstance(_upgradeDescriptionStyle);
+            // ウェーブ開始時のチュートリアル割り当て（TutorialWaveUseCase が利用）
+            builder.RegisterInstance(_tutorialWaveConfig);
 
             #endregion
         }
