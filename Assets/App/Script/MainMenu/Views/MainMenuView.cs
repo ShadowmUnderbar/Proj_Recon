@@ -42,6 +42,8 @@ namespace App.MainMenu.Views
             {
                 _optionButton.onClick.AddListener(() => _onOption.OnNext(Unit.Default));
             }
+
+            _optionPanel.SetActive(false);
         }
 
         public void SetInteractable(bool interactable)

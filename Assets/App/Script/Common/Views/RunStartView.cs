@@ -1,5 +1,6 @@
 using App.Common.Interface;
 using R3;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,13 +17,13 @@ namespace App.Common.Views
         private GameObject _root;
 
         [SerializeField, Tooltip("見出しテキスト")]
-        private Text _headlineText;
+        private TextMeshProUGUI _headlineText;
 
         [SerializeField, Tooltip("スロット選択ボタン（3つ・スロット順）")]
         private Button[] _slotButtons;
 
         [SerializeField, Tooltip("各スロットボタンのラベル（_slotButtonsと同数・同順）")]
-        private Text[] _slotButtonLabels;
+        private TextMeshProUGUI[] _slotButtonLabels;
 
         [SerializeField, Tooltip("使わずに開始ボタン")]
         private Button _startWithoutLoadButton;
