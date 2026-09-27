@@ -28,6 +28,31 @@ MonoBehaviour:
       First, defeat enemies and collect the cash they drop!'
     m_Metadata:
       m_Items: []
+  - m_Id: 4414349467648
+    m_Localized: 'The cash you earn by defeating enemies can be used to purchase
+      upgrades at this shop that appears between waves.
+
+      You can view the details
+      of upgrades by holding them in your hand.
+
+      Purchase your favorite upgrades
+      and prepare for even more enemies!'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4414362050560
+    m_Localized: 'The way you aim the controller significantly changes the nature
+      of the projectiles.
+
+      By separating both reticles, you''ll get the rapid-fire
+      "Waltz Shot,"
+
+      and by aligning them, you''ll get the single-shot-focused
+      "Merge Shot."
+
+      Each type of projectile has its pros and cons, so try
+      out various tactics!'
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

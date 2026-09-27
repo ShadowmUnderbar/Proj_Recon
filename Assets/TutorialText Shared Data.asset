@@ -19,6 +19,14 @@ MonoBehaviour:
     m_Key: $Wave1
     m_Metadata:
       m_Items: []
+  - m_Id: 4414349467648
+    m_Key: $Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4414362050560
+    m_Key: $Wave2
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
