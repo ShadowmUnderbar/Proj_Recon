@@ -33,6 +33,7 @@ namespace App.Battle
         [SerializeField] private GameOverView _gameOverView;
         [SerializeField] private PlayerLifeGaugeView _playerLifeGaugeView;
         [SerializeField] private RunStartView _runStartView;
+        [SerializeField] private TutorialMessageView _tutorialMessageView;
         [SerializeField] private WaveConfig _waveConfig;
         [SerializeField] private StreamerCameraView _streamerCameraView;
         [SerializeField] private StreamerCameraTriggerConfig _streamerCameraTriggerConfig;
@@ -163,6 +164,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerLifeGaugeUseCase>();
             builder.RegisterEntryPoint<RunStartUseCase>();
             builder.RegisterEntryPoint<StreamerCameraUseCase>();
+            // チュートリアルメッセージの表示手段。表示のきっかけを持つ側が ITutorialMessageUseCase を注入して Show/Hide を呼ぶ
+            builder.RegisterEntryPoint<TutorialMessageUseCase>().As<ITutorialMessageUseCase>();
 
             #endregion
 
@@ -187,6 +190,8 @@ namespace App.Battle
                 .As<IStreamerCameraPresenter>();
             builder.Register<PointParticlePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPointParticlePresenter>();
+            builder.Register<TutorialMessagePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ITutorialMessagePresenter>();
 
             #endregion
 
@@ -207,6 +212,10 @@ namespace App.Battle
 
             builder.RegisterComponentInNewPrefab(_runStartView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IRunStartView>();
+
+            // チュートリアルメッセージ（WorldSpace Canvas）。追従先の姿勢は UseCase から毎フレーム渡す
+            builder.RegisterComponentInNewPrefab(_tutorialMessageView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<ITutorialMessageView>();
 
             // 配信用カメラ。ストリーマーモード無効時はView側で自身を無効化する
             builder.RegisterComponentInNewPrefab(_streamerCameraView, Lifetime.Singleton).UnderTransform(transform)
