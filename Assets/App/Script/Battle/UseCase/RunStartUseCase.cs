@@ -19,6 +19,7 @@ namespace App.Battle.UseCase
     /// 最初から装備してランを開始する。この選択はシーン開始の1回だけ使い、使ったら消費する。
     /// 選択が無いとき（バトルシーンを直接再生した場合、およびゲームオーバーからのリスタート）は
     /// バトル内でセット選択UIを出し、選択完了でランを開始する。
+    /// ただし保存済みスロットが1つも無いときは選ぶものが無いので、UIを出さずにそのまま開始する。
     /// 選択中はゲームを停止（IsWavePause=true）し、開始で解除してウェーブ1を始める。
     /// 開始のきっかけは <see cref="IRunStartDataStore.IsSelecting"/> なので、
     /// リスタート（RunResetUseCase）でも同じ導線でセット選択へ戻れる。
@@ -86,6 +87,7 @@ namespace App.Battle.UseCase
         /// <summary>
         /// ラン開始の準備。ゲームを止め、メインメニューで選択済みならそのセットを装備してすぐ開始する。
         /// 未選択（バトルシーンを直接再生・リスタート）ならスロット一覧を表示して選択を待つ。
+        /// 全スロットが空なら選択を飛ばしてすぐ開始する。
         /// </summary>
         private void OnBeginSelecting()
         {
@@ -102,6 +104,13 @@ namespace App.Battle.UseCase
                 // 消費しておくことで、リスタート時はバトル内のセット選択に戻れる
                 _runLoadoutDataStore.Clear();
 
+                StartRun();
+                return;
+            }
+
+            // 保存済みスロットが無ければ「使わずに開始」しか選べないので、選択UIを出さずに開始する
+            if (!_metaProgressionDataStore.HasAnySavedSlot)
+            {
                 StartRun();
                 return;
             }

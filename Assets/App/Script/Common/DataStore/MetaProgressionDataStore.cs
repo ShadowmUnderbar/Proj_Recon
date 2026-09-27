@@ -45,6 +45,22 @@ namespace App.Common.DataStore
             return !TryGetSlot(slotIndex, out var slot) || slot.IsEmpty;
         }
 
+        public bool HasAnySavedSlot
+        {
+            get
+            {
+                for (var i = 0; i < Slots; i++)
+                {
+                    if (!IsSlotEmpty(i))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
         public void SaveToSlot(int slotIndex, IReadOnlyList<string> upgradeIds, int clearedWave)
         {
             if (slotIndex < 0 || slotIndex >= Slots)

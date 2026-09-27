@@ -11,6 +11,7 @@ namespace App.MainMenu.UseCase
     /// メインメニューからバトルを開始する導線。
     /// STARTを押すと保存済みアップグレードセットの選択（RunStartView）に切り替わり、
     /// スロットを選ぶか「使わずに開始」で、その選択を <see cref="IRunLoadoutDataStore"/> に積んでバトルシーンへ遷移する。
+    /// 保存済みスロットが1つも無いときは選ぶものが無いので、選択UIを出さず「使わずに開始」と同じ扱いで遷移する。
     /// 選んだセットの装備はバトル側の RunStartUseCase が行う。
     /// </summary>
     public class MainMenuUseCase : IInitializable, IDisposable
@@ -73,7 +74,7 @@ namespace App.MainMenu.UseCase
             _mainMenuPresenter.ShowMainPanel();
         }
 
-        /// <summary>START押下。タイトル表示からセット選択へ切り替える</summary>
+        /// <summary>START押下。タイトル表示からセット選択へ切り替える。全スロットが空なら選択を飛ばしてそのまま開始</summary>
         private void OnStart()
         {
             if (_sceneTransitionUseCase.IsTransitioning)
@@ -82,6 +83,12 @@ namespace App.MainMenu.UseCase
             }
 
             _mainMenuPresenter.SetStartVisible(false);
+
+            if (!_metaProgressionDataStore.HasAnySavedSlot)
+            {
+                OnStartWithoutLoad();
+                return;
+            }
 
             _runStartPresenter.Show("セット選択\nスロットを選ぶと最初から装備で開始 / 使わずに開始も可");
             RefreshAllSlotLabels();

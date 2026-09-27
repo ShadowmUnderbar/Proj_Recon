@@ -20,6 +20,9 @@ namespace App.Common.Interface
         /// <summary>指定スロットが未保存（空）か</summary>
         bool IsSlotEmpty(int slotIndex);
 
+        /// <summary>保存済み（空でない）スロットが1つでもあるか。無ければセット選択UIを出す意味がない</summary>
+        bool HasAnySavedSlot { get; }
+
         /// <summary>
         /// 指定スロットにアップグレードセットを上書き保存し、セーブデータを永続化する。
         /// </summary>
