@@ -21,6 +21,9 @@ namespace App.Battle.Interface
         ReactiveProperty<Pose> LeftHandPose { get; }
         ReactiveProperty<Pose> RightHandPose { get; }
 
+        /// <summary>手（コントローラ）の姿勢が毎フレーム更新されるか。非VRでは更新されないため false</summary>
+        bool IsHandPoseAvailable { get; }
+
         /// <summary>
         /// 注視判定の基準になるカメラ（VRではHMD）のPoseを返す。カメラが無ければ false。
         /// </summary>

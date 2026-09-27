@@ -7,22 +7,9 @@ namespace App.Common.Data
     /// </summary>
     public enum TutorialType
     {
-        /// <summary>移動・視点操作</summary>
-        Movement = 0,
-
-        /// <summary>射撃</summary>
-        Shooting = 1,
-
-        /// <summary>エイム（フォーカス）</summary>
-        Aim = 2,
-
-        /// <summary>回避</summary>
-        Dodge = 3,
-
-        /// <summary>ショップ（アップグレード購入）</summary>
-        Shop = 4,
-
         /// <summary>ウェーブ1開始時の導入</summary>
-        Wave1 = 5,
+        Wave1 = 1,
+        Shop = 2,
+        Wave2 = 3,
     }
 }

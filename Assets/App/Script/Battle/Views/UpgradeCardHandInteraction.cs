@@ -167,7 +167,7 @@ namespace App.Battle.Views
         /// <summary>コントローラの姿勢を、実際に指し示している向き（ハンドレイと同じ基準）へ直す</summary>
         private static Pose GetPointingPose(Pose handPose)
         {
-            return new Pose(handPose.position, handPose.rotation * PlatformHandRotation.PointingAdjustment);
+            return PlatformHandRotation.ToPointingPose(handPose);
         }
 
         /// <summary>

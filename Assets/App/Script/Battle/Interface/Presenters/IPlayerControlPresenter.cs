@@ -13,6 +13,9 @@ namespace App.Battle.Interface
         ReactiveProperty<Vector3> OnUpdatePosition { get; }
         ReactiveProperty<Pose> LeftHandPose { get; }
         ReactiveProperty<Pose> RightHandPose { get; }
+
+        /// <summary>手（コントローラ）の姿勢が毎フレーム更新されるか。非VRでは false</summary>
+        bool IsHandPoseAvailable { get; }
         Transform PlayerTransform { get; }
 
         /// <summary>

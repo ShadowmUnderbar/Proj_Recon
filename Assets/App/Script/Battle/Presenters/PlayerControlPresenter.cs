@@ -19,6 +19,7 @@ namespace App.Battle.Presenters
 
         public ReactiveProperty<Pose> LeftHandPose => _playerView.LeftHandPose;
         public ReactiveProperty<Pose> RightHandPose => _playerView.RightHandPose;
+        public bool IsHandPoseAvailable => _playerView.IsHandPoseAvailable;
         public Transform PlayerTransform => _playerView.PlayerTransform;
 
         [Inject]

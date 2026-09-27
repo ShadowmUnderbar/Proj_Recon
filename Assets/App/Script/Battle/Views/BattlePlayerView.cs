@@ -54,6 +54,9 @@ namespace App.Battle.Views
         public ReactiveProperty<Pose> LeftHandPose { get; } = new();
         public ReactiveProperty<Pose> RightHandPose { get; } = new();
 
+        // Update で手の姿勢を更新する条件と同じ
+        public bool IsHandPoseAvailable => DebugConfig.IsVRMode;
+
         [Inject]
         public void Construct(
             ISimpleObjectFactory<IPlayerTopDownAimView> topDownFactory,

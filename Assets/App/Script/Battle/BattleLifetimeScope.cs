@@ -33,6 +33,7 @@ namespace App.Battle
         [SerializeField] private GameOverView _gameOverView;
         [SerializeField] private PlayerLifeGaugeView _playerLifeGaugeView;
         [SerializeField] private RunStartView _runStartView;
+        [SerializeField] private TutorialMessageView _tutorialMessageView;
         [SerializeField] private WaveConfig _waveConfig;
         [SerializeField] private StreamerCameraView _streamerCameraView;
         [SerializeField] private StreamerCameraTriggerConfig _streamerCameraTriggerConfig;
@@ -43,6 +44,7 @@ namespace App.Battle
         [SerializeField] private PlayerDeathConfig _playerDeathConfig;
         [SerializeField] private UpgradeDescriptionStyle _upgradeDescriptionStyle;
         [SerializeField] private PlayerBaseParameterConfig _playerBaseParameterConfig;
+        [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -163,6 +165,10 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerLifeGaugeUseCase>();
             builder.RegisterEntryPoint<RunStartUseCase>();
             builder.RegisterEntryPoint<StreamerCameraUseCase>();
+            // チュートリアルメッセージの表示手段。表示のきっかけを持つ側が ITutorialMessageUseCase を注入して Show/Hide を呼ぶ
+            builder.RegisterEntryPoint<TutorialMessageUseCase>().As<ITutorialMessageUseCase>();
+            // ウェーブ開始時に TutorialWaveConfig の割り当てに従ってチュートリアルを出す
+            builder.RegisterEntryPoint<TutorialWaveUseCase>();
 
             #endregion
 
@@ -187,6 +193,8 @@ namespace App.Battle
                 .As<IStreamerCameraPresenter>();
             builder.Register<PointParticlePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPointParticlePresenter>();
+            builder.Register<TutorialMessagePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ITutorialMessagePresenter>();
 
             #endregion
 
@@ -207,6 +215,10 @@ namespace App.Battle
 
             builder.RegisterComponentInNewPrefab(_runStartView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IRunStartView>();
+
+            // チュートリアルメッセージ（WorldSpace Canvas）。追従先の姿勢は UseCase から毎フレーム渡す
+            builder.RegisterComponentInNewPrefab(_tutorialMessageView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<ITutorialMessageView>();
 
             // 配信用カメラ。ストリーマーモード無効時はView側で自身を無効化する
             builder.RegisterComponentInNewPrefab(_streamerCameraView, Lifetime.Singleton).UnderTransform(transform)
@@ -271,6 +283,8 @@ namespace App.Battle
             builder.RegisterInstance(_playerBaseParameterConfig);
             // アップグレード詳細説明の効果値の装飾（UpgradeLocalizationDataStore が利用）
             builder.RegisterInstance(_upgradeDescriptionStyle);
+            // ウェーブ開始時のチュートリアル割り当て（TutorialWaveUseCase が利用）
+            builder.RegisterInstance(_tutorialWaveConfig);
 
             #endregion
         }
