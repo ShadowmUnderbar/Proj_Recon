@@ -13,6 +13,8 @@ namespace App.MainMenu.Interface
 
         Observable<int> OnSnapTurnAngleChanged { get; }
 
+        Observable<bool> OnTutorialReplayChanged { get; }
+
         /// <summary>閉じるボタンが押された</summary>
         Observable<Unit> OnClose { get; }
 
@@ -23,5 +25,7 @@ namespace App.MainMenu.Interface
         void SetMoveSpeed(float moveSpeed);
 
         void SetSnapTurnAngle(int angle);
+
+        void SetTutorialReplay(bool enabled);
     }
 }
