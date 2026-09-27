@@ -148,13 +148,13 @@
       "pitch_deg": -30,
       "roll_deg": 0,
       "yaw_deg": 0,
-      "jacket_intersection_pairs": 382
+      "jacket_intersection_pairs": 0
     },
     {
       "pitch_deg": -30,
       "roll_deg": 0,
       "yaw_deg": 90,
-      "jacket_intersection_pairs": 339
+      "jacket_intersection_pairs": 0
     },
     {
       "pitch_deg": -30,
@@ -166,7 +166,7 @@
       "pitch_deg": -30,
       "roll_deg": 0,
       "yaw_deg": 270,
-      "jacket_intersection_pairs": 349
+      "jacket_intersection_pairs": 0
     },
     {
       "pitch_deg": -15,
@@ -220,25 +220,25 @@
       "pitch_deg": 30,
       "roll_deg": 0,
       "yaw_deg": 0,
-      "jacket_intersection_pairs": 435
+      "jacket_intersection_pairs": 0
     },
     {
       "pitch_deg": 30,
       "roll_deg": 0,
       "yaw_deg": 90,
-      "jacket_intersection_pairs": 631
+      "jacket_intersection_pairs": 0
     },
     {
       "pitch_deg": 30,
       "roll_deg": 0,
       "yaw_deg": 180,
-      "jacket_intersection_pairs": 566
+      "jacket_intersection_pairs": 0
     },
     {
       "pitch_deg": 30,
       "roll_deg": 0,
       "yaw_deg": 270,
-      "jacket_intersection_pairs": 637
+      "jacket_intersection_pairs": 0
     },
     {
       "pitch_deg": 0,

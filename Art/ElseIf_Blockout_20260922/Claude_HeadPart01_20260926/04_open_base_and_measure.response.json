@@ -1,0 +1,4 @@
+{
+  "status": "error",
+  "message": "{\"exception_type\": \"AttributeError\", \"message\": \"'NoneType' object has no attribute 'scene' and no __dict__ for setting new attributes\", \"traceback\": \"Traceback (most recent call last):\\n  File \\\"C:\\\\Users\\\\shado\\\\AppData\\\\Roaming\\\\Blender Foundation\\\\Blender\\\\5.2\\\\scripts\\\\addons\\\\addon.py\\\", line 2105, in execute_code\\n    exec(code, namespace)\\n    ~~~~^^^^^^^^^^^^^^^^^\\n  File \\\"<string>\\\", line 8, in <module>\\nAttributeError: 'NoneType' object has no attribute 'scene' and no __dict__ for setting new attributes\\n\"}"
+}

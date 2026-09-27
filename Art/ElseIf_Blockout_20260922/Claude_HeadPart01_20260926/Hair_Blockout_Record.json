@@ -1,0 +1,239 @@
+{
+  "strands": 31,
+  "roles": {
+    "Hair_Top": 8,
+    "Hair_Bang": 4,
+    "Hair_Side_R": 5,
+    "Hair_Side_L": 5,
+    "Hair_Back": 9
+  },
+  "hair_tris": 4696,
+  "hair_vertices": 2503,
+  "head_total_tris": 7808,
+  "head_total_vertices": 4149,
+  "meshes": [
+    "ElseIf_HeadShell",
+    "ElseIf_FaceMonitor",
+    "ElseIf_HeadCableHair"
+  ],
+  "hair_top_z": 0.257652223110199,
+  "detail": [
+    {
+      "id": "Hair_Top_01",
+      "layer": 1.13,
+      "length_mm": 92.6,
+      "tip_z": 0.252,
+      "segments": 6
+    },
+    {
+      "id": "Hair_Top_02",
+      "layer": 1.13,
+      "length_mm": 102.5,
+      "tip_z": 0.244,
+      "segments": 6
+    },
+    {
+      "id": "Hair_Top_03",
+      "layer": 1.13,
+      "length_mm": 90.6,
+      "tip_z": 0.223,
+      "segments": 6
+    },
+    {
+      "id": "Hair_Top_04",
+      "layer": 1.13,
+      "length_mm": 106.1,
+      "tip_z": 0.199,
+      "segments": 6
+    },
+    {
+      "id": "Hair_Top_05",
+      "layer": 1.13,
+      "length_mm": 94.2,
+      "tip_z": 0.204,
+      "segments": 6
+    },
+    {
+      "id": "Hair_Top_06",
+      "layer": 1.13,
+      "length_mm": 100.4,
+      "tip_z": 0.207,
+      "segments": 6
+    },
+    {
+      "id": "Hair_Top_07",
+      "layer": 1.13,
+      "length_mm": 90.2,
+      "tip_z": 0.231,
+      "segments": 6
+    },
+    {
+      "id": "Hair_Top_08",
+      "layer": 1.13,
+      "length_mm": 105.7,
+      "tip_z": 0.25,
+      "segments": 6
+    },
+    {
+      "id": "Hair_Bang_01",
+      "layer": 1.07,
+      "length_mm": 190.1,
+      "tip_z": 0.185,
+      "segments": 7
+    },
+    {
+      "id": "Hair_Bang_02",
+      "layer": 1.07,
+      "length_mm": 178.3,
+      "tip_z": 0.185,
+      "segments": 7
+    },
+    {
+      "id": "Hair_Bang_03",
+      "layer": 1.07,
+      "length_mm": 179.1,
+      "tip_z": 0.185,
+      "segments": 7
+    },
+    {
+      "id": "Hair_Bang_04",
+      "layer": 1.07,
+      "length_mm": 190.3,
+      "tip_z": 0.185,
+      "segments": 7
+    },
+    {
+      "id": "Hair_Side_R_01",
+      "layer": 1.0,
+      "length_mm": 213.4,
+      "tip_z": 0.103,
+      "segments": 12
+    },
+    {
+      "id": "Hair_Side_R_02",
+      "layer": 1.1,
+      "length_mm": 187.1,
+      "tip_z": 0.117,
+      "segments": 10
+    },
+    {
+      "id": "Hair_Side_R_03",
+      "layer": 1.0,
+      "length_mm": 179.4,
+      "tip_z": 0.089,
+      "segments": 12
+    },
+    {
+      "id": "Hair_Side_R_04",
+      "layer": 1.06,
+      "length_mm": 177.7,
+      "tip_z": 0.098,
+      "segments": 10
+    },
+    {
+      "id": "Hair_Side_R_05",
+      "layer": 1.12,
+      "length_mm": 166.5,
+      "tip_z": 0.106,
+      "segments": 9
+    },
+    {
+      "id": "Hair_Side_L_01",
+      "layer": 1.0,
+      "length_mm": 209.8,
+      "tip_z": 0.098,
+      "segments": 12
+    },
+    {
+      "id": "Hair_Side_L_02",
+      "layer": 1.1,
+      "length_mm": 185.8,
+      "tip_z": 0.116,
+      "segments": 10
+    },
+    {
+      "id": "Hair_Side_L_03",
+      "layer": 1.0,
+      "length_mm": 185.8,
+      "tip_z": 0.092,
+      "segments": 12
+    },
+    {
+      "id": "Hair_Side_L_04",
+      "layer": 1.06,
+      "length_mm": 174.8,
+      "tip_z": 0.1,
+      "segments": 10
+    },
+    {
+      "id": "Hair_Side_L_05",
+      "layer": 1.12,
+      "length_mm": 174.7,
+      "tip_z": 0.106,
+      "segments": 9
+    },
+    {
+      "id": "Hair_Back_01",
+      "layer": 1.0,
+      "length_mm": 174.0,
+      "tip_z": 0.078,
+      "segments": 12
+    },
+    {
+      "id": "Hair_Back_02",
+      "layer": 1.06,
+      "length_mm": 161.7,
+      "tip_z": 0.094,
+      "segments": 10
+    },
+    {
+      "id": "Hair_Back_03",
+      "layer": 1.0,
+      "length_mm": 175.5,
+      "tip_z": 0.074,
+      "segments": 12
+    },
+    {
+      "id": "Hair_Back_04",
+      "layer": 1.12,
+      "length_mm": 157.2,
+      "tip_z": 0.106,
+      "segments": 9
+    },
+    {
+      "id": "Hair_Back_05",
+      "layer": 1.0,
+      "length_mm": 176.7,
+      "tip_z": 0.08,
+      "segments": 12
+    },
+    {
+      "id": "Hair_Back_06",
+      "layer": 1.12,
+      "length_mm": 162.4,
+      "tip_z": 0.107,
+      "segments": 9
+    },
+    {
+      "id": "Hair_Back_07",
+      "layer": 1.06,
+      "length_mm": 172.1,
+      "tip_z": 0.09,
+      "segments": 12
+    },
+    {
+      "id": "Hair_Back_08",
+      "layer": 1.06,
+      "length_mm": 179.6,
+      "tip_z": 0.09,
+      "segments": 10
+    },
+    {
+      "id": "Hair_Back_09",
+      "layer": 1.06,
+      "length_mm": 174.5,
+      "tip_z": 0.089,
+      "segments": 10
+    }
+  ]
+}

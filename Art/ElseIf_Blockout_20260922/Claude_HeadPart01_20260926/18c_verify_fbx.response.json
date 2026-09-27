@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "FBX version: 7400\n{\"ElseIf_FaceMonitor.001\": {\"type\": \"MESH\", \"parent\": \"HeadPart_ElseIf_Monitor01.001\", \"loc\": [0.0, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"tris\": 336, \"uv\": [\"FaceUV\"], \"mats\": [\"ElseIf_FaceMonitor.001\"], \"zmin\": 0.058, \"zmax\": 0.192, \"ymin\": -0.099, \"ymax\": -0.093}, \"ElseIf_HeadShell.001\": {\"type\": \"MESH\", \"parent\": \"HeadPart_ElseIf_Monitor01.001\", \"loc\": [0.0, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0], \"tris\": 2776, \"uv\": [\"UVMap\"], \"mats\": [\"ElseIf_HeadShell.001\", \"ElseIf_HeadJoint.001\", \"ElseIf_HeadAccent.001\"], \"zmin\": -0.03, \"zmax\": 0.2095, \"ymin\": -0.1025, \"ymax\": 0.0795}, \"HeadPart_ElseIf_Monitor01.001\": {\"type\": \"EMPTY\", \"parent\": null, \"loc\": [0.0, 0.0, 0.0], \"scale\": [1.0, 1.0, 1.0]}}\n"
+  }
+}

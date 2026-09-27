@@ -1,0 +1,123 @@
+[
+  {
+    "file": "Head_Front.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Head01_Cam_Front",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "44cc178a941c9b1c00d92f7f2796adef1a040241d578cb41afc89c15d0de23f3"
+  },
+  {
+    "file": "Head_Side.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Head01_Cam_Side",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "44cc178a941c9b1c00d92f7f2796adef1a040241d578cb41afc89c15d0de23f3"
+  },
+  {
+    "file": "Head_Back.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Head01_Cam_Back",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "44cc178a941c9b1c00d92f7f2796adef1a040241d578cb41afc89c15d0de23f3"
+  },
+  {
+    "file": "Head_ThreeQuarter.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Head01_Cam_ThreeQuarter",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "44cc178a941c9b1c00d92f7f2796adef1a040241d578cb41afc89c15d0de23f3"
+  },
+  {
+    "file": "Head_HighAngle.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Head01_Cam_HighAngle",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "44cc178a941c9b1c00d92f7f2796adef1a040241d578cb41afc89c15d0de23f3"
+  },
+  {
+    "file": "Assembly_Front.png",
+    "scene": "ElseIf_Head01_Assembly_Review",
+    "camera": "Head01_Assembly_Cam_Front",
+    "expression": "Normal",
+    "resolution": [
+      880,
+      1120
+    ],
+    "geometry_sha256": "44cc178a941c9b1c00d92f7f2796adef1a040241d578cb41afc89c15d0de23f3"
+  },
+  {
+    "file": "Assembly_ThreeQuarter.png",
+    "scene": "ElseIf_Head01_Assembly_Review",
+    "camera": "Head01_Assembly_Cam_ThreeQuarter",
+    "expression": "Normal",
+    "resolution": [
+      880,
+      1120
+    ],
+    "geometry_sha256": "44cc178a941c9b1c00d92f7f2796adef1a040241d578cb41afc89c15d0de23f3"
+  },
+  {
+    "file": "Assembly_BackQuarter.png",
+    "scene": "ElseIf_Head01_Assembly_Review",
+    "camera": "Head01_Assembly_Cam_BackQuarter",
+    "expression": "Normal",
+    "resolution": [
+      880,
+      1120
+    ],
+    "geometry_sha256": "44cc178a941c9b1c00d92f7f2796adef1a040241d578cb41afc89c15d0de23f3"
+  },
+  {
+    "file": "Assembly_HighAngle.png",
+    "scene": "ElseIf_Head01_Assembly_Review",
+    "camera": "Game_Cam_Stress_HighAngle",
+    "expression": "Normal",
+    "resolution": [
+      880,
+      1120
+    ],
+    "geometry_sha256": "44cc178a941c9b1c00d92f7f2796adef1a040241d578cb41afc89c15d0de23f3"
+  },
+  {
+    "file": "Expression_Joy.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Head01_Cam_Front",
+    "expression": "Joy",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "44cc178a941c9b1c00d92f7f2796adef1a040241d578cb41afc89c15d0de23f3"
+  },
+  {
+    "file": "Expression_Cry.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Head01_Cam_Front",
+    "expression": "Cry",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "44cc178a941c9b1c00d92f7f2796adef1a040241d578cb41afc89c15d0de23f3"
+  }
+]

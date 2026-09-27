@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「Claude_HeadPart01_Work.blend」を保存\n{\"cables\": 15, \"cable_object_tris\": 948, \"of_which_socket_module\": 168, \"cable_vertices\": 532, \"head_total_tris\": 4060, \"head_total_vertices\": 2178, \"meshes\": 3, \"materials\": [\"ElseIf_FaceMonitor\", \"ElseIf_HeadAccent\", \"ElseIf_HeadCable\", \"ElseIf_HeadJoint\", \"ElseIf_HeadShell\"], \"shell_face_unchanged\": true}\n"
+  }
+}

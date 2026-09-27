@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: コピーを「Blender_UnsavedState_Snapshot.blend」で保存しました\n{\"snapshot_from\": \"D:\\\\UnityProj\\\\Proj_Recon\\\\Art\\\\ElseIf_Blockout_20260922\\\\HeadPart01_20260926\\\\ElseIf_MobileVR_HeadPart01.blend\", \"now_open\": \"D:\\\\UnityProj\\\\Proj_Recon\\\\Art\\\\ElseIf_Blockout_20260922\\\\Claude_HeadPart01_20260926\\\\Claude_MobileVR_HeadPart01_Work.blend\", \"scenes\": [\"ElseIf_Basis_Construction\", \"ElseIf_Current_Review\", \"ElseIf_Game_Backup_Review\", \"ElseIf_Game_Validation\", \"ElseIf_LOD0_Review\", \"ElseIf_Master_Quality_NaturalPose\", \"ElseIf_Master_Quality_Review\", \"ElseIf_NaturalPose_Validation\", \"ElseIf_Optimized_Review\", \"ElseIf_Secondary_Raking_Basis\", \"ElseIf_Secondary_Raking_NaturalPose\", \"ElseIf_Topology_Review\", \"ElseIf_Underarm_Review\", \"Startup_Untouched\"]}\n"
+  }
+}

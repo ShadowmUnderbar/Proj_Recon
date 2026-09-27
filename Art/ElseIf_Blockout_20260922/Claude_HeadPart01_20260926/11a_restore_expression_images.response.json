@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「Claude_HeadPart01_Work.blend」を保存\n{\"ElseIf_Expression_Test_Normal\": {\"size\": [512, 512], \"packed\": true}, \"ElseIf_Expression_Test_Joy\": {\"size\": [512, 512], \"packed\": true}, \"ElseIf_Expression_Test_Cry\": {\"size\": [512, 512], \"packed\": true}}\n"
+  }
+}
