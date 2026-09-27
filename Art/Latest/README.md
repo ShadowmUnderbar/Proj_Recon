@@ -14,6 +14,8 @@ Blenderの**最新の原本のみ**を置くディレクトリ。ここに入っ
 
 - 工程フォルダの `.blend` / `.blend1`、参考画像の `.jpg`、`__pycache__/`
 - `Renders/` フォルダ（確認用のプレビュー画像）と `*.log`。生成スクリプトから作り直せるため
+- `Reference/` フォルダ（参考資料）
+- 部屋アセットの書き出し結果 `ElseIf_Room_20260927/Export/`。`build_room_assets.py` で再生成でき、Unityへ取り込んだ後は `Assets/` 側で管理するため
 
 ## LFS容量について
 
