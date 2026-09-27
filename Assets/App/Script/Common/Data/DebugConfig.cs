@@ -14,6 +14,12 @@ namespace App.Common.Data
         /// <summary>デバッグ用「最初から所持するアップグレード」のID一覧（カンマ区切りで保存）</summary>
         public static string StartUpgradeIdsKey => "StartUpgradeIds";
 
+        /// <summary>デバッグ用「再生開始時にセーブデータを上書きする」設定の有効フラグ</summary>
+        public static string SaveDataOverrideEnabledKey => "SaveDataOverrideEnabled";
+
+        /// <summary>デバッグ用「再生開始時にセーブデータを上書きする」内容（SaveDataのJSON）</summary>
+        public static string SaveDataOverrideJsonKey => "SaveDataOverrideJson";
+
 #if !UNITY_EDITOR
         public static readonly bool IsVRMode = true;
 #else
@@ -24,6 +30,20 @@ namespace App.Common.Data
         public static readonly bool IsAllUnLock = false;
 #else
         public static readonly bool IsAllUnLock = EditorPrefs.GetBool(AllUnLockKey, false);
+#endif
+
+#if !UNITY_EDITOR
+        // 製品ビルドではセーブデータの上書きを行わない
+        public static string SaveDataOverrideJson => null;
+#else
+        /// <summary>
+        /// 再生開始時にセーブデータへ上書きするJSON。無効または未設定なら null。
+        /// 実行のたびに読み直す（ウィンドウでの変更をドメインリロード無しでも拾えるようにする）
+        /// </summary>
+        public static string SaveDataOverrideJson =>
+            EditorPrefs.GetBool(SaveDataOverrideEnabledKey, false)
+                ? EditorPrefs.GetString(SaveDataOverrideJsonKey, null)
+                : null;
 #endif
 
 #if !UNITY_EDITOR
