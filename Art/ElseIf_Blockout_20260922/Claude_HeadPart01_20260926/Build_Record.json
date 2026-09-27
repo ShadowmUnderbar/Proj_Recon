@@ -1,0 +1,24 @@
+{
+  "tris": {
+    "ElseIf_HeadShell": 2776,
+    "ElseIf_FaceMonitor": 336
+  },
+  "total_tris": 3112,
+  "head_objects": [
+    "HeadPart_ElseIf_Monitor01",
+    "ElseIf_HeadShell",
+    "ElseIf_FaceMonitor"
+  ],
+  "local_bounds": [
+    [
+      -0.09749999642372131,
+      -0.10249999910593033,
+      -0.029999880120158195
+    ],
+    [
+      0.10000000149011612,
+      0.0794999971985817,
+      0.20950011909008026
+    ]
+  ]
+}

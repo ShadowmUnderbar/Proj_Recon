@@ -1,0 +1,1308 @@
+{
+  "assets": [
+    {
+      "asset": "Floor_Normal",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Floor_Normal.fbx",
+      "objects": [
+        "Floor_Normal"
+      ],
+      "tris": 44,
+      "size_xyz_m": [
+        2.0,
+        2.0,
+        0.1
+      ],
+      "materials": [
+        "M_Room_Floor"
+      ]
+    },
+    {
+      "asset": "Floor_Damaged",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Floor_Damaged.fbx",
+      "objects": [
+        "Floor_Damaged"
+      ],
+      "tris": 44,
+      "size_xyz_m": [
+        2.0,
+        2.0,
+        0.1
+      ],
+      "materials": [
+        "M_Room_FloorDamaged"
+      ]
+    },
+    {
+      "asset": "Floor_Service",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Floor_Service.fbx",
+      "objects": [
+        "Floor_Service",
+        "Floor_Service_Floor",
+        "Floor_Service_Hatch"
+      ],
+      "tris": 292,
+      "size_xyz_m": [
+        2.0,
+        2.0,
+        0.254
+      ],
+      "materials": [
+        "M_Room_DarkGrey",
+        "M_Room_Floor"
+      ]
+    },
+    {
+      "asset": "Wall_Normal",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Wall_Normal.fbx",
+      "objects": [
+        "Wall_Normal"
+      ],
+      "tris": 24,
+      "size_xyz_m": [
+        2.0,
+        0.162,
+        2.5
+      ],
+      "materials": [
+        "M_Room_Baseboard",
+        "M_Room_Wall"
+      ]
+    },
+    {
+      "asset": "Wall_Panel",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Wall_Panel.fbx",
+      "objects": [
+        "Wall_Panel"
+      ],
+      "tris": 224,
+      "size_xyz_m": [
+        2.0,
+        0.194,
+        2.5
+      ],
+      "materials": [
+        "M_Room_Baseboard",
+        "M_Room_BlueGrey",
+        "M_Room_CyanGlow",
+        "M_Room_DarkGrey",
+        "M_Room_PanelGrey",
+        "M_Room_Rubber",
+        "M_Room_Wall"
+      ]
+    },
+    {
+      "asset": "Wall_Window",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Wall_Window.fbx",
+      "objects": [
+        "Wall_Window"
+      ],
+      "tris": 60,
+      "size_xyz_m": [
+        2.0,
+        0.162,
+        2.5
+      ],
+      "materials": [
+        "M_Room_Baseboard",
+        "M_Room_Wall"
+      ]
+    },
+    {
+      "asset": "Wall_Window_Large",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Wall_Window_Large.fbx",
+      "objects": [
+        "Wall_Window_Large"
+      ],
+      "tris": 60,
+      "size_xyz_m": [
+        2.0,
+        0.162,
+        2.5
+      ],
+      "materials": [
+        "M_Room_Baseboard",
+        "M_Room_Wall"
+      ]
+    },
+    {
+      "asset": "Wall_Door",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Wall_Door.fbx",
+      "objects": [
+        "Wall_Door"
+      ],
+      "tris": 60,
+      "size_xyz_m": [
+        2.0,
+        0.162,
+        2.5
+      ],
+      "materials": [
+        "M_Room_Baseboard",
+        "M_Room_Wall"
+      ]
+    },
+    {
+      "asset": "Ceiling_Normal",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Ceiling_Normal.fbx",
+      "objects": [
+        "Ceiling_Normal"
+      ],
+      "tris": 44,
+      "size_xyz_m": [
+        2.0,
+        2.0,
+        0.06
+      ],
+      "materials": [
+        "M_Room_Ceiling"
+      ]
+    },
+    {
+      "asset": "Ceiling_Light",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Ceiling_Light.fbx",
+      "objects": [
+        "Ceiling_Light"
+      ],
+      "tris": 100,
+      "size_xyz_m": [
+        2.0,
+        2.0,
+        0.114
+      ],
+      "materials": [
+        "M_Room_Ceiling",
+        "M_Room_CeilingLight",
+        "M_Room_PlasticLight"
+      ]
+    },
+    {
+      "asset": "Window_Normal",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Window_Normal.fbx",
+      "objects": [
+        "Window_Normal",
+        "Window_Normal_Frame",
+        "Window_Normal_Glass"
+      ],
+      "tris": 420,
+      "size_xyz_m": [
+        1.12,
+        0.18,
+        0.955
+      ],
+      "materials": [
+        "M_Room_Glass",
+        "M_Window_Normal"
+      ]
+    },
+    {
+      "asset": "Window_Large",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Window_Large.fbx",
+      "objects": [
+        "Window_Large",
+        "Window_Large_Frame",
+        "Window_Large_Glass"
+      ],
+      "tris": 416,
+      "size_xyz_m": [
+        1.72,
+        0.18,
+        1.455
+      ],
+      "materials": [
+        "M_Room_Glass",
+        "M_Window_Large"
+      ]
+    },
+    {
+      "asset": "Door",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/Door.fbx",
+      "objects": [
+        "Door"
+      ],
+      "tris": 308,
+      "size_xyz_m": [
+        0.96,
+        0.062,
+        2.12
+      ],
+      "materials": [
+        "M_Door"
+      ]
+    },
+    {
+      "asset": "DoorFrame",
+      "group": "Architecture",
+      "fbx": "Export/Architecture/DoorFrame.fbx",
+      "objects": [
+        "DoorFrame"
+      ],
+      "tris": 176,
+      "size_xyz_m": [
+        1.27,
+        0.188,
+        2.22
+      ],
+      "materials": [
+        "M_DoorFrame",
+        "M_Room_CyanGlow"
+      ]
+    },
+    {
+      "asset": "WallVent",
+      "group": "ArchitectureProps",
+      "fbx": "Export/ArchitectureProps/WallVent.fbx",
+      "objects": [
+        "WallVent"
+      ],
+      "tris": 248,
+      "size_xyz_m": [
+        0.4,
+        0.03,
+        0.25
+      ],
+      "materials": [
+        "M_WallVent"
+      ]
+    },
+    {
+      "asset": "WallOutlet",
+      "group": "ArchitectureProps",
+      "fbx": "Export/ArchitectureProps/WallOutlet.fbx",
+      "objects": [
+        "WallOutlet"
+      ],
+      "tris": 144,
+      "size_xyz_m": [
+        0.075,
+        0.015,
+        0.12
+      ],
+      "materials": [
+        "M_Room_CyanGlow",
+        "M_WallOutlet"
+      ]
+    },
+    {
+      "asset": "LightSwitch",
+      "group": "ArchitectureProps",
+      "fbx": "Export/ArchitectureProps/LightSwitch.fbx",
+      "objects": [
+        "LightSwitch"
+      ],
+      "tris": 100,
+      "size_xyz_m": [
+        0.075,
+        0.021,
+        0.12
+      ],
+      "materials": [
+        "M_LightSwitch",
+        "M_Room_CyanGlow"
+      ]
+    },
+    {
+      "asset": "CableCover",
+      "group": "ArchitectureProps",
+      "fbx": "Export/ArchitectureProps/CableCover.fbx",
+      "objects": [
+        "CableCover"
+      ],
+      "tris": 108,
+      "size_xyz_m": [
+        1.0,
+        0.02,
+        0.04
+      ],
+      "materials": [
+        "M_CableCover"
+      ]
+    },
+    {
+      "asset": "Chair",
+      "group": "Furniture",
+      "fbx": "Export/Furniture/Chair.fbx",
+      "objects": [
+        "Chair",
+        "Chair_Arm_L",
+        "Chair_Arm_R",
+        "Chair_Back",
+        "Chair_Base",
+        "Chair_Cable",
+        "Chair_Legrest",
+        "Chair_Seat"
+      ],
+      "tris": 2812,
+      "size_xyz_m": [
+        0.87,
+        1.507,
+        1.499
+      ],
+      "materials": [
+        "M_Chair",
+        "M_Room_CyanGlow"
+      ]
+    },
+    {
+      "asset": "HeadSwapMachine",
+      "group": "Furniture",
+      "fbx": "Export/Furniture/HeadSwapMachine.fbx",
+      "objects": [
+        "HeadSwapMachine",
+        "HeadSwapMachine_Base",
+        "HeadSwapMachine_Boom",
+        "HeadSwapMachine_Pillar",
+        "HeadSwapMachine_Ring"
+      ],
+      "tris": 2488,
+      "size_xyz_m": [
+        0.72,
+        1.245,
+        2.27
+      ],
+      "materials": [
+        "M_HeadSwapMachine",
+        "M_Room_CyanGlow"
+      ]
+    },
+    {
+      "asset": "HeadRack",
+      "group": "Furniture",
+      "fbx": "Export/Furniture/HeadRack.fbx",
+      "objects": [
+        "HeadRack",
+        "HeadRack_Frame",
+        "HeadSocket_01",
+        "HeadSocket_02",
+        "HeadSocket_03",
+        "HeadSocket_04"
+      ],
+      "tris": 2296,
+      "size_xyz_m": [
+        0.5,
+        0.38,
+        1.72
+      ],
+      "materials": [
+        "M_HeadRack",
+        "M_Room_CyanGlow"
+      ]
+    },
+    {
+      "asset": "Sofa",
+      "group": "Furniture",
+      "fbx": "Export/Furniture/Sofa.fbx",
+      "objects": [
+        "Sofa",
+        "Sofa_BackCushion_L",
+        "Sofa_BackCushion_R",
+        "Sofa_Frame",
+        "Sofa_SeatCushion_L",
+        "Sofa_SeatCushion_R"
+      ],
+      "tris": 3824,
+      "size_xyz_m": [
+        1.45,
+        0.78,
+        0.82
+      ],
+      "materials": [
+        "M_Sofa"
+      ]
+    },
+    {
+      "asset": "LowTable",
+      "group": "Furniture",
+      "fbx": "Export/Furniture/LowTable.fbx",
+      "objects": [
+        "LowTable"
+      ],
+      "tris": 204,
+      "size_xyz_m": [
+        0.9,
+        0.5,
+        0.38
+      ],
+      "materials": [
+        "M_LowTable"
+      ]
+    },
+    {
+      "asset": "Desk",
+      "group": "Furniture",
+      "fbx": "Export/Furniture/Desk.fbx",
+      "objects": [
+        "Desk"
+      ],
+      "tris": 492,
+      "size_xyz_m": [
+        1.2,
+        0.607,
+        0.742
+      ],
+      "materials": [
+        "M_Desk",
+        "M_Room_CyanGlow"
+      ]
+    },
+    {
+      "asset": "Monitor_A",
+      "group": "Furniture",
+      "fbx": "Export/Furniture/Monitor_A.fbx",
+      "objects": [
+        "Monitor_A",
+        "Monitor_A_Body",
+        "Monitor_A_Screen"
+      ],
+      "tris": 190,
+      "size_xyz_m": [
+        0.62,
+        0.18,
+        0.545
+      ],
+      "materials": [
+        "M_Monitor_A",
+        "M_Room_CyanGlow",
+        "M_Room_Screen"
+      ]
+    },
+    {
+      "asset": "Monitor_B",
+      "group": "Furniture",
+      "fbx": "Export/Furniture/Monitor_B.fbx",
+      "objects": [
+        "Monitor_B",
+        "Monitor_B_Body",
+        "Monitor_B_Screen"
+      ],
+      "tris": 242,
+      "size_xyz_m": [
+        0.44,
+        0.17,
+        0.48
+      ],
+      "materials": [
+        "M_Monitor_B",
+        "M_Room_Screen"
+      ]
+    },
+    {
+      "asset": "DeskLight",
+      "group": "Props",
+      "fbx": "Export/Props/DeskLight.fbx",
+      "objects": [
+        "DeskLight"
+      ],
+      "tris": 728,
+      "size_xyz_m": [
+        0.148,
+        0.315,
+        0.446
+      ],
+      "materials": [
+        "M_DeskLight",
+        "M_Room_CyanGlow",
+        "M_Room_LampWarm"
+      ]
+    },
+    {
+      "asset": "CupNoodle",
+      "group": "Props",
+      "fbx": "Export/Props/CupNoodle.fbx",
+      "objects": [
+        "CupNoodle",
+        "CupNoodle_Contents_Full",
+        "CupNoodle_Contents_Half",
+        "CupNoodle_Cup",
+        "CupNoodle_Lid_Open",
+        "CupNoodle_Lid_Sealed"
+      ],
+      "tris": 928,
+      "size_xyz_m": [
+        0.126,
+        0.151,
+        0.144
+      ],
+      "materials": [
+        "M_CupNoodle",
+        "M_Room_NoodleContents"
+      ]
+    },
+    {
+      "asset": "Utensil_Chopsticks",
+      "group": "Props",
+      "fbx": "Export/Props/Utensil_Chopsticks.fbx",
+      "objects": [
+        "Utensil_Chopsticks"
+      ],
+      "tris": 56,
+      "size_xyz_m": [
+        0.22,
+        0.027,
+        0.009
+      ],
+      "materials": [
+        "M_Utensil_Chopsticks"
+      ]
+    },
+    {
+      "asset": "Utensil_Fork",
+      "group": "Props",
+      "fbx": "Export/Props/Utensil_Fork.fbx",
+      "objects": [
+        "Utensil_Fork"
+      ],
+      "tris": 124,
+      "size_xyz_m": [
+        0.022,
+        0.159,
+        0.004
+      ],
+      "materials": [
+        "M_Utensil_Fork"
+      ]
+    },
+    {
+      "asset": "DrinkCan",
+      "group": "Props",
+      "fbx": "Export/Props/DrinkCan.fbx",
+      "objects": [
+        "DrinkCan"
+      ],
+      "tris": 544,
+      "size_xyz_m": [
+        0.066,
+        0.066,
+        0.134
+      ],
+      "materials": [
+        "M_DrinkCan"
+      ]
+    },
+    {
+      "asset": "DrinkCan_Crushed",
+      "group": "Props",
+      "fbx": "Export/Props/DrinkCan_Crushed.fbx",
+      "objects": [
+        "DrinkCan_Crushed"
+      ],
+      "tris": 544,
+      "size_xyz_m": [
+        0.075,
+        0.064,
+        0.078
+      ],
+      "materials": [
+        "M_DrinkCan_Crushed"
+      ]
+    },
+    {
+      "asset": "Mug",
+      "group": "Props",
+      "fbx": "Export/Props/Mug.fbx",
+      "objects": [
+        "Mug"
+      ],
+      "tris": 392,
+      "size_xyz_m": [
+        0.111,
+        0.08,
+        0.09
+      ],
+      "materials": [
+        "M_Mug"
+      ]
+    },
+    {
+      "asset": "GameController",
+      "group": "Props",
+      "fbx": "Export/Props/GameController.fbx",
+      "objects": [
+        "GameController"
+      ],
+      "tris": 768,
+      "size_xyz_m": [
+        0.142,
+        0.114,
+        0.05
+      ],
+      "materials": [
+        "M_GameController",
+        "M_Room_CyanGlow"
+      ]
+    },
+    {
+      "asset": "MobileDevice",
+      "group": "Props",
+      "fbx": "Export/Props/MobileDevice.fbx",
+      "objects": [
+        "MobileDevice",
+        "MobileDevice_Body",
+        "MobileDevice_Screen"
+      ],
+      "tris": 330,
+      "size_xyz_m": [
+        0.082,
+        0.162,
+        0.013
+      ],
+      "materials": [
+        "M_MobileDevice",
+        "M_Room_Screen"
+      ]
+    },
+    {
+      "asset": "TrashBin",
+      "group": "Props",
+      "fbx": "Export/Props/TrashBin.fbx",
+      "objects": [
+        "TrashBin",
+        "TrashBin_Body",
+        "TrashBin_Contents"
+      ],
+      "tris": 872,
+      "size_xyz_m": [
+        0.316,
+        0.316,
+        0.345
+      ],
+      "materials": [
+        "M_TrashBin"
+      ]
+    },
+    {
+      "asset": "StorageBox",
+      "group": "Props",
+      "fbx": "Export/Props/StorageBox.fbx",
+      "objects": [
+        "StorageBox",
+        "StorageBox_Body",
+        "StorageBox_Lid"
+      ],
+      "tris": 184,
+      "size_xyz_m": [
+        0.44,
+        0.32,
+        0.249
+      ],
+      "materials": [
+        "M_StorageBox"
+      ]
+    },
+    {
+      "asset": "Blanket_Folded",
+      "group": "Props",
+      "fbx": "Export/Props/Blanket_Folded.fbx",
+      "objects": [
+        "Blanket_Folded"
+      ],
+      "tris": 448,
+      "size_xyz_m": [
+        0.446,
+        0.318,
+        0.088
+      ],
+      "materials": [
+        "M_Blanket_Folded"
+      ]
+    },
+    {
+      "asset": "Blanket_Crumpled",
+      "group": "Props",
+      "fbx": "Export/Props/Blanket_Crumpled.fbx",
+      "objects": [
+        "Blanket_Crumpled"
+      ],
+      "tris": 3776,
+      "size_xyz_m": [
+        1.057,
+        1.113,
+        0.183
+      ],
+      "materials": [
+        "M_Blanket_Crumpled"
+      ]
+    },
+    {
+      "asset": "Cushion",
+      "group": "Props",
+      "fbx": "Export/Props/Cushion.fbx",
+      "objects": [
+        "Cushion"
+      ],
+      "tris": 768,
+      "size_xyz_m": [
+        0.412,
+        0.412,
+        0.162
+      ],
+      "materials": [
+        "M_Cushion"
+      ]
+    },
+    {
+      "asset": "PowerStrip",
+      "group": "Props",
+      "fbx": "Export/Props/PowerStrip.fbx",
+      "objects": [
+        "PowerStrip"
+      ],
+      "tris": 820,
+      "size_xyz_m": [
+        0.552,
+        0.172,
+        0.066
+      ],
+      "materials": [
+        "M_PowerStrip",
+        "M_Room_CyanGlow"
+      ]
+    }
+  ],
+  "palette": {
+    "M_Room_DarkGrey": {
+      "base": "#2b2f36",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_BlueGrey": {
+      "base": "#3e4a56",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_BlueGreyLight": {
+      "base": "#6b7a88",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_PanelGrey": {
+      "base": "#8d99a4",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_SeatPad": {
+      "base": "#323a44",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_Rubber": {
+      "base": "#15171a",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_Metal": {
+      "base": "#7d848c",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.6
+    },
+    "M_Room_MetalDark": {
+      "base": "#4a525b",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.5
+    },
+    "M_Room_CyanGlow": {
+      "base": "#1fb8cc",
+      "emission": "#29e6ff",
+      "strength": 3.0,
+      "metallic": 0.0
+    },
+    "M_Room_Screen": {
+      "base": "#0b1318",
+      "emission": "#1a6a80",
+      "strength": 0.6,
+      "metallic": 0.0
+    },
+    "M_Room_AccentOrange": {
+      "base": "#d9772b",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_SofaFabric": {
+      "base": "#7b5b48",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_SofaBase": {
+      "base": "#4a3a32",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_CushionFabric": {
+      "base": "#c9824f",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_BlanketFabric": {
+      "base": "#a8503c",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_BlanketStripe": {
+      "base": "#e0c9a0",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_MugCeramic": {
+      "base": "#d9a441",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_CupWhite": {
+      "base": "#ece6da",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_CupRed": {
+      "base": "#d2452f",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_LidFoil": {
+      "base": "#c9ced4",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.3
+    },
+    "M_Room_CoffeeStain": {
+      "base": "#3b2418",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_CanBody": {
+      "base": "#c8553d",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.3
+    },
+    "M_Room_Cream": {
+      "base": "#e3d8c3",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_Paper": {
+      "base": "#d8d2c4",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_LampWarm": {
+      "base": "#ffe0b0",
+      "emission": "#ffcf8a",
+      "strength": 4.0,
+      "metallic": 0.0
+    },
+    "M_Room_Chopstick": {
+      "base": "#c4703a",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_ForkPlastic": {
+      "base": "#e8e4dc",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_StorageBox": {
+      "base": "#5d6e7c",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_TableResin": {
+      "base": "#6b7a88",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_DeskTop": {
+      "base": "#3a4049",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_PlasticLight": {
+      "base": "#b9bec4",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_TrashBin": {
+      "base": "#4f5d6a",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_WindowFrame": {
+      "base": "#5b6570",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.5
+    },
+    "M_Room_DoorPanel": {
+      "base": "#5c6874",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_Baseboard": {
+      "base": "#2f353c",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_Glass": {
+      "base": "#8fb3c4",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0
+    },
+    "M_Room_CeilingLight": {
+      "base": "#eef3f6",
+      "emission": "#eef6ff",
+      "strength": 5.0,
+      "metallic": 0.0
+    },
+    "M_Room_NoodleContents": {
+      "base": "#a65a2a",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0,
+      "texture": "CupNoodle_Contents.png"
+    },
+    "M_Room_Floor": {
+      "base": "#3d454e",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0,
+      "textures": [
+        "T_Room_Floor_BaseColor.png",
+        "T_Room_Floor_Normal.png",
+        "T_Room_Floor_Roughness.png"
+      ]
+    },
+    "M_Room_FloorDamaged": {
+      "base": "#3d454e",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0,
+      "textures": [
+        "T_Room_FloorDamaged_BaseColor.png",
+        "T_Room_FloorDamaged_Normal.png",
+        "T_Room_FloorDamaged_Roughness.png"
+      ]
+    },
+    "M_Room_Wall": {
+      "base": "#7c8794",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0,
+      "textures": [
+        "T_Room_Wall_BaseColor.png",
+        "T_Room_Wall_Normal.png",
+        "T_Room_Wall_Roughness.png"
+      ]
+    },
+    "M_Room_WallRepaired": {
+      "base": "#7c8794",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0,
+      "textures": [
+        "T_Room_WallRepaired_BaseColor.png",
+        "T_Room_WallRepaired_Normal.png",
+        "T_Room_WallRepaired_Roughness.png"
+      ]
+    },
+    "M_Room_Ceiling": {
+      "base": "#a2abb3",
+      "emission": null,
+      "strength": 0.0,
+      "metallic": 0.0,
+      "textures": [
+        "T_Room_Ceiling_BaseColor.png",
+        "T_Room_Ceiling_Normal.png",
+        "T_Room_Ceiling_Roughness.png"
+      ]
+    },
+    "M_Window_Normal": {
+      "textures": [
+        "T_Window_Normal_BaseColor.png",
+        "T_Window_Normal_Roughness.png",
+        "T_Window_Normal_Normal.png"
+      ],
+      "resolution": 2048
+    },
+    "M_Window_Large": {
+      "textures": [
+        "T_Window_Large_BaseColor.png",
+        "T_Window_Large_Roughness.png",
+        "T_Window_Large_Normal.png"
+      ],
+      "resolution": 2048
+    },
+    "M_Door": {
+      "textures": [
+        "T_Door_BaseColor.png",
+        "T_Door_Roughness.png",
+        "T_Door_Normal.png"
+      ],
+      "resolution": 2048
+    },
+    "M_DoorFrame": {
+      "textures": [
+        "T_DoorFrame_BaseColor.png",
+        "T_DoorFrame_Roughness.png",
+        "T_DoorFrame_Normal.png"
+      ],
+      "resolution": 2048
+    },
+    "M_WallVent": {
+      "textures": [
+        "T_WallVent_BaseColor.png",
+        "T_WallVent_Roughness.png",
+        "T_WallVent_Normal.png"
+      ],
+      "resolution": 1024
+    },
+    "M_WallOutlet": {
+      "textures": [
+        "T_WallOutlet_BaseColor.png",
+        "T_WallOutlet_Roughness.png",
+        "T_WallOutlet_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_LightSwitch": {
+      "textures": [
+        "T_LightSwitch_BaseColor.png",
+        "T_LightSwitch_Roughness.png",
+        "T_LightSwitch_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_CableCover": {
+      "textures": [
+        "T_CableCover_BaseColor.png",
+        "T_CableCover_Roughness.png",
+        "T_CableCover_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_Chair": {
+      "textures": [
+        "T_Chair_BaseColor.png",
+        "T_Chair_Roughness.png",
+        "T_Chair_Normal.png"
+      ],
+      "resolution": 2048
+    },
+    "M_HeadSwapMachine": {
+      "textures": [
+        "T_HeadSwapMachine_BaseColor.png",
+        "T_HeadSwapMachine_Roughness.png",
+        "T_HeadSwapMachine_Normal.png"
+      ],
+      "resolution": 2048
+    },
+    "M_HeadRack": {
+      "textures": [
+        "T_HeadRack_BaseColor.png",
+        "T_HeadRack_Roughness.png",
+        "T_HeadRack_Normal.png"
+      ],
+      "resolution": 2048
+    },
+    "M_Sofa": {
+      "textures": [
+        "T_Sofa_BaseColor.png",
+        "T_Sofa_Roughness.png",
+        "T_Sofa_Normal.png"
+      ],
+      "resolution": 2048
+    },
+    "M_LowTable": {
+      "textures": [
+        "T_LowTable_BaseColor.png",
+        "T_LowTable_Roughness.png",
+        "T_LowTable_Normal.png"
+      ],
+      "resolution": 1024
+    },
+    "M_Desk": {
+      "textures": [
+        "T_Desk_BaseColor.png",
+        "T_Desk_Roughness.png",
+        "T_Desk_Normal.png"
+      ],
+      "resolution": 2048
+    },
+    "M_Monitor_A": {
+      "textures": [
+        "T_Monitor_A_BaseColor.png",
+        "T_Monitor_A_Roughness.png",
+        "T_Monitor_A_Normal.png"
+      ],
+      "resolution": 1024
+    },
+    "M_Monitor_B": {
+      "textures": [
+        "T_Monitor_B_BaseColor.png",
+        "T_Monitor_B_Roughness.png",
+        "T_Monitor_B_Normal.png"
+      ],
+      "resolution": 1024
+    },
+    "M_DeskLight": {
+      "textures": [
+        "T_DeskLight_BaseColor.png",
+        "T_DeskLight_Roughness.png",
+        "T_DeskLight_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_CupNoodle": {
+      "textures": [
+        "T_CupNoodle_BaseColor.png",
+        "T_CupNoodle_Roughness.png",
+        "T_CupNoodle_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_Utensil_Chopsticks": {
+      "textures": [
+        "T_Utensil_Chopsticks_BaseColor.png",
+        "T_Utensil_Chopsticks_Roughness.png",
+        "T_Utensil_Chopsticks_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_Utensil_Fork": {
+      "textures": [
+        "T_Utensil_Fork_BaseColor.png",
+        "T_Utensil_Fork_Roughness.png",
+        "T_Utensil_Fork_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_DrinkCan": {
+      "textures": [
+        "T_DrinkCan_BaseColor.png",
+        "T_DrinkCan_Roughness.png",
+        "T_DrinkCan_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_DrinkCan_Crushed": {
+      "textures": [
+        "T_DrinkCan_Crushed_BaseColor.png",
+        "T_DrinkCan_Crushed_Roughness.png",
+        "T_DrinkCan_Crushed_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_Mug": {
+      "textures": [
+        "T_Mug_BaseColor.png",
+        "T_Mug_Roughness.png",
+        "T_Mug_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_GameController": {
+      "textures": [
+        "T_GameController_BaseColor.png",
+        "T_GameController_Roughness.png",
+        "T_GameController_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_MobileDevice": {
+      "textures": [
+        "T_MobileDevice_BaseColor.png",
+        "T_MobileDevice_Roughness.png",
+        "T_MobileDevice_Normal.png"
+      ],
+      "resolution": 512
+    },
+    "M_TrashBin": {
+      "textures": [
+        "T_TrashBin_BaseColor.png",
+        "T_TrashBin_Roughness.png",
+        "T_TrashBin_Normal.png"
+      ],
+      "resolution": 1024
+    },
+    "M_StorageBox": {
+      "textures": [
+        "T_StorageBox_BaseColor.png",
+        "T_StorageBox_Roughness.png",
+        "T_StorageBox_Normal.png"
+      ],
+      "resolution": 1024
+    },
+    "M_Blanket_Folded": {
+      "textures": [
+        "T_Blanket_Folded_BaseColor.png",
+        "T_Blanket_Folded_Roughness.png",
+        "T_Blanket_Folded_Normal.png"
+      ],
+      "resolution": 1024
+    },
+    "M_Blanket_Crumpled": {
+      "textures": [
+        "T_Blanket_Crumpled_BaseColor.png",
+        "T_Blanket_Crumpled_Roughness.png",
+        "T_Blanket_Crumpled_Normal.png"
+      ],
+      "resolution": 1024
+    },
+    "M_Cushion": {
+      "textures": [
+        "T_Cushion_BaseColor.png",
+        "T_Cushion_Roughness.png",
+        "T_Cushion_Normal.png"
+      ],
+      "resolution": 1024
+    },
+    "M_PowerStrip": {
+      "textures": [
+        "T_PowerStrip_BaseColor.png",
+        "T_PowerStrip_Roughness.png",
+        "T_PowerStrip_Normal.png"
+      ],
+      "resolution": 512
+    }
+  }
+}

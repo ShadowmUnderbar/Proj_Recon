@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「Claude_HeadPart01_Work.blend」を保存\n{\"shell_tris\": 2776, \"shell_top_z\": 0.23549999296665192, \"x\": [-0.09749999642372131, 0.10000000149011612], \"y\": [-0.10249999910593033, 0.0794999971985817], \"face_unchanged\": true}\n"
+  }
+}

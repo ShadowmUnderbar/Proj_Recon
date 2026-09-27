@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「Claude_HeadPart01_NoCable_Export.blend」で保存しました\n情報: 「Claude_HeadPart01_NoCable_Export.blend」を保存\n{\"shell_uv\": [\"UVMap\"], \"face_uv\": [\"FaceUV\"], \"islands\": 72, \"zero_area\": 0, \"flipped\": 0, \"uv_min\": [0.0051, 0.0051], \"uv_max\": [0.9937, 0.9949], \"texel_density_p10_p90_vs_median\": [0.8, 1.1]}\n"
+  }
+}

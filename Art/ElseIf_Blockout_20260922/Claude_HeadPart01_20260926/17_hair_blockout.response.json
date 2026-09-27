@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「Claude_HeadPart01_Work.blend」を保存\n{\"strands\": 31, \"roles\": {\"Hair_Top\": 8, \"Hair_Bang\": 4, \"Hair_Side_R\": 5, \"Hair_Side_L\": 5, \"Hair_Back\": 9}, \"hair_tris\": 4696, \"hair_vertices\": 2503, \"head_total_tris\": 7808, \"head_total_vertices\": 4149, \"meshes\": [\"ElseIf_HeadShell\", \"ElseIf_FaceMonitor\", \"ElseIf_HeadCableHair\"], \"hair_top_z\": 0.257652223110199}\n"
+  }
+}

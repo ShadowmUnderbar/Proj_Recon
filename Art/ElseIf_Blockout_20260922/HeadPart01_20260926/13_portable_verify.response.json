@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "{\"objects\": [\"HeadPart_ElseIf_Monitor01\", \"ElseIf_HeadShell\", \"ElseIf_FaceMonitor\"], \"meshes\": [\"ElseIf_HeadShell_Mesh\", \"ElseIf_FaceMonitor_Mesh\"], \"materials\": [\"ElseIf_HeadShell\", \"ElseIf_HeadJoint\", \"ElseIf_FaceMonitor\"], \"images\": [\"ElseIf_Expression_Test_Normal\", \"ElseIf_Expression_Test_Joy\", \"ElseIf_Expression_Test_Cry\"], \"armatures\": [], \"cameras\": [], \"collections\": [\"ElseIf_HeadPart_Monitor01\"], \"protected_existing_changes\": []}\n"
+  }
+}

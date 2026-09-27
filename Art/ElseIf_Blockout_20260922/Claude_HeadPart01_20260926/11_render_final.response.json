@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「Claude_HeadPart01_Work.blend」を保存\n{\"renders\": 17, \"geometry_sha256\": \"f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d\"}\n"
+  }
+}

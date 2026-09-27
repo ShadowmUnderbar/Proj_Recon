@@ -1,0 +1,7 @@
+{
+  "status": "success",
+  "result": {
+    "executed": true,
+    "result": "情報: 「Claude_HeadPart01_Work.blend」を保存\n{\"strands\": 49, \"dropped\": [[1, 7], [1, 8], [1, 9], [4, 8], [4, 9], [5, 4], [5, 5]], \"tris\": {\"ElseIf_HeadShell\": 2208, \"ElseIf_FaceMonitor\": 336, \"ElseIf_HeadCables\": 4410}, \"total_tris\": 6954, \"local_bounds\": [[-0.12493056058883667, -0.10249999910593033, -0.029999880120158195], [0.12395621091127396, 0.11925999820232391, 0.24481865763664246]]}\n"
+  }
+}

@@ -1,0 +1,189 @@
+[
+  {
+    "file": "Renders/Head_Front.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_Front",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Head_Side.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_Side",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Head_Back.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_Back",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Head_ThreeQuarter.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_ThreeQuarter",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Head_BackQuarter.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_BackQuarter",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Head_HighAngle.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_HighAngle",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Assembly_Front.png",
+    "scene": "ElseIf_Head01_Assembly_Review",
+    "camera": "Head01_Assembly_Cam_Front",
+    "expression": "Normal",
+    "resolution": [
+      880,
+      1120
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Assembly_ThreeQuarter.png",
+    "scene": "ElseIf_Head01_Assembly_Review",
+    "camera": "Head01_Assembly_Cam_ThreeQuarter",
+    "expression": "Normal",
+    "resolution": [
+      880,
+      1120
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Assembly_BackQuarter.png",
+    "scene": "ElseIf_Head01_Assembly_Review",
+    "camera": "Head01_Assembly_Cam_BackQuarter",
+    "expression": "Normal",
+    "resolution": [
+      880,
+      1120
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Assembly_HighAngle.png",
+    "scene": "ElseIf_Head01_Assembly_Review",
+    "camera": "Game_Cam_Stress_HighAngle",
+    "expression": "Normal",
+    "resolution": [
+      880,
+      1120
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Expression_Normal_Front.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_Front",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Expression_Normal_HighAngle.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_HighAngle",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Expression_Joy_Front.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_Front",
+    "expression": "Joy",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Expression_Joy_HighAngle.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_HighAngle",
+    "expression": "Joy",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Expression_Cry_Front.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_Front",
+    "expression": "Cry",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Expression_Cry_HighAngle.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_HighAngle",
+    "expression": "Cry",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  },
+  {
+    "file": "Renders/Head_IllustrationMatched_ThreeQuarter.png",
+    "scene": "ElseIf_Head01_Standalone_Review",
+    "camera": "Claude_Head_Cam_ThreeQuarter",
+    "expression": "Normal",
+    "resolution": [
+      720,
+      720
+    ],
+    "geometry_sha256": "f57967d4770a11aeb43f815e7eaadd97411acb66d0ba54f03d019d45ff3aba2d"
+  }
+]
