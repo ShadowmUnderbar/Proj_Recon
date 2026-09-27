@@ -3,7 +3,8 @@
 #
 # ランナーがセット選択のゲートを解除した時点でウェーブ1が始まり、TutorialWaveConfig の割り当て
 # （既定: ウェーブ1 → Wave1）に従ってメッセージが出て閲覧回数が記録されること、
-# 閲覧済み（規定回数）なら出ないこと、再表示設定が有効なら閲覧済みでも出ることを確認する。
+# 閲覧済み（規定回数）なら出ないこと、再表示設定が有効なら閲覧済みでも出ること、
+# 割り当てのないウェーブでは前のメッセージが消えることを確認する。
 #
 # 閲覧回数と再表示設定はセーブデータに永続化されるため、開始時に退避し、終了時に元へ戻して保存する。
 #
@@ -229,7 +230,7 @@ return $"{{\"phase\":\"{view.Phase}\"}}";
         Assert-ProbeTrue -Name '再表示設定が有効なら閲覧済みでも出る' -Condition ($replay.phase -eq 'HeadFollow') `
             -Detail "(phase: $($replay.phase))" | Out-Null
 
-        # --- 5. 割り当てのないウェーブでは何も起きない（前のメッセージはそのまま） ---
+        # --- 5. 割り当てのないウェーブでは前のメッセージが消える ---
         $noEntry = Invoke-UnityJson -Snippet @'
 using VContainer;
 using VContainer.Unity;
@@ -256,8 +257,8 @@ wave.SetWavePause(false);
 return $"{{\"target\":{target},\"wave\":{wave.CurrentWave.CurrentValue},\"before\":\"{before}\",\"phase\":\"{view.Phase}\"}}";
 '@
 
-        Assert-ProbeTrue -Name '割り当てのないウェーブでは前のメッセージがそのまま残る' `
-            -Condition ([int]$noEntry.wave -eq [int]$noEntry.target -and $noEntry.phase -eq $noEntry.before) `
+        Assert-ProbeTrue -Name '割り当てのないウェーブでは前のメッセージが消える' `
+            -Condition ([int]$noEntry.wave -eq [int]$noEntry.target -and $noEntry.before -ne 'Hidden' -and $noEntry.phase -eq 'Hidden') `
             -Detail "(wave: $($noEntry.wave), before: $($noEntry.before), after: $($noEntry.phase))" | Out-Null
     }
     finally {

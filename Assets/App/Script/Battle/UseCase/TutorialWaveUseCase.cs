@@ -14,7 +14,7 @@ namespace App.Battle.UseCase
     /// ウェーブの開始は「ポーズ解除」で判定する（ウェーブ1はセット選択の解除、以降はショップの「次のウェーブへ」）。
     /// 購読した時点で既に解けていれば（メインメニュー経由で即開始）その場でウェーブ1として扱う。
     /// 閲覧済み（規定回数）のものは再表示設定が有効でない限り出さず、表示したら閲覧回数を記録する。
-    /// 割り当てのないウェーブでは前のメッセージをそのまま残す（消すのは新しいメッセージか明示の Hide のみ）
+    /// 割り当てのないウェーブ（または割り当てはあるが閲覧済みで出さないウェーブ）では、前のメッセージが残っていれば消す
     /// </summary>
     public class TutorialWaveUseCase : IInitializable, IDisposable
     {
@@ -51,18 +51,15 @@ namespace App.Battle.UseCase
 
         private void OnWaveStarted(int wave)
         {
-            if (!_tutorialWaveConfig.TryGetTutorial(wave, out var type))
+            if (_tutorialWaveConfig.TryGetTutorial(wave, out var type) && _tutorialProgressDataStore.ShouldShow(type))
             {
+                _tutorialMessageUseCase.Show(type);
+                _tutorialProgressDataStore.MarkViewed(type);
                 return;
             }
 
-            if (!_tutorialProgressDataStore.ShouldShow(type))
-            {
-                return;
-            }
-
-            _tutorialMessageUseCase.Show(type);
-            _tutorialProgressDataStore.MarkViewed(type);
+            // このウェーブで出すものが無ければ、前のウェーブのメッセージを持ち越さない
+            _tutorialMessageUseCase.Hide();
         }
 
         public void Dispose()
