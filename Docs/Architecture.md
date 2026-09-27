@@ -68,6 +68,7 @@ VContainerSettings.RootLifetimeScope = CommonLifetimeScope.prefab  ← DontDestr
        → スロット選択／使わずに開始 → RunLoadoutDataStore（常駐）に選択を積む → ISceneTransitionUseCase.LoadBattle()
   → BattleLifetimeScope: RunStartUseCase が RunLoadoutDataStore の選択を装備（1回で消費）してすぐウェーブ1 開始
        （選択が無い＝Battle シーンを直接再生したときは、バトル内でセット選択 UI を出す。IsWavePause=true）
+       （メニュー側・バトル側とも、保存済みスロットが 1 つも無ければ選択 UI を出さず「使わずに開始」扱いで即開始）
   → … → HP0 → GameOverUseCase
        ├ リスタート: RunResetUseCase → 全 IRunResettable.ResetRun() → バトル内のセット選択へ
        └ メインメニューへ: ISceneTransitionUseCase.LoadMainMenu()
