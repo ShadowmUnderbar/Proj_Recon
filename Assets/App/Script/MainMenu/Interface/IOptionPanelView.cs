@@ -21,6 +21,9 @@ namespace App.MainMenu.Interface
         /// <summary>スナップターン角度[deg]が操作された</summary>
         Observable<int> OnSnapTurnAngleChanged { get; }
 
+        /// <summary>閉じるボタンが押された</summary>
+        Observable<Unit> OnClose { get; }
+
         void SetDominantHand(HandType hand);
 
         void SetLocomotion(LocomotionType locomotion);

@@ -13,6 +13,7 @@ namespace App.MainMenu.Presenters
         public Observable<LocomotionType> OnLocomotionChanged => _optionPanelView.OnLocomotionChanged;
         public Observable<float> OnMoveSpeedChanged => _optionPanelView.OnMoveSpeedChanged;
         public Observable<int> OnSnapTurnAngleChanged => _optionPanelView.OnSnapTurnAngleChanged;
+        public Observable<Unit> OnClose => _optionPanelView.OnClose;
 
         [Inject]
         public OptionPanelPresenter(IOptionPanelView optionPanelView)

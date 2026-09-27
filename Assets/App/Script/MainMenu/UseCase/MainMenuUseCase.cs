@@ -17,6 +17,7 @@ namespace App.MainMenu.UseCase
     {
         private readonly IMainMenuPresenter _mainMenuPresenter;
         private readonly IRunStartPresenter _runStartPresenter;
+        private readonly IOptionPanelPresenter _optionPanelPresenter;
         private readonly IRunLoadoutDataStore _runLoadoutDataStore;
         private readonly IMetaProgressionDataStore _metaProgressionDataStore;
         private readonly ISceneTransitionUseCase _sceneTransitionUseCase;
@@ -27,6 +28,7 @@ namespace App.MainMenu.UseCase
         public MainMenuUseCase(
             IMainMenuPresenter mainMenuPresenter,
             IRunStartPresenter runStartPresenter,
+            IOptionPanelPresenter optionPanelPresenter,
             IRunLoadoutDataStore runLoadoutDataStore,
             IMetaProgressionDataStore metaProgressionDataStore,
             ISceneTransitionUseCase sceneTransitionUseCase
@@ -34,6 +36,7 @@ namespace App.MainMenu.UseCase
         {
             _mainMenuPresenter = mainMenuPresenter;
             _runStartPresenter = runStartPresenter;
+            _optionPanelPresenter = optionPanelPresenter;
             _runLoadoutDataStore = runLoadoutDataStore;
             _metaProgressionDataStore = metaProgressionDataStore;
             _sceneTransitionUseCase = sceneTransitionUseCase;
@@ -59,6 +62,15 @@ namespace App.MainMenu.UseCase
             _runStartPresenter.OnBack
                 .Subscribe(_ => ShowTitle())
                 .AddTo(_disposable);
+            _mainMenuPresenter.OnOption
+                .Subscribe(_ => OnOption())
+                .AddTo(_disposable);
+            _optionPanelPresenter.OnClose
+                .Subscribe(_ => OnOptionClose())
+                .AddTo(_disposable);
+
+            // シーンの保存状態に依らず、開始時は必ずメインパネルから見せる
+            _mainMenuPresenter.ShowMainPanel();
         }
 
         /// <summary>START押下。タイトル表示からセット選択へ切り替える</summary>
@@ -143,6 +155,21 @@ namespace App.MainMenu.UseCase
             var count = _metaProgressionDataStore.GetSlotUpgradeIds(slotIndex).Count;
             var wave = _metaProgressionDataStore.GetSlotClearedWave(slotIndex);
             return $"スロット{slotIndex + 1}\n{count}個 / Wave{wave}";
+        }
+
+        private void OnOption()
+        {
+            if (_sceneTransitionUseCase.IsTransitioning)
+            {
+                return;
+            }
+
+            _mainMenuPresenter.ShowOptionPanel();
+        }
+
+        private void OnOptionClose()
+        {
+            _mainMenuPresenter.ShowMainPanel();
         }
 
         public void Dispose()
