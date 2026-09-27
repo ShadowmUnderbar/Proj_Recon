@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: TutorialText_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: d7052214e6b430f43ad395d2a1053388, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 31201124352
+    m_Localized: 'DLHN (Dullahan) is a top-down VR shooter.
+
+      Use the controllers
+      in both hands to aim in two directions and fire bullets rapidly with the trigger
+      buttons.
+
+      First, defeat enemies and collect the cash they drop!'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4414349467648
+    m_Localized: 'The cash you earn by defeating enemies can be used to purchase
+      upgrades at this shop that appears between waves.
+
+      You can view the details
+      of upgrades by holding them in your hand.
+
+      Purchase your favorite upgrades
+      and prepare for even more enemies!'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4414362050560
+    m_Localized: 'The way you aim the controller significantly changes the nature
+      of the projectiles.
+
+      By separating both reticles, you''ll get the rapid-fire
+      "Waltz Shot,"
+
+      and by aligning them, you''ll get the single-shot-focused
+      "Merge Shot."
+
+      Each type of projectile has its pros and cons, so try
+      out various tactics!'
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []
