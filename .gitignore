@@ -92,6 +92,9 @@ Art/**/*.blend
 Art/**/*.blend1
 Art/**/*.jpg
 Art/**/__pycache__/
+# 確認用のプレビュー画像と実行ログ（生成スクリプトから作り直せるため追跡しない）
+Art/**/Renders/
+Art/**/*.log
 # 最新の原本のみ Art/Latest/ に置いてLFSで追跡する
 !Art/Latest/*.blend
 !Art/Latest/**/*.blend
