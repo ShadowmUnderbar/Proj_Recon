@@ -8,5 +8,8 @@ namespace App.MainMenu.Interface
         Observable<Unit> OnStart { get; }
 
         void SetInteractable(bool interactable);
+
+        /// <summary>「START」ボタンの表示切替。セット選択中は隠す</summary>
+        void SetStartVisible(bool visible);
     }
 }

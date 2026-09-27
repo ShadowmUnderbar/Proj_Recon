@@ -6,7 +6,8 @@ using UnityEngine.UI;
 namespace App.MainMenu.Views
 {
     /// <summary>
-    /// メインメニュー画面。タイトルとSTARTボタンだけを持つ最小構成。
+    /// メインメニュー画面。タイトルとSTARTボタンを持つ最小構成。
+    /// START後のアップグレードセット選択は同じプレハブ内の RunStartView（共通View）が担当する。
     /// CanvasはVR向けの遅延追従（VrUiFollowCanvasView）を併用し、
     /// VRのハンドレイ・非VRのマウスのどちらでも押せるようにしている。
     /// </summary>
@@ -31,6 +32,14 @@ namespace App.MainMenu.Views
             if (_startButton != null)
             {
                 _startButton.interactable = interactable;
+            }
+        }
+
+        public void SetStartVisible(bool visible)
+        {
+            if (_startButton != null)
+            {
+                _startButton.gameObject.SetActive(visible);
             }
         }
 

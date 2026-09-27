@@ -1,8 +1,8 @@
-using App.Battle.Interface;
+using App.Common.Interface;
 using R3;
 using VContainer;
 
-namespace App.Battle.Presenters
+namespace App.Common.Presenters
 {
     public class RunStartPresenter : IRunStartPresenter
     {
@@ -10,6 +10,7 @@ namespace App.Battle.Presenters
 
         public Observable<int> OnSlotSelected => _runStartView.OnSlotSelected;
         public Observable<Unit> OnStartWithoutLoad => _runStartView.OnStartWithoutLoad;
+        public Observable<Unit> OnBack => _runStartView.OnBack;
 
         [Inject]
         public RunStartPresenter(IRunStartView runStartView)
