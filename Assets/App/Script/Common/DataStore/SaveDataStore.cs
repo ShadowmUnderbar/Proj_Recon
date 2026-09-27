@@ -17,7 +17,8 @@ namespace App.Common.DataStore
         private readonly Subject<Unit> _onSave = new();
         public SaveData SaveData { get; private set; } = new();
 
-        private string SaveDataPath => Application.dataPath + "/DLHN/SaveData.json";
+        /// <summary>セーブファイルのパス。デバッグ用エディタ拡張からも参照する</summary>
+        public static string SaveDataPath => Application.dataPath + "/DLHN/SaveData.json";
 
         public void Initialize()
         {
