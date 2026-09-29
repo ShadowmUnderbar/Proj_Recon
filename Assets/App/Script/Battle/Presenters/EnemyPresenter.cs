@@ -43,9 +43,9 @@ namespace App.Battle.Presenters
             return _enemyStoreView.GetDodgeHitEnemies(playerPosition, direction, distance);
         }
 
-        public IReadOnlyList<int> GetGazeEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
+        public IReadOnlyList<(int enemyId, float distanceFromRay)> GetGazeEnemyDistances()
         {
-            return _enemyStoreView.GetGazeEnemies(origin, direction, radius, distance);
+            return _enemyStoreView.GetGazeEnemyDistances();
         }
 
         public IReadOnlyList<int> GetLineHitEnemies(Vector3 origin, Vector3 direction, float radius, float distance)

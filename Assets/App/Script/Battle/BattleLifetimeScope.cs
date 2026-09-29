@@ -244,9 +244,9 @@ namespace App.Battle
                 .As<ISimpleObjectFactory<IPlayerTopDownAimView>>()
                 .WithParameter("prefab", _playerTopDownAimView);
 
-            builder.Register<EnemyStoreView>(Lifetime.Singleton)
-                .As<IEnemyStoreView>()
-                .WithParameter("prefab", _enemyStoreView);
+            // 注視判定を LateUpdate で回すため、new ではなくプレハブから GameObject として生成する
+            builder.RegisterComponentInNewPrefab(_enemyStoreView, Lifetime.Singleton).UnderTransform(transform)
+                .As<IEnemyStoreView>();
 
             builder.Register<HitBoxStoreView>(Lifetime.Singleton)
                 .As<IHitBoxStoreView>()
@@ -274,6 +274,9 @@ namespace App.Battle
                 .AsImplementedInterfaces().As<IPointParticleStoreView>();
 
             builder.RegisterInstance(_waveConfig);
+
+            // デバッグ設定は組み立て時にだけ DebugConfig から読み、利用側へは注入で渡す
+            builder.RegisterInstance(new EnemyGazeDebugSettings(DebugConfig.IsGazeTouchHitFeedback));
             builder.RegisterInstance(_streamerCameraTriggerConfig);
             builder.RegisterInstance(_dodgeCounterAttackConfig);
             builder.RegisterInstance(_pointParticleConfig);

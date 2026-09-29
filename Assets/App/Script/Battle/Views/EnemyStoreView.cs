@@ -15,6 +15,7 @@ namespace App.Battle.Views
     {
         private IBattlePlayerView _playerView;
         private IHitBoxStoreView _hitBoxStoreView;
+        private EnemyGazeDebugSettings _gazeDebugSettings;
 
         private readonly Dictionary<int, IEnemyView> _enemies = new();
 
@@ -24,9 +25,18 @@ namespace App.Battle.Views
         private readonly RaycastHit[] _hits = new RaycastHit[10];
         private readonly List<int> _rayCastEnemyIds = new();
 
-        // 注視判定用（毎フレーム呼ばれるためバッファを使い回す）
-        private readonly RaycastHit[] _gazeHits = new RaycastHit[20];
-        private readonly List<int> _gazeEnemyIds = new();
+        [Header("注視判定（スネークアイズ・メデューサ・ガン飛ばし）")]
+        [SerializeField, Min(1), Tooltip("1フレームに視線との距離を更新する敵の数。敵が多くて反応が遅く感じたら増やす")]
+        private int _gazeEnemiesPerFrame = 3;
+
+        [SerializeField, Min(0f), Tooltip("視線に捉えたとみなす最大距離[m]")]
+        private float _gazeMaxDistance = 50f;
+
+        // 敵ごとの判定球と視線の距離を順番に更新する
+        private readonly EnemyGazeTracker _gazeTracker = new();
+
+        // デバッグ: 視線が判定球を通っている敵（通った瞬間だけリアクションを出すため、前回の状態を持つ）
+        private readonly HashSet<int> _gazeTouchedEnemyIds = new();
 
         // 直線判定用（注視と同時に呼ばれてもバッファが混ざらないよう別に持つ）
         private readonly RaycastHit[] _lineHits = new RaycastHit[32];
@@ -40,11 +50,13 @@ namespace App.Battle.Views
         [Inject]
         public void Construct(
             IHitBoxStoreView hitBoxStoreView,
-            IBattlePlayerView playerView
+            IBattlePlayerView playerView,
+            EnemyGazeDebugSettings gazeDebugSettings
         )
         {
             _hitBoxStoreView = hitBoxStoreView;
             _playerView = playerView;
+            _gazeDebugSettings = gazeDebugSettings;
         }
 
         public async UniTask Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType)
@@ -58,8 +70,8 @@ namespace App.Battle.Views
                 return;
             }
 
-            var view = Instantiate(enemyObj.Result, enemyData.Pose.position, enemyData.Pose.rotation)
-                .GetComponent<IEnemyView>();
+            var enemyObject = Instantiate(enemyObj.Result, enemyData.Pose.position, enemyData.Pose.rotation);
+            var view = enemyObject.GetComponent<IEnemyView>();
 
             view.Init(enemyData.Id, enemyData, resistanceDirectionType);
             view.Pose
@@ -70,6 +82,15 @@ namespace App.Battle.Views
             view.SetPause(_isPause);
 
             _enemies.Add(enemyData.Id, view);
+
+            if (enemyObject.TryGetComponent<EnemyGazeBoundsView>(out var gazeBounds))
+            {
+                _gazeTracker.Add(enemyData.Id, gazeBounds);
+            }
+            else
+            {
+                Debug.LogWarning($"[{nameof(EnemyStoreView)}] {enemyObject.name}: {nameof(EnemyGazeBoundsView)} が無いため注視系アップグレードの対象になりません", enemyObject);
+            }
 
             foreach (var hitBox in view.HitBoxes)
             {
@@ -85,6 +106,8 @@ namespace App.Battle.Views
             }
 
             _hitBoxStoreView.RemoveHitBoxView(enemyId);
+            _gazeTracker.Remove(enemyId);
+            _gazeTouchedEnemyIds.Remove(enemyId);
 
             enemyView.Destroy();
             _enemies.Remove(enemyId);
@@ -108,6 +131,8 @@ namespace App.Battle.Views
             }
 
             _enemies.Clear();
+            _gazeTracker.Clear();
+            _gazeTouchedEnemyIds.Clear();
         }
 
         public IReadOnlyList<int> GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
@@ -136,9 +161,59 @@ namespace App.Battle.Views
             return _rayCastEnemyIds;
         }
 
-        public IReadOnlyList<int> GetGazeEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
+        public IReadOnlyList<(int enemyId, float distanceFromRay)> GetGazeEnemyDistances()
         {
-            return SphereCastEnemyIds(origin, direction, radius, distance, _gazeHits, _gazeEnemyIds);
+            return _gazeTracker.Distances;
+        }
+
+        private void LateUpdate()
+        {
+            // 頭の姿勢はトラッキング更新後の LateUpdate で取る。取れないフレームは前回の距離を据え置く
+            if (_playerView == null || !_playerView.TryGetGazePose(out var gazePose))
+            {
+                return;
+            }
+
+            _gazeTracker.EvaluateNext(gazePose, _gazeEnemiesPerFrame, _gazeMaxDistance);
+
+            if (_gazeDebugSettings != null && _gazeDebugSettings.PlayHitFeedbackOnGazeTouch)
+            {
+                PlayGazeTouchHitFeedback(gazePose.position);
+            }
+        }
+
+        /// <summary>
+        /// デバッグ: 視線が判定球を通った（距離が0になった）瞬間の敵に被弾リアクションを出す。
+        /// 通り続けている間は出さず、一度外れてから再び通ったらまた出す
+        /// </summary>
+        private void PlayGazeTouchHitFeedback(Vector3 gazeOrigin)
+        {
+            var distances = _gazeTracker.Distances;
+            for (var i = 0; i < distances.Count; i++)
+            {
+                var (enemyId, distanceFromRay) = distances[i];
+
+                if (distanceFromRay > 0f)
+                {
+                    _gazeTouchedEnemyIds.Remove(enemyId);
+                    continue;
+                }
+
+                if (!_gazeTouchedEnemyIds.Add(enemyId))
+                {
+                    continue;
+                }
+
+                if (!_enemies.TryGetValue(enemyId, out var enemyView))
+                {
+                    continue;
+                }
+
+                // 視線の出どころ→敵の水平方向へ傾ける
+                var hitDirection = enemyView.Pose.Value.position - gazeOrigin;
+                hitDirection.y = 0f;
+                enemyView.PlayHitFeedback(hitDirection.sqrMagnitude > 0f ? hitDirection.normalized : Vector3.zero);
+            }
         }
 
         public IReadOnlyList<int> GetLineHitEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
@@ -240,10 +315,18 @@ namespace App.Battle.Views
         {
             foreach (var enemy in _enemies.Values)
             {
+                // シーン破棄では敵が先に破棄されていることがある（破棄済みに Destroy を呼ぶと例外になる）
+                if (enemy is Object enemyObject && enemyObject == null)
+                {
+                    continue;
+                }
+
                 enemy.Destroy();
             }
 
             _enemies.Clear();
+            _gazeTracker.Clear();
+            _gazeTouchedEnemyIds.Clear();
             _onEnemyPoseUpdate.Dispose();
         }
     }
