@@ -3,7 +3,47 @@ guid: 5edd41b5beb11534cabaf50fecd3ce56
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EH_Accent_Orange
+    second: {fileID: 2100000, guid: c19c19022f4be9f4e8ad713920368610, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EH_Accent_Red
+    second: {fileID: 2100000, guid: 826a76b64da29274db189bf181b24afe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EH_FaceMonitor_Screen
+    second: {fileID: 2100000, guid: dd98b9a4e4fe6a643873b045d1897ee4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EH_FlatCable_Baked
+    second: {fileID: 2100000, guid: 29e33f09514479546ba3c15fc51374d8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EH_Gasket_Gray
+    second: {fileID: 2100000, guid: 58aff7850edc2e1468ed8ca0e414982f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EH_Mech_Black
+    second: {fileID: 2100000, guid: 61f70ffe1868dc841b8f02199fd4d8cd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EH_Metal_Dark
+    second: {fileID: 2100000, guid: 8b81047b3ca5d8e4c817042a7aeafcf3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: EH_Shell_Ivory
+    second: {fileID: 2100000, guid: bc0d8f494b0875f4f87634cc88a64049, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
