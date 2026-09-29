@@ -15,6 +15,7 @@ namespace App.Battle.Views
     {
         private IBattlePlayerView _playerView;
         private IHitBoxStoreView _hitBoxStoreView;
+        private EnemyGazeDebugSettings _gazeDebugSettings;
 
         private readonly Dictionary<int, IEnemyView> _enemies = new();
 
@@ -34,6 +35,9 @@ namespace App.Battle.Views
         // 敵ごとの判定球と視線の距離を順番に更新する
         private readonly EnemyGazeTracker _gazeTracker = new();
 
+        // デバッグ: 視線が判定球を通っている敵（通った瞬間だけリアクションを出すため、前回の状態を持つ）
+        private readonly HashSet<int> _gazeTouchedEnemyIds = new();
+
         // 直線判定用（注視と同時に呼ばれてもバッファが混ざらないよう別に持つ）
         private readonly RaycastHit[] _lineHits = new RaycastHit[32];
         private readonly List<int> _lineEnemyIds = new();
@@ -46,11 +50,13 @@ namespace App.Battle.Views
         [Inject]
         public void Construct(
             IHitBoxStoreView hitBoxStoreView,
-            IBattlePlayerView playerView
+            IBattlePlayerView playerView,
+            EnemyGazeDebugSettings gazeDebugSettings
         )
         {
             _hitBoxStoreView = hitBoxStoreView;
             _playerView = playerView;
+            _gazeDebugSettings = gazeDebugSettings;
         }
 
         public async UniTask Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType)
@@ -101,6 +107,7 @@ namespace App.Battle.Views
 
             _hitBoxStoreView.RemoveHitBoxView(enemyId);
             _gazeTracker.Remove(enemyId);
+            _gazeTouchedEnemyIds.Remove(enemyId);
 
             enemyView.Destroy();
             _enemies.Remove(enemyId);
@@ -125,6 +132,7 @@ namespace App.Battle.Views
 
             _enemies.Clear();
             _gazeTracker.Clear();
+            _gazeTouchedEnemyIds.Clear();
         }
 
         public IReadOnlyList<int> GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
@@ -167,6 +175,45 @@ namespace App.Battle.Views
             }
 
             _gazeTracker.EvaluateNext(gazePose, _gazeEnemiesPerFrame, _gazeMaxDistance);
+
+            if (_gazeDebugSettings != null && _gazeDebugSettings.PlayHitFeedbackOnGazeTouch)
+            {
+                PlayGazeTouchHitFeedback(gazePose.position);
+            }
+        }
+
+        /// <summary>
+        /// デバッグ: 視線が判定球を通った（距離が0になった）瞬間の敵に被弾リアクションを出す。
+        /// 通り続けている間は出さず、一度外れてから再び通ったらまた出す
+        /// </summary>
+        private void PlayGazeTouchHitFeedback(Vector3 gazeOrigin)
+        {
+            var distances = _gazeTracker.Distances;
+            for (var i = 0; i < distances.Count; i++)
+            {
+                var (enemyId, distanceFromRay) = distances[i];
+
+                if (distanceFromRay > 0f)
+                {
+                    _gazeTouchedEnemyIds.Remove(enemyId);
+                    continue;
+                }
+
+                if (!_gazeTouchedEnemyIds.Add(enemyId))
+                {
+                    continue;
+                }
+
+                if (!_enemies.TryGetValue(enemyId, out var enemyView))
+                {
+                    continue;
+                }
+
+                // 視線の出どころ→敵の水平方向へ傾ける
+                var hitDirection = enemyView.Pose.Value.position - gazeOrigin;
+                hitDirection.y = 0f;
+                enemyView.PlayHitFeedback(hitDirection.sqrMagnitude > 0f ? hitDirection.normalized : Vector3.zero);
+            }
         }
 
         public IReadOnlyList<int> GetLineHitEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
@@ -279,6 +326,7 @@ namespace App.Battle.Views
 
             _enemies.Clear();
             _gazeTracker.Clear();
+            _gazeTouchedEnemyIds.Clear();
             _onEnemyPoseUpdate.Dispose();
         }
     }
