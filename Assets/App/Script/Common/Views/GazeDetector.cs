@@ -7,7 +7,7 @@ namespace App.Common.Views
     /// 幾何判定は <see cref="GazeHitTest"/> に任せ、ここでは境目でのちらつきを抑える。
     /// ・見ている間は外れの余白角度を広げる（ヒステリシス）
     /// ・当たり／外れが規定時間続いてから切り替える
-    /// 見た目の大きさが判定で変わる対象（見たら拡大する等）でも、判定の箱は固定の大きさで渡すと揺れない
+    /// 見た目の大きさが判定で変わる対象（見たら拡大する等）でも、判定の半径は固定で渡すと揺れない
     /// </summary>
     public class GazeDetector
     {
@@ -19,14 +19,16 @@ namespace App.Common.Views
 
         /// <summary>
         /// 視線と対象を更新し、見ているかを返す。
+        /// deltaTime は前回この判定を呼んでからの経過時間。毎フレーム呼ばない場合もフレーム時間ではなくこちらを渡す。
         /// 視線が取れないフレームは呼ばない（判定を据え置く）か、<see cref="Reset"/> で見ていない状態へ戻す
         /// </summary>
-        public bool Update(float deltaTime, in Pose gaze, in GazeTargetBox target, in GazeDetectorSettings settings)
+        public bool Update(
+            float deltaTime, in Pose gaze, Vector3 center, float radius, in GazeDetectorSettings settings)
         {
             var marginAngle = IsGazed
                 ? Mathf.Max(settings.EnterMarginAngle, settings.ExitMarginAngle)
                 : settings.EnterMarginAngle;
-            var isHit = GazeHitTest.Intersects(gaze, target, marginAngle);
+            var isHit = GazeHitTest.Intersects(gaze, center, radius, marginAngle);
 
             if (isHit == IsGazed)
             {

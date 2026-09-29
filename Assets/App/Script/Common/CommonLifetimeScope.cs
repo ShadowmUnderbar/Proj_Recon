@@ -3,6 +3,7 @@ using App.Common.Interface;
 using App.Common.Data.Database;
 using App.Common.DataStore;
 using App.Common.UseCase;
+using App.Common.Views;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -17,6 +18,9 @@ namespace App.Common
         [SerializeField] private BuffDatabase _buffDatabase;
         [SerializeField] private WaveScalingDatabase _waveScalingDatabase;
         [SerializeField] private StreamerModeConfig _streamerModeConfig;
+
+        [SerializeField, Tooltip("注視判定の Store（このプレハブ上のコンポーネント）")]
+        private GazeTargetStoreView _gazeTargetStoreView;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -55,6 +59,11 @@ namespace App.Common
             builder.Register<SceneTransitionUseCase>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ISceneTransitionUseCase>();
 
+            #endregion
+
+            #region View
+            // 注視判定。常駐させ、メインメニュー・バトル双方の GazeTargetView が子スコープから解決する
+            builder.RegisterComponent(_gazeTargetStoreView).As<IGazeTargetStoreView>();
             #endregion
 
             #region Config

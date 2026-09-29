@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3874202361175324830}
   - component: {fileID: 1162201913606898011}
+  - component: {fileID: 3792779028097221987}
   m_Layer: 0
   m_Name: CommonLifetimeScope
   m_TagString: Untagged
@@ -54,3 +55,17 @@ MonoBehaviour:
   _buffDatabase: {fileID: 11400000, guid: 151c973fef82b9749b1aa9286ecd29de, type: 2}
   _waveScalingDatabase: {fileID: 11400000, guid: 302016ccb39ccea4d8311d82fbd3f5a3, type: 2}
   _streamerModeConfig: {fileID: 11400000, guid: 48652d6077c903549a4d8fa114ea2a4f, type: 2}
+  _gazeTargetStoreView: {fileID: 3792779028097221987}
+--- !u!114 &3792779028097221987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6279236772956289831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c00138e46532fe4c98807ca61fb5ee1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _targetsPerFrame: 1
