@@ -256,7 +256,8 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `BattleHitUseCase` | `OnHit` → 倍率（貫通バフ／ガン飛ばし／クリティカル）→ 感電伝播 → `EnemyDataStore.Damage`。撃破時の回復（HealOnKill）等 | Enemy, BuffState, CriticalHit, ElectricShock |
 | `PointDropUseCase` | 撃破 → 粒子ドロップ、回収 → ポイント加算。`BattleHitUseCase` より先に登録（撃破地点を読むため） | Point, PointDropCalculator |
 | `BuffConditionUseCase` / `CareNodeUseCase` | バフ条件の入力（ヒット・HP割合・回避）／ケア・ノードの毎秒効果 | BuffState, CareNode |
-| `FreezeUseCase` | フリーズの開始・解除で敵・弾・レイ演出を止める | Freeze, Enemy, BulletStore |
+| `FreezeUseCase` | フリーズの開始・解除で弾・レイ演出を止める。**敵の停止は「ウェーブ間ポーズ・フリーズ・オーバークロック」の論理和をここ1か所で計算して `EnemyPresenter.SetPause` に渡す**（停止要因ごとに別々に呼ぶと片方の解除で他を解いてしまう） | Freeze, WaveManager, Overclock, Enemy, BulletStore |
+| `OverclockUseCase` | オーバークロック。回避中の被弾無効化で秒数を獲得 → 3秒超で自動発動。発動中は敵弾の停止・レイ/トレイルの保持・視点の固定（`PlayerCameraPinView`）、終了時に溜めたダメージを1回で適用。ウェーブ間ポーズで打ち切り | Overclock, DodgeParameter, PlayerState, BulletStore |
 | `WaveManagerUseCase` / `ShopUseCase` / `RunStartUseCase` / `GameOverUseCase` / `RunResetUseCase` | 3.2 参照 | |
 | `UpgradeSideEffectApplier` | アップグレード付与の副作用（バフ起動・バリア満タン）。Shop と RunStart の共通処理 | BuffState, PlayerBarrier |
 | `StreamerCameraUseCase` | ウェーブ進行・ボス・マルチキルで配信カメラの演出をトリガー | StreamerCamera, Enemy |
@@ -285,6 +286,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `EnemyWaveScalingCalculatorDataStore` | `WaveScalingDatabase` からウェーブ帯ごとの増加率（線形・切り上げ） |
 | `WaveManagerDataStore` | 現在ウェーブ・経過時間・キル数・ポーズ・`OnWaveAdvanced` |
 | `GameStateDataStore` / `RunStartDataStore` / `FreezeDataStore` | ゲームオーバー／セット選択中／フリーズ残時間 |
+| `OverclockDataStore` | オーバークロックのストック秒数・発動状態・残り時間・溜めたダメージ。しきい値は `OverclockConfig`。発動中は、時間で進む処理（バフ・デバフの効果時間、スポーン周期、ウェーブ経過時間、バリア再生、ケア・ノード）が `IsActive` を見て止まる。射撃・回避のクールダウンは止めない |
 
 **アップグレード・バフ**
 
@@ -335,6 +337,12 @@ EnemyRandomSpawnCycleDataStore.Tick → OnSpawnXxxEnemy → EnemyRandomSpawnUseC
 【回避 → 跳ね返し】
 IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
  → DodgeCounterAttackUseCase → DodgeCounterAttackDataStore(対象・ダメージ算出) → FreezeDataStore → ダメージ適用
+
+【オーバークロック】
+回避中の被弾 → PlayerHitUseCase → PlayerDodgeParameterDataStore.NotifyDamageBlocked → OnDamagedDuringDodge
+ → OverclockUseCase(アップグレード所持なら Value1 秒) → OverclockDataStore.AddStock → 3秒超で IsActive
+ → FreezeUseCase(敵停止) / BulletStoreView.SetOverclock(敵弾停止・トレイル保持) / TracerFreezeState / PlayerCameraPinView
+ 発動中の被弾: PlayerHitUseCase → OverclockDataStore.AddStockedDamage → 終了時に PlayerStateDataStore.TakeDamage(合計)
 ```
 
 ---
