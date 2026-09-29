@@ -367,6 +367,7 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | `RunStartView` / `RunStartPresenter` | アップグレードセット選択 UI（スロット3＋「使わずに開始」＋任意の「戻る」）。メインメニュー（START 後）とバトル（直接再生時・リスタート時）で共用 |
 | `VrUiFollowCanvasView` / `VrUiRayView` / `VrUiRayAlwaysOnView` | VR 向け UI 基盤（遅延追従キャンバス・ハンドレイ） |
 | `ForwardRayView` / `HandForwardRayView` / `PlatformHandRotation` | 手・照準のレイ表示、プラットフォーム別の手の回転補正 |
+| `GazeDetector` / `GazeHitTest` / `GazeTargetBox` / `GazeDetectorSettings` | 視線が対象（矩形・箱）に当たっているかの汎用判定（plain C#、DI 対象外）。余白は角度で持ち、入り／外れの余白差（ヒステリシス）と遅延でちらつきを抑える。使う側の View が頭の姿勢を渡して毎フレーム更新する |
 | `PlayerCameraTrackingView` | エディタ非 VR 時に `TrackedPoseDriver` を切る（旧 `PlayerCameraData`、`Camera.prefab` に付く） |
 | `CurvedWorldView` / `CurvedWorldGroundView` / `CurvedWorldBoundsView` / `CurvedWorldCameraRigView` / `CurvedWorldLine` | 水平線カーブ（頂点シェーダ）。詳細は `curved-world` スキル |
 | `CurvedWorldPrototypeMoveView` / `CurvedWorldTunerView` | `CurvedWorldPrototype.unity` 専用のプロトタイプ用（本編未使用） |
