@@ -4,7 +4,7 @@
 # 目視では「出た・動いた」しか分からないため、
 #   1. 配置計算（TutorialMessagePlacement）の純粋ロジック（フェーズ切替・左右ミラー・スナップ・向きのフォールバック）
 #   2. 実際の表示（視点正面への追従 → 非利き手の脇への移動 → 常に頭を向く → 差し替え → 非表示）
-#   3. 縮小表示（非利き手追従中に見ていなければ表示上の1行目＋「…」へ縮み、見れば元の大きさへ戻る）
+#   3. 縮小表示（非利き手追従中に見ていなければ、狭めた幅で表示上の1行目＋「…」へ縮み、見れば元の大きさへ戻る）
 # を Transform と設定値の実測で確認する。
 #
 # HMD の無いエディタではカメラもコントローラも動かないため、「追従している」ことは
@@ -408,9 +408,10 @@ var view = scope.Container.Resolve<ITutorialMessageView>() as TutorialMessageVie
 var flags = BindingFlags.NonPublic | BindingFlags.Instance;
 var body = (TextMeshProUGUI)typeof(TutorialMessageView).GetField("_bodyText", flags).GetValue(view);
 var gaze = (GazeTargetView)typeof(TutorialMessageView).GetField("_gazeTarget", flags).GetValue(view);
-var expandedHeight = (float)typeof(TutorialMessageView).GetField("_expandedHeight", flags).GetValue(view);
-var expandedBodyHeight = (float)typeof(TutorialMessageView).GetField("_expandedBodyHeight", flags).GetValue(view);
-var collapsedBodyHeight = (float)typeof(TutorialMessageView).GetField("_collapsedBodyHeight", flags).GetValue(view);
+var expandedSize = (Vector2)typeof(TutorialMessageView).GetField("_expandedSize", flags).GetValue(view);
+var expandedBodySize = (Vector2)typeof(TutorialMessageView).GetField("_expandedBodySize", flags).GetValue(view);
+var collapsedBodySize = (Vector2)typeof(TutorialMessageView).GetField("_collapsedBodySize", flags).GetValue(view);
+var widthRatio = (float)typeof(TutorialMessageView).GetField("_collapsedWidthRatio", flags).GetValue(view);
 var originalRadius = (float)typeof(GazeTargetView).GetField("_radius", flags).GetValue(gaze);
 var originalEnter = (float)typeof(GazeTargetView).GetField("_enterMarginAngle", flags).GetValue(gaze);
 var originalExit = (float)typeof(GazeTargetView).GetField("_exitMarginAngle", flags).GetValue(gaze);
@@ -426,6 +427,7 @@ if (margin >= 0f)
 }
 
 var info = body.textInfo;
+var firstLineChars = info.lineCount > 0 ? info.lineInfo[0].visibleCharacterCount : 0;
 var visibleLines = 0;
 for (var i = 0; i < info.lineCount; i++) if (info.lineInfo[i].visibleCharacterCount > 0) visibleLines++;
 var hasEllipsis = false;
@@ -434,7 +436,7 @@ for (var i = 0; i < info.characterCount; i++) if (info.characterInfo[i].isVisibl
 var canvasRect = (RectTransform)view.transform;
 var gazeCenterOffset = Vector3.Distance(gaze.transform.position, view.transform.position);
 
-return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToString().ToLower()},\"height\":{canvasRect.sizeDelta.y},\"bodyHeight\":{body.rectTransform.sizeDelta.y},\"expandedHeight\":{expandedHeight},\"expandedBodyHeight\":{expandedBodyHeight},\"collapsedBodyHeight\":{collapsedBodyHeight},\"fontSize\":{body.fontSize},\"autoSizing\":{body.enableAutoSizing.ToString().ToLower()},\"visibleLines\":{visibleLines},\"hasEllipsis\":{hasEllipsis.ToString().ToLower()},\"gazeCenterOffset\":{gazeCenterOffset},\"originalRadius\":{originalRadius},\"originalEnter\":{originalEnter},\"originalExit\":{originalExit}}}";
+return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToString().ToLower()},\"width\":{canvasRect.sizeDelta.x},\"height\":{canvasRect.sizeDelta.y},\"bodyWidth\":{body.rectTransform.sizeDelta.x},\"bodyHeight\":{body.rectTransform.sizeDelta.y},\"expandedWidth\":{expandedSize.x},\"expandedHeight\":{expandedSize.y},\"expandedBodyWidth\":{expandedBodySize.x},\"expandedBodyHeight\":{expandedBodySize.y},\"collapsedBodyWidth\":{collapsedBodySize.x},\"collapsedBodyHeight\":{collapsedBodySize.y},\"widthRatio\":{widthRatio},\"firstLineChars\":{firstLineChars},\"fontSize\":{body.fontSize},\"autoSizing\":{body.enableAutoSizing.ToString().ToLower()},\"visibleLines\":{visibleLines},\"hasEllipsis\":{hasEllipsis.ToString().ToLower()},\"gazeCenterOffset\":{gazeCenterOffset},\"originalRadius\":{originalRadius},\"originalEnter\":{originalEnter},\"originalExit\":{originalExit}}}";
 '@
 
     if ([bool]$setup.isVr) {
@@ -443,6 +445,7 @@ return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToS
         Start-Sleep -Milliseconds 2000
         $collapsed = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f'))
         $padding = [double]$collapsed.expandedHeight - [double]$collapsed.expandedBodyHeight
+        $paddingX = [double]$collapsed.expandedWidth - [double]$collapsed.expandedBodyWidth
 
         Assert-ProbeTrue -Name '[縮小] 手元のダイアログを見ていない' -Condition (-not [bool]$collapsed.isGazed) `
             -Detail "(phase: $($collapsed.phase))" | Out-Null
@@ -450,6 +453,10 @@ return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToS
             -Expected ([double]$collapsed.collapsedBodyHeight + $padding) -Tolerance 0.5 | Out-Null
         Assert-ProbeTrue -Name '[縮小] 縮小時の高さは展開時より小さい' -Condition ([double]$collapsed.height -lt [double]$collapsed.expandedHeight) `
             -Detail "($([math]::Round([double]$collapsed.height, 1))px / 展開 $($collapsed.expandedHeight)px)" | Out-Null
+        Assert-ProbeValue -Name '[縮小] 本文の折り返し幅は展開時×割合[px]' -Actual ([double]$collapsed.bodyWidth) `
+            -Expected ([double]$collapsed.expandedBodyWidth * [double]$collapsed.widthRatio) -Tolerance 0.01 | Out-Null
+        Assert-ProbeValue -Name '[縮小] ダイアログの横幅も本文幅＋余白まで縮む[px]' -Actual ([double]$collapsed.width) `
+            -Expected ([double]$collapsed.collapsedBodyWidth + $paddingX) -Tolerance 0.5 | Out-Null
         Assert-ProbeTrue -Name '[縮小] 本文は表示上の1行だけ' -Condition ([int]$collapsed.visibleLines -eq 1) `
             -Detail "(表示行数: $($collapsed.visibleLines))" | Out-Null
         Assert-ProbeTrue -Name '[縮小] 続きがあるので末尾が「…」' -Condition ([bool]$collapsed.hasEllipsis) | Out-Null
@@ -463,6 +470,13 @@ return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToS
         $expanded = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f'))
 
         Assert-ProbeTrue -Name '[縮小] 見ると IsGazed になる' -Condition ([bool]$expanded.isGazed) | Out-Null
+        Assert-ProbeValue -Name '[縮小] 見ると元の横幅へ戻る[px]' -Actual ([double]$expanded.width) -Expected ([double]$expanded.expandedWidth) -Tolerance 0.01 | Out-Null
+        Assert-ProbeValue -Name '[縮小] 見ると本文の折り返し幅も元に戻る[px]' -Actual ([double]$expanded.bodyWidth) -Expected ([double]$expanded.expandedBodyWidth) -Tolerance 0.01 | Out-Null
+        # 1行目の文字数は折り返し幅の割合とほぼ同じだけ減る（「…」の置き換えと禁則で数文字ずれるため幅を持たせる）
+        $charRatio = [double]$collapsed.firstLineChars / [math]::Max(1, [double]$expanded.firstLineChars)
+        Assert-ProbeTrue -Name '[縮小] 1行目の文字数がおおむね割合ぶんに減る' `
+            -Condition ([math]::Abs($charRatio - [double]$collapsed.widthRatio) -le 0.15) `
+            -Detail "(縮小 $($collapsed.firstLineChars)文字 / 展開 $($expanded.firstLineChars)文字 = $([math]::Round($charRatio, 2)), 割合 $($collapsed.widthRatio))" | Out-Null
         Assert-ProbeValue -Name '[縮小] 見ると元の高さへ戻る[px]' -Actual ([double]$expanded.height) -Expected ([double]$expanded.expandedHeight) -Tolerance 0.01 | Out-Null
         Assert-ProbeValue -Name '[縮小] 見ると本文の枠も元に戻る[px]' -Actual ([double]$expanded.bodyHeight) -Expected ([double]$expanded.expandedBodyHeight) -Tolerance 0.01 | Out-Null
         Assert-ProbeTrue -Name '[縮小] 見ると全文が表示される' -Condition ([int]$expanded.visibleLines -gt 1 -and -not [bool]$expanded.hasEllipsis) `
@@ -475,6 +489,7 @@ return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToS
         $recollapsed = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f'))
 
         Assert-ProbeValue -Name '[縮小] 視線を外すと再び縮む[px]' -Actual ([double]$recollapsed.height) -Expected ([double]$collapsed.height) -Tolerance 0.5 | Out-Null
+        Assert-ProbeValue -Name '[縮小] 視線を外すと横幅も再び縮む[px]' -Actual ([double]$recollapsed.width) -Expected ([double]$collapsed.width) -Tolerance 0.5 | Out-Null
 
         # 書き換えた判定の設定を元の値へ戻す（再生中の以降の挙動に影響させない）
         $restore = @'
@@ -509,15 +524,16 @@ using App.Common.Data;
 var scope = LifetimeScope.Find<BattleLifetimeScope>();
 scope.Container.Resolve<ITutorialMessageUseCase>().Show(TutorialType.Wave1);
 var view = scope.Container.Resolve<ITutorialMessageView>();
-var height = ((UnityEngine.RectTransform)((UnityEngine.Component)view).transform).sizeDelta.y;
-var expandedHeight = (float)typeof(App.Battle.Views.TutorialMessageView)
-    .GetField("_expandedHeight", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(view);
+var size = ((UnityEngine.RectTransform)((UnityEngine.Component)view).transform).sizeDelta;
+var expandedSize = (UnityEngine.Vector2)typeof(App.Battle.Views.TutorialMessageView)
+    .GetField("_expandedSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(view);
 
-return $"{{\"phase\":\"{view.Phase}\",\"height\":{height},\"expandedHeight\":{expandedHeight}}}";
+return $"{{\"phase\":\"{view.Phase}\",\"width\":{size.x},\"height\":{size.y},\"expandedWidth\":{expandedSize.x},\"expandedHeight\":{expandedSize.y}}}";
 '@
 
     Assert-ProbeTrue -Name '再 Show で視点正面フェーズへ戻る' -Condition ($reshow.phase -eq 'HeadFollow') | Out-Null
     Assert-ProbeValue -Name '[縮小] 再 Show で展開した大きさから始まる[px]' -Actual ([double]$reshow.height) -Expected ([double]$reshow.expandedHeight) -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[縮小] 再 Show で展開した横幅から始まる[px]' -Actual ([double]$reshow.width) -Expected ([double]$reshow.expandedWidth) -Tolerance 0.01 | Out-Null
 
     $hidden = Invoke-UnityJson -Snippet @'
 using System.Reflection;

@@ -14,7 +14,8 @@ namespace App.Battle.Views
     /// 追従先の姿勢は UseCase から <see cref="UpdateAnchor"/> で毎フレーム受け取る。
     ///
     /// 非利き手に追従している間、視線が当たっていなければ表示上の1行目だけに縮める（続きがあれば末尾を「…」にする）。
-    /// 縮小・展開はダイアログの中央を基準に高さを補間する
+    /// 縮小時は本文の折り返し幅も狭めて1行目に入る文字数を減らし、ダイアログの横幅もそれに合わせて縮める。
+    /// 縮小・展開はダイアログの中央を基準に大きさを補間する
     /// </summary>
     public class TutorialMessageView : MonoBehaviour, ITutorialMessageView
     {
@@ -27,7 +28,7 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("UI全体のルート（表示切替）")]
         private GameObject _root;
 
-        [SerializeField, Tooltip("本文テキスト。枠は中央基準で、縮小時は1行目の高さへ縮める")]
+        [SerializeField, Tooltip("本文テキスト。枠は中央基準で、縮小時は幅を狭め、高さを1行目へ縮める")]
         private TextMeshProUGUI _bodyText;
 
         [Header("視点追従")]
@@ -55,24 +56,27 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("縮小・展開にかける時間[s]。0以下なら即座に切り替える")]
         private float _foldDuration = 0.15f;
 
+        [SerializeField, Range(0.1f, 1f), Tooltip("縮小時の本文の折り返し幅の割合（展開時に対して）。1行目に入る文字数もおおむねこの割合になり、ダイアログの横幅も合わせて縮む")]
+        private float _collapsedWidthRatio = 0.5f;
+
         private readonly TutorialMessagePlacement _placement = new();
         private readonly TutorialMessageFold _fold = new();
 
         private RectTransform _canvasRect;
 
-        /// <summary>展開時のダイアログの高さ[px]（プレハブでの大きさ）</summary>
-        private float _expandedHeight;
+        /// <summary>展開時のダイアログの大きさ[px]（プレハブでの大きさ）</summary>
+        private Vector2 _expandedSize;
 
-        /// <summary>展開時の本文の枠の高さ[px]（プレハブでの大きさ）</summary>
-        private float _expandedBodyHeight;
+        /// <summary>展開時の本文の枠の大きさ[px]（プレハブでの大きさ）</summary>
+        private Vector2 _expandedBodySize;
 
-        /// <summary>縮小時の本文の枠の高さ[px]。本文を差し替えるたびに1行目の高さから求め直す</summary>
-        private float _collapsedBodyHeight;
+        /// <summary>縮小時の本文の枠の大きさ[px]。幅は割合から、高さは本文を差し替えるたびに1行目の高さから求め直す</summary>
+        private Vector2 _collapsedBodySize;
 
         /// <summary>プレハブで自動サイズが有効か。本文ごとに展開時の枠で文字サイズを決め、以降は固定する</summary>
         private bool _isAutoSizing;
 
-        /// <summary>本文の枠を1行目の高さにしているか。同じ値の再設定でテキストを組み直さないように覚えておく</summary>
+        /// <summary>本文の枠を縮小時の大きさにしているか。同じ値の再設定でテキストを組み直さないように覚えておく</summary>
         private bool? _isBodyCollapsed;
 
         public TutorialMessagePhase Phase => _placement.Phase;
@@ -87,8 +91,8 @@ namespace App.Battle.Views
         private void Awake()
         {
             _canvasRect = (RectTransform)transform;
-            _expandedHeight = _canvasRect.sizeDelta.y;
-            _expandedBodyHeight = _bodyText.rectTransform.sizeDelta.y;
+            _expandedSize = _canvasRect.sizeDelta;
+            _expandedBodySize = _bodyText.rectTransform.sizeDelta;
             _isAutoSizing = _bodyText.enableAutoSizing;
 
             Hide();
@@ -139,13 +143,13 @@ namespace App.Battle.Views
         }
 
         /// <summary>
-        /// 展開時の枠で文字サイズを決めて固定し、縮小時の本文の高さ（1行目の高さ）を求める。
+        /// 展開時の枠で文字サイズを決めて固定し、縮小時の本文の大きさ（狭めた幅で折り返したときの1行目の高さ）を求める。
         /// 文字サイズを固定するのは、縮小・展開で枠が変わっても自動サイズで文字の大きさが変わらないようにするため
         /// </summary>
         private void MeasureBody()
         {
             // 測るあいだは展開時の枠にする。次の反映で縮小・展開どちらの枠にも必ず設定し直す
-            SetBodyHeight(_expandedBodyHeight);
+            SetBodySize(_expandedBodySize);
             _isBodyCollapsed = null;
 
             _bodyText.enableAutoSizing = _isAutoSizing;
@@ -153,27 +157,31 @@ namespace App.Battle.Views
             var fontSize = _bodyText.fontSize;
             _bodyText.enableAutoSizing = false;
             _bodyText.fontSize = fontSize;
+
+            // 1行目の高さは、縮小時の幅で折り返したときの1行目で測る（行に入る文字で高さが変わりうるため）
+            var collapsedWidth = _expandedBodySize.x * _collapsedWidthRatio;
+            SetBodySize(new Vector2(collapsedWidth, _expandedBodySize.y));
             _bodyText.ForceMeshUpdate(true);
 
             var textInfo = _bodyText.textInfo;
-            if (textInfo.lineCount == 0)
+            var collapsedHeight = 0f;
+            if (textInfo.lineCount > 0)
             {
-                _collapsedBodyHeight = 0f;
-                return;
+                var firstLine = textInfo.lineInfo[0];
+                collapsedHeight = firstLine.ascender - firstLine.descender + CollapsedLineTolerance;
             }
 
-            var firstLine = textInfo.lineInfo[0];
-            _collapsedBodyHeight = firstLine.ascender - firstLine.descender + CollapsedLineTolerance;
+            _collapsedBodySize = new Vector2(collapsedWidth, Mathf.Min(collapsedHeight, _expandedBodySize.y));
+            SetBodySize(_expandedBodySize);
         }
 
         /// <summary>縮小の進み具合をダイアログと本文の大きさへ反映する</summary>
         private void ApplyFold()
         {
-            var bodyPadding = _expandedHeight - _expandedBodyHeight;
-            var collapsedHeight = Mathf.Min(_collapsedBodyHeight + bodyPadding, _expandedHeight);
-            var size = _canvasRect.sizeDelta;
-            size.y = Mathf.Lerp(_expandedHeight, collapsedHeight, _fold.Progress);
-            _canvasRect.sizeDelta = size;
+            // 本文の周りの余白は縮小しても変えない
+            var bodyPadding = _expandedSize - _expandedBodySize;
+            var collapsedSize = Vector2.Min(_collapsedBodySize + bodyPadding, _expandedSize);
+            _canvasRect.sizeDelta = Vector2.Lerp(_expandedSize, collapsedSize, _fold.Progress);
 
             if (_isBodyCollapsed == _fold.IsTextCollapsed)
             {
@@ -181,15 +189,12 @@ namespace App.Battle.Views
             }
 
             _isBodyCollapsed = _fold.IsTextCollapsed;
-            SetBodyHeight(_fold.IsTextCollapsed ? Mathf.Min(_collapsedBodyHeight, _expandedBodyHeight) : _expandedBodyHeight);
+            SetBodySize(_fold.IsTextCollapsed ? _collapsedBodySize : _expandedBodySize);
         }
 
-        private void SetBodyHeight(float height)
+        private void SetBodySize(Vector2 size)
         {
-            var bodyRect = _bodyText.rectTransform;
-            var size = bodyRect.sizeDelta;
-            size.y = height;
-            bodyRect.sizeDelta = size;
+            _bodyText.rectTransform.sizeDelta = size;
         }
 
         private TutorialMessagePlacementSettings BuildSettings()
