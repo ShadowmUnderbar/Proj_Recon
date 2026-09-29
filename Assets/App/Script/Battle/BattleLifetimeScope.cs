@@ -45,6 +45,7 @@ namespace App.Battle
         [SerializeField] private UpgradeDescriptionStyle _upgradeDescriptionStyle;
         [SerializeField] private PlayerBaseParameterConfig _playerBaseParameterConfig;
         [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
+        [SerializeField] private OverclockConfig _overclockConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -53,6 +54,9 @@ namespace App.Battle
             // 登録順序がTick順序に影響するため、依存順に登録
             builder.Register<FreezeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IFreezeDataStore>();
+            // オーバークロック（敵・敵弾の停止）。バフ・スポーン等の時間進行がこの発動状態を見るため先に登録する
+            builder.Register<OverclockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IOverclockDataStore>();
             builder.Register<PlayerStateDataStore>(Lifetime.Singleton)
                 .AsImplementedInterfaces().As<IPlayerStateDataStore>();
             builder.Register<PlayerFocusDataStore>(Lifetime.Singleton)
@@ -155,6 +159,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
             builder.RegisterEntryPoint<FreezeUseCase>();
+            builder.RegisterEntryPoint<OverclockUseCase>();
             builder.RegisterEntryPoint<DodgeCounterAttackUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
@@ -288,6 +293,8 @@ namespace App.Battle
             builder.RegisterInstance(_upgradeDescriptionStyle);
             // ウェーブ開始時のチュートリアル割り当て（TutorialWaveUseCase が利用）
             builder.RegisterInstance(_tutorialWaveConfig);
+            // オーバークロックの発動しきい値（OverclockDataStore が利用）
+            builder.RegisterInstance(_overclockConfig);
 
             #endregion
         }

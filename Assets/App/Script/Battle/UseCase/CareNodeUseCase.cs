@@ -22,6 +22,7 @@ namespace App.Battle.UseCase
         private readonly ICareNodeDataStore _careNodeDataStore;
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
+        private readonly IOverclockDataStore _overclockDataStore;
 
         private float _elapsed;
 
@@ -29,12 +30,14 @@ namespace App.Battle.UseCase
         public CareNodeUseCase(
             ICareNodeDataStore careNodeDataStore,
             IPlayerStateDataStore playerStateDataStore,
-            IWaveManagerDataStore waveManagerDataStore
+            IWaveManagerDataStore waveManagerDataStore,
+            IOverclockDataStore overclockDataStore
         )
         {
             _careNodeDataStore = careNodeDataStore;
             _playerStateDataStore = playerStateDataStore;
             _waveManagerDataStore = waveManagerDataStore;
+            _overclockDataStore = overclockDataStore;
         }
 
         public void ResetRun()
@@ -46,6 +49,12 @@ namespace App.Battle.UseCase
         {
             // ウェーブ間ポーズ中・ゲームオーバー中は進行させない（被弾処理と同基準）
             if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
+            // オーバークロック中は周期効果を止める（経過時間も進めない）
+            if (_overclockDataStore.IsActive.CurrentValue)
             {
                 return;
             }

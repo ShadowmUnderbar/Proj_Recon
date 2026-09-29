@@ -10,6 +10,8 @@ namespace App.Battle.UseCase
     /// <summary>
     /// フリーズの開始・解除に合わせて、敵・弾・即着弾のレイ演出をその場で止める。
     /// プレイヤーの移動・回避・射撃は各UseCaseが入口で <see cref="IFreezeDataStore.IsFreezing"/> を見て止める。
+    /// 敵の停止はウェーブ間ポーズ・フリーズ・オーバークロックのいずれかで掛かるため、その判定もここに一本化する
+    /// （停止要因ごとに別々に SetPause すると、片方の解除でもう片方の停止を解いてしまう）。
     /// </summary>
     public class FreezeUseCase : IInitializable, IDisposable
     {
@@ -18,6 +20,7 @@ namespace App.Battle.UseCase
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IBulletStoreView _bulletStoreView;
         private readonly ITracerFreezeState _tracerFreezeState;
+        private readonly IOverclockDataStore _overclockDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -27,7 +30,8 @@ namespace App.Battle.UseCase
             IWaveManagerDataStore waveManagerDataStore,
             IEnemyPresenter enemyPresenter,
             IBulletStoreView bulletStoreView,
-            ITracerFreezeState tracerFreezeState
+            ITracerFreezeState tracerFreezeState,
+            IOverclockDataStore overclockDataStore
         )
         {
             _freezeDataStore = freezeDataStore;
@@ -35,6 +39,7 @@ namespace App.Battle.UseCase
             _enemyPresenter = enemyPresenter;
             _bulletStoreView = bulletStoreView;
             _tracerFreezeState = tracerFreezeState;
+            _overclockDataStore = overclockDataStore;
         }
 
         public void Initialize()
@@ -42,13 +47,17 @@ namespace App.Battle.UseCase
             _freezeDataStore.IsFreezing
                 .Subscribe(OnFreezeChanged)
                 .AddTo(_disposable);
+
+            _waveManagerDataStore.IsWavePause
+                .CombineLatest(_freezeDataStore.IsFreezing, _overclockDataStore.IsActive,
+                    (isWavePause, isFreezing, isOverclock) => isWavePause || isFreezing || isOverclock)
+                .DistinctUntilChanged()
+                .Subscribe(_enemyPresenter.SetPause)
+                .AddTo(_disposable);
         }
 
         private void OnFreezeChanged(bool isFreezing)
         {
-            // ウェーブ間ポーズと同じ停止機構を使うため、解除時にポーズ中の停止を解いてしまわないよう論理和で渡す
-            _enemyPresenter.SetPause(isFreezing || _waveManagerDataStore.IsWavePause.Value);
-
             _bulletStoreView.SetPause(isFreezing);
 
             // 即着弾のレイ（曳光弾・カウンターのレイ）の保持・収縮も止める

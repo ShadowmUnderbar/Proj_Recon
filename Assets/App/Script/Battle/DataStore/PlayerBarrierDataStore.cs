@@ -22,6 +22,7 @@ namespace App.Battle.DataStore
         private const float RegenRatePerSecond = 0.2f;
 
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculator;
+        private readonly IOverclockDataStore _overclockDataStore;
 
         private readonly ReactiveProperty<float> _currentBarrier = new(0f);
         private readonly ReactiveProperty<float> _maxBarrier = new(0f);
@@ -34,10 +35,12 @@ namespace App.Battle.DataStore
 
         [Inject]
         public PlayerBarrierDataStore(
-            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculator
+            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculator,
+            IOverclockDataStore overclockDataStore
         )
         {
             _upgradeEffectSimpleCalculator = upgradeEffectSimpleCalculator;
+            _overclockDataStore = overclockDataStore;
         }
 
         public bool TryAbsorb(float damage)
@@ -70,6 +73,12 @@ namespace App.Battle.DataStore
         {
             // 未取得（最大値0）または既に満タンなら回復不要
             if (_maxBarrier.Value <= 0f || _currentBarrier.Value >= _maxBarrier.Value)
+            {
+                return;
+            }
+
+            // オーバークロック中は回復待ちも回復も進めない（時間経過で効果を出す処理は止める）
+            if (_overclockDataStore.IsActive.CurrentValue)
             {
                 return;
             }

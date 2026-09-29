@@ -37,19 +37,51 @@ namespace App.Battle.Views.Enemy.Bullet
         private static readonly IComparer<RaycastHit> _hitDistanceComparer =
             Comparer<RaycastHit>.Create((a, b) => a.distance.CompareTo(b.distance));
 
+        // 弾の寿命（秒）。停止中は減らさない
+        private const float LifetimeSeconds = 5.0f;
+
+        // 軌跡を残している間のトレイルの寿命（秒）。オーバークロックは数秒なので、実質消えない長さにする
+        private const float HeldTrailTimeSeconds = 3600f;
+
         // 即着弾の曳光弾エフェクト生成用ファクトリ（プレイヤー弾のみDIで注入される。敵弾ではnull）
         private ISimpleObjectFactory<BulletTracerView> _tracerFactory;
 
+        // レイ停止の共有状態。オーバークロック中に生まれた弾へ停止を伝えるために見る（敵弾ではnull）
+        private ITracerFreezeState _tracerFreezeState;
+
         [Inject]
-        public void Construct(ISimpleObjectFactory<BulletTracerView> tracerFactory)
+        public void Construct(
+            ISimpleObjectFactory<BulletTracerView> tracerFactory,
+            ITracerFreezeState tracerFreezeState
+        )
         {
             _tracerFactory = tracerFactory;
+            _tracerFreezeState = tracerFreezeState;
         }
 
         protected bool CanHit { get; private set; } = true;
 
-        /// <summary>フリーズでその場に止まっているか（移動を止める。当たり判定は生かしたまま）</summary>
-        protected bool IsPause { get; private set; }
+        // フリーズで止めているか（自弾・敵弾とも）
+        private bool _isFreezePause;
+
+        // オーバークロックで止めているか（敵弾のみ。自弾は飛び続ける）
+        private bool _isOverclockPause;
+
+        // オーバークロック中か。自弾・敵弾ともに寿命とトレイルを止め、軌跡を消さない
+        private bool _isOverclockHold;
+
+        // 停止していないときのトレイルの寿命（着弾後の縮退もこの値に反映する）
+        private float _trailTime;
+
+        private float _remainingLifetime = LifetimeSeconds;
+
+        /// <summary>その場に止まっているか（移動を止める。当たり判定は生かしたまま）</summary>
+        protected bool IsPause => _isFreezePause || _isOverclockPause;
+
+        // 寿命・着弾後の待機を進めないか
+        private bool IsTimeHold => IsPause || _isOverclockHold;
+
+        private bool IsPlayerBullet => _attackerId == PlayerConstants.PlayerId;
         protected BulletData BulletData { get; private set; }
         private int _hitCount = 0;
         private int _focusTargetId = 0;
@@ -65,7 +97,14 @@ namespace App.Battle.Views.Enemy.Bullet
             transform.SetPositionAndRotation(pose.position, pose.rotation);
             BulletData = bulletData;
             transform.localScale = Vector3.one * BulletData.Size;
-            Destroy(gameObject, 5.0f);
+            _remainingLifetime = LifetimeSeconds;
+
+            // オーバークロック中に撃たれた自弾も、発動中は軌跡を残す（解除はBulletStoreViewが一括で行う）
+            if (_tracerFreezeState is { IsOverclock: true })
+            {
+                SetOverclock(true);
+            }
+
             if (bulletData.Speed <= 0)
             {
                 InstantHitCheck();
@@ -77,6 +116,8 @@ namespace App.Battle.Views.Enemy.Bullet
 
         protected virtual void Awake()
         {
+            _trailTime = _trailRenderer != null ? _trailRenderer.time : 0f;
+
             _hitCollider.OnTriggerEnterAsObservable()
                 .Where(_ => CanHit)
                 .Subscribe(HitProcess)
@@ -85,14 +126,46 @@ namespace App.Battle.Views.Enemy.Bullet
 
         protected virtual void Update()
         {
+            // 止まっている間は寿命を減らさない（止まった弾が停止中に消えないように）
+            if (IsTimeHold)
+            {
+                return;
+            }
+
+            _remainingLifetime -= Time.deltaTime;
+            if (_remainingLifetime > 0f)
+            {
+                return;
+            }
+
+            Destroy(gameObject);
         }
 
         /// <summary>
-        /// その場で止める／再開する（フリーズ用）。移動だけを止め、当たり判定と寿命はそのまま。
+        /// その場で止める／再開する（フリーズ用）。移動と寿命を止め、当たり判定は生かしたまま。
         /// </summary>
         public void SetPause(bool isPause)
         {
-            IsPause = isPause;
+            _isFreezePause = isPause;
+        }
+
+        /// <summary>
+        /// オーバークロックの開始・終了を反映する。
+        /// 敵弾はその場で止め、自弾は飛ばし続ける。どちらも寿命とトレイルを止めて軌跡を残す。
+        /// </summary>
+        public void SetOverclock(bool isActive)
+        {
+            _isOverclockHold = isActive;
+            _isOverclockPause = isActive && !IsPlayerBullet;
+
+            if (_trailRenderer == null)
+            {
+                return;
+            }
+
+            // 止まっている弾のトレイルも時間で点が消えていくため、発動中は寿命を実質無限にする。
+            // 終了時に元へ戻すと、古い点はその場で消える
+            _trailRenderer.time = isActive ? HeldTrailTimeSeconds : _trailTime;
         }
 
         private void InstantHitCheck()
@@ -365,10 +438,25 @@ namespace App.Battle.Views.Enemy.Bullet
 
             CanHit = false;
 
-            _trailRenderer.time *= 0.5f;
-            // 待機中にgameObjectが破棄された場合（Spawnの5秒自動Destroyやプレイモード終了等）に
+            _trailTime *= 0.5f;
+            if (!_isOverclockHold)
+            {
+                _trailRenderer.time = _trailTime;
+            }
+
+            // トレイルが縮みきるまで待ってから消す。オーバークロック中は待機を進めず、軌跡を残したままにする。
+            // 待機中にgameObjectが破棄された場合（寿命切れやプレイモード終了等）に
             // 破棄済みオブジェクトへアクセスしないよう、destroyCancellationTokenで待機をキャンセルする
-            await UniTask.WaitForSeconds(_trailRenderer.time, cancellationToken: destroyCancellationToken);
+            var elapsed = 0f;
+            while (elapsed < _trailTime)
+            {
+                await UniTask.Yield(PlayerLoopTiming.Update, destroyCancellationToken);
+                if (!IsTimeHold)
+                {
+                    elapsed += Time.deltaTime;
+                }
+            }
+
             Destroy(gameObject);
         }
     }

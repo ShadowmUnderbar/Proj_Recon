@@ -45,6 +45,12 @@ namespace App.Battle.Interface
         /// <summary>VR向けUI操作用のハンドレイ（両手）をまとめて切り替える</summary>
         void SetUiRayEnable(bool enable);
 
+        /// <summary>
+        /// 視点（頭と両手の親）を今の位置に留める／本体の位置へ戻す（オーバークロック用）。
+        /// 留めている間も首振りと手の動きはそのまま効き、本体の移動にだけ追従しなくなる。
+        /// </summary>
+        void SetCameraPinned(bool isPinned);
+
         void Shot(HandType handType, BulletData bulletData, int focusTargetId);
 
         /// <summary>指定座標へ向けて弾を発射する（パリィのように狙いと無関係な方向へ撃つ用）</summary>

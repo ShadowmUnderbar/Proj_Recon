@@ -13,12 +13,11 @@ namespace App.Battle.UseCase
     {
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
-        private readonly IEnemyPresenter _enemyPresenter;
         private readonly IEnemyRandomSpawnCycleDataStore _enemyRandomSpawnCycleDataStore;
         private readonly IBulletStoreView _bulletStoreView;
         private readonly IPointParticlePresenter _pointParticlePresenter;
         private readonly WaveConfig _waveConfig;
-        private readonly IFreezeDataStore _freezeDataStore;
+        private readonly IOverclockDataStore _overclockDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -26,31 +25,24 @@ namespace App.Battle.UseCase
         public WaveManagerUseCase(
             IWaveManagerDataStore waveManagerDataStore,
             IEnemyDataStore enemyDataStore,
-            IEnemyPresenter enemyPresenter,
             IEnemyRandomSpawnCycleDataStore enemyRandomSpawnCycleDataStore,
             IBulletStoreView bulletStoreView,
             IPointParticlePresenter pointParticlePresenter,
             WaveConfig waveConfig,
-            IFreezeDataStore freezeDataStore
+            IOverclockDataStore overclockDataStore
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
             _enemyDataStore = enemyDataStore;
-            _enemyPresenter = enemyPresenter;
             _enemyRandomSpawnCycleDataStore = enemyRandomSpawnCycleDataStore;
             _bulletStoreView = bulletStoreView;
             _pointParticlePresenter = pointParticlePresenter;
             _waveConfig = waveConfig;
-            _freezeDataStore = freezeDataStore;
+            _overclockDataStore = overclockDataStore;
         }
 
         public void Initialize()
         {
-            // ポーズ状態を敵側へ伝搬
-            _waveManagerDataStore.IsWavePause
-                .Subscribe(OnUpdateWavePause)
-                .AddTo(_disposable);
-
             // 敵撃破でキル数加算 → 進行条件評価
             _enemyDataStore.OnEnemyDead
                 .Subscribe(_ => OnEnemyDead())
@@ -61,6 +53,12 @@ namespace App.Battle.UseCase
         {
             // ポーズ中は経過時間を進めない（ウェーブ遷移中・将来のウェーブ選択UI中の停止）
             if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
+            // オーバークロック中は世界の時間が止まっているため、ウェーブの経過時間も進めない
+            if (_overclockDataStore.IsActive.CurrentValue)
             {
                 return;
             }
@@ -116,12 +114,6 @@ namespace App.Battle.UseCase
             _pointParticlePresenter.AllRemove();
             // ウェーブ番号インクリメント＋進行通知
             _waveManagerDataStore.AdvanceWave();
-        }
-
-        private void OnUpdateWavePause(bool isPause)
-        {
-            // 敵の停止はフリーズと共有の機構なので、フリーズ中の解除で動き出さないよう論理和で渡す
-            _enemyPresenter.SetPause(isPause || _freezeDataStore.IsFreezing.CurrentValue);
         }
 
         public void Dispose()

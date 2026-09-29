@@ -32,6 +32,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerStateDataStore _playerStateDataStore;
 
         private readonly IFreezeDataStore _freezeDataStore;
+        private readonly IOverclockDataStore _overclockDataStore;
 
         // レイ演出の高さなどの調整値
         private readonly DodgeCounterAttackConfig _config;
@@ -55,7 +56,8 @@ namespace App.Battle.UseCase
             IPlayerControlPresenter playerControlPresenter,
             IPlayerStateDataStore playerStateDataStore,
             DodgeCounterAttackConfig config,
-            IFreezeDataStore freezeDataStore
+            IFreezeDataStore freezeDataStore,
+            IOverclockDataStore overclockDataStore
         )
         {
             _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
@@ -67,6 +69,7 @@ namespace App.Battle.UseCase
             _playerStateDataStore = playerStateDataStore;
             _config = config;
             _freezeDataStore = freezeDataStore;
+            _overclockDataStore = overclockDataStore;
         }
 
         public void Initialize()
@@ -115,6 +118,12 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
+            // オーバークロック中は敵が止まっているため、スタンの残り時間も進めない
+            if (_overclockDataStore.IsActive.CurrentValue)
+            {
+                return;
+            }
+
             // 接触スタンの残り時間を進め、切れた敵から解除する
             var expiredEnemyIds = _dodgeCounterAttackDataStore.UpdateStunTimers(Time.deltaTime);
 

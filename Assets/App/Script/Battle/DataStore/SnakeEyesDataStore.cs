@@ -14,6 +14,7 @@ namespace App.Battle.DataStore
     public class SnakeEyesDataStore : ISnakeEyesDataStore, IRunResettable
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
+        private readonly IOverclockDataStore _overclockDataStore;
 
         // 減速中の敵ID → 効果解除までの残り時間（注視中は毎フレーム猶予時間まで戻される）
         private readonly Dictionary<int, float> _slowRemainingTime = new();
@@ -29,11 +30,16 @@ namespace App.Battle.DataStore
 
         [Inject]
         public SnakeEyesDataStore(
-            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore
+            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
+            IOverclockDataStore overclockDataStore
         )
         {
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
+            _overclockDataStore = overclockDataStore;
         }
+
+        // オーバークロック中は効果時間を減らさない（付与は通常どおり受け付ける）
+        private float DeltaTime => _overclockDataStore.IsActive.CurrentValue ? 0f : Time.deltaTime;
 
         public bool TryGetGazeRadius(out float radius)
         {
@@ -82,7 +88,7 @@ namespace App.Battle.DataStore
 
             foreach (var enemyId in _releasedEnemyIds)
             {
-                var remainingTime = _slowRemainingTime[enemyId] - Time.deltaTime;
+                var remainingTime = _slowRemainingTime[enemyId] - DeltaTime;
                 if (remainingTime > 0f)
                 {
                     _slowRemainingTime[enemyId] = remainingTime;
