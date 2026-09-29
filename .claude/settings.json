@@ -1,4 +1,10 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(uloop control-play-mode:*)",
+      "Bash(uloop simulate-mouse-ui:*)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {
