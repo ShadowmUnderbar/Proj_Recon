@@ -4,6 +4,7 @@
 # 目視では「出た・動いた」しか分からないため、
 #   1. 配置計算（TutorialMessagePlacement）の純粋ロジック（フェーズ切替・左右ミラー・スナップ・向きのフォールバック）
 #   2. 実際の表示（視点正面への追従 → 非利き手の脇への移動 → 常に頭を向く → 差し替え → 非表示）
+#   3. 縮小表示（非利き手追従中に見ていなければ表示上の1行目＋「…」へ縮み、見れば元の大きさへ戻る）
 # を Transform と設定値の実測で確認する。
 #
 # HMD の無いエディタではカメラもコントローラも動かないため、「追従している」ことは
@@ -200,6 +201,47 @@ return $"{{\"moveError\":{moveError},\"turnGap\":{turnGap},\"turnRotGap\":{turnR
     Assert-ProbeValue -Name '[計算] 時間が経てば位置が追いつく[m]' -Actual ([double]$lag.settledGap) -Expected 0 -Tolerance 0.001 | Out-Null
     Assert-ProbeValue -Name '[計算] 時間が経てば向きが追いつく[deg]' -Actual ([double]$lag.settledRotGap) -Expected 0 -Tolerance 0.1 | Out-Null
 
+    # --- 1c. 縮小・展開の状態（TutorialMessageFold）: 縮小は本文を先に、展開は背景が広がりきってから本文を戻す ---
+    $fold = Invoke-UnityJson -Snippet @'
+using App.Battle.Views;
+
+var fold = new TutorialMessageFold();
+var initialProgress = fold.Progress;
+var initialCollapsed = fold.IsTextCollapsed;
+
+// 縮小を求めた最初のフレームで本文は1行目になり、背景は時間をかけて縮む
+fold.Update(0.05f, true, 0.15f);
+var collapseStartProgress = fold.Progress;
+var collapseStartText = fold.IsTextCollapsed;
+fold.Update(0.2f, true, 0.15f);
+var collapsedProgress = fold.Progress;
+
+// 展開を求めても、背景が広がりきるまで本文は1行目のまま
+fold.Update(0.05f, false, 0.15f);
+var expandMidProgress = fold.Progress;
+var expandMidText = fold.IsTextCollapsed;
+fold.Update(0.2f, false, 0.15f);
+var expandedProgress = fold.Progress;
+var expandedText = fold.IsTextCollapsed;
+
+// 時間 0 なら即座に切り替わる
+fold.Update(0f, true, 0f);
+var instantProgress = fold.Progress;
+
+fold.Reset();
+return $"{{\"initialProgress\":{initialProgress},\"initialCollapsed\":{initialCollapsed.ToString().ToLower()},\"collapseStartProgress\":{collapseStartProgress},\"collapseStartText\":{collapseStartText.ToString().ToLower()},\"collapsedProgress\":{collapsedProgress},\"expandMidProgress\":{expandMidProgress},\"expandMidText\":{expandMidText.ToString().ToLower()},\"expandedProgress\":{expandedProgress},\"expandedText\":{expandedText.ToString().ToLower()},\"instantProgress\":{instantProgress},\"resetProgress\":{fold.Progress},\"resetText\":{fold.IsTextCollapsed.ToString().ToLower()}}}";
+'@
+
+    Assert-ProbeTrue -Name '[縮小] 初期状態は展開' -Condition ([double]$fold.initialProgress -eq 0 -and -not [bool]$fold.initialCollapsed) | Out-Null
+    Assert-ProbeTrue -Name '[縮小] 縮小の最初のフレームで本文は1行目になる' -Condition ([bool]$fold.collapseStartText) | Out-Null
+    Assert-ProbeValue -Name '[縮小] 背景は時間をかけて縮む（0.05s/0.15s）' -Actual ([double]$fold.collapseStartProgress) -Expected (1.0 / 3.0) -Tolerance 0.001 | Out-Null
+    Assert-ProbeValue -Name '[縮小] 時間が経てば縮みきる' -Actual ([double]$fold.collapsedProgress) -Expected 1 | Out-Null
+    Assert-ProbeTrue -Name '[縮小] 展開の途中は本文が1行目のまま' -Condition ([bool]$fold.expandMidText) `
+        -Detail "(進み具合: $([math]::Round([double]$fold.expandMidProgress, 3)))" | Out-Null
+    Assert-ProbeTrue -Name '[縮小] 広がりきったら本文を全文に戻す' -Condition ([double]$fold.expandedProgress -eq 0 -and -not [bool]$fold.expandedText) | Out-Null
+    Assert-ProbeValue -Name '[縮小] 時間0なら即座に切り替わる' -Actual ([double]$fold.instantProgress) -Expected 1 | Out-Null
+    Assert-ProbeTrue -Name '[縮小] Reset で展開しきった状態へ戻る' -Condition ([double]$fold.resetProgress -eq 0 -and -not [bool]$fold.resetText) | Out-Null
+
     # --- 2. 初期状態と設定値。ウェーブ1開始時に TutorialWaveConfig の割り当てで自動表示されているので、一旦消して素の状態にする ---
     $setup = Invoke-UnityJson -Snippet @'
 using System.Reflection;
@@ -347,6 +389,114 @@ return $"{{\"phase\":\"{view.Phase}\",\"hand\":\"{hand}\",\"posError\":{posError
         Assert-ProbeTrue -Name '非VRでは規定時間後も視点正面のまま' -Condition ($handFollow.phase -eq 'HeadFollow') | Out-Null
     }
 
+    # --- 4b. 縮小表示: 非利き手追従中に見ていなければ1行目＋「…」へ縮み、見れば元の大きさへ戻る ---
+    # エディタでは HMD もコントローラも動かず、手元のダイアログが頭のすぐ近くに来て判定球の中に入ってしまう。
+    # そのため「見ていない」「見た」は判定の半径・余白角度を一時的に書き換えて作り、最後にプレハブの値へ戻す
+    $foldSnippet = @'
+using System.Reflection;
+using UnityEngine;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Interface;
+using App.Battle.Views;
+using App.Common.Views;
+using TMPro;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var view = scope.Container.Resolve<ITutorialMessageView>() as TutorialMessageView;
+var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+var body = (TextMeshProUGUI)typeof(TutorialMessageView).GetField("_bodyText", flags).GetValue(view);
+var gaze = (GazeTargetView)typeof(TutorialMessageView).GetField("_gazeTarget", flags).GetValue(view);
+var expandedHeight = (float)typeof(TutorialMessageView).GetField("_expandedHeight", flags).GetValue(view);
+var expandedBodyHeight = (float)typeof(TutorialMessageView).GetField("_expandedBodyHeight", flags).GetValue(view);
+var collapsedBodyHeight = (float)typeof(TutorialMessageView).GetField("_collapsedBodyHeight", flags).GetValue(view);
+var originalRadius = (float)typeof(GazeTargetView).GetField("_radius", flags).GetValue(gaze);
+var originalEnter = (float)typeof(GazeTargetView).GetField("_enterMarginAngle", flags).GetValue(gaze);
+var originalExit = (float)typeof(GazeTargetView).GetField("_exitMarginAngle", flags).GetValue(gaze);
+
+// 負の値は「変更しない」。半径0・余白0なら中心を正確に射抜かない限り当たらない
+var radius = __RADIUS__;
+var margin = __MARGIN__;
+if (radius >= 0f) typeof(GazeTargetView).GetField("_radius", flags).SetValue(gaze, radius);
+if (margin >= 0f)
+{
+    typeof(GazeTargetView).GetField("_enterMarginAngle", flags).SetValue(gaze, margin);
+    typeof(GazeTargetView).GetField("_exitMarginAngle", flags).SetValue(gaze, margin);
+}
+
+var info = body.textInfo;
+var visibleLines = 0;
+for (var i = 0; i < info.lineCount; i++) if (info.lineInfo[i].visibleCharacterCount > 0) visibleLines++;
+var hasEllipsis = false;
+for (var i = 0; i < info.characterCount; i++) if (info.characterInfo[i].isVisible && info.characterInfo[i].character == '…') hasEllipsis = true;
+
+var canvasRect = (RectTransform)view.transform;
+var gazeCenterOffset = Vector3.Distance(gaze.transform.position, view.transform.position);
+
+return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToString().ToLower()},\"height\":{canvasRect.sizeDelta.y},\"bodyHeight\":{body.rectTransform.sizeDelta.y},\"expandedHeight\":{expandedHeight},\"expandedBodyHeight\":{expandedBodyHeight},\"collapsedBodyHeight\":{collapsedBodyHeight},\"fontSize\":{body.fontSize},\"autoSizing\":{body.enableAutoSizing.ToString().ToLower()},\"visibleLines\":{visibleLines},\"hasEllipsis\":{hasEllipsis.ToString().ToLower()},\"gazeCenterOffset\":{gazeCenterOffset},\"originalRadius\":{originalRadius},\"originalEnter\":{originalEnter},\"originalExit\":{originalExit}}}";
+'@
+
+    if ([bool]$setup.isVr) {
+        # 見ていない状態にする → 外れ遅延0.5s＋縮小0.15sを待つ
+        $original = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '0f').Replace('__MARGIN__', '0f'))
+        Start-Sleep -Milliseconds 2000
+        $collapsed = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f'))
+        $padding = [double]$collapsed.expandedHeight - [double]$collapsed.expandedBodyHeight
+
+        Assert-ProbeTrue -Name '[縮小] 手元のダイアログを見ていない' -Condition (-not [bool]$collapsed.isGazed) `
+            -Detail "(phase: $($collapsed.phase))" | Out-Null
+        Assert-ProbeValue -Name '[縮小] 見ていなければ高さが1行目＋余白まで縮む[px]' -Actual ([double]$collapsed.height) `
+            -Expected ([double]$collapsed.collapsedBodyHeight + $padding) -Tolerance 0.5 | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 縮小時の高さは展開時より小さい' -Condition ([double]$collapsed.height -lt [double]$collapsed.expandedHeight) `
+            -Detail "($([math]::Round([double]$collapsed.height, 1))px / 展開 $($collapsed.expandedHeight)px)" | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 本文は表示上の1行だけ' -Condition ([int]$collapsed.visibleLines -eq 1) `
+            -Detail "(表示行数: $($collapsed.visibleLines))" | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 続きがあるので末尾が「…」' -Condition ([bool]$collapsed.hasEllipsis) | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 文字サイズは固定（自動サイズ無効）' -Condition (-not [bool]$collapsed.autoSizing) `
+            -Detail "(文字サイズ: $($collapsed.fontSize))" | Out-Null
+        Assert-ProbeValue -Name '[縮小] 判定の中心はダイアログの中心[m]' -Actual ([double]$collapsed.gazeCenterOffset) -Expected 0 -Tolerance 0.001 | Out-Null
+
+        # 判定半径を広げて「見た」状態にする（頭が判定球の中に入る）。入り遅延0.15s＋展開0.15sを待つ
+        Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '100f').Replace('__MARGIN__', '-1f')) | Out-Null
+        Start-Sleep -Milliseconds 1500
+        $expanded = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f'))
+
+        Assert-ProbeTrue -Name '[縮小] 見ると IsGazed になる' -Condition ([bool]$expanded.isGazed) | Out-Null
+        Assert-ProbeValue -Name '[縮小] 見ると元の高さへ戻る[px]' -Actual ([double]$expanded.height) -Expected ([double]$expanded.expandedHeight) -Tolerance 0.01 | Out-Null
+        Assert-ProbeValue -Name '[縮小] 見ると本文の枠も元に戻る[px]' -Actual ([double]$expanded.bodyHeight) -Expected ([double]$expanded.expandedBodyHeight) -Tolerance 0.01 | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 見ると全文が表示される' -Condition ([int]$expanded.visibleLines -gt 1 -and -not [bool]$expanded.hasEllipsis) `
+            -Detail "(表示行数: $($expanded.visibleLines))" | Out-Null
+        Assert-ProbeValue -Name '[縮小] 縮小・展開で文字サイズが変わらない' -Actual ([double]$expanded.fontSize) -Expected ([double]$collapsed.fontSize) -Tolerance 0.001 | Out-Null
+
+        # 再び見ていない状態にする → 外れ遅延0.5s＋縮小0.15s後に再び縮む
+        Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '0f').Replace('__MARGIN__', '-1f')) | Out-Null
+        Start-Sleep -Milliseconds 2000
+        $recollapsed = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f'))
+
+        Assert-ProbeValue -Name '[縮小] 視線を外すと再び縮む[px]' -Actual ([double]$recollapsed.height) -Expected ([double]$collapsed.height) -Tolerance 0.5 | Out-Null
+
+        # 書き換えた判定の設定を元の値へ戻す（再生中の以降の挙動に影響させない）
+        $restore = @'
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Interface;
+using App.Battle.Views;
+using App.Common.Views;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var view = scope.Container.Resolve<ITutorialMessageView>() as TutorialMessageView;
+var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+var gaze = (GazeTargetView)typeof(TutorialMessageView).GetField("_gazeTarget", flags).GetValue(view);
+typeof(GazeTargetView).GetField("_radius", flags).SetValue(gaze, __R__f);
+typeof(GazeTargetView).GetField("_enterMarginAngle", flags).SetValue(gaze, __E__f);
+typeof(GazeTargetView).GetField("_exitMarginAngle", flags).SetValue(gaze, __X__f);
+return "restored";
+'@
+        Invoke-UnityCode -Snippet ($restore.Replace('__R__', $original.originalRadius).Replace('__E__', $original.originalEnter).Replace('__X__', $original.originalExit)) | Out-Null
+    }
+
     # --- 5. 差し替え → 視点正面からやり直す。非表示 → ルートが消える ---
     $reshow = Invoke-UnityJson -Snippet @'
 using VContainer;
@@ -359,11 +509,15 @@ using App.Common.Data;
 var scope = LifetimeScope.Find<BattleLifetimeScope>();
 scope.Container.Resolve<ITutorialMessageUseCase>().Show(TutorialType.Wave1);
 var view = scope.Container.Resolve<ITutorialMessageView>();
+var height = ((UnityEngine.RectTransform)((UnityEngine.Component)view).transform).sizeDelta.y;
+var expandedHeight = (float)typeof(App.Battle.Views.TutorialMessageView)
+    .GetField("_expandedHeight", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(view);
 
-return $"{{\"phase\":\"{view.Phase}\"}}";
+return $"{{\"phase\":\"{view.Phase}\",\"height\":{height},\"expandedHeight\":{expandedHeight}}}";
 '@
 
     Assert-ProbeTrue -Name '再 Show で視点正面フェーズへ戻る' -Condition ($reshow.phase -eq 'HeadFollow') | Out-Null
+    Assert-ProbeValue -Name '[縮小] 再 Show で展開した大きさから始まる[px]' -Actual ([double]$reshow.height) -Expected ([double]$reshow.expandedHeight) -Tolerance 0.01 | Out-Null
 
     $hidden = Invoke-UnityJson -Snippet @'
 using System.Reflection;
