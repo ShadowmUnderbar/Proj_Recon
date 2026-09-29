@@ -11,11 +11,11 @@ namespace App.Battle.UseCase
     /// <summary>
     /// 視界中央（カメラ正面）に捉えている敵を毎フレーム判定し、注視系アップグレードの効果を反映する。
     /// スネークアイズ（減速）・メデューサ（スタン）・ガン飛ばし（被ダメージ増加）が対象。
-    /// 未所持のアップグレードでは判定自体を行わない（無駄なレイキャストを避ける）。
+    /// 視線から敵ごとの判定球までの距離は EnemyStoreView が数体ずつ順番に更新しており、
+    /// ここではその距離をアップグレードごとの半径で絞り込むだけにする（物理クエリは使わない）。
     /// </summary>
     public class PlayerGazeUseCase : ITickable, IInitializable, IDisposable
     {
-        private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
@@ -23,11 +23,8 @@ namespace App.Battle.UseCase
         private readonly IMedusaDataStore _medusaDataStore;
         private readonly IMeanMugDataStore _meanMugDataStore;
 
-        // 注視判定のレイを飛ばす最大距離
-        private const float GazeMaxDistance = 50f;
-
-        // カメラが取得できない場合に渡す空の注視結果
-        private readonly List<int> _emptyEnemyIds = new();
+        // アップグレードごとの半径で絞り込んだ注視中の敵（呼び出しごとに上書きする）
+        private readonly List<int> _gazedEnemyIds = new();
 
         // メデューサのスタン対象（ランク条件を満たした注視中の敵）
         private readonly List<int> _stunTargetEnemyIds = new();
@@ -36,7 +33,6 @@ namespace App.Battle.UseCase
 
         [Inject]
         public PlayerGazeUseCase(
-            IPlayerControlPresenter playerControlPresenter,
             IEnemyPresenter enemyPresenter,
             IEnemyDataStore enemyDataStore,
             IWaveManagerDataStore waveManagerDataStore,
@@ -45,7 +41,6 @@ namespace App.Battle.UseCase
             IMeanMugDataStore meanMugDataStore
         )
         {
-            _playerControlPresenter = playerControlPresenter;
             _enemyPresenter = enemyPresenter;
             _enemyDataStore = enemyDataStore;
             _waveManagerDataStore = waveManagerDataStore;
@@ -150,22 +145,29 @@ namespace App.Battle.UseCase
         }
 
         /// <summary>
-        /// 視界中央から半径 radius のレイを飛ばし、捉えている敵のIDを返す。
+        /// 視線からの距離が radius 以内の敵のIDを返す。
         /// 戻り値は呼び出しごとに上書きされる内部リストのため、次の呼び出しまでに使い切ること。
         /// </summary>
         private IReadOnlyList<int> GetGazedEnemies(float radius)
         {
+            _gazedEnemyIds.Clear();
+
             if (radius <= 0f)
             {
-                return _emptyEnemyIds;
+                return _gazedEnemyIds;
             }
 
-            if (!_playerControlPresenter.TryGetGazePose(out var gazePose))
+            var distances = _enemyPresenter.GetGazeEnemyDistances();
+            for (var i = 0; i < distances.Count; i++)
             {
-                return _emptyEnemyIds;
+                var (enemyId, distanceFromRay) = distances[i];
+                if (distanceFromRay <= radius)
+                {
+                    _gazedEnemyIds.Add(enemyId);
+                }
             }
 
-            return _enemyPresenter.GetGazeEnemies(gazePose.position, gazePose.forward, radius, GazeMaxDistance);
+            return _gazedEnemyIds;
         }
 
         private void OnEnemyRemoved(int enemyId)

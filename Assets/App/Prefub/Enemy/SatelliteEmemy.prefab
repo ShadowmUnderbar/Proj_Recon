@@ -161,6 +161,7 @@ GameObject:
   - component: {fileID: 9011892144538251905}
   - component: {fileID: 3444613555652714715}
   - component: {fileID: 2189775807663696963}
+  - component: {fileID: 1651117300759039854}
   m_Layer: 6
   m_Name: SatelliteEmemy
   m_TagString: Enemy
@@ -176,7 +177,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6969719736142006962}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -263,6 +264,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: 4258731bf09aea84092817b7736fb5c0, type: 2}
   _renderers: []
+--- !u!114 &1651117300759039854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6969719736142006962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0296bdc3c355b3d4a9bb324ca885d780, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _centerHeight: 0.5
+  _radius: 1.01
 --- !u!1 &8554459682166942809
 GameObject:
   m_ObjectHideFlags: 0

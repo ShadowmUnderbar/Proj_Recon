@@ -205,7 +205,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 
 | クラス | 責務 |
 |---|---|
-| `EnemyStoreView` | 敵の生成（Addressables）・破棄・検索（レイキャスト／注視／直線）。`IHitBoxStoreView` へヒットボックス登録 |
+| `EnemyStoreView` | 敵の生成（Addressables）・破棄・検索（レイキャスト／直線）。`IHitBoxStoreView` へヒットボックス登録。注視判定は物理を使わず、敵プレハブの `EnemyGazeBoundsView`（判定球の高さ・半径、ギズモ表示）と視線の距離を `EnemyGazeTracker`（plain C#）が LateUpdate で1フレームに決まった数ずつ順番に更新する。`BattleLifetimeScope` でプレハブから生成（`RegisterComponentInNewPrefab`） |
 | `EnemyView` | 敵1体。Pose の公開・被弾フィードバック（`EnemyHitFeedbackView`）・ヒットボックス群 |
 | `Interface/Views/EnemyAI/EnemyAIBase` | NavMeshAgent ベースの AI 基底。`Idle / Battle / Dead` ステート、ポーズ・スタン・速度倍率・吹き飛ばし |
 | `Enemy/AI/Fire, Orbit, Rush, Satellite, Scout, Shield` | 6 種の AI。`Fire` 派生が弾を撃つ |
@@ -248,7 +248,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerShotUseCase` | トリガー → `PlayerBulletParameterDataStore` で弾データを作り `Shot`。フォーム（Normal/Merge/Waltz）と両手の可否 | PlayerShotType, PlayerBulletParameter, CoreSkillUnlock |
 | `PlayerDodgeUseCase` | 回避入力 → 直線移動。通過した敵を接触として記録 | PlayerDodgeParameter, DodgeCounterAttack |
 | `DodgeCounterAttackUseCase` | 回避終了時の跳ね返し攻撃（扇形＋直線検索 → レイ演出 → フリーズ → ダメージ）。`DodgeCounterAttackConfig` | DodgeCounterAttack, Enemy, Freeze |
-| `PlayerGazeUseCase` | 視界中央の敵を判定し注視系（スネークアイズ／メデューサ／ガン飛ばし）を反映 | SnakeEyes, Medusa, MeanMug |
+| `PlayerGazeUseCase` | `EnemyStoreView` が更新した「視線から判定球までの距離」をアップグレードごとの半径で絞り込み、注視系（スネークアイズ／メデューサ／ガン飛ばし）を反映 | SnakeEyes, Medusa, MeanMug |
 | `PlayerHitUseCase` | 被弾 → `PlayerStateDataStore.TakeDamage`（回避中は無効） | PlayerState, DodgeParameter |
 | `PlayerLifeGaugeUseCase` | HP・バリアをゲージへ、位置を追従 | PlayerState, PlayerBarrier |
 | `EnemySpawnUseCase` / `EnemyRandomSpawnUseCase` | `EnemyDataStore` の生成要求を View へ／周期スポーン（`EnemyRandomSpawnCycleDataStore`）と出現位置 | Enemy, RandomSpawnCycle |

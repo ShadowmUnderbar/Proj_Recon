@@ -340,6 +340,7 @@ GameObject:
   - component: {fileID: -4494285551208364217}
   - component: {fileID: 3973204808331028076}
   - component: {fileID: 5411752036585851957}
+  - component: {fileID: 442126726803524237}
   m_Layer: 6
   m_Name: ScoutEmemy
   m_TagString: Enemy
@@ -355,7 +356,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6969719736142006962}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -443,3 +444,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: 4258731bf09aea84092817b7736fb5c0, type: 2}
   _renderers: []
+--- !u!114 &442126726803524237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6969719736142006962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0296bdc3c355b3d4a9bb324ca885d780, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _centerHeight: 1.5
+  _radius: 1.23

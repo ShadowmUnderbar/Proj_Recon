@@ -24,9 +24,15 @@ namespace App.Battle.Views
         private readonly RaycastHit[] _hits = new RaycastHit[10];
         private readonly List<int> _rayCastEnemyIds = new();
 
-        // 注視判定用（毎フレーム呼ばれるためバッファを使い回す）
-        private readonly RaycastHit[] _gazeHits = new RaycastHit[20];
-        private readonly List<int> _gazeEnemyIds = new();
+        [Header("注視判定（スネークアイズ・メデューサ・ガン飛ばし）")]
+        [SerializeField, Min(1), Tooltip("1フレームに視線との距離を更新する敵の数。敵が多くて反応が遅く感じたら増やす")]
+        private int _gazeEnemiesPerFrame = 3;
+
+        [SerializeField, Min(0f), Tooltip("視線に捉えたとみなす最大距離[m]")]
+        private float _gazeMaxDistance = 50f;
+
+        // 敵ごとの判定球と視線の距離を順番に更新する
+        private readonly EnemyGazeTracker _gazeTracker = new();
 
         // 直線判定用（注視と同時に呼ばれてもバッファが混ざらないよう別に持つ）
         private readonly RaycastHit[] _lineHits = new RaycastHit[32];
@@ -58,8 +64,8 @@ namespace App.Battle.Views
                 return;
             }
 
-            var view = Instantiate(enemyObj.Result, enemyData.Pose.position, enemyData.Pose.rotation)
-                .GetComponent<IEnemyView>();
+            var enemyObject = Instantiate(enemyObj.Result, enemyData.Pose.position, enemyData.Pose.rotation);
+            var view = enemyObject.GetComponent<IEnemyView>();
 
             view.Init(enemyData.Id, enemyData, resistanceDirectionType);
             view.Pose
@@ -70,6 +76,15 @@ namespace App.Battle.Views
             view.SetPause(_isPause);
 
             _enemies.Add(enemyData.Id, view);
+
+            if (enemyObject.TryGetComponent<EnemyGazeBoundsView>(out var gazeBounds))
+            {
+                _gazeTracker.Add(enemyData.Id, gazeBounds);
+            }
+            else
+            {
+                Debug.LogWarning($"[{nameof(EnemyStoreView)}] {enemyObject.name}: {nameof(EnemyGazeBoundsView)} が無いため注視系アップグレードの対象になりません", enemyObject);
+            }
 
             foreach (var hitBox in view.HitBoxes)
             {
@@ -85,6 +100,7 @@ namespace App.Battle.Views
             }
 
             _hitBoxStoreView.RemoveHitBoxView(enemyId);
+            _gazeTracker.Remove(enemyId);
 
             enemyView.Destroy();
             _enemies.Remove(enemyId);
@@ -108,6 +124,7 @@ namespace App.Battle.Views
             }
 
             _enemies.Clear();
+            _gazeTracker.Clear();
         }
 
         public IReadOnlyList<int> GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
@@ -136,9 +153,20 @@ namespace App.Battle.Views
             return _rayCastEnemyIds;
         }
 
-        public IReadOnlyList<int> GetGazeEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
+        public IReadOnlyList<(int enemyId, float distanceFromRay)> GetGazeEnemyDistances()
         {
-            return SphereCastEnemyIds(origin, direction, radius, distance, _gazeHits, _gazeEnemyIds);
+            return _gazeTracker.Distances;
+        }
+
+        private void LateUpdate()
+        {
+            // 頭の姿勢はトラッキング更新後の LateUpdate で取る。取れないフレームは前回の距離を据え置く
+            if (_playerView == null || !_playerView.TryGetGazePose(out var gazePose))
+            {
+                return;
+            }
+
+            _gazeTracker.EvaluateNext(gazePose, _gazeEnemiesPerFrame, _gazeMaxDistance);
         }
 
         public IReadOnlyList<int> GetLineHitEnemies(Vector3 origin, Vector3 direction, float radius, float distance)
@@ -240,10 +268,17 @@ namespace App.Battle.Views
         {
             foreach (var enemy in _enemies.Values)
             {
+                // シーン破棄では敵が先に破棄されていることがある（破棄済みに Destroy を呼ぶと例外になる）
+                if (enemy is Object enemyObject && enemyObject == null)
+                {
+                    continue;
+                }
+
                 enemy.Destroy();
             }
 
             _enemies.Clear();
+            _gazeTracker.Clear();
             _onEnemyPoseUpdate.Dispose();
         }
     }

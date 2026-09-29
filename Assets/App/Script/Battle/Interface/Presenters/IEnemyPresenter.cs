@@ -21,10 +21,11 @@ namespace App.Battle.Interface
         IReadOnlyList<int> GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance);
 
         /// <summary>
-        /// 視界中央から半径 radius のレイを飛ばし、捉えた敵のIDを返す。
-        /// 戻り値は呼び出しごとに再利用する内部リスト（次の呼び出しで上書きされる）。
+        /// 登録中の全敵について、視線（頭の正面へ最大距離までの線分）から敵ごとの判定球までの距離を返す（球が掛かっていれば 0）。
+        /// 半径 r の注視判定は「距離 ≤ r」で絞り込む。距離は LateUpdate で数体ずつ順番に更新するため、数フレーム前の値を含む。
+        /// まだ判定していない敵は無限大。戻り値は内部リストのため、保持せずその場で使い切る。
         /// </summary>
-        IReadOnlyList<int> GetGazeEnemies(Vector3 origin, Vector3 direction, float radius, float distance);
+        IReadOnlyList<(int enemyId, float distanceFromRay)> GetGazeEnemyDistances();
 
         /// <summary>
         /// 指定半径の球を direction 方向へ distance だけ飛ばし、当たった敵のIdを返す（回避時跳ね返しの直線判定）。
