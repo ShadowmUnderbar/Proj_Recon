@@ -86,10 +86,11 @@ Tools/Sheets/package-lock.json
 .cursor/mcp.json
 .mcp.json
 
+# Blenderファイル（.blend）はリポジトリのどこでも追跡しない。原本はGit外で保管する
+*.blend
+*.blend1
 # Art（Blender作業ディレクトリ）
-# 工程フォルダの中間世代・自動バックアップ・参考画像は追跡しない
-Art/**/*.blend
-Art/**/*.blend1
+# 参考画像などは追跡しない
 Art/**/*.jpg
 Art/**/__pycache__/
 # 確認用のプレビュー画像と実行ログ（生成スクリプトから作り直せるため追跡しない）
@@ -99,7 +100,4 @@ Art/**/*.log
 Art/**/Reference/
 # 書き出し結果（FBX・テクスチャ）。Blenderの原本やスクリプトから再生成でき、Unityへ取り込んだ後はAssets側で管理する
 Art/**/Export/
-# 最新の原本のみ Art/Latest/ に置いてLFSで追跡する
-!Art/Latest/*.blend
-!Art/Latest/**/*.blend
 .codex/config.toml
