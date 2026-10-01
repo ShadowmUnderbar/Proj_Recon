@@ -10,6 +10,15 @@ namespace App.Battle.Interface
     public interface IEnemyPresenter
     {
         Observable<(int id, Pose pose)> OnEnemyPoseUpdate { get; }
+
+        /// <summary>ボスグループの個体の状態変化（出現時に初期状態も流す）</summary>
+        Observable<(int id, BossMemberStatus status)> OnBossMemberStatusChanged { get; }
+
+        /// <summary>ボスグループの個体に行動を命令する（ボスAIでない敵・不在なら何もしない）</summary>
+        void CommandBossAction(int enemyId, int actionIndex);
+
+        /// <summary>ボスグループの個体をその場で待機させる／解除する</summary>
+        void SetBossHold(int enemyId, bool isHold);
         void Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType);
         void UnSpawn(int enemyId);
         void RemoveAllEnemies();

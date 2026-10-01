@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface;
+using App.Battle.Interface.EnemyAI;
 using App.Common.Data;
 using Cysharp.Threading.Tasks;
 using R3;
@@ -21,6 +22,11 @@ namespace App.Battle.Views
 
         private readonly Subject<(int id, Pose pose)> _onEnemyPoseUpdate = new();
         public Observable<(int id, Pose pose)> OnEnemyPoseUpdate => _onEnemyPoseUpdate;
+
+        // ボスグループの個体（台本の命令を受けるAIを持つ敵だけ）
+        private readonly Dictionary<int, IBossMemberView> _bossMembers = new();
+        private readonly Subject<(int id, BossMemberStatus status)> _onBossMemberStatusChanged = new();
+        public Observable<(int id, BossMemberStatus status)> OnBossMemberStatusChanged => _onBossMemberStatusChanged;
 
         private readonly RaycastHit[] _hits = new RaycastHit[10];
         private readonly List<int> _rayCastEnemyIds = new();
@@ -67,6 +73,8 @@ namespace App.Battle.Views
 
             if (enemyObj.Status != AsyncOperationStatus.Succeeded)
             {
+                // 敵データだけ残り倒せない敵になる（ボスウェーブでは進行不能になる）ため、気付けるようにする
+                Debug.LogError($"[{nameof(EnemyStoreView)}] 敵プレハブの読み込みに失敗しました: {prefabPath}（敵Id: {enemyData.Id}）");
                 return;
             }
 
@@ -82,6 +90,15 @@ namespace App.Battle.Views
             view.SetPause(_isPause);
 
             _enemies.Add(enemyData.Id, view);
+
+            if (enemyObject.TryGetComponent<IBossMemberView>(out var bossMember))
+            {
+                var enemyId = enemyData.Id;
+                _bossMembers.Add(enemyId, bossMember);
+                bossMember.Status
+                    .Subscribe(status => _onBossMemberStatusChanged.OnNext((enemyId, status)))
+                    .AddTo(enemyObject);
+            }
 
             if (enemyObject.TryGetComponent<EnemyGazeBoundsView>(out var gazeBounds))
             {
@@ -108,6 +125,7 @@ namespace App.Battle.Views
             _hitBoxStoreView.RemoveHitBoxView(enemyId);
             _gazeTracker.Remove(enemyId);
             _gazeTouchedEnemyIds.Remove(enemyId);
+            _bossMembers.Remove(enemyId);
 
             enemyView.Destroy();
             _enemies.Remove(enemyId);
@@ -133,6 +151,7 @@ namespace App.Battle.Views
             _enemies.Clear();
             _gazeTracker.Clear();
             _gazeTouchedEnemyIds.Clear();
+            _bossMembers.Clear();
         }
 
         public IReadOnlyList<int> GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
@@ -301,6 +320,26 @@ namespace App.Battle.Views
             }
         }
 
+        public void CommandBossAction(int enemyId, int actionIndex)
+        {
+            if (!_bossMembers.TryGetValue(enemyId, out var bossMember))
+            {
+                return;
+            }
+
+            bossMember.CommandAction(actionIndex);
+        }
+
+        public void SetBossHold(int enemyId, bool isHold)
+        {
+            if (!_bossMembers.TryGetValue(enemyId, out var bossMember))
+            {
+                return;
+            }
+
+            bossMember.SetHold(isHold);
+        }
+
         public void SetPause(bool isPause)
         {
             _isPause = isPause;
@@ -327,7 +366,9 @@ namespace App.Battle.Views
             _enemies.Clear();
             _gazeTracker.Clear();
             _gazeTouchedEnemyIds.Clear();
+            _bossMembers.Clear();
             _onEnemyPoseUpdate.Dispose();
+            _onBossMemberStatusChanged.Dispose();
         }
     }
 }
