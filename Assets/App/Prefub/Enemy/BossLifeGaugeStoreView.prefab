@@ -45,4 +45,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gaugePrefab: {fileID: 5981154650532844316, guid: 1ac4b34c535afc145b905b8e64821484, type: 3}
-  _gaugeScale: 1.5

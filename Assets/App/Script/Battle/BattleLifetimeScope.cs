@@ -47,6 +47,7 @@ namespace App.Battle
         [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
         [SerializeField] private BossWaveConfig _bossWaveConfig;
         [SerializeField] private BossLifeGaugeStoreView _bossLifeGaugeStoreView;
+        [SerializeField] private BossLifeGaugeConfig _bossLifeGaugeConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -310,6 +311,8 @@ namespace App.Battle
             builder.RegisterInstance(_tutorialWaveConfig);
             // ボスウェーブの番号・ボスグループ・出現位置（BossWaveDataStore / BossWaveUseCase が利用）
             builder.RegisterInstance(_bossWaveConfig);
+            // ボスの体力ゲージの色・大きさ（BossLifeGaugeStoreView が利用）
+            builder.RegisterInstance(_bossLifeGaugeConfig);
 
             #endregion
         }
