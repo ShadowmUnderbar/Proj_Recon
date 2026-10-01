@@ -9,6 +9,7 @@
 #   - 追跡役: 弾を撃たず、自分の側でプレイヤーとの距離を保って追う
 #   - 弾幕が終わると配置し直し、もう片方が弾幕役になる
 #   - 体力: どちらに当てても共有の体力が減り、0になると2体同時にいなくなる。撃破（ポイント・撃破数）は当てた1体ぶんだけ
+#   - 体力ゲージ: ボスごとに足元へ出て位置についてくる。割合は共有体力÷最大体力で2体とも同じ。撃破で消える
 # プレイヤーは記録中に一定速度で動かし、追跡・軸に沿った移動を確かめる。
 #
 
@@ -130,9 +131,18 @@ return $"{{\"boss\":{boss},\"nonBoss\":{nonBoss},\"hpA\":{hpA},\"hpB\":{hpB}}}";
     Assert-ProbeValue -Name '通常の敵はいない' -Actual $start.nonBoss -Expected 0 | Out-Null
     Assert-ProbeTrue -Name '2体の体力が共有されている（同じ値）' -Condition ($start.hpA -eq $start.hpB -and $start.hpA -gt 0) -Detail "A=$($start.hpA) B=$($start.hpB)" | Out-Null
 
+    $gauge = Get-AxisPairGauges
+    Assert-ProbeValue -Name '体力ゲージがボスの数だけ出ている' -Actual $gauge.count -Expected 2 | Out-Null
+    Assert-ProbeTrue -Name '体力ゲージは満タン（割合1）' -Condition ($gauge.a.exists -and $gauge.b.exists -and $gauge.a.ratio -eq 1 -and $gauge.b.ratio -eq 1) -Detail "A=$($gauge.a.ratio) B=$($gauge.b.ratio)" | Out-Null
+
     # 弾幕2回ぶん（交代を含む）＋余裕
     $segment = $config.windup + $config.active + $config.recovery
     Start-Sleep -Seconds ([Math]::Ceiling($segment * 2 + 2))
+
+    # 移動中（プレイヤーを動かしている間）にゲージが足元へついてきているか
+    $gauge = Get-AxisPairGauges
+    Assert-ProbeValue -Name '体力ゲージがボスの足元についてくる（A、XZのずれ m）' -Actual $gauge.a.offset -Expected 0 -Tolerance 0.05 | Out-Null
+    Assert-ProbeValue -Name '体力ゲージがボスの足元についてくる（B、XZのずれ m）' -Actual $gauge.b.offset -Expected 0 -Tolerance 0.05 | Out-Null
 
     $logText = (Invoke-BossSnippet -Body @'
 var drive = (float[])AppDomain.CurrentDomain.GetData("bossProbe.drive");
@@ -172,6 +182,11 @@ return $"{{\"before\":{before},\"afterA0\":{afterA0},\"afterA1\":{afterA1},\"aft
     Assert-ProbeTrue -Name 'A に当てると A・B の体力が同じだけ減る' -Condition ($hp.afterA0 -lt $hp.before -and $hp.afterA0 -eq $hp.afterA1) -Detail "前 $($hp.before) → A $($hp.afterA0) / B $($hp.afterA1)" | Out-Null
     Assert-ProbeTrue -Name 'B に当てても A・B の体力が同じだけ減る' -Condition ($hp.afterB1 -lt $hp.afterA1 -and $hp.afterB0 -eq $hp.afterB1) -Detail "A $($hp.afterB0) / B $($hp.afterB1)" | Out-Null
 
+    $gauge = Get-AxisPairGauges
+    Assert-ProbeValue -Name '体力ゲージ A の割合が共有体力÷最大体力' -Actual $gauge.a.ratio -Expected $gauge.a.expected -Tolerance 0.0001 | Out-Null
+    Assert-ProbeValue -Name '体力ゲージ B の割合が共有体力÷最大体力' -Actual $gauge.b.ratio -Expected $gauge.b.expected -Tolerance 0.0001 | Out-Null
+    Assert-ProbeTrue -Name '体力ゲージは2体とも同じだけ減っている' -Condition ($gauge.a.ratio -eq $gauge.b.ratio -and $gauge.a.ratio -lt 1) -Detail "A=$($gauge.a.ratio) B=$($gauge.b.ratio)" | Out-Null
+
     # --- 同時撃破: 当てた方だけが撃破扱い、もう片方は撃破扱いにせず消える ---
     $kill = Invoke-BossSnippet -Body @'
 var ids = GetRunner().MemberIds.ToArray();
@@ -187,8 +202,40 @@ return $"{{\"dead\":\"{string.Join("|", dead.Where(ids.Contains).Select(id => Ar
     Assert-ProbeValue -Name '撃破直後に生き残っているボス' -Actual $kill.aliveAfter -Expected 0 | Out-Null
 
     Start-Sleep -Milliseconds 1500
+    $gauge = Invoke-BossSnippet -Body @'
+var store = UnityEngine.Object.FindObjectOfType<App.Battle.Views.BossLifeGaugeStoreView>();
+var gauges = (System.Collections.IDictionary)typeof(App.Battle.Views.BossLifeGaugeStoreView).GetField("_gauges", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(store);
+return $"{{\"count\":{gauges.Count},\"children\":{store.transform.childCount}}}";
+'@
+    Assert-ProbeValue -Name '撃破後に体力ゲージが消える（管理数）' -Actual $gauge.count -Expected 0 | Out-Null
+    Assert-ProbeValue -Name '撃破後に体力ゲージが消える（オブジェクト数）' -Actual $gauge.children -Expected 0 | Out-Null
     $state = Get-WaveState
     Assert-ProbeTrue -Name '二人組を倒すと次のウェーブへ進む' -Condition ($state.currentWave -eq ($bossWaveNumber + 1) -and $state.isWavePause) -Detail "wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
+}
+
+# ボスの体力ゲージ（BossLifeGaugeStoreView）の状態: 個数、メンバーごとのゲージと足元のずれ（XZ、m）、目標の割合
+$Global:AxisPairGaugeSnippet = @'
+var store = UnityEngine.Object.FindObjectOfType<App.Battle.Views.BossLifeGaugeStoreView>();
+var gauges = (System.Collections.IDictionary)typeof(App.Battle.Views.BossLifeGaugeStoreView).GetField("_gauges", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(store);
+var targetField = typeof(App.Battle.Views.PlayerLifeGaugeView).GetField("_targetHealth", BindingFlags.NonPublic | BindingFlags.Instance);
+var runner = GetRunner();
+string Gauge(int slot)
+{
+    if (runner == null) return "{\"exists\":false}";
+    var id = runner.MemberIds[slot];
+    if (!gauges.Contains(id)) return "{\"exists\":false}";
+    var gauge = (App.Battle.Views.PlayerLifeGaugeView)gauges[id];
+    var boss = GetBoss(slot);
+    var offset = boss == null ? -1f : Vector2.Distance(new Vector2(gauge.transform.position.x, gauge.transform.position.z), new Vector2(boss.transform.position.x, boss.transform.position.z));
+    var enemy = enemies.Enemies.FirstOrDefault(e => e.Id == id);
+    var expected = enemy == null || enemy.MaxHp <= 0f ? -1f : Mathf.Clamp01(enemy.Hp / enemy.MaxHp);
+    return $"{{\"exists\":true,\"offset\":{offset},\"ratio\":{(float)targetField.GetValue(gauge)},\"expected\":{expected}}}";
+}
+return $"{{\"count\":{gauges.Count},\"a\":{Gauge(0)},\"b\":{Gauge(1)}}}";
+'@
+
+function Get-AxisPairGauges {
+    return Invoke-BossSnippet -Body $Global:AxisPairGaugeSnippet
 }
 
 function Get-AxisValue {
