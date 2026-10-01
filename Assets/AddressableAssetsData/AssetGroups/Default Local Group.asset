@@ -27,6 +27,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d711dfa9b7f2dd4a8b3946150489752
+    m_Address: Assets/App/Prefub/Enemy/BossAxisBarrageEnemy.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9d4fa166246106449b74ece8adb3fc43
     m_Address: Assets/App/Prefub/Enemy/SatelliteEmemy.prefab
     m_ReadOnly: 0
