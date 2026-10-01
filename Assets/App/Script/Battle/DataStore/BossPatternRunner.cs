@@ -14,6 +14,12 @@ namespace App.Battle.DataStore
     {
         private readonly IReadOnlyList<BossPatternStep> _steps;
 
+        // 配置の振り分けに使う乱数（検証で結果を固定できるよう外から渡す）
+        private readonly System.Random _random;
+
+        // 配置を振り分けるときの作業用（生存している対象のメンバー番号）
+        private readonly List<int> _formationSlots = new();
+
         // メンバー番号（スロット）ごとの状態
         private readonly int[] _memberIds;
         private readonly BossMemberStatus[] _statuses;
@@ -34,9 +40,11 @@ namespace App.Battle.DataStore
         /// <summary>現在のステップ番号（検証・デバッグ表示用）</summary>
         public int StepIndex => _stepIndex;
 
-        public BossPatternRunner(IReadOnlyList<int> memberIds, IReadOnlyList<BossPatternStep> steps)
+        public BossPatternRunner(IReadOnlyList<int> memberIds, IReadOnlyList<BossPatternStep> steps,
+            System.Random random)
         {
             _steps = steps;
+            _random = random;
             _memberIds = new int[memberIds.Count];
             for (var i = 0; i < memberIds.Count; i++)
             {
@@ -133,6 +141,16 @@ namespace App.Battle.DataStore
                 case BossPatternStepType.Act:
                     return ProcessAct(step, output);
 
+                case BossPatternStepType.CrossFormation:
+                    // 出現（プレハブの読み込み）が済んでいない個体には配置を届けられないため待つ
+                    if (!AreTargetsSpawned(step))
+                    {
+                        return StepResult.Blocked;
+                    }
+
+                    // 配置し直した直後は、移動が反映されてから次のステップへ進む
+                    return AssignCrossFormation(step, output) ? StepResult.CompletedAndYield : StepResult.Completed;
+
                 default:
                     Debug.LogError($"[{nameof(BossPatternRunner)}] 未対応のステップ種別です: {step.Type}");
                     return StepResult.Completed;
@@ -192,6 +210,40 @@ namespace App.Battle.DataStore
             return StepResult.Blocked;
         }
 
+        /// <summary>
+        /// 生存している対象を並べ替え、縦（上下）・横（左右）の順に交互に割り当てる。正負の側はそれぞれランダム。
+        /// 割り当てた個体がいれば true
+        /// </summary>
+        private bool AssignCrossFormation(BossPatternStep step, List<BossDirectorCommand> output)
+        {
+            _formationSlots.Clear();
+            foreach (var slot in step.MemberSlots)
+            {
+                if (IsAliveSlot(slot) && !_formationSlots.Contains(slot))
+                {
+                    _formationSlots.Add(slot);
+                }
+            }
+
+            // どの個体が縦になるかを毎回変える（Fisher-Yates）
+            for (var i = _formationSlots.Count - 1; i > 0; i--)
+            {
+                var j = _random.Next(i + 1);
+                (_formationSlots[i], _formationSlots[j]) = (_formationSlots[j], _formationSlots[i]);
+            }
+
+            for (var i = 0; i < _formationSlots.Count; i++)
+            {
+                var isPositive = _random.Next(2) == 0;
+                var formation = i % 2 == 0
+                    ? (isPositive ? BossFormationSlot.Up : BossFormationSlot.Down)
+                    : (isPositive ? BossFormationSlot.Right : BossFormationSlot.Left);
+                output.Add(BossDirectorCommand.Formation(_memberIds[_formationSlots[i]], formation));
+            }
+
+            return _formationSlots.Count > 0;
+        }
+
         private void AdvanceStep()
         {
             _stepIndex = (_stepIndex + 1) % _steps.Count;
@@ -219,6 +271,20 @@ namespace App.Battle.DataStore
             foreach (var slot in step.MemberSlots)
             {
                 if (IsAliveSlot(slot) && !_statuses[slot].IsActionable)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>生存している対象が全員出現済みか（行動中・スタン中でもよい）</summary>
+        private bool AreTargetsSpawned(BossPatternStep step)
+        {
+            foreach (var slot in step.MemberSlots)
+            {
+                if (IsAliveSlot(slot) && !_statuses[slot].IsSpawned)
                 {
                     return false;
                 }

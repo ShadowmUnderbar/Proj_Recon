@@ -30,6 +30,13 @@ namespace App.Battle.Interface.DataStore
         bool RemoveEnemyData(int enemyId);
         void RemoveAllEnemyData();
         void Damage(HitData hitData);
+
+        /// <summary>
+        /// 指定の敵どうしで体力を共有させる（複数個体のボス）。共有体力は各敵の現在の体力の合計。
+        /// 誰に当てても共有体力が減り、0になると当てた敵は通常どおり撃破（OnEnemyDead）、
+        /// 残りは撃破扱いにせず消す（OnEnemyRemoved。ポイント・撃破数は1体ぶん）
+        /// </summary>
+        void LinkSharedHealth(IReadOnlyList<int> enemyIds);
         void UpdateEnemyPose(int id, Pose pose);
     }
 }

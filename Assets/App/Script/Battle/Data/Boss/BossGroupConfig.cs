@@ -30,7 +30,12 @@ namespace App.Battle.Data
         [SerializeField, Tooltip("行動台本。末尾まで進んだら先頭から繰り返す")]
         private BossPatternStep[] _pattern = Array.Empty<BossPatternStep>();
 
+        [SerializeField, Tooltip("メンバーで体力を共有するか。共有体力は各メンバーの体力（ウェーブ強化後）の合計で、" +
+                                 "誰に当てても減り、0になると全員同時に撃破される（ポイント・撃破数は最後に当てた1体ぶん）")]
+        private bool _sharedHealth;
+
         public IReadOnlyList<Member> Members => _members;
         public IReadOnlyList<BossPatternStep> Pattern => _pattern;
+        public bool SharedHealth => _sharedHealth;
     }
 }

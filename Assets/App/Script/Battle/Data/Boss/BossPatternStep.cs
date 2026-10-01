@@ -14,7 +14,13 @@ namespace App.Battle.Data
         WaitActionable,
 
         /// <summary>指定秒数待つ（フリーズ・ウェーブ間ポーズ中は進まない）</summary>
-        Wait
+        Wait,
+
+        /// <summary>
+        /// 対象をプレイヤーの縦方向（上下）と横方向（左右）に交互に振り分けて配置し直す。
+        /// どの個体がどちらになるか・正負のどちら側かはランダム。同じ軸に偏らない（2体なら必ず縦と横の組）
+        /// </summary>
+        CrossFormation
     }
 
     /// <summary>

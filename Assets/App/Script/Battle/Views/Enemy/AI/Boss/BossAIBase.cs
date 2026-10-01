@@ -9,7 +9,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
     /// ボスグループの台本から命令を受けて動くボスAIの基底。
     /// 自分では攻撃を抽選せず、命令された行動を 予備動作 → 攻撃 → 硬直 の順に進める。
     /// 各段階の秒数は EnemyMasterData の WindupTime / ActiveTime / RecoveryTime。
-    /// 派生クラスは <see cref="OnActionActive"/>（攻撃の中身）と <see cref="BattleMove"/>（移動）を実装する。
+    /// 派生クラスは <see cref="BattleMove"/>（移動）と、攻撃の中身（<see cref="OnActionActive"/> か、持続する攻撃なら <see cref="OnActionActiveUpdate"/>）を実装する。
     /// </summary>
     public abstract class BossAIBase : EnemyAIBase, IBossMemberView
     {
@@ -21,6 +21,9 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         private bool _isInitialized;
         private bool _isHold;
+
+        // 瞬間移動先をNavMesh上へ寄せるときの探索半径（m）。配置先が障害物に掛かっても近くへ出せるよう吹き飛ばしより広く取る
+        private const float TeleportSampleDistance = 6f;
 
         public ReadOnlyReactiveProperty<BossMemberStatus> Status => _status;
 
@@ -63,6 +66,36 @@ namespace App.Battle.Views.Enemy.AI.Boss
             ApplyMovementBlock();
         }
 
+        /// <summary>台本で指定された、プレイヤーに対してつく位置</summary>
+        protected BossFormationSlot FormationSlot { get; private set; } = BossFormationSlot.None;
+
+        public void SetFormation(BossFormationSlot slot)
+        {
+            FormationSlot = slot;
+            OnFormationAssigned(slot);
+        }
+
+        /// <summary>配置の指定を受けたとき（既定では何もしない。位置へつく処理は派生クラスが行う）</summary>
+        protected virtual void OnFormationAssigned(BossFormationSlot slot)
+        {
+        }
+
+        /// <summary>
+        /// 指定座標へ瞬間移動する（配置のつき直し）。吹き飛ばしの WarpTo と違い、途中の壁で止めない。
+        /// 指定座標が NavMesh 外なら近くの NavMesh 上へ寄せ、見つからなければ移動しない
+        /// </summary>
+        protected bool TeleportTo(Vector3 position)
+        {
+            if (Agent == null || !UnityEngine.AI.NavMesh.SamplePosition(position, out var hit, TeleportSampleDistance, UnityEngine.AI.NavMesh.AllAreas))
+            {
+                Debug.LogWarning($"[{nameof(BossAIBase)}] {name}: 瞬間移動先 {position} の近くに NavMesh が無いため移動しませんでした", this);
+                return false;
+            }
+
+            Agent.Warp(hit.position);
+            return true;
+        }
+
         public override void SetStun(bool isStun)
         {
             base.SetStun(isStun);
@@ -94,7 +127,14 @@ namespace App.Battle.Views.Enemy.AI.Boss
             }
 
             // スネークアイズの減速は行動の進行にも掛ける
-            _actionPhase.Tick(Time.deltaTime * SpeedMultiplier);
+            var deltaTime = Time.deltaTime * SpeedMultiplier;
+            _actionPhase.Tick(deltaTime);
+
+            // 持続のある攻撃（弾幕など）は攻撃の段階の間、毎フレーム処理する
+            if (ActionPhase == BossActionPhase.Active)
+            {
+                OnActionActiveUpdate(_actionPhase.ActionIndex, deltaTime);
+            }
         }
 
         protected override void BattleState()
@@ -122,8 +162,15 @@ namespace App.Battle.Views.Enemy.AI.Boss
         {
         }
 
-        /// <summary>攻撃の開始時。ここで弾を撃つ・判定を出す</summary>
-        protected abstract void OnActionActive(int actionIndex);
+        /// <summary>攻撃の開始時。ここで弾を撃つ・判定を出す（持続する攻撃は OnActionActiveUpdate を使う）</summary>
+        protected virtual void OnActionActive(int actionIndex)
+        {
+        }
+
+        /// <summary>攻撃の段階の間、毎フレーム呼ばれる（停止・スタン中は呼ばれない）。deltaTime は速度倍率を掛けた値</summary>
+        protected virtual void OnActionActiveUpdate(int actionIndex, float deltaTime)
+        {
+        }
 
         /// <summary>攻撃後の硬直の開始時</summary>
         protected virtual void OnActionRecovery(int actionIndex)

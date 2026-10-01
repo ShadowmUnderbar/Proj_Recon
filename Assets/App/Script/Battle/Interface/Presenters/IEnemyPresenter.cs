@@ -19,6 +19,9 @@ namespace App.Battle.Interface
 
         /// <summary>ボスグループの個体をその場で待機させる／解除する</summary>
         void SetBossHold(int enemyId, bool isHold);
+
+        /// <summary>ボスグループの個体にプレイヤーに対してつく位置を指定する</summary>
+        void SetBossFormation(int enemyId, BossFormationSlot slot);
         void Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType);
         void UnSpawn(int enemyId);
         void RemoveAllEnemies();

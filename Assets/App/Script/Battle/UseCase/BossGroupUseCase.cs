@@ -88,6 +88,9 @@ namespace App.Battle.UseCase
                 case BossDirectorCommandType.Release:
                     _enemyPresenter.SetBossHold(command.EnemyId, false);
                     break;
+                case BossDirectorCommandType.Formation:
+                    _enemyPresenter.SetBossFormation(command.EnemyId, command.Slot);
+                    break;
                 default:
                     Debug.LogError($"[{nameof(BossGroupUseCase)}] 未対応の命令です: {command}");
                     break;
