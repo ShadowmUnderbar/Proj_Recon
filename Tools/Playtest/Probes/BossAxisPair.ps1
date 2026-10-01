@@ -9,7 +9,7 @@
 #   - 追跡役: 弾を撃たず、自分の側でプレイヤーとの距離を保って追う
 #   - 弾幕が終わると配置し直し、もう片方が弾幕役になる
 #   - 体力: どちらに当てても共有の体力が減り、0になると2体同時にいなくなる。撃破（ポイント・撃破数）は当てた1体ぶんだけ
-#   - 体力ゲージ: ボスごとに足元へ出て位置についてくる。割合は共有体力÷最大体力で2体とも同じ。撃破で消える
+#   - 体力ゲージ: ボスごとに足元へ出て位置についてくる。色は BossLifeGaugeConfig（プレイヤーのゲージは変えない）。割合は共有体力÷最大体力で2体とも同じ。撃破で消える
 # プレイヤーは記録中に一定速度で動かし、追跡・軸に沿った移動を確かめる。
 #
 
@@ -133,6 +133,31 @@ return $"{{\"boss\":{boss},\"nonBoss\":{nonBoss},\"hpA\":{hpA},\"hpB\":{hpB}}}";
 
     $gauge = Get-AxisPairGauges
     Assert-ProbeValue -Name '体力ゲージがボスの数だけ出ている' -Actual $gauge.count -Expected 2 | Out-Null
+    # 色: ボスのゲージは BossLifeGaugeConfig の色で上書きされ、プレイヤーのゲージはマテリアルの色のまま
+    $color = Invoke-BossSnippet -Body @'
+var config = scope.Container.Resolve<BossLifeGaugeConfig>();
+var store = UnityEngine.Object.FindObjectOfType<App.Battle.Views.BossLifeGaugeStoreView>();
+var block = new MaterialPropertyBlock();
+var healthId = Shader.PropertyToID("_HealthColor");
+var lowId = Shader.PropertyToID("_LowHealthColor");
+var bossOk = 0; var bossCount = 0;
+foreach (var gauge in store.GetComponentsInChildren<App.Battle.Views.PlayerLifeGaugeView>())
+{
+    var renderer = gauge.GetComponentInChildren<Renderer>();
+    renderer.GetPropertyBlock(block);
+    bossCount++;
+    if (block.GetColor(healthId) == config.HealthColor && block.GetColor(lowId) == config.LowHealthColor) bossOk++;
+}
+var playerGauge = UnityEngine.Object.FindObjectsOfType<App.Battle.Views.PlayerLifeGaugeView>().First(g => g.transform.parent != store.transform);
+var playerRenderer = playerGauge.GetComponentInChildren<Renderer>();
+playerRenderer.GetPropertyBlock(block);
+var playerOverridden = block.HasColor(healthId);
+var playerColor = playerRenderer.sharedMaterial.GetColor(healthId);
+return $"{{\"bossCount\":{bossCount},\"bossOk\":{bossOk},\"playerOverridden\":{playerOverridden.ToString().ToLower()},\"playerColor\":\"{playerColor}\",\"bossColor\":\"{config.HealthColor}\"}}";
+'@
+    Assert-ProbeTrue -Name 'ボスのゲージは設定（BossLifeGaugeConfig）の色' -Condition ($color.bossCount -eq 2 -and $color.bossOk -eq 2) -Detail "設定どおり $($color.bossOk)/$($color.bossCount) 個（$($color.bossColor)）" | Out-Null
+    Assert-ProbeTrue -Name 'プレイヤーのゲージは色を上書きしない（マテリアルの色のまま）' -Condition (-not $color.playerOverridden) -Detail "マテリアルの色 $($color.playerColor)" | Out-Null
+
     Assert-ProbeTrue -Name '体力ゲージは満タン（割合1）' -Condition ($gauge.a.exists -and $gauge.b.exists -and $gauge.a.ratio -eq 1 -and $gauge.b.ratio -eq 1) -Detail "A=$($gauge.a.ratio) B=$($gauge.b.ratio)" | Out-Null
 
     # 弾幕2回ぶん（交代を含む）＋余裕
