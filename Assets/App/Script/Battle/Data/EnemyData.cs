@@ -14,6 +14,7 @@ namespace App.Battle.Data
             EnemyMasterDataId = enemyMasterData.EnemyMasterDataId;
             Pose = pose;
             Hp = hp;
+            MaxHp = hp;
             BaseDamage = baseDamage;
             BaseBulletSpeed = enemyMasterData.BulletSpeed;
             IdleSpeed = enemyMasterData.IdleSpeed;
@@ -30,6 +31,9 @@ namespace App.Battle.Data
         public string EnemyMasterDataId { get; set; }
         public Pose Pose { get; set; }
         public float Hp { get; set; }
+
+        /// <summary>最大HP（ウェーブ強化後。体力を共有する敵は共有体力の合計）</summary>
+        public float MaxHp { get; set; }
 
         // 撃破済みフラグ。撃破演出の完了までデータが残るため、
         // その間に届いた追撃（爆風・別の弾）で撃破処理が二重に走るのを防ぐ

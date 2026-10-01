@@ -46,6 +46,7 @@ namespace App.Battle
         [SerializeField] private PlayerBaseParameterConfig _playerBaseParameterConfig;
         [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
         [SerializeField] private BossWaveConfig _bossWaveConfig;
+        [SerializeField] private BossLifeGaugeStoreView _bossLifeGaugeStoreView;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -166,6 +167,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<BossGroupUseCase>();
             // ボスウェーブ開始時に残った敵を消し、プレイヤーを移してボスを出す
             builder.RegisterEntryPoint<BossWaveUseCase>();
+            // ボスの足元の体力ゲージ（プレイヤーのライフゲージを流用）
+            builder.RegisterEntryPoint<BossLifeGaugeUseCase>();
             builder.RegisterEntryPoint<DodgeCounterAttackUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
@@ -198,6 +201,8 @@ namespace App.Battle
                 .As<IGameOverPresenter>();
             builder.Register<PlayerLifeGaugePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerLifeGaugePresenter>();
+            builder.Register<BossLifeGaugePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IBossLifeGaugePresenter>();
             builder.Register<RunStartPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IRunStartPresenter>();
             builder.Register<StreamerCameraPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -223,6 +228,10 @@ namespace App.Battle
             // 足元の半円ライフゲージ。プレイヤー位置へはUseCase経由で追従させる
             builder.RegisterComponentInNewPrefab(_playerLifeGaugeView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IPlayerLifeGaugeView>();
+
+            // ボスごとの足元の体力ゲージ。生成・追従はUseCase経由
+            builder.RegisterComponentInNewPrefab(_bossLifeGaugeStoreView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<IBossLifeGaugeStoreView>();
 
             builder.RegisterComponentInNewPrefab(_runStartView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IRunStartView>();

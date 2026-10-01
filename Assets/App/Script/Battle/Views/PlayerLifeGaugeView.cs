@@ -8,6 +8,7 @@ namespace App.Battle.Views
     /// 弧の形・色・低HP時の点滅はシェーダ（App/PlayerLifeGauge）が描き、
     /// このViewは表示値を目標値へなめらかに寄せてマテリアルへ渡すだけにする。
     /// 向きはワールドに固定し、プレイヤーが振り向いてもゲージは回らない。
+    /// ボスの足元の体力ゲージ（BossLifeGaugeStoreView）もこのプレハブを複製して使うため、プレイヤー固有の状態は持たせないこと。
     /// </summary>
     public class PlayerLifeGaugeView : MonoBehaviour, IPlayerLifeGaugeView
     {
