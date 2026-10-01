@@ -10,11 +10,16 @@ namespace App.Battle.DataStore
     public class EnemyRandomSpawnCycleDataStore : IEnemyRandomSpawnCycleDataStore, IRunResettable, ITickable
     {
         private readonly IWaveManagerDataStore _waveManagerDataStore;
+        private readonly IBossWaveDataStore _bossWaveDataStore;
 
         [Inject]
-        public EnemyRandomSpawnCycleDataStore(IWaveManagerDataStore waveManagerDataStore)
+        public EnemyRandomSpawnCycleDataStore(
+            IWaveManagerDataStore waveManagerDataStore,
+            IBossWaveDataStore bossWaveDataStore
+        )
         {
             _waveManagerDataStore = waveManagerDataStore;
+            _bossWaveDataStore = bossWaveDataStore;
         }
 
         private readonly Subject<int> _onSpawnCommonEnemy = new();
@@ -60,6 +65,12 @@ namespace App.Battle.DataStore
         {
             // ウェーブ間ポーズ中はスポーンタイマーを進めない（敵の生成を停止）
             if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
+            // ボスウェーブ中はボス以外を湧かせない
+            if (_bossWaveDataStore.IsBossWave)
             {
                 return;
             }

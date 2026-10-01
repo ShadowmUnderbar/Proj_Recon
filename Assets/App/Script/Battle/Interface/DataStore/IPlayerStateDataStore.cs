@@ -22,6 +22,9 @@ namespace App.Battle.Interface.DataStore
 
         void Move(Vector2 moveV2, float speed);
 
+        /// <summary>プレイヤーを指定位置へ瞬間移動させる（ボスウェーブ開始時など）</summary>
+        void WarpTo(Vector3 position);
+
         /// <summary>プレイヤーにダメージを与える（HPを減らし OnDamaged を発火）</summary>
         void TakeDamage(float damage);
 
