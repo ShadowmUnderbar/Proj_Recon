@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BossWaveConfig
   m_EditorClassIdentifier: 
   _bossWave: 5
-  _bossGroup: {fileID: 11400000, guid: 994cceeb3267b9b40a697992ed8e34f3, type: 2}
+  _bossGroup: {fileID: 11400000, guid: ecb0ecf00ac441b49ad27ae0cb482419, type: 2}
   _playerPosition: {x: 0, y: 0, z: 0}
   _bossOriginPosition: {x: 0, y: 0, z: 20}
   _bossOriginEulerAngles: {x: 0, y: 180, z: 0}

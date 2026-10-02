@@ -12,6 +12,7 @@ namespace App.Battle.DataStore
         private readonly IEnemyDataStore _enemyDataStore;
 
         private readonly List<BossPatternRunner> _groups = new();
+        private readonly System.Random _random = new();
         private readonly Dictionary<int, BossPatternRunner> _groupByMemberId = new();
 
         [Inject]
@@ -63,7 +64,12 @@ namespace App.Battle.DataStore
                 memberIds.Add(enemyData.Id);
             }
 
-            var runner = new BossPatternRunner(memberIds, config.Pattern);
+            if (config.SharedHealth)
+            {
+                _enemyDataStore.LinkSharedHealth(memberIds);
+            }
+
+            var runner = new BossPatternRunner(memberIds, config.Pattern, _random);
             _groups.Add(runner);
             foreach (var id in memberIds)
             {

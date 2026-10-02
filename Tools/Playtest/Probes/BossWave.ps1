@@ -17,100 +17,32 @@
 # 記録用の購読は AppDomain のデータに置き、最後に破棄する。検証中は毎フレームHPを全快させて倒れないようにする。
 #
 
-$Global:BossProbeBossId = 'B-001'
 $Global:BossProbeActionSeconds = 0.8 + 0.2 + 1.5
 $Global:BossProbePatternWaitSeconds = 1.0
 # 段階の切り替わりは MonoBehaviour の Update、台本の判定は VContainer の Tick で行うため、1〜2フレームずれる
 $Global:BossProbeTimeTolerance = 0.15
 
+. (Join-Path $PSScriptRoot 'Common/BossProbeCommon.ps1')
+
+# このプローブの判定は BossGroup_TwinShooter の台本を前提にしている。ボスウェーブに出すボスは別の構成に
+# 差し替わっていることがあるため、実行中だけこの台本へ戻す
+$Global:BossWaveProbeGroupPath = 'Assets/App/MasterData/Boss/BossGroup_TwinShooter.asset'
+
 function ProbePrepare {
-    $Global:ProbeSavedPlayModeStartScene = Invoke-UnityCode -Snippet @'
-using UnityEditor;
-using UnityEditor.SceneManagement;
-
-var saved = EditorSceneManager.playModeStartScene != null
-    ? AssetDatabase.GetAssetPath(EditorSceneManager.playModeStartScene)
-    : string.Empty;
-EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/Scenes/Battle.unity");
-
-return saved;
-'@
-    Write-Host "再生開始シーンを Battle に設定しました（退避: [$Global:ProbeSavedPlayModeStartScene]）"
+    Enter-BossProbeScene
+    try {
+        $Global:BossWaveProbeSavedGroup = Set-BossWaveGroup -GroupPath $Global:BossWaveProbeGroupPath
+    }
+    catch {
+        # 準備が途中で失敗すると ProbeCleanup が呼ばれないため、ここで戻す
+        Exit-BossProbeScene
+        throw
+    }
 }
 
 function ProbeCleanup {
-    $saved = $Global:ProbeSavedPlayModeStartScene
-    $escaped = $saved -replace '\\', '\\' -replace '"', '\"'
-
-    Invoke-UnityCode -Snippet @"
-using UnityEditor;
-using UnityEditor.SceneManagement;
-
-var path = "$escaped";
-EditorSceneManager.playModeStartScene = string.IsNullOrEmpty(path)
-    ? null
-    : AssetDatabase.LoadAssetAtPath<SceneAsset>(path);
-
-return "restored";
-"@ | Out-Null
-
-    Write-Host "再生開始シーンを戻しました: [$saved]"
-}
-
-# 各スニペット共通の using と解決処理
-$Global:BossProbePrelude = @'
-using System;
-using System.Linq;
-using System.Reflection;
-using System.Collections.Generic;
-using UnityEngine;
-using VContainer;
-using VContainer.Unity;
-using R3;
-using App.Battle;
-using App.Battle.Data;
-using App.Battle.Interface;
-using App.Battle.Interface.DataStore;
-using App.Battle.Views.Enemy.AI.Boss;
-
-var scope = LifetimeScope.Find<BattleLifetimeScope>();
-var wave = scope.Container.Resolve<IWaveManagerDataStore>();
-var enemies = scope.Container.Resolve<IEnemyDataStore>();
-var player = scope.Container.Resolve<IPlayerStateDataStore>();
-var bossGroups = scope.Container.Resolve<IBossGroupDataStore>();
-var bossWave = scope.Container.Resolve<IBossWaveDataStore>();
-var presenter = scope.Container.Resolve<IEnemyPresenter>();
-var freeze = scope.Container.Resolve<IFreezeDataStore>();
-const string BossId = "B-001";
-
-// 台本の進行（メンバー番号順の敵Id・ステップ番号）は検証のためリフレクションで読む
-var groupsField = bossGroups.GetType().GetField("_groups", BindingFlags.NonPublic | BindingFlags.Instance);
-var holdField = typeof(BossAIBase).GetField("_isHold", BindingFlags.NonPublic | BindingFlags.Instance);
-var phaseMachineField = typeof(BossAIBase).GetField("_actionPhase", BindingFlags.NonPublic | BindingFlags.Instance);
-var elapsedField = typeof(BossActionPhaseMachine).GetField("_elapsed", BindingFlags.NonPublic | BindingFlags.Instance);
-App.Battle.DataStore.BossPatternRunner GetRunner()
-{
-    var list = (System.Collections.IList)groupsField.GetValue(bossGroups);
-    return list.Count > 0 ? (App.Battle.DataStore.BossPatternRunner)list[0] : null;
-}
-BossAIBase GetBoss(int slot)
-{
-    var runner = GetRunner();
-    if (runner == null) return null;
-    var id = runner.MemberIds[slot];
-    return UnityEngine.Object.FindObjectsOfType<BossAIBase>().FirstOrDefault(b => b.EnemyId == id);
-}
-string Describe(BossAIBase b)
-{
-    if (b == null) return "-";
-    var s = b.Status.CurrentValue;
-    return $"{s.Phase}|{(bool)holdField.GetValue(b)}|{s.IsStun}|{s.IsDead}";
-}
-'@
-
-function Invoke-BossSnippet {
-    param([Parameter(Mandatory)] [string]$Body)
-    return Invoke-UnityJson -Snippet ($Global:BossProbePrelude + "`n" + $Body)
+    Restore-BossWaveGroup -GroupPath $Global:BossWaveProbeSavedGroup
+    Exit-BossProbeScene
 }
 
 function Get-BossSnapshot {
@@ -119,8 +51,8 @@ var runner = GetRunner();
 var a = GetBoss(0);
 var b = GetBoss(1);
 float Elapsed(BossAIBase x) => x == null ? -1f : (float)elapsedField.GetValue(phaseMachineField.GetValue(x));
-var nonBoss = enemies.Enemies.Count(e => e.EnemyMasterDataId != BossId);
-var boss = enemies.Enemies.Count(e => e.EnemyMasterDataId == BossId);
+var nonBoss = enemies.Enemies.Count(e => !IsBossEnemy(e));
+var boss = enemies.Enemies.Count(e => IsBossEnemy(e));
 return $"{{\"wave\":{wave.CurrentWave.CurrentValue},\"pause\":{wave.IsWavePause.Value.ToString().ToLower()},\"step\":{(runner == null ? -1 : runner.StepIndex)},\"a\":\"{Describe(a)}\",\"b\":\"{Describe(b)}\",\"aElapsed\":{Elapsed(a)},\"bElapsed\":{Elapsed(b)},\"nonBoss\":{nonBoss},\"boss\":{boss},\"freezing\":{freeze.IsFreezing.CurrentValue.ToString().ToLower()}}}";
 '@
 }
@@ -134,32 +66,7 @@ function ConvertFrom-MemberText {
 }
 
 function Invoke-BossProbeBody {
-    # --- ボスウェーブ直前（ボスウェーブ開始前のショップ）までウェーブを進める ---
-    $bossWaveNumber = (Invoke-BossSnippet -Body @'
-var config = scope.Container.Resolve<BossWaveConfig>();
-var n = Enumerable.Range(1, 99).First(w => config.IsBossWave(w));
-return $"{{\"n\":{n}}}";
-'@).n
-    Write-Host "ボスウェーブ: $bossWaveNumber"
-
-    for ($i = 0; $i -lt 30; $i++) {
-        $state = Get-WaveState
-        if ($state.currentWave -eq $bossWaveNumber -and $state.isWavePause) { break }
-        if ($state.isWavePause) {
-            Resolve-ShopIfOpen -WaveState $state | Out-Null
-            continue
-        }
-        # 制限時間を満たして通常の進行経路（AdvanceWaveInternal）を通す
-        Invoke-BossSnippet -Body @'
-player.Health.Value = player.MaxHealth.Value;
-wave.AddElapsedTime(9999f);
-return "{}";
-'@ | Out-Null
-        Start-Sleep -Milliseconds 700
-    }
-
-    $state = Get-WaveState
-    Assert-ProbeTrue -Name 'ボスウェーブ前のショップに到達' -Condition ($state.currentWave -eq $bossWaveNumber -and $state.isWavePause) -Detail "wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
+    $bossWaveNumber = Move-ToBossWaveShop
 
     # --- 開始前の状態を仕込む（残った敵を必ず1体以上にし、プレイヤーを中心から外す）と、毎フレームの記録を始める ---
     $pre = Invoke-BossSnippet -Body @'
@@ -179,7 +86,7 @@ var sub = Observable.EveryUpdate().Subscribe(_ =>
 
     if (bossWave.IsBossSpawned)
     {
-        var nonBossNow = enemies.Enemies.Count(e => e.EnemyMasterDataId != BossId);
+        var nonBossNow = enemies.Enemies.Count(e => !IsBossEnemy(e));
         if (nonBossNow > maxNonBoss[0]) maxNonBoss[0] = nonBossNow;
     }
 
@@ -199,7 +106,7 @@ return $"{{\"enemies\":{enemies.Enemies.Count},\"x\":{player.Position.Value.x},\
     Write-Host "開始前: 敵 $($pre.enemies) 体 / プレイヤー ($($pre.x), $($pre.z))"
 
     # --- ボスウェーブ開始 ---
-    Resolve-ShopIfOpen -WaveState (Get-WaveState) | Out-Null
+    Skip-BossProbeShop
     Start-Sleep -Milliseconds 500
 
     $start = Invoke-BossSnippet -Body @'
@@ -207,7 +114,7 @@ var config = scope.Container.Resolve<BossWaveConfig>();
 var p = player.Position.Value;
 var target = config.PlayerPosition;
 var origin = config.BossOrigin.position;
-var bossDist = enemies.Enemies.Where(e => e.EnemyMasterDataId == BossId)
+var bossDist = enemies.Enemies.Where(e => IsBossEnemy(e))
     .Select(e => Vector3.Distance(e.Pose.position, origin)).DefaultIfEmpty(-1f).Max();
 return $"{{\"playerDist\":{Vector3.Distance(p, target)},\"maxBossDistFromOrigin\":{bossDist}}}";
 '@
@@ -352,7 +259,7 @@ return "{}";
     Assert-ProbeTrue -Name 'ボスを全員倒すと次のウェーブへ進む（ショップのポーズ）' -Condition ($state.currentWave -eq ($bossWaveNumber + 1) -and $state.isWavePause) -Detail "wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
 
     # --- 次のウェーブでは通常の敵が湧く ---
-    Resolve-ShopIfOpen -WaveState $state | Out-Null
+    Skip-BossProbeShop
     Start-Sleep -Seconds 6
     $snap = Get-BossSnapshot
     Assert-ProbeTrue -Name 'ボスウェーブの次は通常の敵が湧く' -Condition ($snap.nonBoss -gt 0) -Detail "通常の敵 $($snap.nonBoss) 体" | Out-Null
@@ -364,10 +271,6 @@ function ProbeRun {
     }
     finally {
         # 途中で検証を打ち切っても、毎フレームの記録（HP全快を含む）を必ず止める
-        Invoke-BossSnippet -Body @'
-(AppDomain.CurrentDomain.GetData("bossProbe.sub") as IDisposable)?.Dispose();
-AppDomain.CurrentDomain.SetData("bossProbe.sub", null);
-return "{}";
-'@ | Out-Null
+        Stop-BossProbeRecorder
     }
 }

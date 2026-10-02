@@ -19,5 +19,8 @@ namespace App.Battle.Interface.EnemyAI
 
         /// <summary>その場での待機を設定する（待機中は移動も止める）</summary>
         void SetHold(bool isHold);
+
+        /// <summary>プレイヤーに対してつく位置を指定する（対応するボスAIは指定位置へ瞬間移動する）</summary>
+        void SetFormation(BossFormationSlot slot);
     }
 }
