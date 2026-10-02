@@ -14,6 +14,7 @@ namespace App.Battle.Presenters
         private readonly IEnemyStoreView _enemyStoreView;
 
         public Observable<(int id, Pose pose)> OnEnemyPoseUpdate => _enemyStoreView.OnEnemyPoseUpdate;
+        public Observable<int> OnEnemySpawnFailed => _enemyStoreView.OnEnemySpawnFailed;
 
         public Observable<(int id, BossMemberStatus status)> OnBossMemberStatusChanged =>
             _enemyStoreView.OnBossMemberStatusChanged;

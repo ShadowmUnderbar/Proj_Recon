@@ -34,6 +34,12 @@ namespace App.Battle.UseCase
             _enemyDataStore.OnEnemyRemoved
                 .Subscribe(OnEnemyRemoved)
                 .AddTo(_disposables);
+
+            // 出現に失敗した敵は、倒せない敵データとして残さず取り除く（撃破扱いにはしない）。
+            // ボスグループの台本はこの消去を受けてその個体を対象から外すので、ボスウェーブも進められる
+            _enemyPresenter.OnEnemySpawnFailed
+                .Subscribe(enemyId => _enemyDataStore.RemoveEnemyData(enemyId))
+                .AddTo(_disposables);
         }
 
         private void OnEnemyAdded(int enemyId)

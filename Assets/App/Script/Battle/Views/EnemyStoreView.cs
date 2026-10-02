@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface;
@@ -22,6 +23,9 @@ namespace App.Battle.Views
 
         private readonly Subject<(int id, Pose pose)> _onEnemyPoseUpdate = new();
         public Observable<(int id, Pose pose)> OnEnemyPoseUpdate => _onEnemyPoseUpdate;
+
+        private readonly Subject<int> _onEnemySpawnFailed = new();
+        public Observable<int> OnEnemySpawnFailed => _onEnemySpawnFailed;
 
         // ボスグループの個体（台本の命令を受けるAIを持つ敵だけ）
         private readonly Dictionary<int, IBossMemberView> _bossMembers = new();
@@ -67,19 +71,34 @@ namespace App.Battle.Views
 
         public async UniTask Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType)
         {
-            var enemyObj = Addressables.LoadAssetAsync<GameObject>(prefabPath);
-
-            await enemyObj.Task;
-
-            if (enemyObj.Status != AsyncOperationStatus.Succeeded)
+            GameObject prefab = null;
+            try
             {
-                // 敵データだけ残り倒せない敵になる（ボスウェーブでは進行不能になる）ため、気付けるようにする
-                Debug.LogError($"[{nameof(EnemyStoreView)}] 敵プレハブの読み込みに失敗しました: {prefabPath}（敵Id: {enemyData.Id}）");
+                var enemyObj = Addressables.LoadAssetAsync<GameObject>(prefabPath);
+                await enemyObj.Task;
+                if (enemyObj.Status == AsyncOperationStatus.Succeeded)
+                {
+                    prefab = enemyObj.Result;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+
+            if (prefab == null)
+            {
+                FailSpawn(enemyData.Id, $"敵プレハブの読み込みに失敗しました: {prefabPath}");
                 return;
             }
 
-            var enemyObject = Instantiate(enemyObj.Result, enemyData.Pose.position, enemyData.Pose.rotation);
-            var view = enemyObject.GetComponent<IEnemyView>();
+            var enemyObject = Instantiate(prefab, enemyData.Pose.position, enemyData.Pose.rotation);
+            if (!enemyObject.TryGetComponent<IEnemyView>(out var view))
+            {
+                Destroy(enemyObject);
+                FailSpawn(enemyData.Id, $"敵プレハブに {nameof(IEnemyView)} がありません: {prefabPath}");
+                return;
+            }
 
             view.Init(enemyData.Id, enemyData, resistanceDirectionType);
             view.Pose
@@ -113,6 +132,16 @@ namespace App.Battle.Views
             {
                 _hitBoxStoreView.AddHitBoxView(hitBox);
             }
+        }
+
+        /// <summary>
+        /// 出現に失敗したことを知らせる。敵データだけが残ると倒せない敵になり、
+        /// ボスウェーブでは進めなくなるため、受け取った側で敵データを消してもらう
+        /// </summary>
+        private void FailSpawn(int enemyId, string reason)
+        {
+            Debug.LogError($"[{nameof(EnemyStoreView)}] {reason}（敵Id: {enemyId}）。敵データを取り除きます");
+            _onEnemySpawnFailed.OnNext(enemyId);
         }
 
         public void UnSpawn(int enemyId)
@@ -375,7 +404,7 @@ namespace App.Battle.Views
             foreach (var enemy in _enemies.Values)
             {
                 // シーン破棄では敵が先に破棄されていることがある（破棄済みに Destroy を呼ぶと例外になる）
-                if (enemy is Object enemyObject && enemyObject == null)
+                if (enemy is UnityEngine.Object enemyObject && enemyObject == null)
                 {
                     continue;
                 }
@@ -388,6 +417,7 @@ namespace App.Battle.Views
             _gazeTouchedEnemyIds.Clear();
             _bossMembers.Clear();
             _onEnemyPoseUpdate.Dispose();
+            _onEnemySpawnFailed.Dispose();
             _onBossMemberStatusChanged.Dispose();
         }
     }

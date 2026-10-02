@@ -80,6 +80,14 @@ namespace App.Battle.DataStore
             }
             foreach (var id in memberIds)
             {
+                // 出現（プレハブの読み込み）が同期的に失敗すると、登録より先に敵データが取り除かれ、その通知を受け取れない。
+                // 取り除かれていた個体は最初から対象外にする（残すと台本が出現を待ち続け、ボスウェーブが終わらない）
+                if (!_enemyDataStore.TryGetEnemyData(id, out _))
+                {
+                    runner.TryMarkGone(id);
+                    continue;
+                }
+
                 _groupByMemberId[id] = runner;
             }
 
