@@ -12,7 +12,10 @@ namespace App.Battle.Data
         Release,
 
         /// <summary>指定の位置（プレイヤーの上下左右）へ配置し直す</summary>
-        Formation
+        Formation,
+
+        /// <summary>行動を打ち切って待機へ戻す（発狂フェイズへの切り替えなど）</summary>
+        Cancel
     }
 
     /// <summary>
@@ -21,12 +24,13 @@ namespace App.Battle.Data
     public readonly struct BossDirectorCommand
     {
         private BossDirectorCommand(BossDirectorCommandType type, int enemyId, int actionIndex,
-            BossFormationSlot slot = BossFormationSlot.None)
+            BossFormationSlot slot = BossFormationSlot.None, float lateralOffset = 0f)
         {
             Type = type;
             EnemyId = enemyId;
             ActionIndex = actionIndex;
             Slot = slot;
+            LateralOffset = lateralOffset;
         }
 
         public BossDirectorCommandType Type { get; }
@@ -37,6 +41,9 @@ namespace App.Battle.Data
 
         /// <summary>Formation のときの配置先</summary>
         public BossFormationSlot Slot { get; }
+
+        /// <summary>Formation のときの横（移動方向と直交する向き）へのずれ（m）</summary>
+        public float LateralOffset { get; }
 
         public static BossDirectorCommand Act(int enemyId, int actionIndex)
         {
@@ -53,9 +60,14 @@ namespace App.Battle.Data
             return new BossDirectorCommand(BossDirectorCommandType.Release, enemyId, 0);
         }
 
-        public static BossDirectorCommand Formation(int enemyId, BossFormationSlot slot)
+        public static BossDirectorCommand Formation(int enemyId, BossFormationSlot slot, float lateralOffset = 0f)
         {
-            return new BossDirectorCommand(BossDirectorCommandType.Formation, enemyId, 0, slot);
+            return new BossDirectorCommand(BossDirectorCommandType.Formation, enemyId, 0, slot, lateralOffset);
+        }
+
+        public static BossDirectorCommand Cancel(int enemyId)
+        {
+            return new BossDirectorCommand(BossDirectorCommandType.Cancel, enemyId, 0);
         }
 
         public override string ToString()
@@ -63,7 +75,7 @@ namespace App.Battle.Data
             return Type switch
             {
                 BossDirectorCommandType.Act => $"{Type}(id:{EnemyId}, action:{ActionIndex})",
-                BossDirectorCommandType.Formation => $"{Type}(id:{EnemyId}, slot:{Slot})",
+                BossDirectorCommandType.Formation => $"{Type}(id:{EnemyId}, slot:{Slot}, offset:{LateralOffset})",
                 _ => $"{Type}(id:{EnemyId})"
             };
         }

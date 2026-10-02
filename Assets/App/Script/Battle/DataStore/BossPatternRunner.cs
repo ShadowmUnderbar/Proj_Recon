@@ -12,13 +12,15 @@ namespace App.Battle.DataStore
     /// </summary>
     public class BossPatternRunner
     {
-        private readonly IReadOnlyList<BossPatternStep> _steps;
+        // 進めている台本（発狂フェイズへの切り替えで差し替わる）
+        private IReadOnlyList<BossPatternStep> _steps;
 
         // 配置の振り分けに使う乱数（検証で結果を固定できるよう外から渡す）
         private readonly System.Random _random;
 
-        // 配置を振り分けるときの作業用（生存している対象のメンバー番号）
+        // 配置を振り分けるときの作業用（生存している対象のメンバー番号・横へのずれ）
         private readonly List<int> _formationSlots = new();
+        private readonly List<float> _formationOffsets = new();
 
         // メンバー番号（スロット）ごとの状態
         private readonly int[] _memberIds;
@@ -232,16 +234,75 @@ namespace App.Battle.DataStore
                 (_formationSlots[i], _formationSlots[j]) = (_formationSlots[j], _formationSlots[i]);
             }
 
+            PickLateralOffsets(step, _formationSlots.Count);
+
             for (var i = 0; i < _formationSlots.Count; i++)
             {
                 var isPositive = _random.Next(2) == 0;
                 var formation = i % 2 == 0
                     ? (isPositive ? BossFormationSlot.Up : BossFormationSlot.Down)
                     : (isPositive ? BossFormationSlot.Right : BossFormationSlot.Left);
-                output.Add(BossDirectorCommand.Formation(_memberIds[_formationSlots[i]], formation));
+                output.Add(BossDirectorCommand.Formation(_memberIds[_formationSlots[i]], formation, _formationOffsets[i]));
             }
 
             return _formationSlots.Count > 0;
+        }
+
+        /// <summary>
+        /// 個体ごとの横へのずれを候補からランダムに選ぶ（_formationOffsets に入れる）。
+        /// RequireAlignedOne なら、全員が0以外になったときに1体をランダムに0へ置き換える
+        /// </summary>
+        private void PickLateralOffsets(BossPatternStep step, int count)
+        {
+            _formationOffsets.Clear();
+            var candidates = step.LateralOffsets;
+            if (candidates == null || candidates.Length == 0)
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    _formationOffsets.Add(0f);
+                }
+
+                return;
+            }
+
+            var hasAligned = false;
+            for (var i = 0; i < count; i++)
+            {
+                var offset = candidates[_random.Next(candidates.Length)];
+                hasAligned |= offset == 0f;
+                _formationOffsets.Add(offset);
+            }
+
+            if (step.RequireAlignedOne && !hasAligned && count > 0 && Array.IndexOf(candidates, 0f) >= 0)
+            {
+                _formationOffsets[_random.Next(count)] = 0f;
+            }
+        }
+
+        /// <summary>
+        /// 進める台本を差し替え、先頭から始める（発狂フェイズへの切り替え）。
+        /// 行動中の個体は打ち切り、待機させていた個体は解放する
+        /// </summary>
+        public void SwitchPattern(IReadOnlyList<BossPatternStep> steps, List<BossDirectorCommand> output)
+        {
+            for (var slot = 0; slot < _memberIds.Length; slot++)
+            {
+                if (_isGone[slot])
+                {
+                    continue;
+                }
+
+                output.Add(BossDirectorCommand.Cancel(_memberIds[slot]));
+            }
+
+            ReleaseAllHeld(output);
+
+            _steps = steps;
+            _stepIndex = 0;
+            _waitElapsed = 0f;
+            _isCommanded = false;
+            ValidateSteps();
         }
 
         private void AdvanceStep()

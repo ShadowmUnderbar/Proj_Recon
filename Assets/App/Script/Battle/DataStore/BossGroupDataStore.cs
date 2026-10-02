@@ -15,6 +15,9 @@ namespace App.Battle.DataStore
         private readonly System.Random _random = new();
         private readonly Dictionary<int, BossPatternRunner> _groupByMemberId = new();
 
+        // 発狂フェイズの切り替えを待っているグループ → 設定（切り替えたら外す）
+        private readonly Dictionary<BossPatternRunner, BossGroupConfig> _pendingRage = new();
+
         [Inject]
         public BossGroupDataStore(IEnemyDataStore enemyDataStore)
         {
@@ -71,6 +74,10 @@ namespace App.Battle.DataStore
 
             var runner = new BossPatternRunner(memberIds, config.Pattern, _random);
             _groups.Add(runner);
+            if (config.HasRagePhase)
+            {
+                _pendingRage.Add(runner, config);
+            }
             foreach (var id in memberIds)
             {
                 _groupByMemberId[id] = runner;
@@ -105,17 +112,48 @@ namespace App.Battle.DataStore
                 if (runner.IsFinished)
                 {
                     _groups.RemoveAt(i);
+                    _pendingRage.Remove(runner);
                     continue;
                 }
 
+                TrySwitchToRage(runner, output);
                 runner.Tick(deltaTime, output);
             }
+        }
+
+        /// <summary>体力が設定の割合以下になったグループの台本を発狂フェイズ用へ切り替える</summary>
+        private void TrySwitchToRage(BossPatternRunner runner, List<BossDirectorCommand> output)
+        {
+            if (!_pendingRage.TryGetValue(runner, out var config))
+            {
+                return;
+            }
+
+            // 体力を共有するグループは全員同じ値。共有しないグループは生き残りの先頭で判断する
+            foreach (var id in runner.MemberIds)
+            {
+                if (!_enemyDataStore.TryGetEnemyData(id, out var enemyData) || enemyData.IsDead || enemyData.MaxHp <= 0f)
+                {
+                    continue;
+                }
+
+                if (enemyData.Hp / enemyData.MaxHp > config.RageHealthRatio)
+                {
+                    return;
+                }
+
+                break;
+            }
+
+            _pendingRage.Remove(runner);
+            runner.SwitchPattern(config.RagePattern, output);
         }
 
         public void ResetRun()
         {
             _groups.Clear();
             _groupByMemberId.Clear();
+            _pendingRage.Clear();
         }
     }
 }

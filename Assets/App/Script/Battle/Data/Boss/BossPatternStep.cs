@@ -44,10 +44,18 @@ namespace App.Battle.Data
         [SerializeField, Min(0f), Tooltip("Wait で待つ秒数")]
         private float _waitSeconds;
 
+        [SerializeField, Tooltip("CrossFormation のみ。配置先を横（移動方向と直交する向き）へずらす量の候補（m）。個体ごとにランダムに選ぶ。空ならずらさない")]
+        private float[] _lateralOffsets = System.Array.Empty<float>();
+
+        [SerializeField, Tooltip("CrossFormation のみ。少なくとも1体はずれ0（プレイヤーと重なる位置）にする。候補に0が無いときは効かない")]
+        private bool _requireAlignedOne;
+
         public BossPatternStepType Type => _type;
         public int[] MemberSlots => _memberSlots;
         public int ActionIndex => _actionIndex;
         public bool HoldOthers => _holdOthers;
         public float WaitSeconds => _waitSeconds;
+        public float[] LateralOffsets => _lateralOffsets;
+        public bool RequireAlignedOne => _requireAlignedOne;
     }
 }
