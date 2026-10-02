@@ -7,7 +7,7 @@ using UnityEngine;
 namespace App.Battle.Views.Enemy.AI.Boss
 {
     /// <summary>
-    /// プレイヤーの上下左右（ワールドの軸）のいずれかについて動く、二人組ボス用のAI。
+    /// プレイヤーの上下左右（ワールドの軸）のいずれかについて動く、二人組ボス「TickTock」用のAI。
     /// 台本の配置（CrossFormation）を受けると、プレイヤーからその方向へ一定距離、横へ指定のずれだけ離れた位置へ瞬間移動する。
     /// 行動していない間は、その位置で距離を保ったままプレイヤーを追う。
     /// 行動0（弾幕）: 縦方向（上下）にいれば横へ、横方向（左右）にいれば縦へ、プレイヤーに合わせて軸に沿って動き、
@@ -18,7 +18,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
     ///   回数と間隔は BossLineStrikeConfig の RepeatCount / RepeatInterval。
     /// プレハブでは基底の「行動中は移動を止める」を切っておくこと（弾幕中も動くため）。
     /// </summary>
-    public class BossAxisBarrage : BossAIBase
+    public class BossTickTock : BossAIBase
     {
         /// <summary>弾幕の行動番号</summary>
         public const int BarrageActionIndex = 0;
@@ -206,7 +206,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
         {
             if (_bulletPrefab == null || _muzzleTransform == null)
             {
-                Debug.LogError($"[{nameof(BossAxisBarrage)}] {name}: 弾プレハブまたは銃口が未設定です", this);
+                Debug.LogError($"[{nameof(BossTickTock)}] {name}: 弾プレハブまたは銃口が未設定です", this);
                 return;
             }
 
@@ -222,7 +222,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
             if (_lineStrikeConfig == null || _lineStrikeViewPrefab == null)
             {
-                Debug.LogError($"[{nameof(BossAxisBarrage)}] {name}: 帯の攻撃の設定または表示のプレハブが未設定です", this);
+                Debug.LogError($"[{nameof(BossTickTock)}] {name}: 帯の攻撃の設定または表示のプレハブが未設定です", this);
                 return;
             }
 
@@ -260,7 +260,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
             if (count == _strikeHits.Length)
             {
-                Debug.LogWarning($"[{nameof(BossAxisBarrage)}] {name}: 帯の判定のコライダーがバッファ（{_strikeHits.Length}）を埋めました。プレイヤーを取りこぼしている可能性があります", this);
+                Debug.LogWarning($"[{nameof(BossTickTock)}] {name}: 帯の判定のコライダーがバッファ（{_strikeHits.Length}）を埋めました。プレイヤーを取りこぼしている可能性があります", this);
             }
 
             var damage = EnemyData.BaseDamage * _lineStrikeConfig.DamageMultiplier;

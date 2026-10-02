@@ -28,7 +28,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8d711dfa9b7f2dd4a8b3946150489752
-    m_Address: Assets/App/Prefub/Enemy/BossAxisBarrageEnemy.prefab
+    m_Address: Assets/App/Prefub/Enemy/BossTickTockEnemy.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
