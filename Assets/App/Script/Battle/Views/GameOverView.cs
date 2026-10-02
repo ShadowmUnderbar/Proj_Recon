@@ -20,6 +20,9 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("見出しテキスト")]
         private Text _headlineText;
 
+        [SerializeField, Tooltip("獲得アップグレードの一覧テキスト（任意）")]
+        private Text _upgradeListText;
+
         [SerializeField, Tooltip("状態テキスト（保存結果など）")]
         private Text _statusText;
 
@@ -92,7 +95,21 @@ namespace App.Battle.Views
                 _statusText.gameObject.SetActive(isButtonVisible);
             }
 
+            if (_upgradeListText != null)
+            {
+                _upgradeListText.text = string.Empty;
+                _upgradeListText.gameObject.SetActive(isButtonVisible);
+            }
+
             SetButtonsVisible(isButtonVisible);
+        }
+
+        public void SetUpgradeList(string list)
+        {
+            if (_upgradeListText != null)
+            {
+                _upgradeListText.text = list;
+            }
         }
 
         private void SetButtonsVisible(bool isVisible)

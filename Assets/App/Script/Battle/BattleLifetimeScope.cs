@@ -145,6 +145,9 @@ namespace App.Battle
             // アップグレード付与副作用の共通処理（ShopUseCase・RunStartUseCaseが利用）
             builder.Register<UpgradeSideEffectApplier>(Lifetime.Singleton);
 
+            // 結果画面の獲得アップグレード一覧の組み立て（RunResultUseCaseが利用）
+            builder.Register<AcquiredUpgradeListBuilder>(Lifetime.Singleton).As<IAcquiredUpgradeListBuilder>();
+
             // ラン状態の一括リセット（RunResultUseCaseのリスタートが利用）
             builder.Register<RunResetUseCase>(Lifetime.Singleton);
 

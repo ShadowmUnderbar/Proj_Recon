@@ -23,6 +23,9 @@ namespace App.Battle.Interface
         /// <summary>ボタン・状態テキストを隠し、見出しだけを表示する（クリア表示など）</summary>
         void ShowHeadlineOnly(string headline);
 
+        /// <summary>獲得アップグレードの一覧（1行1種類）を設定する</summary>
+        void SetUpgradeList(string list);
+
         /// <summary>指定スロットボタンのラベルを設定する</summary>
         void SetSlotLabel(int index, string label);
 

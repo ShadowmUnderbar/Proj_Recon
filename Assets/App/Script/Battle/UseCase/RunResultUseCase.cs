@@ -20,6 +20,7 @@ namespace App.Battle.UseCase
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IGameStateDataStore _gameStateDataStore;
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
+        private readonly IAcquiredUpgradeListBuilder _acquiredUpgradeListBuilder;
         private readonly IMetaProgressionDataStore _metaProgressionDataStore;
         private readonly IGameOverPresenter _gameOverPresenter;
         private readonly IPlayerControlPresenter _playerControlPresenter;
@@ -44,6 +45,7 @@ namespace App.Battle.UseCase
             IWaveManagerDataStore waveManagerDataStore,
             IGameStateDataStore gameStateDataStore,
             IUpgradeSessionDataStore upgradeSessionDataStore,
+            IAcquiredUpgradeListBuilder acquiredUpgradeListBuilder,
             IMetaProgressionDataStore metaProgressionDataStore,
             IGameOverPresenter gameOverPresenter,
             IPlayerControlPresenter playerControlPresenter,
@@ -54,6 +56,7 @@ namespace App.Battle.UseCase
             _waveManagerDataStore = waveManagerDataStore;
             _gameStateDataStore = gameStateDataStore;
             _upgradeSessionDataStore = upgradeSessionDataStore;
+            _acquiredUpgradeListBuilder = acquiredUpgradeListBuilder;
             _metaProgressionDataStore = metaProgressionDataStore;
             _gameOverPresenter = gameOverPresenter;
             _playerControlPresenter = playerControlPresenter;
@@ -91,8 +94,10 @@ namespace App.Battle.UseCase
         public void Show(string title)
         {
             // 保存対象はそのランで新たに獲得した分のみ（セット読込で最初から持っていた分は除外）
-            var acquiredCount = _upgradeSessionDataStore.NewlyAcquiredUpgrades.Count;
+            var acquired = _upgradeSessionDataStore.NewlyAcquiredUpgrades;
+            var acquiredCount = acquired.Count;
             _gameOverPresenter.Show($"{title}\n獲得アップグレード: {acquiredCount}個\nスロットに上書き保存してからリスタート");
+            _gameOverPresenter.SetUpgradeList(_acquiredUpgradeListBuilder.Build(acquired));
             _isResultShown = true;
 
             RefreshAllSlotLabels();

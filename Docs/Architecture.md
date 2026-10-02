@@ -192,7 +192,7 @@ ShopUseCase      : OnWaveAdvanced でショップを開く。UpgradeLotteryDataS
 GameOverUseCase  : PlayerState.Health<=0 → 死亡演出（PlayerDeathConfig）→ RunResultUseCase.Show("GAME OVER")
                    クリア後に HP が 0 になってもゲームオーバーにしない（GameStateDataStore はゲームオーバーとクリアが排他）
 GameClearUseCase : IsCleared → 見出しだけのクリア表示 → GameClearConfig の秒数後に RunResultUseCase.Show("STAGE CLEAR")
-RunResultUseCase : 結果画面（GameOverView を共用）の操作。スロット保存（MetaProgressionDataStore） / リスタート（RunResetUseCase） / メインメニューへ。
+RunResultUseCase : 結果画面（GameOverView を共用）の操作。今回のランで獲得したアップグレードの一覧（AcquiredUpgradeListBuilder）を出す。スロット保存（MetaProgressionDataStore） / リスタート（RunResetUseCase） / メインメニューへ。
                    閉じる直前に OnClosing を流し、死亡演出・クリア表示の待ちを畳ませる
 RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・弾・粒子を消す → RunStartDataStore.IsSelecting=true（セット選択へ）
 ```
@@ -236,7 +236,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | （共通）`RunStartView` | 直接再生時・リスタート時のセット選択（スロット3＋「使わずに開始」）。実装は `Common/Views`、プレハブは `UI/RunStartView.prefab` |
 | `ShopView` + `UpgradeCardBoardView` + `UpgradeCardView` + `CardHighlight` | ウェーブ間ショップ。VR は 3D カードを掴んでトリガー確定、PC はマウスクリック。Canvas ボタンはフォールバック |
 | └ `UpgradeCardBoardLayout` / `UpgradeCardFinder` / `UpgradeCardHandInteraction` / `UpgradeCardPointerInteraction` | ボードの内部分担（plain C#、DI 対象外）。配置の純粋計算／近接・レイ・UI越しの検索／VR両手の掴み・ひねり・確定の状態機械／非VRのホバー・クリック確定。Inspector 値は `UpgradeCardHoldSettings` / `UpgradeCardGrabSettings` に毎フレーム束ねて渡す |
-| `GameOverView` | ランの結果画面（ゲームオーバー・クリア共用）。スロット保存／リスタート／メインメニューへ。`ShowHeadlineOnly` でボタンを隠して見出しだけ出す（クリア表示） |
+| `GameOverView` | ランの結果画面（ゲームオーバー・クリア共用）。スロット保存／リスタート／メインメニューへ。`ShowHeadlineOnly` でボタンを隠して見出しだけ出す（クリア表示）。見出しとスロットボタンの間に獲得アップグレードの一覧（`UpgradeList`、横に折り返して最良サイズに縮める） |
 | `PointParticleStoreView` / `PointParticleView` | ポイント粒子（一括更新、粒子ごとの Update 無し） |
 | `StreamerCameraView` | 配信用カメラ（HMD 映像に干渉しない）。`StreamerModeConfig` で既定 OFF |
 | `TutorialMessageView` | バトル中のチュートリアルメッセージ（WorldSpace Canvas、プレハブは `UI/TutorialMessageView.prefab`）。表示直後は視点の正面に追従し、規定時間後に非利き手の脇へ移って常に頭の方を向く。追従先の姿勢は UseCase から毎フレーム受け取る。オフセット・時間・追従速度は Inspector |
@@ -315,6 +315,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 |---|---|
 | `UpgradeSessionDataStore` | このランで所持しているアップグレード ID |
 | `UpgradeEffectSimpleCalculatorDataStore` | `UpgradeType` ごとの単純倍率（`CalcMultiply`） |
+| `AcquiredUpgradeListBuilder` | 結果画面の獲得アップグレード一覧（獲得順に「・名前-レベル」を半角スペースで並べる。旧 Text は全角スペースで折り返さない） |
 | `UpgradeLotteryDataStore` / `UpgradeLocalizationDataStore` / `UpgradeDescriptionFormatter` / `EffectTextStyler` / `UpgradeLocalizationKey` | 抽選・ローカライズ・説明文の整形 |
 | `BuffStateDataStore` | 取得済みバフの発動条件進行と残り時間 |
 | 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |

@@ -7,6 +7,7 @@
 #   - まず見出し（STAGE CLEAR）だけが出て、保存・リスタート・メインメニューのボタンは隠れていること
 #   - クリア表示中にHPが0になってもゲームオーバーにならないこと
 #   - GameClearConfig の秒数のあとでボタンが出ること
+#   - 結果画面に今回のランで獲得したアップグレードの一覧が獲得順に出ること
 #   - スロット保存でボスウェーブの番号が記録されること
 #   - リスタートでクリアが解除され、ウェーブ1・ビルド選択へ戻ること
 # を確かめる。スロット保存はセーブファイルを書き換えるため、実行前に退避して終了後に戻す。
@@ -41,9 +42,10 @@ var gameState = scope.Container.Resolve<IGameStateDataStore>();
 bool Shown(string path) { var go = GameObject.Find("BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel" + path); return go != null && go.activeInHierarchy; }
 var headline = GameObject.Find("BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel/Headline")?.GetComponent<UnityEngine.UI.Text>()?.text ?? "";
 var status = GameObject.Find("BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel/Status")?.GetComponent<UnityEngine.UI.Text>()?.text ?? "";
+var list = GameObject.Find("BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel/UpgradeList")?.GetComponent<UnityEngine.UI.Text>()?.text ?? "";
 var shopPanel = GameObject.Find("BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel");
 string Esc(string s) => s.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "/");
-return $"{{\"cleared\":{gameState.IsCleared.CurrentValue.ToString().ToLower()},\"gameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"wave\":{wave.CurrentWave.CurrentValue},\"pause\":{wave.IsWavePause.Value.ToString().ToLower()},\"panel\":{Shown("").ToString().ToLower()},\"restart\":{Shown("/RestartButton").ToString().ToLower()},\"slot0\":{Shown("/SlotButtons/SlotButton0").ToString().ToLower()},\"menu\":{Shown("/ReturnToMainMenuButton").ToString().ToLower()},\"shop\":{(shopPanel != null && shopPanel.activeInHierarchy).ToString().ToLower()},\"headline\":\"{Esc(headline)}\",\"status\":\"{Esc(status)}\"}}";
+return $"{{\"cleared\":{gameState.IsCleared.CurrentValue.ToString().ToLower()},\"gameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"wave\":{wave.CurrentWave.CurrentValue},\"pause\":{wave.IsWavePause.Value.ToString().ToLower()},\"panel\":{Shown("").ToString().ToLower()},\"restart\":{Shown("/RestartButton").ToString().ToLower()},\"slot0\":{Shown("/SlotButtons/SlotButton0").ToString().ToLower()},\"menu\":{Shown("/ReturnToMainMenuButton").ToString().ToLower()},\"shop\":{(shopPanel != null && shopPanel.activeInHierarchy).ToString().ToLower()},\"headline\":\"{Esc(headline)}\",\"status\":\"{Esc(status)}\",\"listShown\":{Shown("/UpgradeList").ToString().ToLower()},\"list\":\"{Esc(list)}\"}}";
 '@
 
 function Get-GameClearPanel {
@@ -68,9 +70,25 @@ foreach (var id in bossIds)
 return $"{{\"bosses\":{bossIds.Count}}}";
 '@
     Assert-ProbeTrue -Name 'ボスウェーブでボスが出ている' -Condition ([int]$kill.bosses -gt 0) -Detail "ボス $($kill.bosses) 体" | Out-Null
+    # 結果画面の一覧を確かめるため、獲得アップグレードを2件仕込む（同じものの2回目は UpgradeSessionDataStore が弾く）。
+    # 撃破後に足すのでボスの挙動には影響しない。付与の副作用は通さない（GameOverRestart と同じ）
+    $added = Invoke-BossSnippet -Body @'
+var session = scope.Container.Resolve<IUpgradeSessionDataStore>();
+var db = scope.Container.Resolve<App.Common.Data.Database.UpgradeDatabase>();
+var a = db.UpgradeMasterData[0];
+var b = db.UpgradeMasterData[1];
+session.AddUpgrade(a);
+session.AddUpgrade(b);
+session.AddUpgrade(b);
+var la = scope.Container.Resolve<IUpgradeLocalizationDataStore>().GetText(a);
+var lb = scope.Container.Resolve<IUpgradeLocalizationDataStore>().GetText(b);
+AppDomain.CurrentDomain.SetData("gameClearProbe.expected", "・" + la.Title + la.LevelLabel + "    ・" + lb.Title + lb.LevelLabel);
+return $"{{\"newly\":{session.NewlyAcquiredUpgrades.Count}}}";
+'@
     Start-Sleep -Milliseconds 500
 
     $p = Get-GameClearPanel
+    Assert-ProbeTrue -Name 'クリア表示の間は獲得アップグレードの一覧も隠れている' -Condition (-not $p.listShown) | Out-Null
     Assert-ProbeTrue -Name 'ボスを全員倒すとクリアになる' -Condition $p.cleared | Out-Null
     Assert-ProbeTrue -Name 'クリアでウェーブは進まない' -Condition ($p.wave -eq $bossWaveNumber) -Detail "wave=$($p.wave)" | Out-Null
     Assert-ProbeTrue -Name 'クリアで敵・ウェーブが止まる（ポーズ）' -Condition $p.pause | Out-Null
@@ -89,6 +107,13 @@ return $"{{\"bosses\":{bossIds.Count}}}";
     $p = Get-GameClearPanel
     Assert-ProbeTrue -Name '結果画面のボタンが出る（保存・リスタート・メインメニュー）' -Condition ($p.panel -and $p.restart -and $p.slot0 -and $p.menu) -Detail "restart=$($p.restart) slot0=$($p.slot0) menu=$($p.menu)" | Out-Null
     Assert-ProbeTrue -Name '結果画面の見出しはクリア' -Condition ($p.headline -like 'STAGE CLEAR*') -Detail "headline=[$($p.headline)]" | Out-Null
+    # 項目は半角スペース4つで区切られ、表示側で折り返す
+    $lines = @($p.list -split '    ' | Where-Object { $_ -ne '' })
+    $expected = (Invoke-BossSnippet -Body 'return $"{{\"e\":\"{AppDomain.CurrentDomain.GetData("gameClearProbe.expected")}\"}}";').e
+    Assert-ProbeTrue -Name '獲得アップグレードの一覧が出る' -Condition ($p.listShown -and [int]$added.newly -eq 2) -Detail "newly=$($added.newly) list=[$($p.list)]" | Out-Null
+    Assert-ProbeValue -Name '一覧は1件ずつ並ぶ（同じものの再獲得で増えない）' -Actual $lines.Count -Expected 2 | Out-Null
+    Assert-ProbeTrue -Name '一覧は獲得順に名前とレベルが並ぶ' -Condition ($p.list -eq $expected) -Detail "list=[$($p.list)] expected=[$expected]" | Out-Null
+    Assert-ProbeTrue -Name '一覧はローカライズ済みの名前（キーのままではない）' -Condition (-not ($p.list -match '\$')) -Detail "list=[$($p.list)]" | Out-Null
 
     # --- スロット保存 ---
     Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
