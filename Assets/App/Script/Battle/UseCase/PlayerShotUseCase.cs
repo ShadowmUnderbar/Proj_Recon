@@ -24,6 +24,7 @@ namespace App.Battle.UseCase
         private readonly IShotConflictDataStore _shotConflictDataStore;
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
         private readonly IFreezeDataStore _freezeDataStore;
+        private readonly ITimeStopDataStore _timeStopDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -39,7 +40,8 @@ namespace App.Battle.UseCase
             IWaveManagerDataStore waveManagerDataStore,
             IShotConflictDataStore shotConflictDataStore,
             IUpgradeSessionDataStore upgradeSessionDataStore,
-            IFreezeDataStore freezeDataStore
+            IFreezeDataStore freezeDataStore,
+            ITimeStopDataStore timeStopDataStore
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -53,6 +55,7 @@ namespace App.Battle.UseCase
             _shotConflictDataStore = shotConflictDataStore;
             _upgradeSessionDataStore = upgradeSessionDataStore;
             _freezeDataStore = freezeDataStore;
+            _timeStopDataStore = timeStopDataStore;
         }
 
         public void Initialize()
@@ -110,9 +113,10 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            // ウェーブ間ポーズ中・フリーズ中は発射を停止
+            // ウェーブ間ポーズ中・フリーズ中・時止め中は発射を停止
             if (_waveManagerDataStore.IsWavePause.Value ||
-                _freezeDataStore.IsFreezing.CurrentValue)
+                _freezeDataStore.IsFreezing.CurrentValue ||
+                _timeStopDataStore.IsTimeStopped.CurrentValue)
             {
                 return;
             }

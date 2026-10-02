@@ -18,6 +18,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
+        private readonly ITimeStopDataStore _timeStopDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -26,13 +27,15 @@ namespace App.Battle.UseCase
             IBattlePlayerView battlePlayerView,
             IPlayerStateDataStore playerStateDataStore,
             IWaveManagerDataStore waveManagerDataStore,
-            IPlayerDodgeParameterDataStore playerDodgeParameterDataStore
+            IPlayerDodgeParameterDataStore playerDodgeParameterDataStore,
+            ITimeStopDataStore timeStopDataStore
         )
         {
             _battlePlayerView = battlePlayerView;
             _playerStateDataStore = playerStateDataStore;
             _waveManagerDataStore = waveManagerDataStore;
             _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
+            _timeStopDataStore = timeStopDataStore;
         }
 
         public void Initialize()
@@ -46,6 +49,12 @@ namespace App.Battle.UseCase
         {
             // ウェーブ間ポーズ中は無敵（敵側と同基準でダメージを通さない）
             if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
+            // 時止め中は無敵（動けないうえ、止まった弾に重なっていると当たり続けるため）
+            if (_timeStopDataStore.IsTimeStopped.CurrentValue)
             {
                 return;
             }

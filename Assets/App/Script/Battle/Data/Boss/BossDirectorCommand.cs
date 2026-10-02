@@ -15,7 +15,13 @@ namespace App.Battle.Data
         Formation,
 
         /// <summary>行動を打ち切って待機へ戻す（発狂フェイズへの切り替えなど）</summary>
-        Cancel
+        Cancel,
+
+        /// <summary>時止めを始める（個体ではなく場全体への命令。EnemyId は使わない）</summary>
+        BeginTimeStop,
+
+        /// <summary>時止めを解く（個体ではなく場全体への命令。EnemyId は使わない）</summary>
+        EndTimeStop
     }
 
     /// <summary>
@@ -32,6 +38,9 @@ namespace App.Battle.Data
             Slot = slot;
             LateralOffset = lateralOffset;
         }
+
+        // 場全体への命令（時止め）で EnemyId に入れる値
+        private const int NoEnemyId = -1;
 
         public BossDirectorCommandType Type { get; }
         public int EnemyId { get; }
@@ -70,12 +79,23 @@ namespace App.Battle.Data
             return new BossDirectorCommand(BossDirectorCommandType.Cancel, enemyId, 0);
         }
 
+        public static BossDirectorCommand BeginTimeStop()
+        {
+            return new BossDirectorCommand(BossDirectorCommandType.BeginTimeStop, NoEnemyId, 0);
+        }
+
+        public static BossDirectorCommand EndTimeStop()
+        {
+            return new BossDirectorCommand(BossDirectorCommandType.EndTimeStop, NoEnemyId, 0);
+        }
+
         public override string ToString()
         {
             return Type switch
             {
                 BossDirectorCommandType.Act => $"{Type}(id:{EnemyId}, action:{ActionIndex})",
                 BossDirectorCommandType.Formation => $"{Type}(id:{EnemyId}, slot:{Slot}, offset:{LateralOffset})",
+                BossDirectorCommandType.BeginTimeStop or BossDirectorCommandType.EndTimeStop => Type.ToString(),
                 _ => $"{Type}(id:{EnemyId})"
             };
         }

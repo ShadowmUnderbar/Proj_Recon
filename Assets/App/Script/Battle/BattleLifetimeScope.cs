@@ -56,6 +56,9 @@ namespace App.Battle
             // 登録順序がTick順序に影響するため、依存順に登録
             builder.Register<FreezeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IFreezeDataStore>();
+            // ボスによる時止め（プレイヤーと弾だけを止める。ボスの台本が始める・解く）
+            builder.Register<TimeStopDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ITimeStopDataStore>();
             builder.Register<PlayerStateDataStore>(Lifetime.Singleton)
                 .AsImplementedInterfaces().As<IPlayerStateDataStore>();
             builder.Register<PlayerFocusDataStore>(Lifetime.Singleton)

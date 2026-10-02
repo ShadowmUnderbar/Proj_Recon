@@ -41,6 +41,23 @@ namespace App.Battle.DataStore
             }
         }
 
+        public bool IsTimeStopping
+        {
+            get
+            {
+                // 全員いなくなったグループは時止めの途中でも数えない（次の Tick を待たずに解けるようにする）
+                foreach (var runner in _groups)
+                {
+                    if (!runner.IsFinished && runner.IsTimeStopping)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
         public IReadOnlyList<int> SpawnGroup(BossGroupConfig config, Pose origin)
         {
             if (config == null || config.Members.Count == 0)
