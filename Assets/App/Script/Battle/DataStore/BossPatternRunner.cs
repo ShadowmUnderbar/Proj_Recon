@@ -12,13 +12,15 @@ namespace App.Battle.DataStore
     /// </summary>
     public class BossPatternRunner
     {
-        private readonly IReadOnlyList<BossPatternStep> _steps;
+        // 進めている台本（発狂フェイズへの切り替えで差し替わる）
+        private IReadOnlyList<BossPatternStep> _steps;
 
         // 配置の振り分けに使う乱数（検証で結果を固定できるよう外から渡す）
         private readonly System.Random _random;
 
-        // 配置を振り分けるときの作業用（生存している対象のメンバー番号）
+        // 配置を振り分けるときの作業用（生存している対象のメンバー番号・横へのずれ）
         private readonly List<int> _formationSlots = new();
+        private readonly List<float> _formationOffsets = new();
 
         // メンバー番号（スロット）ごとの状態
         private readonly int[] _memberIds;
@@ -28,6 +30,15 @@ namespace App.Battle.DataStore
 
         private int _stepIndex;
         private float _waitElapsed;
+
+        // 斜めの角を時計回りに並べたもの（左上 → 右上 → 右下 → 左下）。隣り合う角＝並びで1つ違い
+        private static readonly BossFormationSlot[] DiagonalCorners =
+        {
+            BossFormationSlot.UpLeft, BossFormationSlot.UpRight, BossFormationSlot.DownRight, BossFormationSlot.DownLeft
+        };
+
+        // RandomLoop の残り回数（-1 は未開始。ループを抜けたら -1 に戻す）
+        private int _loopRemaining = -1;
 
         // 現在の Act ステップで命令を出し終えたか（HoldOthers で対象の行動終了を待っている間 true）
         private bool _isCommanded;
@@ -141,6 +152,17 @@ namespace App.Battle.DataStore
                 case BossPatternStepType.Act:
                     return ProcessAct(step, output);
 
+                case BossPatternStepType.RandomLoop:
+                    return ProcessRandomLoop(step);
+
+                case BossPatternStepType.DiagonalFormation:
+                    if (!AreTargetsSpawned(step))
+                    {
+                        return StepResult.Blocked;
+                    }
+
+                    return AssignDiagonalFormation(step, output) ? StepResult.CompletedAndYield : StepResult.Completed;
+
                 case BossPatternStepType.CrossFormation:
                     // 出現（プレハブの読み込み）が済んでいない個体には配置を届けられないため待つ
                     if (!AreTargetsSpawned(step))
@@ -232,16 +254,126 @@ namespace App.Battle.DataStore
                 (_formationSlots[i], _formationSlots[j]) = (_formationSlots[j], _formationSlots[i]);
             }
 
+            PickLateralOffsets(step, _formationSlots.Count);
+
             for (var i = 0; i < _formationSlots.Count; i++)
             {
                 var isPositive = _random.Next(2) == 0;
                 var formation = i % 2 == 0
                     ? (isPositive ? BossFormationSlot.Up : BossFormationSlot.Down)
                     : (isPositive ? BossFormationSlot.Right : BossFormationSlot.Left);
-                output.Add(BossDirectorCommand.Formation(_memberIds[_formationSlots[i]], formation));
+                output.Add(BossDirectorCommand.Formation(_memberIds[_formationSlots[i]], formation, _formationOffsets[i]));
             }
 
             return _formationSlots.Count > 0;
+        }
+
+        /// <summary>
+        /// 初めて来たときに合計回数を決め、まだ残っていればループの先頭へ戻る（戻った先から進めるため Completed を返す）
+        /// </summary>
+        private StepResult ProcessRandomLoop(BossPatternStep step)
+        {
+            if (_loopRemaining < 0)
+            {
+                var min = Math.Max(1, step.LoopMin);
+                var max = Math.Max(min, step.LoopMax);
+                _loopRemaining = _random.Next(min, max + 1) - 1;
+            }
+
+            if (_loopRemaining == 0)
+            {
+                _loopRemaining = -1;
+                return StepResult.Completed;
+            }
+
+            _loopRemaining--;
+            // AdvanceStep で1つ進むので、その分を差し引いてループの先頭の1つ前に置く
+            _stepIndex = Math.Max(0, _stepIndex - step.LoopBackSteps) - 1;
+            return StepResult.Completed;
+        }
+
+        /// <summary>
+        /// 生存している対象（先頭の2体）を、隣り合う斜めの角へ割り当てる。2体の向きが直交するので帯が×字になる。
+        /// 割り当てた個体がいれば true
+        /// </summary>
+        private bool AssignDiagonalFormation(BossPatternStep step, List<BossDirectorCommand> output)
+        {
+            _formationSlots.Clear();
+            foreach (var slot in step.MemberSlots)
+            {
+                if (IsAliveSlot(slot) && !_formationSlots.Contains(slot))
+                {
+                    _formationSlots.Add(slot);
+                }
+            }
+
+            var first = _random.Next(DiagonalCorners.Length);
+            var second = (first + (_random.Next(2) == 0 ? 1 : DiagonalCorners.Length - 1)) % DiagonalCorners.Length;
+
+            for (var i = 0; i < _formationSlots.Count && i < 2; i++)
+            {
+                output.Add(BossDirectorCommand.Formation(_memberIds[_formationSlots[i]], DiagonalCorners[i == 0 ? first : second]));
+            }
+
+            return _formationSlots.Count > 0;
+        }
+
+        /// <summary>
+        /// 個体ごとの横へのずれを候補からランダムに選ぶ（_formationOffsets に入れる）。
+        /// RequireAlignedOne なら、全員が0以外になったときに1体をランダムに0へ置き換える
+        /// </summary>
+        private void PickLateralOffsets(BossPatternStep step, int count)
+        {
+            _formationOffsets.Clear();
+            var candidates = step.LateralOffsets;
+            if (candidates == null || candidates.Length == 0)
+            {
+                for (var i = 0; i < count; i++)
+                {
+                    _formationOffsets.Add(0f);
+                }
+
+                return;
+            }
+
+            var hasAligned = false;
+            for (var i = 0; i < count; i++)
+            {
+                var offset = candidates[_random.Next(candidates.Length)];
+                hasAligned |= offset == 0f;
+                _formationOffsets.Add(offset);
+            }
+
+            if (step.RequireAlignedOne && !hasAligned && count > 0 && Array.IndexOf(candidates, 0f) >= 0)
+            {
+                _formationOffsets[_random.Next(count)] = 0f;
+            }
+        }
+
+        /// <summary>
+        /// 進める台本を差し替え、先頭から始める（発狂フェイズへの切り替え）。
+        /// 行動中の個体は打ち切り、待機させていた個体は解放する
+        /// </summary>
+        public void SwitchPattern(IReadOnlyList<BossPatternStep> steps, List<BossDirectorCommand> output)
+        {
+            for (var slot = 0; slot < _memberIds.Length; slot++)
+            {
+                if (_isGone[slot])
+                {
+                    continue;
+                }
+
+                output.Add(BossDirectorCommand.Cancel(_memberIds[slot]));
+            }
+
+            ReleaseAllHeld(output);
+
+            _steps = steps;
+            _stepIndex = 0;
+            _waitElapsed = 0f;
+            _isCommanded = false;
+            _loopRemaining = -1;
+            ValidateSteps();
         }
 
         private void AdvanceStep()
@@ -326,6 +458,17 @@ namespace App.Battle.DataStore
             for (var i = 0; i < _steps.Count; i++)
             {
                 var step = _steps[i];
+                if (step.Type == BossPatternStepType.RandomLoop)
+                {
+                    if (step.LoopBackSteps > i)
+                    {
+                        Debug.LogError(
+                            $"[{nameof(BossPatternRunner)}] ステップ{i}の RandomLoop が台本の先頭より前（{step.LoopBackSteps}個前）へ戻ろうとしています。先頭から繰り返します");
+                    }
+
+                    continue;
+                }
+
                 if (step.Type == BossPatternStepType.Wait)
                 {
                     continue;

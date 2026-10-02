@@ -340,14 +340,24 @@ namespace App.Battle.Views
             bossMember.SetHold(isHold);
         }
 
-        public void SetBossFormation(int enemyId, BossFormationSlot slot)
+        public void SetBossFormation(int enemyId, BossFormationSlot slot, float lateralOffset)
         {
             if (!_bossMembers.TryGetValue(enemyId, out var bossMember))
             {
                 return;
             }
 
-            bossMember.SetFormation(slot);
+            bossMember.SetFormation(slot, lateralOffset);
+        }
+
+        public void CancelBossAction(int enemyId)
+        {
+            if (!_bossMembers.TryGetValue(enemyId, out var bossMember))
+            {
+                return;
+            }
+
+            bossMember.CancelAction();
         }
 
         public void SetPause(bool isPause)

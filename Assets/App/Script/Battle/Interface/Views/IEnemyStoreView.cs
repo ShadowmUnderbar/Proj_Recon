@@ -20,8 +20,11 @@ namespace App.Battle.Interface
         /// <summary>ボスグループの個体をその場で待機させる／解除する</summary>
         void SetBossHold(int enemyId, bool isHold);
 
-        /// <summary>ボスグループの個体にプレイヤーに対してつく位置を指定する</summary>
-        void SetBossFormation(int enemyId, BossFormationSlot slot);
+        /// <summary>ボスグループの個体にプレイヤーに対してつく位置（と横へのずれ m）を指定する</summary>
+        void SetBossFormation(int enemyId, BossFormationSlot slot, float lateralOffset);
+
+        /// <summary>ボスグループの個体の行動を打ち切る</summary>
+        void CancelBossAction(int enemyId);
         UniTask Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType);
         void UnSpawn(int enemyId);
         UniTask Dead(int id);

@@ -216,7 +216,8 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `Enemy/AI/Boss/BossAIBase`（`IBossMemberView`） | ボスグループの台本から命令を受けて動くボス AI の基底。自分では攻撃を抽選せず、命令された行動を `BossActionPhaseMachine`（plain C#）で 予備動作 → 攻撃 → 硬直 と進める（秒数は `EnemyMasterData` の `WindupTime / ActiveTime / RecoveryTime`）。スタンで行動を打ち切る。待機（Hold）中は移動も止める |
 | `Enemy/AI/Boss/BossShooter` | 弾を撃つボス AI。行動番号ごとに弾数・広がり（0: 単発、1: 扇状 など） |
 | `BossLifeGaugeStoreView` | ボスごとの足元の体力ゲージを生成・破棄する。ゲージ本体はプレイヤーの `PlayerLifeGaugeView`（半円・CurvedWorld 対応のシェーダ）をそのまま複製し、バリアの弧は隠す。色（体力・低HP・空き部分）と大きさは `BossLifeGaugeConfig` で決め、ゲージごとに MaterialPropertyBlock で上書きする（マテリアルはプレイヤーと共有のまま） |
-| `Enemy/AI/Boss/BossAxisBarrage` | 体力を共有する二人組ボス用。台本の配置（`CrossFormation`）でプレイヤーの上下左右（ワールド軸）の一定距離へ瞬間移動する。行動していない間はその位置で距離を保って追い、行動（弾幕）中は自分の軸の線上だけを動いてプレイヤーと並び、移動方向と直交する向き（プレイヤーの側）へ一定間隔で撃つ。弾幕の長さは `ActiveTime` |
+| `Enemy/AI/Boss/BossLineStrikeView` | ボスの帯状の攻撃の予兆・攻撃の表示。長さ方向に刻んだ帯のメッシュを生成し（`HideFlags.DontSave`、バウンズを下へ広げる）、`CurvedWorldUnlit` の頂点ごとモードで地面に沿わせる。ボスの拡大率・回転の影響を受けないよう単独のオブジェクトとして置く |
+| `Enemy/AI/Boss/BossAxisBarrage` | 体力を共有する二人組ボス用。台本の配置（`CrossFormation`）でプレイヤーの上下左右（ワールド軸）の一定距離へ瞬間移動する。行動していない間はその位置で距離を保って追い、行動（弾幕）中は自分の軸の線上だけを動いてプレイヤーと並び、移動方向と直交する向き（プレイヤーの側）へ一定間隔で撃つ。弾幕の長さは `ActiveTime`。行動1（帯の攻撃、発狂フェイズ）はその場に留まり、プレイヤーの側へ伸びる帯を予兆として出し、予兆が明けた瞬間に `OverlapBox` で帯の中のプレイヤー（`HitBoxType.Player`）へ1回当てる。行動2（帯の連続攻撃）は同じ帯を予兆1回のあと同じ向き・位置のまま予兆なしで `RepeatCount` 回、`RepeatInterval` 間隔で当てる（×字の配置で使う）。範囲・秒数・回数・ダメージ・色は `BossLineStrikeConfig`。行動ごとの秒数は `BossAIBase.GetActionDurations` で上書きする |
 | `Enemy/Bullet/BaseBulletView, StraightBullet, HomingBullet` | 敵弾（`_shooterLayer` は `Framework.Layer`）。`PointParticle` レイヤーを除外して判定 |
 | `HitBoxView` / `HitBoxStoreView` | ヒットボックス。`OnHit` で `HitData` を作って流す。耐性方向で貫通可否を返す |
 | `BulletStoreView` / `BulletTracerView` / `CounterTracerView` / `BlitzEffectView` | 弾の一括管理・曳光弾・カウンター演出・ブリッツ演出。`TracerFreezeState` でフリーズ中に停止 |
@@ -295,7 +296,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `EnemyRandomSpawnCycleDataStore` | ランク別スポーン周期・同時数の増加（`MinorSpawnCountGrowthRate`） |
 | `EnemyWaveScalingCalculatorDataStore` | `WaveScalingDatabase` からウェーブ帯ごとの増加率（線形・切り上げ） |
 | `WaveManagerDataStore` | 現在ウェーブ・経過時間・キル数・ポーズ・`OnWaveAdvanced` |
-| `BossGroupDataStore` / `BossPatternRunner` | 複数個体のボスの出現（メンバーを `EnemyDataStore` へ登録。`SharedHealth` なら体力を共有させる）と行動台本の進行。`BossPatternRunner`（plain C#）が個体の状態から `Act`（全員が行動可能になったら同じフレームで一斉に行動、`HoldOthers` で対象の行動・硬直が終わるまで他を待機）・`WaitActionable`（硬直・スタン明けを待つ）・`Wait`（秒数）・`CrossFormation`（対象をプレイヤーの縦方向・横方向へ交互に振り分けて配置し直す。どちらが縦か・正負の側はランダム）を進め、命令（`BossDirectorCommand`）を出す。撃破されたメンバーは対象から外す |
+| `BossGroupDataStore` / `BossPatternRunner` | 複数個体のボスの出現（メンバーを `EnemyDataStore` へ登録。`SharedHealth` なら体力を共有させる）と行動台本の進行。`BossPatternRunner`（plain C#）が個体の状態から `Act`（全員が行動可能になったら同じフレームで一斉に行動、`HoldOthers` で対象の行動・硬直が終わるまで他を待機）・`WaitActionable`（硬直・スタン明けを待つ）・`Wait`（秒数）・`CrossFormation`（対象をプレイヤーの縦方向・横方向へ交互に振り分けて配置し直す。どちらが縦か・正負の側はランダム。横へのずれの候補と「少なくとも1体は0」を指定できる）・`RandomLoop`（直前のいくつかのステップを合計 Min〜Max 回ランダムに繰り返す。入れ子不可）・`DiagonalFormation`（2体を隣り合う斜めの角へ。向きが直交して帯が×字になる）を進め、命令（`BossDirectorCommand`）を出す。撃破されたメンバーは対象から外す。`BossGroupConfig.RageHealthRatio` 以下まで体力が減ったら台本を `RagePattern`（発狂フェイズ）へ差し替え、行動中の個体は `Cancel` で打ち切る |
 | `BossWaveDataStore` | 現在ウェーブがボスウェーブか・出現済みか・全員倒したか |
 | `GameStateDataStore` / `RunStartDataStore` / `FreezeDataStore` | ゲームオーバー／セット選択中／フリーズ残時間 |
 
@@ -320,7 +321,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 
 | 種別 | クラス |
 |---|---|
-| ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle`, `BossWaveConfig`（ボスウェーブの番号・出すボスグループ・プレイヤー/ボスの位置、`MasterData/Boss`）, `BossLifeGaugeConfig`（ボスの体力ゲージの色・大きさ、`MasterData/Boss`。既定は紫）, `BossGroupConfig`（ボスのメンバー・行動台本 `BossPatternStep[]`・体力共有、`MasterData/Boss`。`BossGroup_TwinShooter`＝交代と同時行動の確認用、`BossGroup_AxisPair`＝体力共有の二人組） |
+| ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle`, `BossWaveConfig`（ボスウェーブの番号・出すボスグループ・プレイヤー/ボスの位置、`MasterData/Boss`）, `BossLifeGaugeConfig`（ボスの体力ゲージの色・大きさ、`MasterData/Boss`。既定は紫）, `BossLineStrikeConfig`（ボスの帯の攻撃の幅・長さ・予兆/攻撃/硬直の秒数・連続攻撃の回数と間隔・ダメージ倍率・色、`MasterData/Boss`）, `BossGroupConfig`（ボスのメンバー・行動台本 `BossPatternStep[]`・体力共有、`MasterData/Boss`。`BossGroup_TwinShooter`＝交代と同時行動の確認用、`BossGroup_AxisPair`＝体力共有の二人組） |
 | 定数 | `PlayerConstants.PlayerId`（**今回新設**）, `ThemeColors` |
 | POCO / struct | `EnemyData`, `HitData`, `BossMemberStatus`, `BossDirectorCommand`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `TutorialMessageAnchor`, `UpgradeLocalizedText` |
 | enum | `EnemyAIState`, `BossActionPhase`, `BossPatternStepType`, `BossFormationSlot`（プレイヤーの上下左右、ワールド軸）, `HitBoxType`, `StreamerCameraShotType`, `TutorialMessagePhase` |

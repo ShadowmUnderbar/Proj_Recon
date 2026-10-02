@@ -30,6 +30,9 @@ namespace App.Battle.Views.Enemy.AI.Boss
         protected BossActionPhase ActionPhase => _actionPhase.Phase.CurrentValue;
         protected bool IsActing => ActionPhase != BossActionPhase.Ready;
 
+        /// <summary>実行中（または直前に実行した）行動の番号</summary>
+        protected int CurrentActionIndex => _actionPhase.ActionIndex;
+
         /// <summary>台本の指示でその場に待機させられているか</summary>
         protected bool IsHold => _isHold;
 
@@ -57,7 +60,25 @@ namespace App.Battle.Views.Enemy.AI.Boss
                 return false;
             }
 
+            GetActionDurations(actionIndex, out var windup, out var active, out var recovery);
+            _actionPhase.SetDurations(windup, active, recovery);
             return _actionPhase.Begin(actionIndex);
+        }
+
+        /// <summary>
+        /// 行動ごとの各段階の秒数。既定は EnemyMasterData の WindupTime / ActiveTime / RecoveryTime。
+        /// 行動によって長さの違うボスは派生クラスで上書きする
+        /// </summary>
+        protected virtual void GetActionDurations(int actionIndex, out float windup, out float active, out float recovery)
+        {
+            windup = EnemyData.WindupTime;
+            active = EnemyData.ActiveTime;
+            recovery = EnemyData.RecoveryTime;
+        }
+
+        public void CancelAction()
+        {
+            _actionPhase.Cancel();
         }
 
         public void SetHold(bool isHold)
@@ -69,9 +90,13 @@ namespace App.Battle.Views.Enemy.AI.Boss
         /// <summary>台本で指定された、プレイヤーに対してつく位置</summary>
         protected BossFormationSlot FormationSlot { get; private set; } = BossFormationSlot.None;
 
-        public void SetFormation(BossFormationSlot slot)
+        /// <summary>配置先を横（プレイヤーへ向かう向きと直交する向き）へずらす量（m）</summary>
+        protected float FormationLateralOffset { get; private set; }
+
+        public void SetFormation(BossFormationSlot slot, float lateralOffset)
         {
             FormationSlot = slot;
+            FormationLateralOffset = lateralOffset;
             OnFormationAssigned(slot);
         }
 
@@ -177,6 +202,11 @@ namespace App.Battle.Views.Enemy.AI.Boss
         {
         }
 
+        /// <summary>行動が終わって待機へ戻ったとき（硬直明け・打ち切り・スタン・撃破のいずれも。予兆の後片付けなど）</summary>
+        protected virtual void OnActionFinished(int actionIndex)
+        {
+        }
+
         private void OnActionPhaseChanged(BossActionPhase phase)
         {
             switch (phase)
@@ -191,6 +221,12 @@ namespace App.Battle.Views.Enemy.AI.Boss
                     OnActionRecovery(_actionPhase.ActionIndex);
                     break;
                 case BossActionPhase.Ready:
+                    // 初期化時の最初の通知（まだ何も行動していない）は除く
+                    if (_isInitialized)
+                    {
+                        OnActionFinished(_actionPhase.ActionIndex);
+                    }
+
                     break;
             }
 
