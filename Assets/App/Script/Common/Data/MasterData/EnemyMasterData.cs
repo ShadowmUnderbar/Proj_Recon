@@ -56,5 +56,18 @@ namespace App.Common.Data.MasterData
 
         [SerializeField] private float _attackDistanceRange = 1f;
         public float AttackDistanceRange => _attackDistanceRange;
+
+        [Header("行動の段階（ボスAIが使う。通常の敵は0のまま）")]
+        [SerializeField, Min(0f), Tooltip("予備動作の秒数")]
+        private float _windupTime;
+        public float WindupTime => _windupTime;
+
+        [SerializeField, Min(0f), Tooltip("攻撃の持続秒数（開始時に攻撃を出す）")]
+        private float _activeTime;
+        public float ActiveTime => _activeTime;
+
+        [SerializeField, Min(0f), Tooltip("攻撃後の硬直秒数")]
+        private float _recoveryTime;
+        public float RecoveryTime => _recoveryTime;
     }
 }

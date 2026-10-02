@@ -19,6 +19,7 @@ namespace App.Battle.UseCase
         private readonly IPointParticlePresenter _pointParticlePresenter;
         private readonly WaveConfig _waveConfig;
         private readonly IFreezeDataStore _freezeDataStore;
+        private readonly IBossWaveDataStore _bossWaveDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -31,7 +32,8 @@ namespace App.Battle.UseCase
             IBulletStoreView bulletStoreView,
             IPointParticlePresenter pointParticlePresenter,
             WaveConfig waveConfig,
-            IFreezeDataStore freezeDataStore
+            IFreezeDataStore freezeDataStore,
+            IBossWaveDataStore bossWaveDataStore
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -42,6 +44,7 @@ namespace App.Battle.UseCase
             _pointParticlePresenter = pointParticlePresenter;
             _waveConfig = waveConfig;
             _freezeDataStore = freezeDataStore;
+            _bossWaveDataStore = bossWaveDataStore;
         }
 
         public void Initialize()
@@ -87,6 +90,17 @@ namespace App.Battle.UseCase
             if (_waveConfig.HasMaxWave
                 && _waveManagerDataStore.CurrentWave.CurrentValue >= _waveConfig.MaxWaveCount)
             {
+                return;
+            }
+
+            // ボスウェーブは制限時間・撃破数では進めず、ボスを全員倒したときだけ進める
+            if (_bossWaveDataStore.IsBossWave)
+            {
+                if (_bossWaveDataStore.IsBossCleared)
+                {
+                    AdvanceWaveInternal();
+                }
+
                 return;
             }
 

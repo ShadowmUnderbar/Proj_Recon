@@ -45,6 +45,7 @@ namespace App.Battle
         [SerializeField] private UpgradeDescriptionStyle _upgradeDescriptionStyle;
         [SerializeField] private PlayerBaseParameterConfig _playerBaseParameterConfig;
         [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
+        [SerializeField] private BossWaveConfig _bossWaveConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -67,6 +68,12 @@ namespace App.Battle
             builder.Register<EnemyDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IEnemyDataStore>();
             builder.Register<EnemyRandomSpawnCycleDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IEnemyRandomSpawnCycleDataStore>();
+            // 複数個体のボスの台本進行（EnemyDataStoreへ個体を登録する）
+            builder.Register<BossGroupDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IBossGroupDataStore>();
+            // ボスウェーブの判定（湧き周期・ウェーブ進行が参照する）
+            builder.Register<BossWaveDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IBossWaveDataStore>();
             builder.Register<PeaceMakerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPeaceMakerDataStore>();
             builder.Register<AvalancheDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -155,6 +162,10 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
             builder.RegisterEntryPoint<FreezeUseCase>();
+            // ボスグループの台本進行と個体をつなぐ（フリーズ・ウェーブ間ポーズ中は台本を止める）
+            builder.RegisterEntryPoint<BossGroupUseCase>();
+            // ボスウェーブ開始時に残った敵を消し、プレイヤーを移してボスを出す
+            builder.RegisterEntryPoint<BossWaveUseCase>();
             builder.RegisterEntryPoint<DodgeCounterAttackUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
@@ -288,6 +299,8 @@ namespace App.Battle
             builder.RegisterInstance(_upgradeDescriptionStyle);
             // ウェーブ開始時のチュートリアル割り当て（TutorialWaveUseCase が利用）
             builder.RegisterInstance(_tutorialWaveConfig);
+            // ボスウェーブの番号・ボスグループ・出現位置（BossWaveDataStore / BossWaveUseCase が利用）
+            builder.RegisterInstance(_bossWaveConfig);
 
             #endregion
         }

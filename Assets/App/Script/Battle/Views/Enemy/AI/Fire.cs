@@ -18,19 +18,7 @@ namespace App.Battle.Views.Enemy.AI
             base.Attack();
 
             var bullet = Instantiate(_bulletPrefab);
-
-            var bulletData = new BulletData
-            {
-                ShotType = ShotType.Normal,
-                FocusType = AimFocusType.NotFocus,
-                Damage = EnemyData.BaseDamage,
-                Speed = EnemyData.BaseBulletSpeed,
-                Size = EnemyData.BaseBulletSize,
-                Penetration = 0,
-                Explosive = 0
-            };
-
-            bullet.Spawn(EnemyId, _muzzleTransform.ToPose(), bulletData, -1, PlayerTransform);
+            bullet.Spawn(EnemyId, _muzzleTransform.ToPose(), EnemyData.CreateBulletData(), -1, PlayerTransform);
         }
     }
 }

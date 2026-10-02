@@ -97,6 +97,11 @@ namespace App.Battle.DataStore
             Position.Value += new Vector3(moveV2.x, 0, moveV2.y) * speed;
         }
 
+        public void WarpTo(Vector3 position)
+        {
+            Position.Value = position;
+        }
+
         public void TakeDamage(float damage)
         {
             if (damage <= 0f)

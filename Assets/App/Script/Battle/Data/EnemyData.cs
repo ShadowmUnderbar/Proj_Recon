@@ -1,3 +1,4 @@
+using App.Common.Data;
 using App.Common.Data.MasterData;
 using UnityEngine;
 
@@ -20,6 +21,9 @@ namespace App.Battle.Data
             BattleSpeed = enemyMasterData.BattleSpeed;
             AttackInterval = enemyMasterData.AttackInterval;
             FindDistanceRange = enemyMasterData.FindDistance;
+            WindupTime = enemyMasterData.WindupTime;
+            ActiveTime = enemyMasterData.ActiveTime;
+            RecoveryTime = enemyMasterData.RecoveryTime;
         }
 
         public int Id { get; set; }
@@ -38,5 +42,25 @@ namespace App.Battle.Data
         public float BattleSpeed { get; set; }
         public float AttackInterval { get; set; }
         public float FindDistanceRange { get; set; }
+
+        // 行動の各段階の秒数（ボスAIが使う）
+        public float WindupTime { get; set; }
+        public float ActiveTime { get; set; }
+        public float RecoveryTime { get; set; }
+
+        /// <summary>この敵が撃つ通常弾のパラメータ（攻撃力・弾速・大きさはこの敵の値）</summary>
+        public BulletData CreateBulletData()
+        {
+            return new BulletData
+            {
+                ShotType = ShotType.Normal,
+                FocusType = AimFocusType.NotFocus,
+                Damage = BaseDamage,
+                Speed = BaseBulletSpeed,
+                Size = BaseBulletSize,
+                Penetration = 0,
+                Explosive = 0
+            };
+        }
     }
 }
