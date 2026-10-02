@@ -23,6 +23,9 @@ namespace App.Common.Data
         /// <summary>デバッグ用「視線が判定球を通った敵に被弾リアクションを出す」設定の有効フラグ</summary>
         public static string GazeTouchHitFeedbackKey => "GazeTouchHitFeedback";
 
+        /// <summary>デバッグ用「敵と対戦」の予約内容（DebugArenaRequestのJSON）。次のバトルの組み立てで1回だけ使う</summary>
+        public static string DebugArenaRequestKey => "DebugArenaRequest";
+
 #if !UNITY_EDITOR
         public static readonly bool IsVRMode = true;
 #else
@@ -64,6 +67,23 @@ namespace App.Common.Data
         public static IReadOnlyList<string> StartUpgradeIds =>
             EditorPrefs.GetString(StartUpgradeIdsKey, string.Empty)
                 .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+#endif
+
+#if !UNITY_EDITOR
+        // 製品ビルドではデバッグ対戦を行わない
+        public static string ConsumeDebugArenaRequestJson() => null;
+#else
+        /// <summary>
+        /// デバッグ対戦の予約（DebugArenaRequestのJSON）を取り出して消す。予約が無ければ null。
+        /// 1回で消すので、予約したバトルのリスタートは組み立て済みの設定で続き、
+        /// メインメニューを経由した次のバトルは通常のランに戻る
+        /// </summary>
+        public static string ConsumeDebugArenaRequestJson()
+        {
+            var json = EditorPrefs.GetString(DebugArenaRequestKey, string.Empty);
+            EditorPrefs.DeleteKey(DebugArenaRequestKey);
+            return string.IsNullOrEmpty(json) ? null : json;
+        }
 #endif
     }
 }

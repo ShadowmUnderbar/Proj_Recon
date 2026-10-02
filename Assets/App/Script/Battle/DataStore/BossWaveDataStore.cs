@@ -9,6 +9,7 @@ namespace App.Battle.DataStore
         private readonly BossWaveConfig _bossWaveConfig;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IBossGroupDataStore _bossGroupDataStore;
+        private readonly DebugArenaSettings _debugArenaSettings;
 
         // ボスを出現させたウェーブ番号（0は未出現）。ウェーブが変われば自然に「未出現」扱いになる
         private int _spawnedWave;
@@ -17,17 +18,20 @@ namespace App.Battle.DataStore
         public BossWaveDataStore(
             BossWaveConfig bossWaveConfig,
             IWaveManagerDataStore waveManagerDataStore,
-            IBossGroupDataStore bossGroupDataStore
+            IBossGroupDataStore bossGroupDataStore,
+            DebugArenaSettings debugArenaSettings
         )
         {
             _bossWaveConfig = bossWaveConfig;
             _waveManagerDataStore = waveManagerDataStore;
             _bossGroupDataStore = bossGroupDataStore;
+            _debugArenaSettings = debugArenaSettings;
         }
 
         private int CurrentWave => _waveManagerDataStore.CurrentWave.CurrentValue;
 
-        public bool IsBossWave => _bossWaveConfig.IsBossWave(CurrentWave);
+        // デバッグ対戦はボスウェーブの番号を指定しても、ボスウェーブとしては扱わない（選んだ相手だけを出す）
+        public bool IsBossWave => !_debugArenaSettings.IsEnabled && _bossWaveConfig.IsBossWave(CurrentWave);
 
         public bool IsBossSpawned => IsBossWave && _spawnedWave == CurrentWave;
 

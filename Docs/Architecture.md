@@ -269,6 +269,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `BossGroupUseCase` | ボスの個体の状態（`OnBossMemberStatusChanged`）を `BossGroupDataStore` へ渡し、台本が出した行動・待機の命令を `EnemyPresenter` 経由で個体へ届ける。フリーズ・ウェーブ間ポーズ中は台本を止める | BossGroup, Enemy, Freeze, WaveManager |
 | `BossLifeGaugeUseCase` | Boss ランクの敵が出たら足元に体力ゲージを出し、`OnEnemyPoseUpdate` で位置に追従、命中のたびに `Hp / MaxHp` を反映（体力共有の仲間も同時に更新）、`OnEnemyRemoved` で消す | Enemy, BossLifeGauge |
 | `BossWaveUseCase` | ボスウェーブ開始時に残った敵の消去・プレイヤーの移動・ボスの出現（3.2 参照） | BossWave, Enemy, PlayerState |
+| `DebugArenaUseCase` | デバッグ対戦（5章）のときだけ動く。ラン開始で残った敵を消してプレイヤーを `BossWaveConfig.PlayerPosition` へ移し、`DebugArenaSettings` のボスグループ（`BossOrigin` に出す）か敵（`BossOrigin` 付近に指定数）を出す。全員いなくなったら秒数のあとで出し直す（ポーズ・フリーズ中は待ちを進めない）。出現に失敗した・誰も撃破されずに全員消えた（読み込み失敗など）ときは出し直さない | DebugArena, Enemy, BossGroup, PlayerState |
 | `WaveManagerUseCase` / `ShopUseCase` / `RunStartUseCase` / `GameOverUseCase` / `RunResetUseCase` | 3.2 参照 | |
 | `UpgradeSideEffectApplier` | アップグレード付与の副作用（バフ起動・バリア満タン）。Shop と RunStart の共通処理 | BuffState, PlayerBarrier |
 | `StreamerCameraUseCase` | ウェーブ進行・ボス・マルチキルで配信カメラの演出をトリガー | StreamerCamera, Enemy |
@@ -295,9 +296,10 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `EnemyDataStore` | 敵の実体データ（`EnemyData`）、HP、`OnEnemyDead`。スポーン時 HP/攻撃力は `EnemyWaveScalingCalculatorDataStore` で決める。`LinkSharedHealth` で複数の敵に体力を共有させる（合計値。`EnemyData.MaxHp` も合計にそろえる。誰に当てても減り、0で当てた敵だけ撃破扱い、残りは `RemoveEnemyData` で消す） |
 | `EnemyRandomSpawnCycleDataStore` | ランク別スポーン周期・同時数の増加（`MinorSpawnCountGrowthRate`） |
 | `EnemyWaveScalingCalculatorDataStore` | `WaveScalingDatabase` からウェーブ帯ごとの増加率（線形・切り上げ） |
-| `WaveManagerDataStore` | 現在ウェーブ・経過時間・キル数・ポーズ・`OnWaveAdvanced` |
+| `WaveManagerDataStore` | 現在ウェーブ・経過時間・キル数・ポーズ・`OnWaveAdvanced`。開始ウェーブは通常 1、デバッグ対戦は指定した番号 |
 | `BossGroupDataStore` / `BossPatternRunner` | 複数個体のボスの出現（メンバーを `EnemyDataStore` へ登録。`SharedHealth` なら体力を共有させる）と行動台本の進行。`BossPatternRunner`（plain C#）が個体の状態から `Act`（全員が行動可能になったら同じフレームで一斉に行動、`HoldOthers` で対象の行動・硬直が終わるまで他を待機）・`WaitActionable`（硬直・スタン明けを待つ）・`Wait`（秒数）・`CrossFormation`（対象をプレイヤーの縦方向・横方向へ交互に振り分けて配置し直す。どちらが縦か・正負の側はランダム。横へのずれの候補と「少なくとも1体は0」を指定できる）・`RandomLoop`（直前のいくつかのステップを合計 Min〜Max 回ランダムに繰り返す。入れ子不可）・`DiagonalFormation`（2体を隣り合う斜めの角へ。向きが直交して帯が×字になる）を進め、命令（`BossDirectorCommand`）を出す。撃破されたメンバーは対象から外す。`BossGroupConfig.RageHealthRatio` 以下まで体力が減ったら台本を `RagePattern`（発狂フェイズ）へ差し替え、行動中の個体は `Cancel` で打ち切る |
 | `BossWaveDataStore` | 現在ウェーブがボスウェーブか・出現済みか・全員倒したか |
+| `DebugArenaDataStore` | デバッグ対戦で出した相手の敵Idと、全員いなくなってからの出し直しの待ち（ラン開始で初期化） |
 | `GameStateDataStore` / `RunStartDataStore` / `FreezeDataStore` | ゲームオーバー／セット選択中／フリーズ残時間 |
 
 **アップグレード・バフ**
@@ -322,6 +324,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | 種別 | クラス |
 |---|---|
 | ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle`, `BossWaveConfig`（ボスウェーブの番号・出すボスグループ・プレイヤー/ボスの位置、`MasterData/Boss`）, `BossLifeGaugeConfig`（ボスの体力ゲージの色・大きさ、`MasterData/Boss`。既定は紫）, `BossLineStrikeConfig`（ボスの帯の攻撃の幅・長さ・予兆/攻撃/硬直の秒数・連続攻撃の回数と間隔・ダメージ倍率・色、`MasterData/Boss`）, `BossGroupConfig`（ボスのメンバー・行動台本 `BossPatternStep[]`・体力共有、`MasterData/Boss`。`BossGroup_TwinShooter`＝交代と同時行動の確認用、`BossGroup_TickTock`＝体力共有の二人組） |
+| デバッグ設定（組み立て時に `DebugConfig` から作って注入） | `EnemyGazeDebugSettings`, `DebugArenaSettings`（デバッグ対戦の相手・出し直し・無敵。予約が無ければ `Disabled`。`Common/Data/DebugArenaRequest` が予約の中身） |
 | 定数 | `PlayerConstants.PlayerId`（**今回新設**）, `ThemeColors` |
 | POCO / struct | `EnemyData`, `HitData`, `BossMemberStatus`, `BossDirectorCommand`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `TutorialMessageAnchor`, `UpgradeLocalizedText` |
 | enum | `EnemyAIState`, `BossActionPhase`, `BossPatternStepType`, `BossFormationSlot`（プレイヤーの上下左右、ワールド軸）, `HitBoxType`, `StreamerCameraShotType`, `TutorialMessagePhase` |
@@ -418,6 +421,7 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | `Tools/マスターデータ/*` | シート出力ファイルの取り込み（1.5） |
 | `Tools/MainMenu/…` / `Tools/Upgrade/…` | 部屋・カードプレースホルダの生成 |
 | `Editor/AppVRModeMenu.cs` / `StartUpgradeDebugWindow.cs` | `DebugConfig` の EditorPrefs（VR モード／全解放／開始時アップグレード）を切り替える |
+| `App/デバッグ: 敵と対戦`（`Editor/DebugArenaWindow.cs` / `DebugArenaLauncher.cs`） | 通常のプレイとは別の入口。任意のボスグループ・敵（Boss ランク以外）を選んで Battle シーンを再生し、セット選択・ウェーブ進行・周期スポーンを止めてその相手とだけ戦う（デバッグ対戦）。ウェーブ番号（敵の HP・攻撃力の倍率に使う。ボスウェーブの番号でもボスウェーブにはしない）・倒したら出し直す・プレイヤー無敵（HP を減らさず被弾の通知は流す）を選べる。予約は EditorPrefs `DebugArenaRequest` に置き、`BattleLifetimeScope` が組み立て時に1回だけ取り出す（リスタートは同じ相手で続き、再生の終了で残りの予約と再生開始シーンを片付ける）。止める箇所は `RunStartUseCase`（選択を飛ばす）・`WaveManagerUseCase`（進めない）・`EnemyRandomSpawnCycleDataStore`（湧かせない）・`BossWaveDataStore`（ボスウェーブにしない）・`TutorialWaveUseCase`（チュートリアルを出さない＝既読にしない）・`PlayerStateDataStore`（無敵）が `DebugArenaSettings` を見る。開始ウェーブは `WaveManagerDataStore` が `DebugArenaSettings.StartWave` で決める（リスタートも同じ番号へ戻す）。プローブからは `Request-DebugArena`（`BossProbeCommon.ps1`） |
 | `GameInputDataStore.Debug*` | `Shift+U` でショップを開く等のデバッグ入力（エディタのみ） |
 | uLoop MCP | Claude からのコンパイル・PlayMode・ログ取得 |
 | `Assets/App/Tests/EditMode`（`App.Tests.EditMode`） | EditMode の単体テスト（Unity Test Framework）。シーンを使わない plain C# のロジック（いまはボスの台本ランナー `BossPatternRunner` と行動段階 `BossActionPhaseMachine`）を数秒で確かめる。`uloop run-tests --test-mode EditMode` で回す |

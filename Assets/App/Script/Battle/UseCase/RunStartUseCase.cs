@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
@@ -36,6 +37,7 @@ namespace App.Battle.UseCase
         private readonly IRunStartPresenter _runStartPresenter;
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
+        private readonly DebugArenaSettings _debugArenaSettings;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -50,7 +52,8 @@ namespace App.Battle.UseCase
             UpgradeDatabase upgradeDatabase,
             IRunStartPresenter runStartPresenter,
             IPlayerStateDataStore playerStateDataStore,
-            IPlayerControlPresenter playerControlPresenter
+            IPlayerControlPresenter playerControlPresenter,
+            DebugArenaSettings debugArenaSettings
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -63,6 +66,7 @@ namespace App.Battle.UseCase
             _runStartPresenter = runStartPresenter;
             _playerStateDataStore = playerStateDataStore;
             _playerControlPresenter = playerControlPresenter;
+            _debugArenaSettings = debugArenaSettings;
         }
 
         public void Initialize()
@@ -108,8 +112,9 @@ namespace App.Battle.UseCase
                 return;
             }
 
+            // デバッグ対戦は相手の確認が目的なので、セットを選ばずに開始する（開始時アップグレードは上で付与済み）。
             // 保存済みスロットが無ければ「使わずに開始」しか選べないので、選択UIを出さずに開始する
-            if (!_metaProgressionDataStore.HasAnySavedSlot)
+            if (_debugArenaSettings.IsEnabled || !_metaProgressionDataStore.HasAnySavedSlot)
             {
                 StartRun();
                 return;

@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using R3;
 using UnityEngine;
@@ -11,15 +12,18 @@ namespace App.Battle.DataStore
     {
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IBossWaveDataStore _bossWaveDataStore;
+        private readonly DebugArenaSettings _debugArenaSettings;
 
         [Inject]
         public EnemyRandomSpawnCycleDataStore(
             IWaveManagerDataStore waveManagerDataStore,
-            IBossWaveDataStore bossWaveDataStore
+            IBossWaveDataStore bossWaveDataStore,
+            DebugArenaSettings debugArenaSettings
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
             _bossWaveDataStore = bossWaveDataStore;
+            _debugArenaSettings = debugArenaSettings;
         }
 
         private readonly Subject<int> _onSpawnCommonEnemy = new();
@@ -69,8 +73,8 @@ namespace App.Battle.DataStore
                 return;
             }
 
-            // ボスウェーブ中はボス以外を湧かせない
-            if (_bossWaveDataStore.IsBossWave)
+            // ボスウェーブ中はボス以外を湧かせない。デバッグ対戦では指定した相手以外を湧かせない
+            if (_bossWaveDataStore.IsBossWave || _debugArenaSettings.IsEnabled)
             {
                 return;
             }
