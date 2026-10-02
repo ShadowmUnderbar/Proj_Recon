@@ -11,6 +11,9 @@ namespace App.Battle.Interface
     {
         Observable<(int id, Pose pose)> OnEnemyPoseUpdate { get; }
 
+        /// <summary>出現（プレハブの読み込み・生成）に失敗した敵のId。受け取った側で敵データを取り除く</summary>
+        Observable<int> OnEnemySpawnFailed { get; }
+
         /// <summary>ボスグループの個体の状態変化（出現時に初期状態も流す）</summary>
         Observable<(int id, BossMemberStatus status)> OnBossMemberStatusChanged { get; }
 
