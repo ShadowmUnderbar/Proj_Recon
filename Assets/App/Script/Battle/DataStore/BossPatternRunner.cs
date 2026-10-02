@@ -31,6 +31,15 @@ namespace App.Battle.DataStore
         private int _stepIndex;
         private float _waitElapsed;
 
+        // 斜めの角を時計回りに並べたもの（左上 → 右上 → 右下 → 左下）。隣り合う角＝並びで1つ違い
+        private static readonly BossFormationSlot[] DiagonalCorners =
+        {
+            BossFormationSlot.UpLeft, BossFormationSlot.UpRight, BossFormationSlot.DownRight, BossFormationSlot.DownLeft
+        };
+
+        // RandomLoop の残り回数（-1 は未開始。ループを抜けたら -1 に戻す）
+        private int _loopRemaining = -1;
+
         // 現在の Act ステップで命令を出し終えたか（HoldOthers で対象の行動終了を待っている間 true）
         private bool _isCommanded;
 
@@ -143,6 +152,17 @@ namespace App.Battle.DataStore
                 case BossPatternStepType.Act:
                     return ProcessAct(step, output);
 
+                case BossPatternStepType.RandomLoop:
+                    return ProcessRandomLoop(step);
+
+                case BossPatternStepType.DiagonalFormation:
+                    if (!AreTargetsSpawned(step))
+                    {
+                        return StepResult.Blocked;
+                    }
+
+                    return AssignDiagonalFormation(step, output) ? StepResult.CompletedAndYield : StepResult.Completed;
+
                 case BossPatternStepType.CrossFormation:
                     // 出現（プレハブの読み込み）が済んでいない個体には配置を届けられないため待つ
                     if (!AreTargetsSpawned(step))
@@ -249,6 +269,56 @@ namespace App.Battle.DataStore
         }
 
         /// <summary>
+        /// 初めて来たときに合計回数を決め、まだ残っていればループの先頭へ戻る（戻った先から進めるため Completed を返す）
+        /// </summary>
+        private StepResult ProcessRandomLoop(BossPatternStep step)
+        {
+            if (_loopRemaining < 0)
+            {
+                var min = Math.Max(1, step.LoopMin);
+                var max = Math.Max(min, step.LoopMax);
+                _loopRemaining = _random.Next(min, max + 1) - 1;
+            }
+
+            if (_loopRemaining == 0)
+            {
+                _loopRemaining = -1;
+                return StepResult.Completed;
+            }
+
+            _loopRemaining--;
+            // AdvanceStep で1つ進むので、その分を差し引いてループの先頭の1つ前に置く
+            _stepIndex = Math.Max(0, _stepIndex - step.LoopBackSteps) - 1;
+            return StepResult.Completed;
+        }
+
+        /// <summary>
+        /// 生存している対象（先頭の2体）を、隣り合う斜めの角へ割り当てる。2体の向きが直交するので帯が×字になる。
+        /// 割り当てた個体がいれば true
+        /// </summary>
+        private bool AssignDiagonalFormation(BossPatternStep step, List<BossDirectorCommand> output)
+        {
+            _formationSlots.Clear();
+            foreach (var slot in step.MemberSlots)
+            {
+                if (IsAliveSlot(slot) && !_formationSlots.Contains(slot))
+                {
+                    _formationSlots.Add(slot);
+                }
+            }
+
+            var first = _random.Next(DiagonalCorners.Length);
+            var second = (first + (_random.Next(2) == 0 ? 1 : DiagonalCorners.Length - 1)) % DiagonalCorners.Length;
+
+            for (var i = 0; i < _formationSlots.Count && i < 2; i++)
+            {
+                output.Add(BossDirectorCommand.Formation(_memberIds[_formationSlots[i]], DiagonalCorners[i == 0 ? first : second]));
+            }
+
+            return _formationSlots.Count > 0;
+        }
+
+        /// <summary>
         /// 個体ごとの横へのずれを候補からランダムに選ぶ（_formationOffsets に入れる）。
         /// RequireAlignedOne なら、全員が0以外になったときに1体をランダムに0へ置き換える
         /// </summary>
@@ -302,6 +372,7 @@ namespace App.Battle.DataStore
             _stepIndex = 0;
             _waitElapsed = 0f;
             _isCommanded = false;
+            _loopRemaining = -1;
             ValidateSteps();
         }
 
@@ -387,6 +458,17 @@ namespace App.Battle.DataStore
             for (var i = 0; i < _steps.Count; i++)
             {
                 var step = _steps[i];
+                if (step.Type == BossPatternStepType.RandomLoop)
+                {
+                    if (step.LoopBackSteps > i)
+                    {
+                        Debug.LogError(
+                            $"[{nameof(BossPatternRunner)}] ステップ{i}の RandomLoop が台本の先頭より前（{step.LoopBackSteps}個前）へ戻ろうとしています。先頭から繰り返します");
+                    }
+
+                    continue;
+                }
+
                 if (step.Type == BossPatternStepType.Wait)
                 {
                     continue;

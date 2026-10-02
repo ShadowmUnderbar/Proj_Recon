@@ -18,7 +18,19 @@ namespace App.Battle.Data
         Left,
 
         /// <summary>プレイヤーの +X 側</summary>
-        Right
+        Right,
+
+        /// <summary>プレイヤーの -X・+Z 側（斜め）</summary>
+        UpLeft,
+
+        /// <summary>プレイヤーの +X・+Z 側（斜め）</summary>
+        UpRight,
+
+        /// <summary>プレイヤーの +X・-Z 側（斜め）</summary>
+        DownRight,
+
+        /// <summary>プレイヤーの -X・-Z 側（斜め）</summary>
+        DownLeft
     }
 
     public static class BossFormationSlotExtensions
@@ -32,8 +44,18 @@ namespace App.Battle.Data
                 BossFormationSlot.Down => UnityEngine.Vector3.back,
                 BossFormationSlot.Left => UnityEngine.Vector3.left,
                 BossFormationSlot.Right => UnityEngine.Vector3.right,
+                BossFormationSlot.UpLeft => new UnityEngine.Vector3(-1f, 0f, 1f).normalized,
+                BossFormationSlot.UpRight => new UnityEngine.Vector3(1f, 0f, 1f).normalized,
+                BossFormationSlot.DownRight => new UnityEngine.Vector3(1f, 0f, -1f).normalized,
+                BossFormationSlot.DownLeft => new UnityEngine.Vector3(-1f, 0f, -1f).normalized,
                 _ => UnityEngine.Vector3.zero
             };
+        }
+
+        /// <summary>斜めの位置か</summary>
+        public static bool IsDiagonal(this BossFormationSlot slot)
+        {
+            return slot >= BossFormationSlot.UpLeft;
         }
 
         /// <summary>縦方向（上下）の位置か</summary>

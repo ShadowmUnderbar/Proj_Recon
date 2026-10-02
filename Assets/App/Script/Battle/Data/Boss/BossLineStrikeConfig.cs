@@ -26,6 +26,13 @@ namespace App.Battle.Data
         [SerializeField, Min(0f), Tooltip("攻撃後の硬直の秒数")]
         private float _recoverySeconds = 0.5f;
 
+        [Header("連続攻撃（×字の配置で使う行動）")]
+        [SerializeField, Min(1), Tooltip("予兆1回のあと続けて当てる回数")]
+        private int _repeatCount = 3;
+
+        [SerializeField, Min(0.02f), Tooltip("連続攻撃の間隔（秒）。2回目以降は予兆なしでこの間隔で当てる")]
+        private float _repeatInterval = 0.25f;
+
         [Header("ダメージ")]
         [SerializeField, Min(0f), Tooltip("ボスの攻撃力（ウェーブ強化後）に掛ける倍率")]
         private float _damageMultiplier = 1f;
@@ -43,6 +50,8 @@ namespace App.Battle.Data
         public float StrikeSeconds => _strikeSeconds;
         public float RecoverySeconds => _recoverySeconds;
         public float DamageMultiplier => _damageMultiplier;
+        public int RepeatCount => _repeatCount;
+        public float RepeatInterval => _repeatInterval;
         public Color TelegraphColor => _telegraphColor;
         public Color StrikeColor => _strikeColor;
     }

@@ -14,6 +14,8 @@ namespace App.Battle.Views.Enemy.AI.Boss
     ///   移動方向と直交する向き（プレイヤーの側）へ弾を連射する。長さは EnemyMasterData の ActiveTime。
     /// 行動1（帯の攻撃）: その場に留まり、プレイヤーの側へ伸びる帯を予兆として出し、予兆が明けた瞬間に帯の中のプレイヤーへ当てる。
     ///   範囲・秒数・ダメージは BossLineStrikeConfig。
+    /// 行動2（帯の連続攻撃）: 行動1と同じ帯を、予兆1回のあと同じ向き・同じ位置のまま予兆なしで続けて当てる（×字の配置で使う）。
+    ///   回数と間隔は BossLineStrikeConfig の RepeatCount / RepeatInterval。
     /// プレハブでは基底の「行動中は移動を止める」を切っておくこと（弾幕中も動くため）。
     /// </summary>
     public class BossAxisBarrage : BossAIBase
@@ -23,6 +25,9 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         /// <summary>帯の攻撃の行動番号</summary>
         public const int LineStrikeActionIndex = 1;
+
+        /// <summary>帯の連続攻撃の行動番号（予兆1回のあと続けて当てる）</summary>
+        public const int RepeatLineStrikeActionIndex = 2;
 
         [SerializeField] private BaseBulletView _bulletPrefab;
         [SerializeField] private Transform _muzzleTransform;
@@ -53,16 +58,23 @@ namespace App.Battle.Views.Enemy.AI.Boss
         private Vector3 _strikeOrigin;
         private Vector3 _strikeDirection;
 
+        // 連続攻撃の残り回数と、次の攻撃までの残り時間（秒）
+        private int _repeatRemaining;
+        private float _repeatTimer;
+
         private BossLineStrikeView _lineStrikeView;
         // 帯は長いので地面・ボス・弾など判定と無関係なコライダーも入る。あふれるとプレイヤーを取りこぼすため余裕を持たせる
         private readonly Collider[] _strikeHits = new Collider[32];
 
         protected override void GetActionDurations(int actionIndex, out float windup, out float active, out float recovery)
         {
-            if (actionIndex == LineStrikeActionIndex && _lineStrikeConfig != null)
+            if (IsLineStrike(actionIndex) && _lineStrikeConfig != null)
             {
                 windup = _lineStrikeConfig.TelegraphSeconds;
-                active = _lineStrikeConfig.StrikeSeconds;
+                // 連続攻撃は最後の1回の表示が終わるまでを攻撃の段階にする
+                active = actionIndex == RepeatLineStrikeActionIndex
+                    ? _lineStrikeConfig.RepeatInterval * (_lineStrikeConfig.RepeatCount - 1) + _lineStrikeConfig.StrikeSeconds
+                    : _lineStrikeConfig.StrikeSeconds;
                 recovery = _lineStrikeConfig.RecoverySeconds;
                 return;
             }
@@ -97,12 +109,12 @@ namespace App.Battle.Views.Enemy.AI.Boss
             }
 
             // 帯の攻撃の間はその場に留まる（予兆と攻撃の範囲を動かさない）
-            SetAgentDestination(CurrentActionIndex == LineStrikeActionIndex ? transform.position : GetBarragePosition());
+            SetAgentDestination(IsLineStrike(CurrentActionIndex) ? transform.position : GetBarragePosition());
         }
 
         protected override void OnActionWindup(int actionIndex)
         {
-            if (actionIndex == LineStrikeActionIndex)
+            if (IsLineStrike(actionIndex))
             {
                 BeginTelegraph();
                 return;
@@ -116,14 +128,28 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         protected override void OnActionActive(int actionIndex)
         {
-            if (actionIndex == LineStrikeActionIndex)
+            if (!IsLineStrike(actionIndex))
             {
-                Strike();
+                return;
+            }
+
+            Strike();
+
+            if (actionIndex == RepeatLineStrikeActionIndex && _lineStrikeConfig != null)
+            {
+                _repeatRemaining = _lineStrikeConfig.RepeatCount - 1;
+                _repeatTimer = _lineStrikeConfig.RepeatInterval;
             }
         }
 
         protected override void OnActionActiveUpdate(int actionIndex, float deltaTime)
         {
+            if (actionIndex == RepeatLineStrikeActionIndex)
+            {
+                UpdateRepeatStrike(deltaTime);
+                return;
+            }
+
             if (actionIndex != BarrageActionIndex || FormationSlot == BossFormationSlot.None)
             {
                 return;
@@ -139,7 +165,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         protected override void OnActionRecovery(int actionIndex)
         {
-            if (actionIndex == LineStrikeActionIndex && _lineStrikeView != null)
+            if (IsLineStrike(actionIndex) && _lineStrikeView != null)
             {
                 _lineStrikeView.Hide();
             }
@@ -152,6 +178,28 @@ namespace App.Battle.Views.Enemy.AI.Boss
             {
                 _lineStrikeView.Hide();
             }
+        }
+
+        /// <summary>2回目以降の連続攻撃。予兆なしで、1回目と同じ向き・同じ位置へ間隔ごとに当てる</summary>
+        private void UpdateRepeatStrike(float deltaTime)
+        {
+            if (_lineStrikeConfig == null)
+            {
+                return;
+            }
+
+            _repeatTimer -= deltaTime;
+            while (_repeatRemaining > 0 && _repeatTimer <= 0f)
+            {
+                Strike();
+                _repeatRemaining--;
+                _repeatTimer += _lineStrikeConfig.RepeatInterval;
+            }
+        }
+
+        private static bool IsLineStrike(int actionIndex)
+        {
+            return actionIndex == LineStrikeActionIndex || actionIndex == RepeatLineStrikeActionIndex;
         }
 
         private void Fire()

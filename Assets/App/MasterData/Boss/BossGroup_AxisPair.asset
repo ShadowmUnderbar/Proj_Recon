@@ -25,6 +25,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 0
     _memberSlots: 00000000
     _actionIndex: 0
@@ -32,6 +35,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 1
     _memberSlots: 00000000
     _actionIndex: 0
@@ -39,6 +45,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 3
     _memberSlots: 0000000001000000
     _actionIndex: 0
@@ -46,6 +55,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 0
     _memberSlots: 01000000
     _actionIndex: 0
@@ -53,6 +65,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 1
     _memberSlots: 01000000
     _actionIndex: 0
@@ -60,6 +75,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   _sharedHealth: 1
   _rageHealthRatio: 0.5
   _ragePattern:
@@ -73,6 +91,9 @@ MonoBehaviour:
     - 0
     - 5
     _requireAlignedOne: 1
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 0
     _memberSlots: 0000000001000000
     _actionIndex: 1
@@ -80,6 +101,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 1
     _memberSlots: 0000000001000000
     _actionIndex: 0
@@ -87,6 +111,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 2
     _memberSlots: 
     _actionIndex: 0
@@ -94,23 +121,39 @@ MonoBehaviour:
     _waitSeconds: 0.5
     _lateralOffsets: []
     _requireAlignedOne: 0
-  - _type: 3
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+  - _type: 4
+    _memberSlots: 
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 4
+    _loopMin: 3
+    _loopMax: 6
+  - _type: 5
     _memberSlots: 0000000001000000
     _actionIndex: 0
     _holdOthers: 0
     _waitSeconds: 0
-    _lateralOffsets:
-    - -5
-    - 0
-    - 5
-    _requireAlignedOne: 1
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 0
     _memberSlots: 0000000001000000
-    _actionIndex: 1
+    _actionIndex: 2
     _holdOthers: 0
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 1
     _memberSlots: 0000000001000000
     _actionIndex: 0
@@ -118,6 +161,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 2
     _memberSlots: 
     _actionIndex: 0
@@ -125,37 +171,9 @@ MonoBehaviour:
     _waitSeconds: 0.5
     _lateralOffsets: []
     _requireAlignedOne: 0
-  - _type: 3
-    _memberSlots: 0000000001000000
-    _actionIndex: 0
-    _holdOthers: 0
-    _waitSeconds: 0
-    _lateralOffsets:
-    - -5
-    - 0
-    - 5
-    _requireAlignedOne: 1
-  - _type: 0
-    _memberSlots: 0000000001000000
-    _actionIndex: 1
-    _holdOthers: 0
-    _waitSeconds: 0
-    _lateralOffsets: []
-    _requireAlignedOne: 0
-  - _type: 1
-    _memberSlots: 0000000001000000
-    _actionIndex: 0
-    _holdOthers: 0
-    _waitSeconds: 0
-    _lateralOffsets: []
-    _requireAlignedOne: 0
-  - _type: 2
-    _memberSlots: 
-    _actionIndex: 0
-    _holdOthers: 0
-    _waitSeconds: 0.5
-    _lateralOffsets: []
-    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 3
     _memberSlots: 0000000001000000
     _actionIndex: 0
@@ -163,6 +181,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 0
     _memberSlots: 00000000
     _actionIndex: 0
@@ -170,6 +191,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 1
     _memberSlots: 00000000
     _actionIndex: 0
@@ -177,6 +201,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 3
     _memberSlots: 0000000001000000
     _actionIndex: 0
@@ -187,6 +214,9 @@ MonoBehaviour:
     - 0
     - 5
     _requireAlignedOne: 1
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 0
     _memberSlots: 0000000001000000
     _actionIndex: 1
@@ -194,6 +224,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 1
     _memberSlots: 0000000001000000
     _actionIndex: 0
@@ -201,6 +234,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 2
     _memberSlots: 
     _actionIndex: 0
@@ -208,23 +244,39 @@ MonoBehaviour:
     _waitSeconds: 0.5
     _lateralOffsets: []
     _requireAlignedOne: 0
-  - _type: 3
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+  - _type: 4
+    _memberSlots: 
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 4
+    _loopMin: 3
+    _loopMax: 6
+  - _type: 5
     _memberSlots: 0000000001000000
     _actionIndex: 0
     _holdOthers: 0
     _waitSeconds: 0
-    _lateralOffsets:
-    - -5
-    - 0
-    - 5
-    _requireAlignedOne: 1
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 0
     _memberSlots: 0000000001000000
-    _actionIndex: 1
+    _actionIndex: 2
     _holdOthers: 0
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 1
     _memberSlots: 0000000001000000
     _actionIndex: 0
@@ -232,6 +284,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 2
     _memberSlots: 
     _actionIndex: 0
@@ -239,37 +294,9 @@ MonoBehaviour:
     _waitSeconds: 0.5
     _lateralOffsets: []
     _requireAlignedOne: 0
-  - _type: 3
-    _memberSlots: 0000000001000000
-    _actionIndex: 0
-    _holdOthers: 0
-    _waitSeconds: 0
-    _lateralOffsets:
-    - -5
-    - 0
-    - 5
-    _requireAlignedOne: 1
-  - _type: 0
-    _memberSlots: 0000000001000000
-    _actionIndex: 1
-    _holdOthers: 0
-    _waitSeconds: 0
-    _lateralOffsets: []
-    _requireAlignedOne: 0
-  - _type: 1
-    _memberSlots: 0000000001000000
-    _actionIndex: 0
-    _holdOthers: 0
-    _waitSeconds: 0
-    _lateralOffsets: []
-    _requireAlignedOne: 0
-  - _type: 2
-    _memberSlots: 
-    _actionIndex: 0
-    _holdOthers: 0
-    _waitSeconds: 0.5
-    _lateralOffsets: []
-    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 3
     _memberSlots: 0000000001000000
     _actionIndex: 0
@@ -277,6 +304,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 0
     _memberSlots: 01000000
     _actionIndex: 0
@@ -284,6 +314,9 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
   - _type: 1
     _memberSlots: 01000000
     _actionIndex: 0
@@ -291,3 +324,6 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
