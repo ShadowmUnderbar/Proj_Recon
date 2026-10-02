@@ -2,6 +2,7 @@
 # ボス系プローブ（BossWave / BossAxisPair）の共通処理。各プローブの先頭で dot-source する。
 #   - 再生開始シーンを Battle にする／戻す。あわせて開始時アップグレード（デバッグ設定）を空にする／戻す
 #   - BossWaveConfig のボスグループを一時的に差し替える／戻す（ボスウェーブに出るボスを検証対象に合わせる）
+#   - デバッグ対戦（任意のボスグループ・敵とだけ戦う）を予約する（Request-DebugArena）
 #   - C# スニペットの共通の前置き（コンテナ解決・台本の進行のリフレクション）
 #   - ボスウェーブ直前のショップまでウェーブを進める
 #
@@ -61,6 +62,41 @@ EditorPrefs.SetString("StartUpgradeIds", "$savedUpgrades");
 return "restored";
 "@ | Out-Null
     Write-Host "開始時アップグレードを戻しました: [$savedUpgrades]"
+}
+
+function Request-DebugArena {
+    # デバッグ対戦（App/デバッグ: 敵と対戦）を予約し、再生開始シーンを Battle にする。再生前（エディット時）に呼ぶこと。
+    # 予約は次の再生の組み立てで1回だけ使われ、再生の終了時に DebugArenaLauncher が再生開始シーンと残った予約を片付ける。
+    # Enter-BossProbeScene のあとに呼ぶ（そちらが元の再生開始シーンを退避・復元する）
+    param(
+        [string]$BossGroupPath = '',
+        [string]$EnemyCode = '',
+        [int]$EnemyCount = 1,
+        [int]$Wave = 1,
+        [bool]$AutoRespawn = $true,
+        [double]$RespawnDelaySeconds = 3,
+        [bool]$Invincible = $true
+    )
+    $ci = [System.Globalization.CultureInfo]::InvariantCulture
+    $result = Invoke-UnityCode -Snippet @"
+using App.Common.Data;
+
+var request = new DebugArenaRequest
+{
+    BossGroupAssetPath = "$BossGroupPath",
+    EnemyCode = "$EnemyCode",
+    EnemyCount = $EnemyCount,
+    Wave = $Wave,
+    AutoRespawn = $($AutoRespawn.ToString().ToLower()),
+    RespawnDelaySeconds = $($RespawnDelaySeconds.ToString($ci))f,
+    Invincible = $($Invincible.ToString().ToLower())
+};
+return App.Editor.DebugArenaLauncher.Prepare(request) ? "ok" : "failed";
+"@
+    if ($result -ne 'ok') {
+        throw "デバッグ対戦の予約に失敗しました（$result）"
+    }
+    Write-Host "デバッグ対戦を予約しました（ボスグループ: [$BossGroupPath] 敵: [$EnemyCode]x$EnemyCount ウェーブ: $Wave 出し直し: $AutoRespawn/$RespawnDelaySeconds 秒 無敵: $Invincible）"
 }
 
 function Set-BossWaveGroup {

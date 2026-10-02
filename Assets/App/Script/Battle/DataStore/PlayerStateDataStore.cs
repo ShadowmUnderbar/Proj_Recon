@@ -15,6 +15,7 @@ namespace App.Battle.DataStore
         private readonly IEmergencyNodeDataStore _emergencyNodeDataStore;
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly PlayerBaseParameterConfig _baseParameter;
+        private readonly DebugArenaSettings _debugArenaSettings;
 
         // 軽減バフを適用しても最低これだけはダメージが通る（完全無敵化を防ぐ）
         private const float MinDamage = 1f;
@@ -25,7 +26,8 @@ namespace App.Battle.DataStore
             IBuffStateDataStore buffStateDataStore,
             IEmergencyNodeDataStore emergencyNodeDataStore,
             IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
-            PlayerBaseParameterConfig baseParameter
+            PlayerBaseParameterConfig baseParameter,
+            DebugArenaSettings debugArenaSettings
         )
         {
             _playerBarrierDataStore = playerBarrierDataStore;
@@ -33,6 +35,7 @@ namespace App.Battle.DataStore
             _emergencyNodeDataStore = emergencyNodeDataStore;
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
             _baseParameter = baseParameter;
+            _debugArenaSettings = debugArenaSettings;
         }
 
         public ReactiveProperty<Vector3> Position { get; } = new();
@@ -115,7 +118,8 @@ namespace App.Battle.DataStore
 
             // バリアが残っていれば攻撃を全て吸収し、この攻撃ではHPを減らさない（超過分も破棄）。
             // 吸収できなかった（バリア0）ときだけHPを減らす。
-            if (!_playerBarrierDataStore.TryAbsorb(damage))
+            // デバッグ対戦の無敵中は HP を減らさない（バリアの吸収・被弾の通知は通常どおり行う）
+            if (!_playerBarrierDataStore.TryAbsorb(damage) && !_debugArenaSettings.IsPlayerInvincible)
             {
                 // 致死ダメージはエマージェンシー・ノードで無効化を試みる（依存ノードを1つ消費して全回復）
                 if (damage >= Health.Value && _emergencyNodeDataStore.TryActivate(out var healRatio))

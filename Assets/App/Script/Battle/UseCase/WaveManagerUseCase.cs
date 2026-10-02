@@ -1,4 +1,5 @@
 using System;
+using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
@@ -20,6 +21,7 @@ namespace App.Battle.UseCase
         private readonly WaveConfig _waveConfig;
         private readonly IFreezeDataStore _freezeDataStore;
         private readonly IBossWaveDataStore _bossWaveDataStore;
+        private readonly DebugArenaSettings _debugArenaSettings;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -33,7 +35,8 @@ namespace App.Battle.UseCase
             IPointParticlePresenter pointParticlePresenter,
             WaveConfig waveConfig,
             IFreezeDataStore freezeDataStore,
-            IBossWaveDataStore bossWaveDataStore
+            IBossWaveDataStore bossWaveDataStore,
+            DebugArenaSettings debugArenaSettings
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -45,6 +48,7 @@ namespace App.Battle.UseCase
             _waveConfig = waveConfig;
             _freezeDataStore = freezeDataStore;
             _bossWaveDataStore = bossWaveDataStore;
+            _debugArenaSettings = debugArenaSettings;
         }
 
         public void Initialize()
@@ -86,6 +90,12 @@ namespace App.Battle.UseCase
 
         private void TryAdvanceWave()
         {
+            // デバッグ対戦は同じ相手と戦い続けるため、ウェーブを進めない（ショップも開かない）
+            if (_debugArenaSettings.IsEnabled)
+            {
+                return;
+            }
+
             // 最大ウェーブ到達時は進行しない（無限ループ設定なら HasMaxWave=false でスキップ）
             if (_waveConfig.HasMaxWave
                 && _waveManagerDataStore.CurrentWave.CurrentValue >= _waveConfig.MaxWaveCount)

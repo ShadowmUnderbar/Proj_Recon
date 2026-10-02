@@ -22,6 +22,7 @@ namespace App.Battle.UseCase
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly ITutorialProgressDataStore _tutorialProgressDataStore;
         private readonly ITutorialMessageUseCase _tutorialMessageUseCase;
+        private readonly DebugArenaSettings _debugArenaSettings;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -30,16 +31,24 @@ namespace App.Battle.UseCase
             TutorialWaveConfig tutorialWaveConfig,
             IWaveManagerDataStore waveManagerDataStore,
             ITutorialProgressDataStore tutorialProgressDataStore,
-            ITutorialMessageUseCase tutorialMessageUseCase)
+            ITutorialMessageUseCase tutorialMessageUseCase,
+            DebugArenaSettings debugArenaSettings)
         {
             _tutorialWaveConfig = tutorialWaveConfig;
             _waveManagerDataStore = waveManagerDataStore;
             _tutorialProgressDataStore = tutorialProgressDataStore;
             _tutorialMessageUseCase = tutorialMessageUseCase;
+            _debugArenaSettings = debugArenaSettings;
         }
 
         public void Initialize()
         {
+            // デバッグ対戦では出さない。指定したウェーブのチュートリアルを既読にして、通常のプレイで出なくなるのを防ぐ
+            if (_debugArenaSettings.IsEnabled)
+            {
+                return;
+            }
+
             // ポーズが解けている状態をウェーブ開始として扱う。
             // メインメニュー経由やスロットが全部空のときは RunStartUseCase の初期化中に
             // ウェーブ1が始まる（このクラスより先に初期化される）ため、購読時点で既に解けていれば即座に扱う

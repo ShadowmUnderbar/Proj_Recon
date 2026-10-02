@@ -133,6 +133,9 @@ namespace App.Battle
                 .As<IPointDropCalculatorDataStore>();
             builder.Register<StreamerCameraDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IStreamerCameraDataStore>();
+            // デバッグ対戦で出した相手と出し直しの待ち（通常のランでは使われない）
+            builder.Register<DebugArenaDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IDebugArenaDataStore>();
 
             #endregion
 
@@ -168,6 +171,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<BossGroupUseCase>();
             // ボスウェーブ開始時に残った敵を消し、プレイヤーを移してボスを出す
             builder.RegisterEntryPoint<BossWaveUseCase>();
+            // デバッグ対戦（エディタの「App/デバッグ: 敵と対戦」）で指定の相手を出し、倒したら出し直す
+            builder.RegisterEntryPoint<DebugArenaUseCase>();
             // ボスの足元の体力ゲージ（プレイヤーのライフゲージを流用）
             builder.RegisterEntryPoint<BossLifeGaugeUseCase>();
             builder.RegisterEntryPoint<DodgeCounterAttackUseCase>();
@@ -298,6 +303,8 @@ namespace App.Battle
 
             // デバッグ設定は組み立て時にだけ DebugConfig から読み、利用側へは注入で渡す
             builder.RegisterInstance(new EnemyGazeDebugSettings(DebugConfig.IsGazeTouchHitFeedback));
+            // デバッグ対戦の予約は組み立て時に1回だけ取り出す（リスタートはこの設定のまま続く）
+            builder.RegisterInstance(CreateDebugArenaSettings());
             builder.RegisterInstance(_streamerCameraTriggerConfig);
             builder.RegisterInstance(_dodgeCounterAttackConfig);
             builder.RegisterInstance(_pointParticleConfig);
@@ -315,6 +322,53 @@ namespace App.Battle
             builder.RegisterInstance(_bossLifeGaugeConfig);
 
             #endregion
+        }
+
+        /// <summary>
+        /// DebugConfig のデバッグ対戦の予約から設定を作る。予約が無い・読めないときは通常のラン（Disabled）。
+        /// ボスグループはアセットパスで受け取るため、エディタでしか解決できない（製品ビルドでは予約が常に無い）
+        /// </summary>
+        private static DebugArenaSettings CreateDebugArenaSettings()
+        {
+            var json = DebugConfig.ConsumeDebugArenaRequestJson();
+            if (string.IsNullOrEmpty(json))
+            {
+                return DebugArenaSettings.Disabled;
+            }
+
+            DebugArenaRequest request;
+            try
+            {
+                request = JsonUtility.FromJson<DebugArenaRequest>(json);
+            }
+            catch (System.ArgumentException e)
+            {
+                Debug.LogError($"[BattleLifetimeScope] デバッグ対戦の予約を読めないため通常のランで開始します: {e.Message}");
+                return DebugArenaSettings.Disabled;
+            }
+
+            BossGroupConfig bossGroup = null;
+            if (request.IsBossGroup)
+            {
+#if UNITY_EDITOR
+                bossGroup = UnityEditor.AssetDatabase.LoadAssetAtPath<BossGroupConfig>(request.BossGroupAssetPath);
+#endif
+                if (bossGroup == null)
+                {
+                    Debug.LogError($"[BattleLifetimeScope] デバッグ対戦のボスグループが見つからないため通常のランで開始します: {request.BossGroupAssetPath}");
+                    return DebugArenaSettings.Disabled;
+                }
+            }
+
+            return new DebugArenaSettings(
+                true,
+                bossGroup,
+                request.EnemyCode,
+                request.EnemyCount,
+                request.Wave,
+                request.AutoRespawn,
+                request.RespawnDelaySeconds,
+                request.Invincible);
         }
     }
 }
