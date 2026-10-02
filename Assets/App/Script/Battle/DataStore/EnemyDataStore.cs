@@ -176,6 +176,12 @@ namespace App.Battle.DataStore
             }
 
             shared.ApplyTo(_spawnEnemyDataList);
+
+            // 体力ゲージ等が割合を出せるよう、最大HPも共有体力の合計にそろえる
+            foreach (var id in shared.MemberIds)
+            {
+                _spawnEnemyDataList[id].MaxHp = shared.Hp;
+            }
         }
 
         public void RemoveAllEnemyData()

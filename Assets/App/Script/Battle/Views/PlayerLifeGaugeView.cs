@@ -8,12 +8,16 @@ namespace App.Battle.Views
     /// 弧の形・色・低HP時の点滅はシェーダ（App/PlayerLifeGauge）が描き、
     /// このViewは表示値を目標値へなめらかに寄せてマテリアルへ渡すだけにする。
     /// 向きはワールドに固定し、プレイヤーが振り向いてもゲージは回らない。
+    /// ボスの足元の体力ゲージ（BossLifeGaugeStoreView）もこのプレハブを複製して使うため、プレイヤー固有の状態は持たせないこと。
     /// </summary>
     public class PlayerLifeGaugeView : MonoBehaviour, IPlayerLifeGaugeView
     {
         private static readonly int HealthFillId = Shader.PropertyToID("_HealthFill");
         private static readonly int BarrierFillId = Shader.PropertyToID("_BarrierFill");
         private static readonly int BarrierVisibleId = Shader.PropertyToID("_BarrierVisible");
+        private static readonly int HealthColorId = Shader.PropertyToID("_HealthColor");
+        private static readonly int LowHealthColorId = Shader.PropertyToID("_LowHealthColor");
+        private static readonly int TrackColorId = Shader.PropertyToID("_TrackColor");
 
         [SerializeField, Tooltip("ゲージを描くRenderer（App/PlayerLifeGauge のマテリアル）")]
         private Renderer _renderer;
@@ -84,6 +88,24 @@ namespace App.Battle.Views
         {
             _barrierVisible = visible;
             _isDirty = true;
+        }
+
+        /// <summary>
+        /// 色をこのゲージだけ上書きする（マテリアルは共有のまま。ボスのゲージをプレイヤーと見分けるために使う）。
+        /// ApplyProperties は既存のプロパティブロックを読み直してから値を足すため、ここで入れた色は保たれる
+        /// </summary>
+        public void SetColors(Color healthColor, Color lowHealthColor, Color trackColor)
+        {
+            if (_renderer == null)
+            {
+                return;
+            }
+
+            _renderer.GetPropertyBlock(_propertyBlock);
+            _propertyBlock.SetColor(HealthColorId, healthColor);
+            _propertyBlock.SetColor(LowHealthColorId, lowHealthColor);
+            _propertyBlock.SetColor(TrackColorId, trackColor);
+            _renderer.SetPropertyBlock(_propertyBlock);
         }
 
         private void ApplyProperties()
