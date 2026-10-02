@@ -217,7 +217,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `Enemy/AI/Boss/BossShooter` | 弾を撃つボス AI。行動番号ごとに弾数・広がり（0: 単発、1: 扇状 など） |
 | `BossLifeGaugeStoreView` | ボスごとの足元の体力ゲージを生成・破棄する。ゲージ本体はプレイヤーの `PlayerLifeGaugeView`（半円・CurvedWorld 対応のシェーダ）をそのまま複製し、バリアの弧は隠す。色（体力・低HP・空き部分）と大きさは `BossLifeGaugeConfig` で決め、ゲージごとに MaterialPropertyBlock で上書きする（マテリアルはプレイヤーと共有のまま） |
 | `Enemy/AI/Boss/BossLineStrikeView` | ボスの帯状の攻撃の予兆・攻撃の表示。長さ方向に刻んだ帯のメッシュを生成し（`HideFlags.DontSave`、バウンズを下へ広げる）、`CurvedWorldUnlit` の頂点ごとモードで地面に沿わせる。ボスの拡大率・回転の影響を受けないよう単独のオブジェクトとして置く |
-| `Enemy/AI/Boss/BossTickTock` | 体力を共有する二人組ボス「TickTock」用。台本の配置（`CrossFormation`）でプレイヤーの上下左右（ワールド軸）の一定距離へ瞬間移動する。行動していない間はその位置で距離を保って追い、行動（弾幕）中は自分の軸の線上だけを動いてプレイヤーと並び、移動方向と直交する向き（プレイヤーの側）へ一定間隔で撃つ。弾幕の長さは `ActiveTime`。行動1（帯の攻撃、発狂フェイズ）はその場に留まり、プレイヤーの側へ伸びる帯を予兆として出し、予兆が明けた瞬間に `OverlapBox` で帯の中のプレイヤー（`HitBoxType.Player`）へ1回当てる。行動2（帯の連続攻撃）は同じ帯を予兆1回のあと同じ向き・位置のまま予兆なしで `RepeatCount` 回、`RepeatInterval` 間隔で当てる（×字の配置で使う）。範囲・秒数・回数・ダメージ・色は `BossLineStrikeConfig`。行動ごとの秒数は `BossAIBase.GetActionDurations` で上書きする |
+| `Enemy/AI/Boss/BossTickTock` | 体力を共有する二人組ボス「TickTock」用。台本の配置（`CrossFormation`）でプレイヤーの上下左右（ワールド軸）の一定距離へ瞬間移動する。行動していない間はその位置で距離を保って追い、行動（弾幕）中は自分の軸の線上だけを動いてプレイヤーと並び、移動方向と直交する向き（プレイヤーの側）へ一定間隔で撃つ。弾幕の長さは `ActiveTime`。行動1（帯の攻撃、発狂フェイズ）はその場に留まり、プレイヤーの側へ伸びる帯を予兆として出し、予兆が明けた瞬間に `OverlapBox` で帯の中のプレイヤー（`HitBoxType.Player`）へ1回当てる。行動2（帯の連続攻撃）は同じ帯を予兆1回のあと同じ向き・位置のまま予兆なしで `RepeatCount` 回、`RepeatInterval` 間隔で当てる（×字の配置で使う）。行動3（時止め中の予兆）は帯の予兆だけを `MemoryTelegraphSeconds` 出して当てずに消し、行動4（時止め明けの攻撃）は短い予兆（`ReplayTelegraphSeconds`）のあとに帯を当てる（どちらも台本の `TimeStopMemory` で使う）。範囲・秒数・回数・ダメージ・色は `BossLineStrikeConfig`。行動ごとの秒数は `BossAIBase.GetActionDurations` で上書きする |
 | `Enemy/Bullet/BaseBulletView, StraightBullet, HomingBullet` | 敵弾（`_shooterLayer` は `Framework.Layer`）。`PointParticle` レイヤーを除外して判定 |
 | `HitBoxView` / `HitBoxStoreView` | ヒットボックス。`OnHit` で `HitData` を作って流す。耐性方向で貫通可否を返す |
 | `BulletStoreView` / `BulletTracerView` / `CounterTracerView` / `BlitzEffectView` | 弾の一括管理・曳光弾・カウンター演出・ブリッツ演出。`TracerFreezeState` でフリーズ中に停止 |
@@ -252,21 +252,21 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 
 | クラス | 何をするか | 主な依存 |
 |---|---|---|
-| `PlayerMoveUseCase` | 左スティック → 移動・モデル向き・アニメ。フリーズ／回避中は止める | PlayerState, Freeze, DodgeParameter |
+| `PlayerMoveUseCase` | 左スティック → 移動・モデル向き・アニメ。フリーズ／時止め／回避中は止める | PlayerState, Freeze, TimeStop, DodgeParameter |
 | `PlayerAimUseCase` | 手のレイ／マウスから照準位置を決めフォーカス対象を追う | PlayerAim, PlayerFocus, ShotConflict |
-| `PlayerShotUseCase` | トリガー → `PlayerBulletParameterDataStore` で弾データを作り `Shot`。フォーム（Normal/Merge/Waltz）と両手の可否 | PlayerShotType, PlayerBulletParameter, CoreSkillUnlock |
-| `PlayerDodgeUseCase` | 回避入力 → 直線移動。通過した敵を接触として記録 | PlayerDodgeParameter, DodgeCounterAttack |
+| `PlayerShotUseCase` | トリガー → `PlayerBulletParameterDataStore` で弾データを作り `Shot`。フォーム（Normal/Merge/Waltz）と両手の可否。フリーズ／時止め中は撃たない | PlayerShotType, PlayerBulletParameter, CoreSkillUnlock |
+| `PlayerDodgeUseCase` | 回避入力 → 直線移動。通過した敵を接触として記録。フリーズ／時止め中は回避の入力・移動を止める | PlayerDodgeParameter, DodgeCounterAttack |
 | `DodgeCounterAttackUseCase` | 回避終了時の跳ね返し攻撃（扇形＋直線検索 → レイ演出 → フリーズ → ダメージ）。`DodgeCounterAttackConfig` | DodgeCounterAttack, Enemy, Freeze |
 | `PlayerGazeUseCase` | `EnemyStoreView` が更新した「視線から判定球までの距離」をアップグレードごとの半径で絞り込み、注視系（スネークアイズ／メデューサ／ガン飛ばし）を反映 | SnakeEyes, Medusa, MeanMug |
-| `PlayerHitUseCase` | 被弾 → `PlayerStateDataStore.TakeDamage`（回避中は無効） | PlayerState, DodgeParameter |
+| `PlayerHitUseCase` | 被弾 → `PlayerStateDataStore.TakeDamage`（回避中・時止め中は無効） | PlayerState, DodgeParameter, TimeStop |
 | `PlayerLifeGaugeUseCase` | HP・バリアをゲージへ、位置を追従 | PlayerState, PlayerBarrier |
 | `EnemySpawnUseCase` / `EnemyRandomSpawnUseCase` | `EnemyDataStore` の生成要求を View へ（出現＝プレハブの読み込み・生成に失敗したら `OnEnemySpawnFailed` を受けて敵データを `RemoveEnemyData` で取り除く。倒せない敵を残さないため。ボスウェーブで進めなくなるのも防ぐ）／周期スポーン（`EnemyRandomSpawnCycleDataStore`）と出現位置 | Enemy, RandomSpawnCycle |
 | `EnemyControlUseCase` | プレイヤーの照準方向を敵 AI へ渡す | PlayerAim, Enemy |
 | `BattleHitUseCase` | `OnHit` → 倍率（貫通バフ／ガン飛ばし／クリティカル）→ 感電伝播 → `EnemyDataStore.Damage`。撃破時の回復（HealOnKill）等 | Enemy, BuffState, CriticalHit, ElectricShock |
 | `PointDropUseCase` | 撃破 → 粒子ドロップ、回収 → ポイント加算。`BattleHitUseCase` より先に登録（撃破地点を読むため） | Point, PointDropCalculator |
 | `BuffConditionUseCase` / `CareNodeUseCase` | バフ条件の入力（ヒット・HP割合・回避）／ケア・ノードの毎秒効果 | BuffState, CareNode |
-| `FreezeUseCase` | フリーズの開始・解除で敵・弾・レイ演出を止める | Freeze, Enemy, BulletStore |
-| `BossGroupUseCase` | ボスの個体の状態（`OnBossMemberStatusChanged`）を `BossGroupDataStore` へ渡し、台本が出した行動・待機の命令を `EnemyPresenter` 経由で個体へ届ける。フリーズ・ウェーブ間ポーズ中は台本を止める | BossGroup, Enemy, Freeze, WaveManager |
+| `FreezeUseCase` | フリーズの開始・解除で敵・弾・レイ演出を止める。ボスの時止めの間も弾・レイ演出は止める（敵は止めない） | Freeze, TimeStop, Enemy, BulletStore |
+| `BossGroupUseCase` | ボスの個体の状態（`OnBossMemberStatusChanged`）を `BossGroupDataStore` へ渡し、台本が出した行動・待機の命令を `EnemyPresenter` 経由で個体へ届け、時止めの命令は `TimeStopDataStore` へ渡す。フリーズ・ウェーブ間ポーズ中は台本を止める | BossGroup, Enemy, Freeze, WaveManager, TimeStop |
 | `BossLifeGaugeUseCase` | Boss ランクの敵が出たら足元に体力ゲージを出し、`OnEnemyPoseUpdate` で位置に追従、命中のたびに `Hp / MaxHp` を反映（体力共有の仲間も同時に更新）、`OnEnemyRemoved` で消す | Enemy, BossLifeGauge |
 | `BossWaveUseCase` | ボスウェーブ開始時に残った敵の消去・プレイヤーの移動・ボスの出現（3.2 参照） | BossWave, Enemy, PlayerState |
 | `DebugArenaUseCase` | デバッグ対戦（5章）のときだけ動く。ラン開始で残った敵を消してプレイヤーを `BossWaveConfig.PlayerPosition` へ移し、`DebugArenaSettings` のボスグループ（`BossOrigin` に出す）か敵（`BossOrigin` 付近に指定数）を出す。全員いなくなったら秒数のあとで出し直す（ポーズ・フリーズ中は待ちを進めない）。出現に失敗した・誰も撃破されずに全員消えた（読み込み失敗など）ときは出し直さない | DebugArena, Enemy, BossGroup, PlayerState |
@@ -297,10 +297,11 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `EnemyRandomSpawnCycleDataStore` | ランク別スポーン周期・同時数の増加（`MinorSpawnCountGrowthRate`） |
 | `EnemyWaveScalingCalculatorDataStore` | `WaveScalingDatabase` からウェーブ帯ごとの増加率（線形・切り上げ） |
 | `WaveManagerDataStore` | 現在ウェーブ・経過時間・キル数・ポーズ・`OnWaveAdvanced`。開始ウェーブは通常 1、デバッグ対戦は指定した番号 |
-| `BossGroupDataStore` / `BossPatternRunner` | 複数個体のボスの出現（メンバーを `EnemyDataStore` へ登録。`SharedHealth` なら体力を共有させる）と行動台本の進行。`BossPatternRunner`（plain C#）が個体の状態から `Act`（全員が行動可能になったら同じフレームで一斉に行動、`HoldOthers` で対象の行動・硬直が終わるまで他を待機）・`WaitActionable`（硬直・スタン明けを待つ）・`Wait`（秒数）・`CrossFormation`（対象をプレイヤーの縦方向・横方向へ交互に振り分けて配置し直す。どちらが縦か・正負の側はランダム。横へのずれの候補と「少なくとも1体は0」を指定できる）・`RandomLoop`（直前のいくつかのステップを合計 Min〜Max 回ランダムに繰り返す。入れ子不可）・`DiagonalFormation`（2体を隣り合う斜めの角へ。向きが直交して帯が×字になる）を進め、命令（`BossDirectorCommand`）を出す。撃破されたメンバーは対象から外す。`BossGroupConfig.RageHealthRatio` 以下まで体力が減ったら台本を `RagePattern`（発狂フェイズ）へ差し替え、行動中の個体は `Cancel` で打ち切る |
+| `BossGroupDataStore` / `BossPatternRunner` | 複数個体のボスの出現（メンバーを `EnemyDataStore` へ登録。`SharedHealth` なら体力を共有させる）と行動台本の進行。`BossPatternRunner`（plain C#）が個体の状態から `Act`（全員が行動可能になったら同じフレームで一斉に行動、`HoldOthers` で対象の行動・硬直が終わるまで他を待機）・`WaitActionable`（硬直・スタン明けを待つ）・`Wait`（秒数）・`CrossFormation`（対象をプレイヤーの縦方向・横方向へ交互に振り分けて配置し直す。どちらが縦か・正負の側はランダム。横へのずれの候補と「少なくとも1体は0」を指定できる）・`RandomLoop`（直前のいくつかのステップを合計 Min〜Max 回ランダムに繰り返す。入れ子不可）・`DiagonalFormation`（2体を隣り合う斜めの角へ。向きが直交して帯が×字になる）・`TimeStopMemory`（全員の行動が明けたら全員を待機させて時を止め、対象から1体ずつランダムに選んで上下左右のどこかへ配置し予兆だけの行動を `MemoryCount` 回見せる → 時止めを解いて `WaitSeconds` 待つ → 見せたときと同じ個体・配置・横のずれ（プレイヤーの今の位置が基準）で同じ順に `ReplayActionIndex` の攻撃。進み具合と見せた予兆の記録は `BossTimeStopMemory`）を進め、命令（`BossDirectorCommand`）を出す。撃破されたメンバーは対象から外す（時止めの途中で全員いなくなったら、`BossGroupUseCase` が撃破・消去の通知を受けた時点で時止めを解く）。`BossGroupConfig.RageHealthRatio` 以下まで体力が減ったら台本を `RagePattern`（発狂フェイズ）へ差し替え、行動中の個体は `Cancel` で打ち切る |
 | `BossWaveDataStore` | 現在ウェーブがボスウェーブか・出現済みか・全員倒したか |
 | `DebugArenaDataStore` | デバッグ対戦で出した相手の敵Idと、全員いなくなってからの出し直しの待ち（ラン開始で初期化） |
 | `GameStateDataStore` / `RunStartDataStore` / `FreezeDataStore` | ゲームオーバー／セット選択中／フリーズ残時間 |
+| `TimeStopDataStore` | ボスによる時止め中か。台本の `TimeStopMemory` が始める・解く（秒数では解かない）。フリーズと違いボスは止めず、プレイヤーの移動・射撃・回避と弾・レイ演出だけを止め、プレイヤーは被弾しない |
 
 **アップグレード・バフ**
 
@@ -354,6 +355,7 @@ ShopUseCase「次のウェーブへ」→ IsWavePause=false → BossWaveUseCase(
  → BossWaveDataStore.TrySpawnBoss → BossGroupDataStore.SpawnGroup → EnemyDataStore.AddEnemyData（以降は【敵スポーン】と同じ）
 BossAIBase.Status → EnemyStoreView.OnBossMemberStatusChanged → BossGroupUseCase → BossGroupDataStore(BossPatternRunner)
 BossGroupUseCase.Tick → BossGroupDataStore.Tick → BossDirectorCommand → EnemyPresenter.CommandBossAction / SetBossHold → BossAIBase
+                                                              └ BeginTimeStop / EndTimeStop → TimeStopDataStore → Player*UseCase・PlayerHitUseCase・FreezeUseCase(弾・レイ)
 全員撃破 → BossWaveDataStore.IsBossCleared → WaveManagerUseCase が AdvanceWave
 
 【回避 → 跳ね返し】
@@ -457,6 +459,6 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | 中 | `CurvedWorldPrototype.unity` が Build Settings に入っている | プロトタイプ用シーン・View（`CurvedWorldPrototypeMoveView` / `CurvedWorldTunerView`）が本編ビルドに含まれる | 実機調整が終わったら Build Settings から外す。View は `Editor` か `Prototype` フォルダへ隔離 |
 | 低 | `GameParamData`（`RayMaxDistance` のみ） | 静的クラスに定数 1 つ | 使う側（`PlayerTopDownAimView` / `ForwardRayView`）の `[SerializeField]` にするか、`WaveConfig` 等の既存 Config へ吸収 |
 | 低 | `Battle/Interface` 直下の `EnemyAI/EnemyAIBase` | 抽象クラス（MonoBehaviour）が Interface フォルダにある | `Battle/Views/Enemy/AI/` へ移動（名前空間 `App.Battle.Interface.EnemyAI` の変更を伴うためプレハブ参照は GUID で保たれる） |
-| 中 | 敵の停止判定が3か所に分散 | `FreezeUseCase`・`WaveManagerUseCase`・`BossGroupUseCase` がそれぞれ「フリーズ OR ウェーブ間ポーズ」を自前で合成している | 停止理由を1か所で合成するプロパティ（例: 敵の停止状態を持つ DataStore）にまとめる。オーバークロックの時間停止を足す前に行うと漏れが出ない |
-| 中 | ボスの出現演出・ボスウェーブの仕様 | ボスウェーブは開始と同時にその場へ出すだけ。番号は `BossWaveConfig` の固定値（5）。出すボスは二人組の「TickTock」（`BossGroup_TickTock` / `B-002`）。ボスのマスターデータ・台本・`BossTickTock` の距離や弾の間隔は仮の値 | 演出（予兆・登場カメラ）、ボスの数値と台本の作り込み、勝利条件（GameSpec 1.2）との関係を決める |
+| 中 | 敵の停止判定が3か所に分散 | `FreezeUseCase`・`WaveManagerUseCase`・`BossGroupUseCase` がそれぞれ「フリーズ OR ウェーブ間ポーズ」を自前で合成している。プレイヤー側の停止（移動・射撃・回避）も各UseCaseが「ポーズ OR フリーズ OR 時止め」を自前で見ている | 停止理由を1か所で合成するプロパティ（例: 敵の停止状態を持つ DataStore）にまとめる。オーバークロックの時間停止を足す前に行うと漏れが出ない |
+| 中 | ボスの出現演出・ボスウェーブの仕様 | ボスウェーブは開始と同時にその場へ出すだけ。番号は `BossWaveConfig` の固定値（5）。出すボスは二人組の「TickTock」（`BossGroup_TickTock` / `B-002`）。ボスのマスターデータ・台本・`BossTickTock` の距離や弾の間隔、時止めの予兆・一息・時止め明けの予兆の秒数は仮の値。時止めの画面演出（色を変えるなど）は無く、時止め中も通常の敵（ボス以外）は止まらず、止めた弾の寿命（`Destroy` の5秒）も進む | 演出（予兆・登場カメラ）、ボスの数値と台本の作り込み、勝利条件（GameSpec 1.2）との関係を決める |
 | 低 | ドキュメントコメントの無い UseCase | `PlayerMoveUseCase` 等いくつかは `<summary>` が無い | 触ったタイミングで足す |
