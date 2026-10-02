@@ -260,7 +260,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerGazeUseCase` | `EnemyStoreView` が更新した「視線から判定球までの距離」をアップグレードごとの半径で絞り込み、注視系（スネークアイズ／メデューサ／ガン飛ばし）を反映 | SnakeEyes, Medusa, MeanMug |
 | `PlayerHitUseCase` | 被弾 → `PlayerStateDataStore.TakeDamage`（回避中は無効） | PlayerState, DodgeParameter |
 | `PlayerLifeGaugeUseCase` | HP・バリアをゲージへ、位置を追従 | PlayerState, PlayerBarrier |
-| `EnemySpawnUseCase` / `EnemyRandomSpawnUseCase` | `EnemyDataStore` の生成要求を View へ／周期スポーン（`EnemyRandomSpawnCycleDataStore`）と出現位置 | Enemy, RandomSpawnCycle |
+| `EnemySpawnUseCase` / `EnemyRandomSpawnUseCase` | `EnemyDataStore` の生成要求を View へ（出現＝プレハブの読み込み・生成に失敗したら `OnEnemySpawnFailed` を受けて敵データを `RemoveEnemyData` で取り除く。倒せない敵を残さないため。ボスウェーブで進めなくなるのも防ぐ）／周期スポーン（`EnemyRandomSpawnCycleDataStore`）と出現位置 | Enemy, RandomSpawnCycle |
 | `EnemyControlUseCase` | プレイヤーの照準方向を敵 AI へ渡す | PlayerAim, Enemy |
 | `BattleHitUseCase` | `OnHit` → 倍率（貫通バフ／ガン飛ばし／クリティカル）→ 感電伝播 → `EnemyDataStore.Damage`。撃破時の回復（HealOnKill）等 | Enemy, BuffState, CriticalHit, ElectricShock |
 | `PointDropUseCase` | 撃破 → 粒子ドロップ、回収 → ポイント加算。`BattleHitUseCase` より先に登録（撃破地点を読むため） | Point, PointDropCalculator |
@@ -420,6 +420,7 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | `Editor/AppVRModeMenu.cs` / `StartUpgradeDebugWindow.cs` | `DebugConfig` の EditorPrefs（VR モード／全解放／開始時アップグレード）を切り替える |
 | `GameInputDataStore.Debug*` | `Shift+U` でショップを開く等のデバッグ入力（エディタのみ） |
 | uLoop MCP | Claude からのコンパイル・PlayMode・ログ取得 |
+| `Assets/App/Tests/EditMode`（`App.Tests.EditMode`） | EditMode の単体テスト（Unity Test Framework）。シーンを使わない plain C# のロジック（いまはボスの台本ランナー `BossPatternRunner` と行動段階 `BossActionPhaseMachine`）を数秒で確かめる。`uloop run-tests --test-mode EditMode` で回す |
 
 ---
 

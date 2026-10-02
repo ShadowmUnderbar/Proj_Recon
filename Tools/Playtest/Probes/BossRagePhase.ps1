@@ -45,6 +45,19 @@ function ProbeRun {
     }
 }
 
+function Assert-TelegraphLength {
+    # 予兆が始まったのは「予兆を記録した行」と「その1つ前の行」の間のどこか。
+    # スニペットの実行直後はエディタのフレームが止まって時刻が飛ぶため、記録した行の時刻だけで測ると短く出る。
+    # 開始の取りうる範囲から予兆の長さの範囲を出し、設定値がその範囲（±0.05秒）に入るかを見る
+    param([string]$Label, $Rows, [int]$WindupIndex, [double]$ActiveTime, [double]$Expected)
+    $windupTime = $Rows[$WindupIndex].time
+    $previousTime = if ($WindupIndex -gt 0) { $Rows[$WindupIndex - 1].time } else { $windupTime }
+    $shortest = $ActiveTime - $windupTime
+    $longest = $ActiveTime - $previousTime
+    $ok = ($Expected -ge $shortest - 0.05) -and ($Expected -le $longest + 0.05)
+    Assert-ProbeTrue -Name "$Label 予兆の長さが設定どおり" -Condition $ok -Detail ("{0:F3}〜{1:F3}秒（設定 {2}秒）" -f $shortest, $longest, $Expected) | Out-Null
+}
+
 function Invoke-RageProbeBody {
     $bossWaveNumber = Move-ToBossWaveShop
 
@@ -229,7 +242,7 @@ return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits
         }
 
         $active = $rageRows | Where-Object { $_.time -gt $w.time -and $_.a.phase -eq 'Active' } | Select-Object -First 1
-        Assert-ProbeValue -Name "$label 予兆の長さ（秒）" -Actual ($active.time - $w.time) -Expected $config.telegraph -Tolerance 0.1 | Out-Null
+        Assert-TelegraphLength -Label $label -Rows $rageRows -WindupIndex $wi -ActiveTime $active.time -Expected $config.telegraph
         Assert-ProbeTrue -Name "$label 2体が同じフレームで攻撃する" -Condition ($active.b.phase -eq 'Active') -Detail "B=$($active.b.phase)" | Out-Null
         $during = @($rageRows | Where-Object { $_.time -gt $w.time -and $_.time -lt $active.time })
         $stripShown = @($during | Where-Object { $_.a.strip -and $_.b.strip }).Count -eq $during.Count -and $during.Count -gt 0
@@ -264,7 +277,7 @@ return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits
 
         $xActive = $rageRows | Where-Object { $_.time -gt $xw.time -and $_.a.phase -eq 'Active' } | Select-Object -First 1
         $xEnd = $rageRows | Where-Object { $_.time -gt $xActive.time -and $_.a.phase -ne 'Active' } | Select-Object -First 1
-        Assert-ProbeValue -Name '×字: 予兆は1回だけ（1回目の前、秒）' -Actual ($xActive.time - $xw.time) -Expected $config.telegraph -Tolerance 0.1 | Out-Null
+        Assert-TelegraphLength -Label '×字: 予兆は1回だけ（1回目の前）' -Rows $rageRows -WindupIndex $xWindups[0] -ActiveTime $xActive.time -Expected $config.telegraph
         $expectedActive = $config.repeatInterval * ($config.repeatCount - 1) + $config.strike
         Assert-ProbeValue -Name '×字: 連続攻撃の長さ（2回目以降は予兆なし、秒）' -Actual ($xEnd.time - $xActive.time) -Expected $expectedActive -Tolerance 0.1 | Out-Null
         $xRows = @($rageRows | Where-Object { $_.time -ge $xw.time -and $_.time -lt $xEnd.time })
