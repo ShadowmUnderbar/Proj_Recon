@@ -65,7 +65,7 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            Debug.Log($"[DebugArenaUseCase] デバッグ対戦で開始します: {DescribeTarget()}"
+            Debug.Log($"[DebugArenaUseCase] デバッグ対戦で開始します: {DescribeTarget()} / ウェーブ{_settings.Wave}"
                       + $"（出し直し: {(_settings.AutoRespawn ? $"{_settings.RespawnDelaySeconds}秒後" : "しない")}"
                       + $" / 無敵: {(_settings.Invincible ? "あり" : "なし")}）");
 

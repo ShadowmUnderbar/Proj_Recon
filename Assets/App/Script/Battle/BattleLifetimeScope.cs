@@ -365,6 +365,7 @@ namespace App.Battle
                 bossGroup,
                 request.EnemyCode,
                 request.EnemyCount,
+                request.Wave,
                 request.AutoRespawn,
                 request.RespawnDelaySeconds,
                 request.Invincible);

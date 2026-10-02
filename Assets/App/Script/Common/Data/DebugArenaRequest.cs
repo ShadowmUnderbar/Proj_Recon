@@ -20,6 +20,9 @@ namespace App.Common.Data
         /// <summary>同時に出す敵の数（ボスグループを指定したときは使わない）</summary>
         public int EnemyCount = 1;
 
+        /// <summary>対戦するウェーブ番号（1始まり）。敵の HP・攻撃力はこのウェーブの倍率で出る</summary>
+        public int Wave = 1;
+
         /// <summary>出した相手が全員いなくなったら、同じ相手を出し直すか</summary>
         public bool AutoRespawn = true;
 

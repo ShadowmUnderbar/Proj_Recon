@@ -72,6 +72,7 @@ function Request-DebugArena {
         [string]$BossGroupPath = '',
         [string]$EnemyCode = '',
         [int]$EnemyCount = 1,
+        [int]$Wave = 1,
         [bool]$AutoRespawn = $true,
         [double]$RespawnDelaySeconds = 3,
         [bool]$Invincible = $true
@@ -85,6 +86,7 @@ var request = new DebugArenaRequest
     BossGroupAssetPath = "$BossGroupPath",
     EnemyCode = "$EnemyCode",
     EnemyCount = $EnemyCount,
+    Wave = $Wave,
     AutoRespawn = $($AutoRespawn.ToString().ToLower()),
     RespawnDelaySeconds = $($RespawnDelaySeconds.ToString($ci))f,
     Invincible = $($Invincible.ToString().ToLower())
@@ -94,7 +96,7 @@ return App.Editor.DebugArenaLauncher.Prepare(request) ? "ok" : "failed";
     if ($result -ne 'ok') {
         throw "デバッグ対戦の予約に失敗しました（$result）"
     }
-    Write-Host "デバッグ対戦を予約しました（ボスグループ: [$BossGroupPath] 敵: [$EnemyCode]x$EnemyCount 出し直し: $AutoRespawn/$RespawnDelaySeconds 秒 無敵: $Invincible）"
+    Write-Host "デバッグ対戦を予約しました（ボスグループ: [$BossGroupPath] 敵: [$EnemyCode]x$EnemyCount ウェーブ: $Wave 出し直し: $AutoRespawn/$RespawnDelaySeconds 秒 無敵: $Invincible）"
 }
 
 function Set-BossWaveGroup {

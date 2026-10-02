@@ -9,7 +9,7 @@ namespace App.Battle.Data
     /// </summary>
     public class DebugArenaSettings
     {
-        public static DebugArenaSettings Disabled { get; } = new(false, null, string.Empty, 0, false, 0f, false);
+        public static DebugArenaSettings Disabled { get; } = new(false, null, string.Empty, 0, 1, false, 0f, false);
 
         /// <summary>デバッグ対戦として組み立てたか。false なら他の値は使わない</summary>
         public bool IsEnabled { get; }
@@ -22,6 +22,9 @@ namespace App.Battle.Data
 
         /// <summary>同時に出す敵の数（<see cref="BossGroup"/> があるときは使わない）</summary>
         public int EnemyCount { get; }
+
+        /// <summary>対戦するウェーブ番号（1始まり）</summary>
+        public int Wave { get; }
 
         /// <summary>出した相手が全員いなくなったら出し直す</summary>
         public bool AutoRespawn { get; }
@@ -37,6 +40,7 @@ namespace App.Battle.Data
             BossGroupConfig bossGroup,
             string enemyCode,
             int enemyCount,
+            int wave,
             bool autoRespawn,
             float respawnDelaySeconds,
             bool invincible
@@ -46,10 +50,14 @@ namespace App.Battle.Data
             BossGroup = bossGroup;
             EnemyCode = enemyCode ?? string.Empty;
             EnemyCount = Mathf.Max(1, enemyCount);
+            Wave = Mathf.Max(1, wave);
             AutoRespawn = autoRespawn;
             RespawnDelaySeconds = Mathf.Max(0f, respawnDelaySeconds);
             Invincible = invincible;
         }
+
+        /// <summary>ラン開始時（リスタートを含む）のウェーブ番号。通常のランは 1、デバッグ対戦は指定したウェーブ</summary>
+        public int StartWave => IsEnabled ? Wave : 1;
 
         /// <summary>デバッグ対戦中なら HP を減らさない</summary>
         public bool IsPlayerInvincible => IsEnabled && Invincible;

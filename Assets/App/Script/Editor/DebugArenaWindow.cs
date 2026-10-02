@@ -31,6 +31,9 @@ namespace App.Editor
         private string[] _enemyCodes = new string[0];
         private string[] _enemyLabels = new string[0];
 
+        // BossWaveConfig のボスウェーブの番号（見つからなければ 0）。「ボスウェーブ」ボタンに使う
+        private int _bossWaveNumber;
+
         [MenuItem(MenuName)]
         private static void Open()
         {
@@ -58,6 +61,7 @@ namespace App.Editor
             EditorGUILayout.HelpBox(
                 "Battle シーンを再生し、ウェーブ進行・周期スポーン・セット選択を止めて、選んだ相手とだけ戦います。\n" +
                 "・配置はボスウェーブと同じ（BossWaveConfig のプレイヤー位置・ボスの基準点）\n" +
+                "・ウェーブ番号は敵の強さの倍率に使います（ボスウェーブの番号でもボスウェーブにはしません）\n" +
                 "・開始時アップグレード（App/デバッグ: 開始時アップグレード）は付与されます\n" +
                 "・ゲームオーバーからのリスタートも同じ相手で始まります。予約は再生1回ぶんだけ有効です",
                 MessageType.Info);
@@ -78,6 +82,7 @@ namespace App.Editor
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("対戦中", EditorStyles.boldLabel);
+            DrawWaveField();
             _request.AutoRespawn = EditorGUILayout.Toggle("倒したら出し直す", _request.AutoRespawn);
             using (new EditorGUI.DisabledScope(!_request.AutoRespawn))
             {
@@ -127,6 +132,50 @@ namespace App.Editor
             EditorGUILayout.HelpBox("Boss ランクの個体は台本の命令でしか動かないため、ボスグループから選んでください", MessageType.None);
         }
 
+        private void DrawWaveField()
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                _request.Wave = Mathf.Max(1, EditorGUILayout.IntField(
+                    new GUIContent("ウェーブ番号", "敵の HP・攻撃力はこのウェーブの倍率で出る。ウェーブは進まない"),
+                    _request.Wave));
+
+                using (new EditorGUI.DisabledScope(_bossWaveNumber <= 0))
+                {
+                    var label = _bossWaveNumber > 0 ? $"ボスウェーブ（{_bossWaveNumber}）" : "ボスウェーブ";
+                    if (GUILayout.Button(label, GUILayout.Width(110f)))
+                    {
+                        _request.Wave = _bossWaveNumber;
+                        GUI.FocusControl(null);
+                    }
+                }
+            }
+        }
+
+        /// <summary>BossWaveConfig からボスウェーブの番号を探す（ボスグループ未設定などで無ければ 0）</summary>
+        private static int FindBossWaveNumber()
+        {
+            const int maxSearchWave = 99;
+            foreach (var guid in AssetDatabase.FindAssets($"t:{nameof(BossWaveConfig)}"))
+            {
+                var config = AssetDatabase.LoadAssetAtPath<BossWaveConfig>(AssetDatabase.GUIDToAssetPath(guid));
+                if (config == null)
+                {
+                    continue;
+                }
+
+                for (var wave = 1; wave <= maxSearchWave; wave++)
+                {
+                    if (config.IsBossWave(wave))
+                    {
+                        return wave;
+                    }
+                }
+            }
+
+            return 0;
+        }
+
         private void DrawLaunchButton()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -153,6 +202,7 @@ namespace App.Editor
                 BossGroupAssetPath = _isBossGroup ? _request.BossGroupAssetPath : string.Empty,
                 EnemyCode = _isBossGroup ? string.Empty : _request.EnemyCode,
                 EnemyCount = _request.EnemyCount,
+                Wave = _request.Wave,
                 AutoRespawn = _request.AutoRespawn,
                 RespawnDelaySeconds = _request.RespawnDelaySeconds,
                 Invincible = _request.Invincible
@@ -193,6 +243,8 @@ namespace App.Editor
             enemies.Sort((a, b) => string.CompareOrdinal(a.Code, b.Code));
             _enemyCodes = enemies.Select(e => e.Code).ToArray();
             _enemyLabels = enemies.Select(e => e.Label).ToArray();
+
+            _bossWaveNumber = FindBossWaveNumber();
         }
 
         private static DebugArenaRequest LoadState()
