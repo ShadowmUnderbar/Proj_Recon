@@ -27,7 +27,7 @@ var wave = scope.Container.Resolve<IWaveManagerDataStore>();
 var gameState = scope.Container.Resolve<IGameStateDataStore>();
 var player = scope.Container.Resolve<IPlayerStateDataStore>();
 var runStart = scope.Container.Resolve<IRunStartDataStore>();
-return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"playerHealth\":{player.Health.Value},\"isSelectingRunStart\":{runStart.IsSelecting.CurrentValue.ToString().ToLower()}}}";
+return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"isCleared\":{gameState.IsCleared.CurrentValue.ToString().ToLower()},\"playerHealth\":{player.Health.Value},\"isSelectingRunStart\":{runStart.IsSelecting.CurrentValue.ToString().ToLower()}}}";
 '@
     [System.IO.File]::WriteAllText($snippetPath, $snippet, (New-Object System.Text.UTF8Encoding($false)))
 

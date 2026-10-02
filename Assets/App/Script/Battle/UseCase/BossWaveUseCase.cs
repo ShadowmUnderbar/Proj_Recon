@@ -10,7 +10,7 @@ namespace App.Battle.UseCase
     /// <summary>
     /// ボスウェーブの開始時に、前のウェーブから残った敵を消し、プレイヤーを決まった位置へ移してボスグループを出す。
     /// 出現演出は未実装で、ウェーブ開始と同時にその場へ出す。
-    /// 湧きの停止は EnemyRandomSpawnCycleDataStore、ウェーブの進行条件は WaveManagerUseCase が IBossWaveDataStore を見て切り替える。
+    /// 湧きの停止は EnemyRandomSpawnCycleDataStore、ウェーブの進行条件（ボスを倒したらクリア）は WaveManagerUseCase が IBossWaveDataStore を見て切り替える。
     /// </summary>
     public class BossWaveUseCase : IInitializable, IDisposable
     {
@@ -44,6 +44,12 @@ namespace App.Battle.UseCase
             _waveManagerDataStore.IsWavePause
                 .Where(isPause => !isPause)
                 .Subscribe(_ => OnWaveStarted())
+                .AddTo(_disposable);
+
+            // ボスの撃破を記録する（出現・読み込みの失敗で消えただけのときはクリア扱いにしないため）。
+            // WaveManagerUseCase より先に登録してあるので、同じ撃破の通知の中でクリア判定より先に届く
+            _enemyDataStore.OnEnemyDead
+                .Subscribe(_bossWaveDataStore.NotifyEnemyDead)
                 .AddTo(_disposable);
         }
 

@@ -110,6 +110,7 @@ return $"{{\"dead\":{dead.Count},\"removed\":{removed.Count},\"bossLeft\":{bossL
     # ボスウェーブは開始と同時に終わってショップが開く。Skip-BossProbeShop は押した直後にポーズへ戻ったのを見て押し直すため、
     # 次のウェーブがすでに始まっていることがある（ポーズの状態は問わない）
     Assert-ProbeTrue -Name 'ボスウェーブで止まらず次のウェーブへ進む' -Condition ($state.currentWave -eq ($bossWaveNumber + 1)) -Detail "wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
+    Assert-ProbeTrue -Name '誰も倒さずに消えただけではクリアにならない' -Condition (-not $state.isCleared) -Detail "cleared=$($state.isCleared)" | Out-Null
 
     # エラーログ: 読み込み失敗のぶんだけ出ていること（想定外のエラーが無いこと）を自分で確かめ、ランナーの判定に数えさせないよう消す
     $errors = @((Invoke-Uloop -Command 'get-logs' -Params @{ 'log-type' = 'Error'; 'max-count' = '50' }).Logs | Where-Object { $null -ne $_ })

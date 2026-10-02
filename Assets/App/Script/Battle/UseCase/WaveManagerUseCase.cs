@@ -21,6 +21,7 @@ namespace App.Battle.UseCase
         private readonly WaveConfig _waveConfig;
         private readonly IFreezeDataStore _freezeDataStore;
         private readonly IBossWaveDataStore _bossWaveDataStore;
+        private readonly IGameStateDataStore _gameStateDataStore;
         private readonly DebugArenaSettings _debugArenaSettings;
 
         private readonly CompositeDisposable _disposable = new();
@@ -36,6 +37,7 @@ namespace App.Battle.UseCase
             WaveConfig waveConfig,
             IFreezeDataStore freezeDataStore,
             IBossWaveDataStore bossWaveDataStore,
+            IGameStateDataStore gameStateDataStore,
             DebugArenaSettings debugArenaSettings
         )
         {
@@ -48,6 +50,7 @@ namespace App.Battle.UseCase
             _waveConfig = waveConfig;
             _freezeDataStore = freezeDataStore;
             _bossWaveDataStore = bossWaveDataStore;
+            _gameStateDataStore = gameStateDataStore;
             _debugArenaSettings = debugArenaSettings;
         }
 
@@ -96,21 +99,35 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            // 最大ウェーブ到達時は進行しない（無限ループ設定なら HasMaxWave=false でスキップ）
-            if (_waveConfig.HasMaxWave
-                && _waveManagerDataStore.CurrentWave.CurrentValue >= _waveConfig.MaxWaveCount)
+            // ゲームオーバー・クリア後は進めない
+            if (_gameStateDataStore.IsRunEnded)
             {
                 return;
             }
 
-            // ボスウェーブは制限時間・撃破数では進めず、ボスを全員倒したときだけ進める
+            // 最大ウェーブ到達時は進行しない（無限ループ設定なら HasMaxWave=false でスキップ）。
+            // ボスウェーブのクリアは進行ではないので、最大ウェーブでも行う
+            var isMaxWaveReached = _waveConfig.HasMaxWave
+                                   && _waveManagerDataStore.CurrentWave.CurrentValue >= _waveConfig.MaxWaveCount;
+
+            // ボスウェーブは制限時間・撃破数では進めず、ボスを全員倒したらクリアにする。
+            // 出現・読み込みの失敗で誰も倒さずに消えたときはクリアにせず、止まらないよう次のウェーブへ進める
             if (_bossWaveDataStore.IsBossWave)
             {
-                if (_bossWaveDataStore.IsBossCleared)
+                if (_bossWaveDataStore.IsBossDefeated)
+                {
+                    ClearRunInternal();
+                }
+                else if (_bossWaveDataStore.IsBossCleared && !isMaxWaveReached)
                 {
                     AdvanceWaveInternal();
                 }
 
+                return;
+            }
+
+            if (isMaxWaveReached)
+            {
                 return;
             }
 
@@ -140,6 +157,17 @@ namespace App.Battle.UseCase
             _pointParticlePresenter.AllRemove();
             // ウェーブ番号インクリメント＋進行通知
             _waveManagerDataStore.AdvanceWave();
+        }
+
+        private void ClearRunInternal()
+        {
+            // 敵の停止＋無敵化。ウェーブ番号は進めず（スロットにはボスウェーブの番号を残す）、ショップも開かない
+            _waveManagerDataStore.SetWavePause(true);
+            // クリア表示の間に撃たれないよう弾を消す。粒子はラン終了で回収の意味が無くなるので消す
+            _bulletStoreView.AllRemove();
+            _pointParticlePresenter.AllRemove();
+            // クリア表示・リザルト画面は GameClearUseCase が出す
+            _gameStateDataStore.SetCleared();
         }
 
         private void OnUpdateWavePause(bool isPause)

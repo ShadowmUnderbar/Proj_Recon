@@ -7,9 +7,10 @@ using UnityEngine.UI;
 namespace App.Battle.Views
 {
     /// <summary>
-    /// ゲームオーバー画面（最小実装）。
+    /// ランの結果画面（ゲームオーバー・クリア共用の最小実装）。
     /// ランで獲得したアップグレードをスロット1〜3のいずれかに保存するボタンと、
     /// ビルド選択からやり直すリスタートボタンと、メインメニューシーンへ戻るボタンを表示する。
+    /// クリア直後は見出しだけを出し、少し置いてからボタンを出す。
     /// </summary>
     public class GameOverView : MonoBehaviour, IGameOverView
     {
@@ -68,6 +69,16 @@ namespace App.Battle.Views
 
         public void Show(string headline)
         {
+            ShowInternal(headline, true);
+        }
+
+        public void ShowHeadlineOnly(string headline)
+        {
+            ShowInternal(headline, false);
+        }
+
+        private void ShowInternal(string headline, bool isButtonVisible)
+        {
             _root.SetActive(true);
 
             if (_headlineText != null)
@@ -78,6 +89,27 @@ namespace App.Battle.Views
             if (_statusText != null)
             {
                 _statusText.text = string.Empty;
+                _statusText.gameObject.SetActive(isButtonVisible);
+            }
+
+            SetButtonsVisible(isButtonVisible);
+        }
+
+        private void SetButtonsVisible(bool isVisible)
+        {
+            foreach (var button in _slotButtons)
+            {
+                button.gameObject.SetActive(isVisible);
+            }
+
+            if (_restartButton != null)
+            {
+                _restartButton.gameObject.SetActive(isVisible);
+            }
+
+            if (_returnToMainMenuButton != null)
+            {
+                _returnToMainMenuButton.gameObject.SetActive(isVisible);
             }
         }
 

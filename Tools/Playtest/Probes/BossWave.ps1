@@ -10,7 +10,7 @@
 #     の順で動き、各段階の秒数が EnemyMasterData（予備動作0.8 / 攻撃0.2 / 硬直1.5）どおりであること
 #   - スタンで行動不能になった個体の回復を待ってから相手が動き出すこと
 #   - フリーズ中は行動の段階が進まないこと
-#   - ボスを1体倒しても進まず、全員倒すと次のウェーブへ進み、次のウェーブでは通常の敵が湧くこと
+#   - ボスを1体倒しても進まず、全員倒すとクリアになること（クリア画面の流れは GameClear プローブ）
 # を確かめる。
 #
 # 個体の行動段階・待機は毎フレーム記録する（uloop の往復は数百msかかり、段階の切り替わりを直接は捉えられないため）。
@@ -224,7 +224,7 @@ return $"{{\"phase\":\"{b.Status.CurrentValue.Phase}\",\"elapsed\":{(float)elaps
     $b = ConvertFrom-MemberText $snap.b
     Assert-ProbeTrue -Name 'フリーズ明けに B の行動段階が進む' -Condition (-not $snap.freezing -and ($b.phase -ne $before.phase -or $snap.bElapsed -gt $before.elapsed)) -Detail "後 $($b.phase)/$($snap.bElapsed)" | Out-Null
 
-    # --- 撃破: 1体では進まず、全員倒すと次のウェーブへ ---
+    # --- 撃破: 1体では進まず、全員倒すとクリア ---
     Invoke-BossSnippet -Body 'enemies.Damage(new HitData(GetBoss(0).EnemyId, 99999f, App.Common.Data.HitDirectionType.None)); return "{}";' | Out-Null
     Start-Sleep -Seconds 1
     $snap = Get-BossSnapshot
@@ -256,13 +256,7 @@ return "{}";
 '@ | Out-Null
     Start-Sleep -Milliseconds 1500
     $state = Get-WaveState
-    Assert-ProbeTrue -Name 'ボスを全員倒すと次のウェーブへ進む（ショップのポーズ）' -Condition ($state.currentWave -eq ($bossWaveNumber + 1) -and $state.isWavePause) -Detail "wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
-
-    # --- 次のウェーブでは通常の敵が湧く ---
-    Skip-BossProbeShop
-    Start-Sleep -Seconds 6
-    $snap = Get-BossSnapshot
-    Assert-ProbeTrue -Name 'ボスウェーブの次は通常の敵が湧く' -Condition ($snap.nonBoss -gt 0) -Detail "通常の敵 $($snap.nonBoss) 体" | Out-Null
+    Assert-ProbeTrue -Name 'ボスを全員倒すとクリアになる（ウェーブは進まずポーズ）' -Condition ($state.isCleared -and $state.currentWave -eq $bossWaveNumber -and $state.isWavePause) -Detail "cleared=$($state.isCleared) wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
 }
 
 function ProbeRun {

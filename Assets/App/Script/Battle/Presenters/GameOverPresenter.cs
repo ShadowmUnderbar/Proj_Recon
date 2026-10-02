@@ -19,6 +19,7 @@ namespace App.Battle.Presenters
         }
 
         public void Show(string headline) => _gameOverView.Show(headline);
+        public void ShowHeadlineOnly(string headline) => _gameOverView.ShowHeadlineOnly(headline);
         public void SetSlotLabel(int index, string label) => _gameOverView.SetSlotLabel(index, label);
         public void SetStatus(string status) => _gameOverView.SetStatus(status);
         public void Hide() => _gameOverView.Hide();
