@@ -9,8 +9,8 @@ namespace App.Battle.Views.Enemy.AI.Boss
     /// <summary>
     /// プレイヤーの上下左右（ワールドの軸）のいずれかについて動く、二人組ボス「TickTock」用のAI。
     /// 台本の配置（CrossFormation）を受けると、プレイヤーからその方向へ一定距離、横へ指定のずれだけ離れた位置へ瞬間移動する。
-    /// 行動していない間は、その位置で距離を保ったままプレイヤーを追う。
-    /// 行動0（弾幕）: 縦方向（上下）にいれば横へ、横方向（左右）にいれば縦へ、プレイヤーに合わせて軸に沿って動き、
+    /// 以後はプレイヤーがどう動いても位置関係と距離が崩れないよう、経路探索ではなく毎フレーム配置先へ直接追従する（FollowTo）。
+    /// 行動0（弾幕）: 配置の方向へ一定距離を保ったままプレイヤーと並ぶ位置（横のずれなし）を追い、
     ///   移動方向と直交する向き（プレイヤーの側）へ弾を連射する。長さは EnemyMasterData の ActiveTime。
     /// 行動1（帯の攻撃）: その場に留まり、プレイヤーの側へ伸びる帯を予兆として出し、予兆が明けた瞬間に帯の中のプレイヤーへ当てる。
     ///   範囲・秒数・ダメージは BossLineStrikeConfig。
@@ -41,7 +41,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
         [SerializeField] private BaseBulletView _bulletPrefab;
         [SerializeField] private Transform _muzzleTransform;
 
-        [SerializeField, Min(1f), Tooltip("プレイヤーとの距離（m）。配置のつき直し・追跡でこの距離を保つ")]
+        [SerializeField, Min(1f), Tooltip("プレイヤーとの距離（m）。配置のつき直し・追従でこの距離を保つ")]
         private float _keepDistance = 15f;
 
         [SerializeField, Min(0.02f), Tooltip("弾幕で弾を撃つ間隔（秒）")]
@@ -56,9 +56,6 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         // 帯の当たり判定の高さ（m）。地面からプレイヤーの頭上までを覆う
         private const float StrikeHitHeight = 4f;
-
-        // 弾幕中に保つ座標（縦方向にいればZ、横方向にいればX）。行動開始時の位置で固定し、軸に沿ってだけ動く
-        private float _barrageLine;
 
         // 次の弾までの残り時間（秒）
         private float _fireTimer;
@@ -115,21 +112,21 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         protected override void BattleMove()
         {
-            if (FormationSlot == BossFormationSlot.None)
+            if (FormationSlot == BossFormationSlot.None || PlayerTransform == null)
             {
                 return;
             }
 
             FaceFireDirection();
 
-            if (!IsActing)
+            // 帯の攻撃の間はその場に留まる（予兆と攻撃の範囲を動かさない）
+            if (IsActing && IsLineStrike(CurrentActionIndex))
             {
-                SetAgentDestination(GetFormationPosition());
                 return;
             }
 
-            // 帯の攻撃の間はその場に留まる（予兆と攻撃の範囲を動かさない）
-            SetAgentDestination(IsLineStrike(CurrentActionIndex) ? transform.position : GetBarragePosition());
+            // 弾幕中はプレイヤーと並ぶ（横のずれなし）。どちらもプレイヤーの動きに遅れず距離を保つ
+            FollowTo(GetFormationPosition(IsActing ? 0f : FormationLateralOffset));
         }
 
         protected override void OnActionWindup(int actionIndex)
@@ -139,8 +136,6 @@ namespace App.Battle.Views.Enemy.AI.Boss
                 BeginTelegraph();
                 return;
             }
-
-            _barrageLine = FormationSlot.IsVertical() ? transform.position.z : transform.position.x;
 
             // 攻撃の段階に入った最初のフレームで1発目を撃つ
             _fireTimer = 0f;
@@ -305,18 +300,15 @@ namespace App.Battle.Views.Enemy.AI.Boss
         /// <summary>配置先（プレイヤーからその方向へ一定距離、横へ指定のずれ）</summary>
         private Vector3 GetFormationPosition()
         {
-            // 縦方向にいれば横＝X、横方向にいれば横＝Z へずらす
-            var lateral = FormationSlot.IsVertical() ? Vector3.right : Vector3.forward;
-            return PlayerTransform.position + FormationSlot.ToDirection() * _keepDistance + lateral * FormationLateralOffset;
+            return GetFormationPosition(FormationLateralOffset);
         }
 
-        /// <summary>弾幕中の移動先（自分の軸の線上で、プレイヤーと並ぶ位置）</summary>
-        private Vector3 GetBarragePosition()
+        /// <summary>配置先（プレイヤーからその方向へ一定距離、横へ lateralOffset のずれ）</summary>
+        private Vector3 GetFormationPosition(float lateralOffset)
         {
-            var player = PlayerTransform.position;
-            return FormationSlot.IsVertical()
-                ? new Vector3(player.x, transform.position.y, _barrageLine)
-                : new Vector3(_barrageLine, transform.position.y, player.z);
+            // 縦方向にいれば横＝X、横方向にいれば横＝Z へずらす
+            var lateral = FormationSlot.IsVertical() ? Vector3.right : Vector3.forward;
+            return PlayerTransform.position + FormationSlot.ToDirection() * _keepDistance + lateral * lateralOffset;
         }
 
         /// <summary>弾・帯の向き（移動方向と直交し、プレイヤーの側を向く）</summary>
