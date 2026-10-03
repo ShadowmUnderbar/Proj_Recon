@@ -39,4 +39,5 @@ public enum UpgradeType
     FocusConflict = 35, // フォーカスコンフリクト
     MergeConflict = 36, // マージコンフリクト
     WaltzConflict = 37, // ワルツコンフリクト
+    Overclock = 38, // オーバークロック
 }

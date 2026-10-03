@@ -46,6 +46,7 @@ namespace App.Battle
         [SerializeField] private UpgradeDescriptionStyle _upgradeDescriptionStyle;
         [SerializeField] private PlayerBaseParameterConfig _playerBaseParameterConfig;
         [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
+        [SerializeField] private OverclockConfig _overclockConfig;
         [SerializeField] private BossWaveConfig _bossWaveConfig;
         [SerializeField] private BossLifeGaugeStoreView _bossLifeGaugeStoreView;
         [SerializeField] private BossLifeGaugeConfig _bossLifeGaugeConfig;
@@ -57,6 +58,10 @@ namespace App.Battle
             // 登録順序がTick順序に影響するため、依存順に登録
             builder.Register<FreezeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IFreezeDataStore>();
+            // オーバークロック（敵・敵弾の停止）。バフ・スポーン等の時間進行がこの発動状態を見るため先に登録する
+            builder.Register<OverclockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IOverclockDataStore>();
+
             // ボスによる時止め（プレイヤーと弾だけを止める。ボスの台本が始める・解く）
             builder.Register<TimeStopDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ITimeStopDataStore>();
@@ -174,6 +179,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
             builder.RegisterEntryPoint<FreezeUseCase>();
+            builder.RegisterEntryPoint<OverclockUseCase>();
             // ボスグループの台本進行と個体をつなぐ（フリーズ・ウェーブ間ポーズ中は台本を止める）
             builder.RegisterEntryPoint<BossGroupUseCase>();
             // ボスウェーブ開始時に残った敵を消し、プレイヤーを移してボスを出す
@@ -329,6 +335,8 @@ namespace App.Battle
             builder.RegisterInstance(_upgradeDescriptionStyle);
             // ウェーブ開始時のチュートリアル割り当て（TutorialWaveUseCase が利用）
             builder.RegisterInstance(_tutorialWaveConfig);
+            // オーバークロックの発動しきい値（OverclockDataStore が利用）
+            builder.RegisterInstance(_overclockConfig);
             // ボスウェーブの番号・ボスグループ・出現位置（BossWaveDataStore / BossWaveUseCase が利用）
             builder.RegisterInstance(_bossWaveConfig);
             // ボスの体力ゲージの色・大きさ（BossLifeGaugeStoreView が利用）

@@ -22,6 +22,7 @@ namespace App.Battle.UseCase
         private readonly IFreezeDataStore _freezeDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly ITimeStopDataStore _timeStopDataStore;
+        private readonly IOverclockDataStore _overclockDataStore;
 
         private readonly List<BossDirectorCommand> _commands = new();
         private readonly CompositeDisposable _disposable = new();
@@ -33,7 +34,8 @@ namespace App.Battle.UseCase
             IEnemyPresenter enemyPresenter,
             IFreezeDataStore freezeDataStore,
             IWaveManagerDataStore waveManagerDataStore,
-            ITimeStopDataStore timeStopDataStore
+            ITimeStopDataStore timeStopDataStore,
+            IOverclockDataStore overclockDataStore
         )
         {
             _bossGroupDataStore = bossGroupDataStore;
@@ -42,6 +44,7 @@ namespace App.Battle.UseCase
             _freezeDataStore = freezeDataStore;
             _waveManagerDataStore = waveManagerDataStore;
             _timeStopDataStore = timeStopDataStore;
+            _overclockDataStore = overclockDataStore;
         }
 
         public void Initialize()
@@ -74,8 +77,10 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            // 敵が止まっている間は台本も止める（待ち時間を進めない・命令も出さない）
-            if (_freezeDataStore.IsFreezing.CurrentValue || _waveManagerDataStore.IsWavePause.Value)
+            // 敵が止まっている間（フリーズ・ウェーブ間ポーズ・オーバークロック）は台本も止める（待ち時間を進めない・命令も出さない）
+            if (_freezeDataStore.IsFreezing.CurrentValue
+                || _waveManagerDataStore.IsWavePause.Value
+                || _overclockDataStore.IsActive.CurrentValue)
             {
                 return;
             }

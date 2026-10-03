@@ -116,6 +116,7 @@ BuffData.csv（発動条件・効果・時間の定義）
 - **効果は乗算のみ・スタックしない**。同一バフ複数回や加算合成が要件なら `BuffStateDataStore` の合成ロジックを拡張する
 - **`BuffStateDataStore.Reset()` は定義のみで呼び出し元が無い**。プレイサイクル境界での明示リセットは未実装（バトルシーン再ロードでSingletonが作り直されるため現状は実害が出にくい）。1プレイ中に明示リセットが要る仕様になったら呼び出しを足す
 - ヒット判定はウェーブ間ポーズ中は除外される（`BuffConditionUseCase.OnHit`）
+- **オーバークロック発動中は `BuffStateDataStore.Tick` が止まる**（効果時間を減らさない。条件の進行・付与は通常どおり受け付ける）。時間で進む新しい状態を足すときも `IOverclockDataStore.IsActive` 中は進めないこと（敵のスタン・スロー、スポーン周期、バリア再生、ケア・ノードも同様に止めている）
 - enum系（`BuffConditionType.cs` / `BuffEffectType.cs`）は**GAS自動生成物**。手編集は次回エクスポートで消えるため必ずスプレッドシートへ反映
 - コード変更は日本語コミット。Claudeの変更はPR運用が原則（developベース）
 - **自動実行時のインポート**は `Tools/マスターデータ/BuffData CSVインポート` メニュー（`ExecuteMenuItem`）だと完了ダイアログでメインスレッドがブロックしuLoopがハングする。execute-dynamic-code から `App.Editor.BuffDataImporter.ImportData(false)` を呼ぶ（`interactive=false` でダイアログを出さずログ出力）。詳細は [`upgrade-add`](../upgrade-add/SKILL.md) の「自動実行の落とし穴」を参照

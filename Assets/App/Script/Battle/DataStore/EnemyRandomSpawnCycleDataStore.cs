@@ -11,17 +11,20 @@ namespace App.Battle.DataStore
     public class EnemyRandomSpawnCycleDataStore : IEnemyRandomSpawnCycleDataStore, IRunResettable, ITickable
     {
         private readonly IWaveManagerDataStore _waveManagerDataStore;
+        private readonly IOverclockDataStore _overclockDataStore;
         private readonly IBossWaveDataStore _bossWaveDataStore;
         private readonly DebugArenaSettings _debugArenaSettings;
 
         [Inject]
         public EnemyRandomSpawnCycleDataStore(
             IWaveManagerDataStore waveManagerDataStore,
+            IOverclockDataStore overclockDataStore,
             IBossWaveDataStore bossWaveDataStore,
             DebugArenaSettings debugArenaSettings
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
+            _overclockDataStore = overclockDataStore;
             _bossWaveDataStore = bossWaveDataStore;
             _debugArenaSettings = debugArenaSettings;
         }
@@ -69,6 +72,12 @@ namespace App.Battle.DataStore
         {
             // ウェーブ間ポーズ中はスポーンタイマーを進めない（敵の生成を停止）
             if (_waveManagerDataStore.IsWavePause.Value)
+            {
+                return;
+            }
+
+            // オーバークロック中は世界の時間が止まっているため、スポーンも進めない
+            if (_overclockDataStore.IsActive.CurrentValue)
             {
                 return;
             }
