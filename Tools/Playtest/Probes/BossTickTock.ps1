@@ -190,7 +190,11 @@ return $"{{\"log\":\"{string.Join(";", log)}\"}}";
     Write-Host "記録: $($rows.Count) 行"
 
     Test-AxisSegment -Rows $rows -Config $config -Actor 'a' -Follower 'b' -Label '1回目（A が弾幕）'
-    $firstEnd = $rows | Where-Object { $_.a.phase -eq 'Recovery' } | Select-Object -Last 1
+    # 1回目の弾幕の終わり＝A の最初の硬直が続いた最後の行（通常の台本の後半にある時止めでも A は硬直に入るため、最後の硬直の行ではない）
+    $firstRecovery = [Array]::FindIndex([object[]]$rows, [Predicate[object]] { param($r) $r.a.phase -eq 'Recovery' })
+    $firstEndIndex = $firstRecovery
+    while ($firstEndIndex + 1 -lt $rows.Count -and $rows[$firstEndIndex + 1].a.phase -eq 'Recovery') { $firstEndIndex++ }
+    $firstEnd = $rows[$firstEndIndex]
     Test-AxisSegment -Rows @($rows | Where-Object { $_.time -gt $firstEnd.time }) -Config $config -Actor 'b' -Follower 'a' -Label '2回目（B が弾幕）'
 
     # --- 体力の共有: どちらに当てても同じだけ減る ---
@@ -211,6 +215,17 @@ return $"{{\"before\":{before},\"afterA0\":{afterA0},\"afterA1\":{afterA1},\"aft
     Assert-ProbeValue -Name '体力ゲージ A の割合が共有体力÷最大体力' -Actual $gauge.a.ratio -Expected $gauge.a.expected -Tolerance 0.0001 | Out-Null
     Assert-ProbeValue -Name '体力ゲージ B の割合が共有体力÷最大体力' -Actual $gauge.b.ratio -Expected $gauge.b.expected -Tolerance 0.0001 | Out-Null
     Assert-ProbeTrue -Name '体力ゲージは2体とも同じだけ減っている' -Condition ($gauge.a.ratio -eq $gauge.b.ratio -and $gauge.a.ratio -lt 1) -Detail "A=$($gauge.a.ratio) B=$($gauge.b.ratio)" | Out-Null
+
+    # --- 撃破は時止めの途中で行う（全滅でショップに入っても時止めが残らないことを最後に見る）---
+    $stopped = $false
+    for ($i = 0; $i -lt 120 -and -not $stopped; $i++) {
+        $stopped = (Invoke-BossSnippet -Body @'
+var ts = scope.Container.Resolve<ITimeStopDataStore>().IsTimeStopped.CurrentValue;
+return $"{{\"ts\":{ts.ToString().ToLower()}}}";
+'@).ts
+        if (-not $stopped) { Start-Sleep -Milliseconds 250 }
+    }
+    Assert-ProbeTrue -Name '撃破の前に台本の時止めが始まる' -Condition $stopped | Out-Null
 
     # --- 同時撃破: 当てた方だけが撃破扱い、もう片方は撃破扱いにせず消える ---
     $kill = Invoke-BossSnippet -Body @'
@@ -235,7 +250,12 @@ return $"{{\"count\":{gauges.Count},\"children\":{store.transform.childCount}}}"
     Assert-ProbeValue -Name '撃破後に体力ゲージが消える（管理数）' -Actual $gauge.count -Expected 0 | Out-Null
     Assert-ProbeValue -Name '撃破後に体力ゲージが消える（オブジェクト数）' -Actual $gauge.children -Expected 0 | Out-Null
     $state = Get-WaveState
-    Assert-ProbeTrue -Name '二人組を倒すとクリアになる（ウェーブは進まずポーズ）' -Condition ($state.isCleared -and $state.currentWave -eq $bossWaveNumber -and $state.isWavePause) -Detail "cleared=$($state.isCleared) wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
+    Assert-ProbeTrue -Name '二人組を倒すと次のウェーブへ進む' -Condition ($state.currentWave -eq ($bossWaveNumber + 1) -and $state.isWavePause) -Detail "wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
+    $afterKill = Invoke-BossSnippet -Body @'
+var ts = scope.Container.Resolve<ITimeStopDataStore>().IsTimeStopped.CurrentValue;
+return $"{{\"ts\":{ts.ToString().ToLower()}}}";
+'@
+    Assert-ProbeTrue -Name '時止めの途中で倒してショップに入っても時止めが残らない' -Condition (-not $afterKill.ts) -Detail "時止め=$($afterKill.ts)" | Out-Null
 }
 
 # ボスの体力ゲージ（BossLifeGaugeStoreView）の状態: 個数、メンバーごとのゲージと足元のずれ（XZ、m）、目標の割合

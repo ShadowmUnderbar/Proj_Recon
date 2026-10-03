@@ -43,6 +43,15 @@ namespace App.Battle.DataStore
         // 現在の Act ステップで命令を出し終えたか（HoldOthers で対象の行動終了を待っている間 true）
         private bool _isCommanded;
 
+        // TimeStopMemory ステップの進み具合と、見せた予兆の記録
+        private readonly BossTimeStopMemory _timeStopMemory = new();
+
+        // 時止めの予兆で使う配置（上下左右）
+        private static readonly BossFormationSlot[] AxisSlots =
+        {
+            BossFormationSlot.Up, BossFormationSlot.Down, BossFormationSlot.Left, BossFormationSlot.Right
+        };
+
         public IReadOnlyList<int> MemberIds => _memberIds;
 
         /// <summary>メンバーが全員撃破・消去済みか</summary>
@@ -50,6 +59,12 @@ namespace App.Battle.DataStore
 
         /// <summary>現在のステップ番号（検証・デバッグ表示用）</summary>
         public int StepIndex => _stepIndex;
+
+        /// <summary>
+        /// この台本が時を止めているか。全員いなくなると台本は進まず true のまま残るため、
+        /// そのときは呼び出し側が時止めを解くこと（<see cref="SwitchPattern"/> は自分で解く命令を出す）
+        /// </summary>
+        public bool IsTimeStopping => _timeStopMemory.IsTimeStopping;
 
         public BossPatternRunner(IReadOnlyList<int> memberIds, IReadOnlyList<BossPatternStep> steps,
             System.Random random)
@@ -173,6 +188,9 @@ namespace App.Battle.DataStore
                     // 配置し直した直後は、移動が反映されてから次のステップへ進む
                     return AssignCrossFormation(step, output) ? StepResult.CompletedAndYield : StepResult.Completed;
 
+                case BossPatternStepType.TimeStopMemory:
+                    return ProcessTimeStopMemory(step, ref deltaTime, output);
+
                 default:
                     Debug.LogError($"[{nameof(BossPatternRunner)}] 未対応のステップ種別です: {step.Type}");
                     return StepResult.Completed;
@@ -230,6 +248,211 @@ namespace App.Battle.DataStore
 
             _isCommanded = true;
             return StepResult.Blocked;
+        }
+
+        /// <summary>
+        /// 時止めの記憶攻撃を1段階ずつ進める（命令を出したら次のティックで状態を見てから進む）。
+        /// 時止め → 予兆を MemoryCount 回 → 時止めを解く → 一息 → 見せた順に攻撃、の順。終わったら Completed
+        /// </summary>
+        private StepResult ProcessTimeStopMemory(BossPatternStep step, ref float deltaTime, List<BossDirectorCommand> output)
+        {
+            var memory = _timeStopMemory;
+            switch (memory.CurrentStage)
+            {
+                case BossTimeStopMemory.Stage.None:
+                    if (!HasAliveTarget(step))
+                    {
+                        return StepResult.Completed;
+                    }
+
+                    // 対象以外も含めて全員の行動が明けてから止める（弾幕の途中で止めると、止めたあとに撃った弾が止まらない）
+                    if (!AreAllAliveActionable())
+                    {
+                        return StepResult.Blocked;
+                    }
+
+                    HoldAllAlive(output);
+                    output.Add(BossDirectorCommand.BeginTimeStop());
+                    memory.BeginTelegraph();
+                    return StepResult.Blocked;
+
+                case BossTimeStopMemory.Stage.Telegraph:
+                    return ProcessTimeStopTelegraph(step, output);
+
+                case BossTimeStopMemory.Stage.Breath:
+                    memory.BreathElapsed += deltaTime;
+                    deltaTime = 0f;
+                    if (memory.BreathElapsed < step.WaitSeconds)
+                    {
+                        return StepResult.Blocked;
+                    }
+
+                    memory.BeginReplay();
+                    return StepResult.Blocked;
+
+                default:
+                    return ProcessTimeStopReplay(step, output);
+            }
+        }
+
+        /// <summary>時止めの間、対象から1体ずつ選んで上下左右のどこかへ配置し、予兆だけを見せる</summary>
+        private StepResult ProcessTimeStopTelegraph(BossPatternStep step, List<BossDirectorCommand> output)
+        {
+            var memory = _timeStopMemory;
+            switch (memory.CurrentTurn)
+            {
+                case BossTimeStopMemory.Turn.Position:
+                    if (memory.Records.Count >= step.MemoryCount)
+                    {
+                        output.Add(BossDirectorCommand.EndTimeStop());
+                        memory.BeginBreath();
+                        return StepResult.Blocked;
+                    }
+
+                    var memberSlot = PickAliveTarget(step);
+                    if (memberSlot < 0)
+                    {
+                        // 対象が全員いなくなった
+                        FinishTimeStopMemory(output);
+                        return StepResult.Completed;
+                    }
+
+                    var candidates = step.LateralOffsets;
+                    var offset = candidates == null || candidates.Length == 0 ? 0f : candidates[_random.Next(candidates.Length)];
+                    var record = new BossTimeStopMemory.Record(memberSlot, AxisSlots[_random.Next(AxisSlots.Length)], offset);
+                    memory.AddRecord(record);
+                    output.Add(BossDirectorCommand.Formation(_memberIds[memberSlot], record.Formation, record.LateralOffset));
+                    memory.CurrentTurn = BossTimeStopMemory.Turn.Act;
+                    return StepResult.Blocked;
+
+                case BossTimeStopMemory.Turn.Act:
+                    return CommandTimeStopTurn(memory.Current.MemberSlot, step.ActionIndex, output);
+
+                default:
+                    if (IsAliveSlot(memory.Current.MemberSlot) && !_statuses[memory.Current.MemberSlot].IsActionable)
+                    {
+                        return StepResult.Blocked;
+                    }
+
+                    memory.CurrentTurn = BossTimeStopMemory.Turn.Position;
+                    return StepResult.Blocked;
+            }
+        }
+
+        /// <summary>時止めを解いたあと、見せた予兆と同じ個体・同じ配置で、同じ順に攻撃させる</summary>
+        private StepResult ProcessTimeStopReplay(BossPatternStep step, List<BossDirectorCommand> output)
+        {
+            var memory = _timeStopMemory;
+            if (memory.ReplayIndex >= memory.Records.Count)
+            {
+                FinishTimeStopMemory(output);
+                return StepResult.Completed;
+            }
+
+            var record = memory.ReplayRecord;
+            switch (memory.CurrentTurn)
+            {
+                case BossTimeStopMemory.Turn.Position:
+                    if (!IsAliveSlot(record.MemberSlot))
+                    {
+                        // 撃破された個体の攻撃は飛ばす
+                        memory.ReplayIndex++;
+                        return StepResult.Blocked;
+                    }
+
+                    output.Add(BossDirectorCommand.Formation(_memberIds[record.MemberSlot], record.Formation, record.LateralOffset));
+                    memory.CurrentTurn = BossTimeStopMemory.Turn.Act;
+                    return StepResult.Blocked;
+
+                case BossTimeStopMemory.Turn.Act:
+                    return CommandTimeStopTurn(record.MemberSlot, step.ReplayActionIndex, output);
+
+                default:
+                    if (IsAliveSlot(record.MemberSlot) && !_statuses[record.MemberSlot].IsActionable)
+                    {
+                        return StepResult.Blocked;
+                    }
+
+                    memory.ReplayIndex++;
+                    memory.CurrentTurn = BossTimeStopMemory.Turn.Position;
+                    return StepResult.Blocked;
+            }
+        }
+
+        /// <summary>配置についた個体へ行動を命令する（撃破されていたら行動を待たずに次へ）</summary>
+        private StepResult CommandTimeStopTurn(int memberSlot, int actionIndex, List<BossDirectorCommand> output)
+        {
+            var memory = _timeStopMemory;
+            if (!IsAliveSlot(memberSlot))
+            {
+                memory.CurrentTurn = BossTimeStopMemory.Turn.Await;
+                return StepResult.Blocked;
+            }
+
+            if (!_statuses[memberSlot].IsActionable)
+            {
+                return StepResult.Blocked;
+            }
+
+            output.Add(BossDirectorCommand.Act(_memberIds[memberSlot], actionIndex));
+            memory.CurrentTurn = BossTimeStopMemory.Turn.Await;
+            return StepResult.Blocked;
+        }
+
+        /// <summary>記憶攻撃を終える（時止め中なら解き、待機させていた個体を解放する）</summary>
+        private void FinishTimeStopMemory(List<BossDirectorCommand> output)
+        {
+            if (_timeStopMemory.IsTimeStopping)
+            {
+                output.Add(BossDirectorCommand.EndTimeStop());
+            }
+
+            _timeStopMemory.Reset();
+            ReleaseAllHeld(output);
+        }
+
+        /// <summary>生存している対象から1体をランダムに選ぶ（いなければ -1）</summary>
+        private int PickAliveTarget(BossPatternStep step)
+        {
+            _formationSlots.Clear();
+            foreach (var slot in step.MemberSlots)
+            {
+                if (IsAliveSlot(slot) && !_formationSlots.Contains(slot))
+                {
+                    _formationSlots.Add(slot);
+                }
+            }
+
+            return _formationSlots.Count == 0 ? -1 : _formationSlots[_random.Next(_formationSlots.Count)];
+        }
+
+        /// <summary>生存している全員（対象に限らない）が行動可能か</summary>
+        private bool AreAllAliveActionable()
+        {
+            for (var slot = 0; slot < _memberIds.Length; slot++)
+            {
+                if (!_isGone[slot] && !_statuses[slot].IsActionable)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>生存している全員をその場で待機させる</summary>
+        private void HoldAllAlive(List<BossDirectorCommand> output)
+        {
+            for (var slot = 0; slot < _memberIds.Length; slot++)
+            {
+                if (_isGone[slot] || _isHeld[slot])
+                {
+                    continue;
+                }
+
+                _isHeld[slot] = true;
+                output.Add(BossDirectorCommand.Hold(_memberIds[slot]));
+            }
         }
 
         /// <summary>
@@ -366,7 +589,8 @@ namespace App.Battle.DataStore
                 output.Add(BossDirectorCommand.Cancel(_memberIds[slot]));
             }
 
-            ReleaseAllHeld(output);
+            // 時止めの記憶攻撃の途中なら時止めを解き、待機させていた個体を解放する
+            FinishTimeStopMemory(output);
 
             _steps = steps;
             _stepIndex = 0;

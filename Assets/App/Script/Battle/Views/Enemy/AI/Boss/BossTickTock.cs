@@ -16,6 +16,9 @@ namespace App.Battle.Views.Enemy.AI.Boss
     ///   範囲・秒数・ダメージは BossLineStrikeConfig。
     /// 行動2（帯の連続攻撃）: 行動1と同じ帯を、予兆1回のあと同じ向き・同じ位置のまま予兆なしで続けて当てる（×字の配置で使う）。
     ///   回数と間隔は BossLineStrikeConfig の RepeatCount / RepeatInterval。
+    /// 行動3（時止め中の予兆）: 行動1と同じ帯の予兆だけを出し、当てずに消す（台本の TimeStopMemory で使う）。
+    ///   秒数は BossLineStrikeConfig の MemoryTelegraphSeconds / MemoryIntervalSeconds。
+    /// 行動4（時止め明けの攻撃）: 行動1と同じ帯を、短い予兆（ReplayTelegraphSeconds）のあとに当てる。
     /// プレハブでは基底の「行動中は移動を止める」を切っておくこと（弾幕中も動くため）。
     /// </summary>
     public class BossTickTock : BossAIBase
@@ -28,6 +31,12 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         /// <summary>帯の連続攻撃の行動番号（予兆1回のあと続けて当てる）</summary>
         public const int RepeatLineStrikeActionIndex = 2;
+
+        /// <summary>時止め中に予兆だけを見せる行動番号（当てない）</summary>
+        public const int MemoryTelegraphActionIndex = 3;
+
+        /// <summary>時止めが明けたあと、短い予兆で帯を当てる行動番号</summary>
+        public const int ReplayLineStrikeActionIndex = 4;
 
         [SerializeField] private BaseBulletView _bulletPrefab;
         [SerializeField] private Transform _muzzleTransform;
@@ -68,9 +77,20 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         protected override void GetActionDurations(int actionIndex, out float windup, out float active, out float recovery)
         {
+            if (actionIndex == MemoryTelegraphActionIndex && _lineStrikeConfig != null)
+            {
+                // 攻撃の段階は無く、予兆を消してから次の予兆までの間を硬直にする
+                windup = _lineStrikeConfig.MemoryTelegraphSeconds;
+                active = 0f;
+                recovery = _lineStrikeConfig.MemoryIntervalSeconds;
+                return;
+            }
+
             if (IsLineStrike(actionIndex) && _lineStrikeConfig != null)
             {
-                windup = _lineStrikeConfig.TelegraphSeconds;
+                windup = actionIndex == ReplayLineStrikeActionIndex
+                    ? _lineStrikeConfig.ReplayTelegraphSeconds
+                    : _lineStrikeConfig.TelegraphSeconds;
                 // 連続攻撃は最後の1回の表示が終わるまでを攻撃の段階にする
                 active = actionIndex == RepeatLineStrikeActionIndex
                     ? _lineStrikeConfig.RepeatInterval * (_lineStrikeConfig.RepeatCount - 1) + _lineStrikeConfig.StrikeSeconds
@@ -128,7 +148,8 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         protected override void OnActionActive(int actionIndex)
         {
-            if (!IsLineStrike(actionIndex))
+            // 時止め中の予兆は当てない
+            if (!IsLineStrike(actionIndex) || actionIndex == MemoryTelegraphActionIndex)
             {
                 return;
             }
@@ -197,9 +218,11 @@ namespace App.Battle.Views.Enemy.AI.Boss
             }
         }
 
+        /// <summary>帯を出す行動か（予兆だけの行動も含む。どれもその場に留まる）</summary>
         private static bool IsLineStrike(int actionIndex)
         {
-            return actionIndex == LineStrikeActionIndex || actionIndex == RepeatLineStrikeActionIndex;
+            return actionIndex == LineStrikeActionIndex || actionIndex == RepeatLineStrikeActionIndex
+                || actionIndex == MemoryTelegraphActionIndex || actionIndex == ReplayLineStrikeActionIndex;
         }
 
         private void Fire()

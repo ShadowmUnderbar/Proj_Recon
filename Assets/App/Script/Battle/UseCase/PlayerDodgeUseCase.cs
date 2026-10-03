@@ -29,6 +29,7 @@ namespace App.Battle.UseCase
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IDodgeCounterAttackDataStore _dodgeCounterAttackDataStore;
         private readonly IFreezeDataStore _freezeDataStore;
+        private readonly ITimeStopDataStore _timeStopDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -41,7 +42,8 @@ namespace App.Battle.UseCase
             IPlayerControlPresenter playerControlPresenter,
             IWaveManagerDataStore waveManagerDataStore,
             IDodgeCounterAttackDataStore dodgeCounterAttackDataStore,
-            IFreezeDataStore freezeDataStore
+            IFreezeDataStore freezeDataStore,
+            ITimeStopDataStore timeStopDataStore
         )
         {
             _playerStateDataStore = playerStateDataStore;
@@ -52,6 +54,7 @@ namespace App.Battle.UseCase
             _waveManagerDataStore = waveManagerDataStore;
             _dodgeCounterAttackDataStore = dodgeCounterAttackDataStore;
             _freezeDataStore = freezeDataStore;
+            _timeStopDataStore = timeStopDataStore;
         }
 
 
@@ -65,9 +68,10 @@ namespace App.Battle.UseCase
 
         private void OnDodge()
         {
-            // ウェーブ間ポーズ中・フリーズ中は回避を停止（Blitzの直接ダメージも防ぐ）
+            // ウェーブ間ポーズ中・フリーズ中・時止め中は回避を停止（Blitzの直接ダメージも防ぐ）
             if (_waveManagerDataStore.IsWavePause.Value ||
-                _freezeDataStore.IsFreezing.CurrentValue)
+                _freezeDataStore.IsFreezing.CurrentValue ||
+                _timeStopDataStore.IsTimeStopped.CurrentValue)
             {
                 return;
             }
@@ -116,9 +120,10 @@ namespace App.Battle.UseCase
 
         public void Tick()
         {
-            // ウェーブ間ポーズ中・フリーズ中は回避移動も止める（再開時に残り距離を移動する）
+            // ウェーブ間ポーズ中・フリーズ中・時止め中は回避移動も止める（再開時に残り距離を移動する）
             if (_waveManagerDataStore.IsWavePause.Value ||
-                _freezeDataStore.IsFreezing.CurrentValue)
+                _freezeDataStore.IsFreezing.CurrentValue ||
+                _timeStopDataStore.IsTimeStopped.CurrentValue)
             {
                 return;
             }

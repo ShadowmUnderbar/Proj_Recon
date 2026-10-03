@@ -33,6 +33,16 @@ namespace App.Battle.Data
         [SerializeField, Min(0.02f), Tooltip("連続攻撃の間隔（秒）。2回目以降は予兆なしでこの間隔で当てる")]
         private float _repeatInterval = 0.25f;
 
+        [Header("時止めの記憶攻撃")]
+        [SerializeField, Min(0f), Tooltip("時止めの間に見せる予兆1回の秒数")]
+        private float _memoryTelegraphSeconds = 1.2f;
+
+        [SerializeField, Min(0f), Tooltip("時止めの間、予兆を消してから次の予兆を出すまでの秒数")]
+        private float _memoryIntervalSeconds = 0.3f;
+
+        [SerializeField, Min(0f), Tooltip("時止めを解いたあとの攻撃で、配置についてから当てるまでの予兆の秒数（記憶していれば避けられる短さにする）")]
+        private float _replayTelegraphSeconds = 0.6f;
+
         [Header("ダメージ")]
         [SerializeField, Min(0f), Tooltip("ボスの攻撃力（ウェーブ強化後）に掛ける倍率")]
         private float _damageMultiplier = 1f;
@@ -52,6 +62,9 @@ namespace App.Battle.Data
         public float DamageMultiplier => _damageMultiplier;
         public int RepeatCount => _repeatCount;
         public float RepeatInterval => _repeatInterval;
+        public float MemoryTelegraphSeconds => _memoryTelegraphSeconds;
+        public float MemoryIntervalSeconds => _memoryIntervalSeconds;
+        public float ReplayTelegraphSeconds => _replayTelegraphSeconds;
         public Color TelegraphColor => _telegraphColor;
         public Color StrikeColor => _strikeColor;
     }

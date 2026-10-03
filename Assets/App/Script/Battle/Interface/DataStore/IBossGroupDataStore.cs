@@ -13,6 +13,9 @@ namespace App.Battle.Interface.DataStore
         /// <summary>メンバーが1体でも残っているボスグループがあるか</summary>
         bool HasAliveGroup { get; }
 
+        /// <summary>メンバーが残っているグループのどれかが時を止めているか（全員いなくなったグループは含めない）</summary>
+        bool IsTimeStopping { get; }
+
         /// <summary>
         /// ボスグループを出現させる。各メンバーを敵として登録し、台本の進行を始める。
         /// </summary>

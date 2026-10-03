@@ -21,6 +21,7 @@ namespace App.Battle.UseCase
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IFreezeDataStore _freezeDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
+        private readonly ITimeStopDataStore _timeStopDataStore;
 
         private readonly List<BossDirectorCommand> _commands = new();
         private readonly CompositeDisposable _disposable = new();
@@ -31,7 +32,8 @@ namespace App.Battle.UseCase
             IEnemyDataStore enemyDataStore,
             IEnemyPresenter enemyPresenter,
             IFreezeDataStore freezeDataStore,
-            IWaveManagerDataStore waveManagerDataStore
+            IWaveManagerDataStore waveManagerDataStore,
+            ITimeStopDataStore timeStopDataStore
         )
         {
             _bossGroupDataStore = bossGroupDataStore;
@@ -39,6 +41,7 @@ namespace App.Battle.UseCase
             _enemyPresenter = enemyPresenter;
             _freezeDataStore = freezeDataStore;
             _waveManagerDataStore = waveManagerDataStore;
+            _timeStopDataStore = timeStopDataStore;
         }
 
         public void Initialize()
@@ -49,12 +52,24 @@ namespace App.Battle.UseCase
 
             // 撃破演出の完了を待たずに台本の対象から外す
             _enemyDataStore.OnEnemyDead
-                .Subscribe(_bossGroupDataStore.RemoveMember)
+                .Subscribe(RemoveMember)
                 .AddTo(_disposable);
 
             _enemyDataStore.OnEnemyRemoved
-                .Subscribe(_bossGroupDataStore.RemoveMember)
+                .Subscribe(RemoveMember)
                 .AddTo(_disposable);
+        }
+
+        private void RemoveMember(int enemyId)
+        {
+            _bossGroupDataStore.RemoveMember(enemyId);
+
+            // 時止めの途中で全員いなくなったら、その場で時止めを解く。
+            // 台本の Tick を待つと、ボスウェーブの全滅でショップ（ウェーブ間ポーズ）に入ったときに解けないまま残る
+            if (_timeStopDataStore.IsTimeStopped.CurrentValue && !_bossGroupDataStore.IsTimeStopping)
+            {
+                _timeStopDataStore.SetTimeStop(false);
+            }
         }
 
         public void Tick()
@@ -93,6 +108,12 @@ namespace App.Battle.UseCase
                     break;
                 case BossDirectorCommandType.Cancel:
                     _enemyPresenter.CancelBossAction(command.EnemyId);
+                    break;
+                case BossDirectorCommandType.BeginTimeStop:
+                    _timeStopDataStore.SetTimeStop(true);
+                    break;
+                case BossDirectorCommandType.EndTimeStop:
+                    _timeStopDataStore.SetTimeStop(false);
                     break;
                 default:
                     Debug.LogError($"[{nameof(BossGroupUseCase)}] 未対応の命令です: {command}");

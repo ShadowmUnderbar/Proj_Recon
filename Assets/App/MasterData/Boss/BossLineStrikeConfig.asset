@@ -17,6 +17,11 @@ MonoBehaviour:
   _telegraphSeconds: 1.5
   _strikeSeconds: 0.15
   _recoverySeconds: 0.5
+  _repeatCount: 3
+  _repeatInterval: 0.25
+  _memoryTelegraphSeconds: 1.2
+  _memoryIntervalSeconds: 0.3
+  _replayTelegraphSeconds: 0.6
   _damageMultiplier: 1
   _telegraphColor: {r: 1, g: 0.1, b: 0.05, a: 0.35}
   _strikeColor: {r: 1, g: 0.15, b: 0.05, a: 0.9}
