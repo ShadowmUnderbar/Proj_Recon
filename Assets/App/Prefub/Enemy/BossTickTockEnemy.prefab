@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 3981600075220127688}
   - component: {fileID: 8830741729873874847}
   m_Layer: 6
-  m_Name: BossAxisBarrageEnemy
+  m_Name: BossTickTockEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

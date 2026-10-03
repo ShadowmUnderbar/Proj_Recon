@@ -1,5 +1,5 @@
 ﻿#
-# ボス系プローブ（BossWave / BossAxisPair）の共通処理。各プローブの先頭で dot-source する。
+# ボス系プローブ（BossWave / BossTickTock）の共通処理。各プローブの先頭で dot-source する。
 #   - 再生開始シーンを Battle にする／戻す。あわせて開始時アップグレード（デバッグ設定）を空にする／戻す
 #   - BossWaveConfig のボスグループを一時的に差し替える／戻す（ボスウェーブに出るボスを検証対象に合わせる）
 #   - デバッグ対戦（任意のボスグループ・敵とだけ戦う）を予約する（Request-DebugArena）
