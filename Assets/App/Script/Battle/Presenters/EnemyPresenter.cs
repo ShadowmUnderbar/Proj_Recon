@@ -14,6 +14,10 @@ namespace App.Battle.Presenters
         private readonly IEnemyStoreView _enemyStoreView;
 
         public Observable<(int id, Pose pose)> OnEnemyPoseUpdate => _enemyStoreView.OnEnemyPoseUpdate;
+        public Observable<int> OnEnemySpawnFailed => _enemyStoreView.OnEnemySpawnFailed;
+
+        public Observable<(int id, BossMemberStatus status)> OnBossMemberStatusChanged =>
+            _enemyStoreView.OnBossMemberStatusChanged;
 
         [Inject]
         public EnemyPresenter(
@@ -86,6 +90,26 @@ namespace App.Battle.Presenters
         public void SetPause(bool isPause)
         {
             _enemyStoreView.SetPause(isPause);
+        }
+
+        public void CommandBossAction(int enemyId, int actionIndex)
+        {
+            _enemyStoreView.CommandBossAction(enemyId, actionIndex);
+        }
+
+        public void SetBossHold(int enemyId, bool isHold)
+        {
+            _enemyStoreView.SetBossHold(enemyId, isHold);
+        }
+
+        public void SetBossFormation(int enemyId, BossFormationSlot slot, float lateralOffset)
+        {
+            _enemyStoreView.SetBossFormation(enemyId, slot, lateralOffset);
+        }
+
+        public void CancelBossAction(int enemyId)
+        {
+            _enemyStoreView.CancelBossAction(enemyId);
         }
     }
 }

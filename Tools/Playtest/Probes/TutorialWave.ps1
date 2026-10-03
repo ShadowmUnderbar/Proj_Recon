@@ -162,7 +162,7 @@ var pausedBefore = wave.IsWavePause.CurrentValue;
 
 // ウェーブ1が既に始まっている状態で、後から初期化される UseCase を作って購読させる
 using (var late = new TutorialWaveUseCase(
-    scope.Container.Resolve<TutorialWaveConfig>(), wave, progress, message))
+    scope.Container.Resolve<TutorialWaveConfig>(), wave, progress, message, scope.Container.Resolve<DebugArenaSettings>()))
 {
     late.Initialize();
 }

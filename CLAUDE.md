@@ -1,23 +1,26 @@
 # RECON プロジェクト - Claude向け指示書
 
-## Project Overview
-This project involves a Unity C# codebase with Google Apps Script (GAS) for spreadsheet export and Unity Editor extensions for CSV import. When asked about CSV/data pipeline work, assume this full GAS → CSV → Unity Editor importer workflow.
-
-## Architecture Conventions
-This project uses a DataStore pattern for data and calculations. Do NOT create UseCase or Service classes for logic that belongs in DataStore helpers. When adding new calculation logic, first check existing DataStore classes and add helper/calculator classes within that pattern.
-
-## Data Import/Export
-When parsing CSV or spreadsheet data, always confirm the header/data start row with the user before implementing. Default assumption: data starts at row 4 unless specified otherwise.
+## 返答言語
+- ユーザーへの返答・説明・質問・報告は、直前に読んだログや資料の言語にかかわらず**常に日本語**で行う
+- コード中の識別子・コマンド・エラーメッセージの引用は原文のままでよい
 
 ## プロジェクト概要
 - Unity製VR/XRゲーム（Meta Quest向け）
 - クリーンアーキテクチャ採用
 - VContainer（DI）、R3（Reactive Extensions）を使用
+- Unity の C# コードに加え、スプレッドシート書き出し用の Google Apps Script（GAS）と、CSV 取り込み用の Unity エディタ拡張がある。CSV・データパイプラインの作業では、GAS → CSV → Unity エディタのインポーターという一連の流れ全体を前提にする
+
+## データと計算の置き場所
+- データと計算には DataStore パターンを使う。DataStore のヘルパーに置くべきロジックのために UseCase や Service クラスを作らない
+- 新しい計算ロジックを足すときは、まず既存の DataStore クラスを確認し、そのパターンの中にヘルパー・計算用クラスを追加する
+
+## データの取り込み・書き出し
+- CSV やスプレッドシートを解析するときは、実装前にヘッダー行・データ開始行をユーザーに必ず確認する。指定がなければデータは4行目から始まると想定する
 
 ## やってほしいこと ✅
 
 ### コーディング規約
-- **日本語優先**: コミットメッセージ、コメント、PR説明は日本語で記述
+- **日本語優先**: ユーザーへの返答、コミットメッセージ、コメント、PR説明は日本語で記述
 - **クリーンアーキテクチャ遵守**: レイヤー間の依存関係を正しく保つ
   - Views → Presenters → UseCase → Data → DataStore
   - インターフェースを介した疎結合を維持

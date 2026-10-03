@@ -1,0 +1,401 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57ad08b8a35f67642a15aec3935b33a8, type: 3}
+  m_Name: BossGroup_TickTock
+  m_EditorClassIdentifier: 
+  _members:
+  - _enemyMasterData: {fileID: 11400000, guid: e1d374a5e52175a449a28a5ca0ecf17b, type: 2}
+    _spawnOffset: {x: -5, y: 0, z: 0}
+  - _enemyMasterData: {fileID: 11400000, guid: e1d374a5e52175a449a28a5ca0ecf17b, type: 2}
+    _spawnOffset: {x: 5, y: 0, z: 0}
+  _pattern:
+  - _type: 3
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 0
+    _memberSlots: 00000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 1
+    _memberSlots: 00000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 3
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 0
+    _memberSlots: 01000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 1
+    _memberSlots: 01000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 6
+    _memberSlots: 0000000001000000
+    _actionIndex: 3
+    _holdOthers: 0
+    _waitSeconds: 1
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 4
+  _sharedHealth: 1
+  _rageHealthRatio: 0.5
+  _ragePattern:
+  - _type: 3
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets:
+    - -5
+    - 0
+    - 5
+    _requireAlignedOne: 1
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 0
+    _memberSlots: 0000000001000000
+    _actionIndex: 1
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 1
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 2
+    _memberSlots: 
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0.5
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 4
+    _memberSlots: 
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 4
+    _loopMin: 3
+    _loopMax: 6
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 5
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 0
+    _memberSlots: 0000000001000000
+    _actionIndex: 2
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 1
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 2
+    _memberSlots: 
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0.5
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 3
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 0
+    _memberSlots: 00000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 1
+    _memberSlots: 00000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 3
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets:
+    - -5
+    - 0
+    - 5
+    _requireAlignedOne: 1
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 0
+    _memberSlots: 0000000001000000
+    _actionIndex: 1
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 1
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 2
+    _memberSlots: 
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0.5
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 4
+    _memberSlots: 
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 4
+    _loopMin: 3
+    _loopMax: 6
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 5
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 0
+    _memberSlots: 0000000001000000
+    _actionIndex: 2
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 1
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 2
+    _memberSlots: 
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0.5
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 3
+    _memberSlots: 0000000001000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 0
+    _memberSlots: 01000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0
+  - _type: 1
+    _memberSlots: 01000000
+    _actionIndex: 0
+    _holdOthers: 0
+    _waitSeconds: 0
+    _lateralOffsets: []
+    _requireAlignedOne: 0
+    _loopBackSteps: 1
+    _loopMin: 1
+    _loopMax: 1
+    _memoryCount: 3
+    _replayActionIndex: 0

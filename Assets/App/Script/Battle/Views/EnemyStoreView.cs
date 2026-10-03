@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface;
+using App.Battle.Interface.EnemyAI;
 using App.Common.Data;
 using Cysharp.Threading.Tasks;
 using R3;
@@ -21,6 +23,14 @@ namespace App.Battle.Views
 
         private readonly Subject<(int id, Pose pose)> _onEnemyPoseUpdate = new();
         public Observable<(int id, Pose pose)> OnEnemyPoseUpdate => _onEnemyPoseUpdate;
+
+        private readonly Subject<int> _onEnemySpawnFailed = new();
+        public Observable<int> OnEnemySpawnFailed => _onEnemySpawnFailed;
+
+        // ボスグループの個体（台本の命令を受けるAIを持つ敵だけ）
+        private readonly Dictionary<int, IBossMemberView> _bossMembers = new();
+        private readonly Subject<(int id, BossMemberStatus status)> _onBossMemberStatusChanged = new();
+        public Observable<(int id, BossMemberStatus status)> OnBossMemberStatusChanged => _onBossMemberStatusChanged;
 
         private readonly RaycastHit[] _hits = new RaycastHit[10];
         private readonly List<int> _rayCastEnemyIds = new();
@@ -61,17 +71,34 @@ namespace App.Battle.Views
 
         public async UniTask Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType)
         {
-            var enemyObj = Addressables.LoadAssetAsync<GameObject>(prefabPath);
-
-            await enemyObj.Task;
-
-            if (enemyObj.Status != AsyncOperationStatus.Succeeded)
+            GameObject prefab = null;
+            try
             {
+                var enemyObj = Addressables.LoadAssetAsync<GameObject>(prefabPath);
+                await enemyObj.Task;
+                if (enemyObj.Status == AsyncOperationStatus.Succeeded)
+                {
+                    prefab = enemyObj.Result;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+
+            if (prefab == null)
+            {
+                FailSpawn(enemyData.Id, $"敵プレハブの読み込みに失敗しました: {prefabPath}");
                 return;
             }
 
-            var enemyObject = Instantiate(enemyObj.Result, enemyData.Pose.position, enemyData.Pose.rotation);
-            var view = enemyObject.GetComponent<IEnemyView>();
+            var enemyObject = Instantiate(prefab, enemyData.Pose.position, enemyData.Pose.rotation);
+            if (!enemyObject.TryGetComponent<IEnemyView>(out var view))
+            {
+                Destroy(enemyObject);
+                FailSpawn(enemyData.Id, $"敵プレハブに {nameof(IEnemyView)} がありません: {prefabPath}");
+                return;
+            }
 
             view.Init(enemyData.Id, enemyData, resistanceDirectionType);
             view.Pose
@@ -82,6 +109,15 @@ namespace App.Battle.Views
             view.SetPause(_isPause);
 
             _enemies.Add(enemyData.Id, view);
+
+            if (enemyObject.TryGetComponent<IBossMemberView>(out var bossMember))
+            {
+                var enemyId = enemyData.Id;
+                _bossMembers.Add(enemyId, bossMember);
+                bossMember.Status
+                    .Subscribe(status => _onBossMemberStatusChanged.OnNext((enemyId, status)))
+                    .AddTo(enemyObject);
+            }
 
             if (enemyObject.TryGetComponent<EnemyGazeBoundsView>(out var gazeBounds))
             {
@@ -98,6 +134,16 @@ namespace App.Battle.Views
             }
         }
 
+        /// <summary>
+        /// 出現に失敗したことを知らせる。敵データだけが残ると倒せない敵になり、
+        /// ボスウェーブでは進めなくなるため、受け取った側で敵データを消してもらう
+        /// </summary>
+        private void FailSpawn(int enemyId, string reason)
+        {
+            Debug.LogError($"[{nameof(EnemyStoreView)}] {reason}（敵Id: {enemyId}）。敵データを取り除きます");
+            _onEnemySpawnFailed.OnNext(enemyId);
+        }
+
         public void UnSpawn(int enemyId)
         {
             if (!_enemies.TryGetValue(enemyId, out var enemyView))
@@ -108,6 +154,7 @@ namespace App.Battle.Views
             _hitBoxStoreView.RemoveHitBoxView(enemyId);
             _gazeTracker.Remove(enemyId);
             _gazeTouchedEnemyIds.Remove(enemyId);
+            _bossMembers.Remove(enemyId);
 
             enemyView.Destroy();
             _enemies.Remove(enemyId);
@@ -133,6 +180,7 @@ namespace App.Battle.Views
             _enemies.Clear();
             _gazeTracker.Clear();
             _gazeTouchedEnemyIds.Clear();
+            _bossMembers.Clear();
         }
 
         public IReadOnlyList<int> GetDodgeHitEnemies(Vector3 playerPosition, Vector3 direction, float distance)
@@ -301,6 +349,46 @@ namespace App.Battle.Views
             }
         }
 
+        public void CommandBossAction(int enemyId, int actionIndex)
+        {
+            if (!_bossMembers.TryGetValue(enemyId, out var bossMember))
+            {
+                return;
+            }
+
+            bossMember.CommandAction(actionIndex);
+        }
+
+        public void SetBossHold(int enemyId, bool isHold)
+        {
+            if (!_bossMembers.TryGetValue(enemyId, out var bossMember))
+            {
+                return;
+            }
+
+            bossMember.SetHold(isHold);
+        }
+
+        public void SetBossFormation(int enemyId, BossFormationSlot slot, float lateralOffset)
+        {
+            if (!_bossMembers.TryGetValue(enemyId, out var bossMember))
+            {
+                return;
+            }
+
+            bossMember.SetFormation(slot, lateralOffset);
+        }
+
+        public void CancelBossAction(int enemyId)
+        {
+            if (!_bossMembers.TryGetValue(enemyId, out var bossMember))
+            {
+                return;
+            }
+
+            bossMember.CancelAction();
+        }
+
         public void SetPause(bool isPause)
         {
             _isPause = isPause;
@@ -316,7 +404,7 @@ namespace App.Battle.Views
             foreach (var enemy in _enemies.Values)
             {
                 // シーン破棄では敵が先に破棄されていることがある（破棄済みに Destroy を呼ぶと例外になる）
-                if (enemy is Object enemyObject && enemyObject == null)
+                if (enemy is UnityEngine.Object enemyObject && enemyObject == null)
                 {
                     continue;
                 }
@@ -327,7 +415,10 @@ namespace App.Battle.Views
             _enemies.Clear();
             _gazeTracker.Clear();
             _gazeTouchedEnemyIds.Clear();
+            _bossMembers.Clear();
             _onEnemyPoseUpdate.Dispose();
+            _onEnemySpawnFailed.Dispose();
+            _onBossMemberStatusChanged.Dispose();
         }
     }
 }

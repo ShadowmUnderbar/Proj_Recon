@@ -1,13 +1,25 @@
+using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using R3;
+using VContainer;
 
 namespace App.Battle.DataStore
 {
     public class WaveManagerDataStore : IWaveManagerDataStore, IRunResettable
     {
+        private readonly int _startWave;
+
+        [Inject]
+        public WaveManagerDataStore(DebugArenaSettings debugArenaSettings)
+        {
+            // デバッグ対戦では指定したウェーブから始める（敵の強さの倍率がそのウェーブ相当になる）
+            _startWave = debugArenaSettings.StartWave;
+            _currentWave = new ReactiveProperty<int>(_startWave);
+        }
+
         public ReactiveProperty<bool> IsWavePause { get; } = new(false);
 
-        private readonly ReactiveProperty<int> _currentWave = new(1);
+        private readonly ReactiveProperty<int> _currentWave;
         public ReadOnlyReactiveProperty<int> CurrentWave => _currentWave;
 
         private readonly ReactiveProperty<float> _elapsedTime = new(0f);
@@ -36,7 +48,7 @@ namespace App.Battle.DataStore
 
         public void ResetRun()
         {
-            _currentWave.Value = 1;
+            _currentWave.Value = _startWave;
             _elapsedTime.Value = 0f;
             _killCount.Value = 0;
 

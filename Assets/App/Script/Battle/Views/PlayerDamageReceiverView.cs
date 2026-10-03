@@ -23,7 +23,9 @@ namespace App.Battle.Views
 
         public int Id { get; private set; } = PlayerConstants.PlayerId;
         public HitDirectionType ResistanceDirectionType { get; private set; }
-        public HitBoxType HitBoxType { get; private set; }
+        // Init は呼ばれない（Id と同じく既定値で使われる）ため、プレイヤーの被弾受けであることを既定値で示す。
+        // 種類で当てる相手を絞る攻撃（ボスの帯の攻撃）がプレイヤーを見つけられるようにするため
+        public HitBoxType HitBoxType { get; private set; } = HitBoxType.Player;
 
         public void Init(int id, HitBoxType hitBoxType, HitDirectionType resistanceDirectionType)
         {

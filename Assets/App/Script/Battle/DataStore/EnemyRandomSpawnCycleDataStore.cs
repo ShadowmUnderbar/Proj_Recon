@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using R3;
 using UnityEngine;
@@ -11,15 +12,21 @@ namespace App.Battle.DataStore
     {
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IOverclockDataStore _overclockDataStore;
+        private readonly IBossWaveDataStore _bossWaveDataStore;
+        private readonly DebugArenaSettings _debugArenaSettings;
 
         [Inject]
         public EnemyRandomSpawnCycleDataStore(
             IWaveManagerDataStore waveManagerDataStore,
-            IOverclockDataStore overclockDataStore
+            IOverclockDataStore overclockDataStore,
+            IBossWaveDataStore bossWaveDataStore,
+            DebugArenaSettings debugArenaSettings
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
             _overclockDataStore = overclockDataStore;
+            _bossWaveDataStore = bossWaveDataStore;
+            _debugArenaSettings = debugArenaSettings;
         }
 
         private readonly Subject<int> _onSpawnCommonEnemy = new();
@@ -71,6 +78,12 @@ namespace App.Battle.DataStore
 
             // オーバークロック中は世界の時間が止まっているため、スポーンも進めない
             if (_overclockDataStore.IsActive.CurrentValue)
+            {
+                return;
+            }
+
+            // ボスウェーブ中はボス以外を湧かせない。デバッグ対戦では指定した相手以外を湧かせない
+            if (_bossWaveDataStore.IsBossWave || _debugArenaSettings.IsEnabled)
             {
                 return;
             }

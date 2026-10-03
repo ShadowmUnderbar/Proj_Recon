@@ -42,10 +42,14 @@ namespace App.Battle
         [SerializeField] private PointParticleConfig _pointParticleConfig;
         [SerializeField] private PointDropConfig _pointDropConfig;
         [SerializeField] private PlayerDeathConfig _playerDeathConfig;
+        [SerializeField] private GameClearConfig _gameClearConfig;
         [SerializeField] private UpgradeDescriptionStyle _upgradeDescriptionStyle;
         [SerializeField] private PlayerBaseParameterConfig _playerBaseParameterConfig;
         [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
         [SerializeField] private OverclockConfig _overclockConfig;
+        [SerializeField] private BossWaveConfig _bossWaveConfig;
+        [SerializeField] private BossLifeGaugeStoreView _bossLifeGaugeStoreView;
+        [SerializeField] private BossLifeGaugeConfig _bossLifeGaugeConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -57,6 +61,10 @@ namespace App.Battle
             // オーバークロック（敵・敵弾の停止）。バフ・スポーン等の時間進行がこの発動状態を見るため先に登録する
             builder.Register<OverclockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IOverclockDataStore>();
+
+            // ボスによる時止め（プレイヤーと弾だけを止める。ボスの台本が始める・解く）
+            builder.Register<TimeStopDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ITimeStopDataStore>();
             builder.Register<PlayerStateDataStore>(Lifetime.Singleton)
                 .AsImplementedInterfaces().As<IPlayerStateDataStore>();
             builder.Register<PlayerFocusDataStore>(Lifetime.Singleton)
@@ -71,6 +79,12 @@ namespace App.Battle
             builder.Register<EnemyDataStore>(Lifetime.Singleton).AsImplementedInterfaces().As<IEnemyDataStore>();
             builder.Register<EnemyRandomSpawnCycleDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IEnemyRandomSpawnCycleDataStore>();
+            // 複数個体のボスの台本進行（EnemyDataStoreへ個体を登録する）
+            builder.Register<BossGroupDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IBossGroupDataStore>();
+            // ボスウェーブの判定（湧き周期・ウェーブ進行が参照する）
+            builder.Register<BossWaveDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IBossWaveDataStore>();
             builder.Register<PeaceMakerDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPeaceMakerDataStore>();
             builder.Register<AvalancheDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -128,6 +142,9 @@ namespace App.Battle
                 .As<IPointDropCalculatorDataStore>();
             builder.Register<StreamerCameraDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IStreamerCameraDataStore>();
+            // デバッグ対戦で出した相手と出し直しの待ち（通常のランでは使われない）
+            builder.Register<DebugArenaDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IDebugArenaDataStore>();
 
             #endregion
 
@@ -136,7 +153,10 @@ namespace App.Battle
             // アップグレード付与副作用の共通処理（ShopUseCase・RunStartUseCaseが利用）
             builder.Register<UpgradeSideEffectApplier>(Lifetime.Singleton);
 
-            // ラン状態の一括リセット（GameOverUseCaseのリスタートが利用）
+            // 結果画面の獲得アップグレード一覧の組み立て（RunResultUseCaseが利用）
+            builder.Register<AcquiredUpgradeListBuilder>(Lifetime.Singleton).As<IAcquiredUpgradeListBuilder>();
+
+            // ラン状態の一括リセット（RunResultUseCaseのリスタートが利用）
             builder.Register<RunResetUseCase>(Lifetime.Singleton);
 
             // 配信用カメラのフレーミング計算（StreamerCameraViewが利用）
@@ -160,13 +180,25 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
             builder.RegisterEntryPoint<FreezeUseCase>();
             builder.RegisterEntryPoint<OverclockUseCase>();
+            // ボスグループの台本進行と個体をつなぐ（フリーズ・ウェーブ間ポーズ中は台本を止める）
+            builder.RegisterEntryPoint<BossGroupUseCase>();
+            // ボスウェーブ開始時に残った敵を消し、プレイヤーを移してボスを出す
+            builder.RegisterEntryPoint<BossWaveUseCase>();
+            // デバッグ対戦（エディタの「App/デバッグ: 敵と対戦」）で指定の相手を出し、倒したら出し直す
+            builder.RegisterEntryPoint<DebugArenaUseCase>();
+            // ボスの足元の体力ゲージ（プレイヤーのライフゲージを流用）
+            builder.RegisterEntryPoint<BossLifeGaugeUseCase>();
             builder.RegisterEntryPoint<DodgeCounterAttackUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
+            // ランの結果画面（スロット保存・リスタート・メインメニュー）。ゲームオーバーとクリアで共用する
+            builder.RegisterEntryPoint<RunResultUseCase>().AsSelf();
             builder.RegisterEntryPoint<GameOverUseCase>();
+            // ボスを倒したらクリア表示 → 結果画面
+            builder.RegisterEntryPoint<GameClearUseCase>();
             builder.RegisterEntryPoint<PlayerLifeGaugeUseCase>();
             builder.RegisterEntryPoint<RunStartUseCase>();
             builder.RegisterEntryPoint<StreamerCameraUseCase>();
@@ -192,6 +224,8 @@ namespace App.Battle
                 .As<IGameOverPresenter>();
             builder.Register<PlayerLifeGaugePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerLifeGaugePresenter>();
+            builder.Register<BossLifeGaugePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IBossLifeGaugePresenter>();
             builder.Register<RunStartPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IRunStartPresenter>();
             builder.Register<StreamerCameraPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -217,6 +251,10 @@ namespace App.Battle
             // 足元の半円ライフゲージ。プレイヤー位置へはUseCase経由で追従させる
             builder.RegisterComponentInNewPrefab(_playerLifeGaugeView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IPlayerLifeGaugeView>();
+
+            // ボスごとの足元の体力ゲージ。生成・追従はUseCase経由
+            builder.RegisterComponentInNewPrefab(_bossLifeGaugeStoreView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<IBossLifeGaugeStoreView>();
 
             builder.RegisterComponentInNewPrefab(_runStartView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IRunStartView>();
@@ -282,11 +320,15 @@ namespace App.Battle
 
             // デバッグ設定は組み立て時にだけ DebugConfig から読み、利用側へは注入で渡す
             builder.RegisterInstance(new EnemyGazeDebugSettings(DebugConfig.IsGazeTouchHitFeedback));
+            // デバッグ対戦の予約は組み立て時に1回だけ取り出す（リスタートはこの設定のまま続く）
+            builder.RegisterInstance(CreateDebugArenaSettings());
             builder.RegisterInstance(_streamerCameraTriggerConfig);
             builder.RegisterInstance(_dodgeCounterAttackConfig);
             builder.RegisterInstance(_pointParticleConfig);
             builder.RegisterInstance(_pointDropConfig);
             builder.RegisterInstance(_playerDeathConfig);
+            // クリア表示の見出しと、結果画面のボタンを出すまでの秒数（GameClearUseCase が利用）
+            builder.RegisterInstance(_gameClearConfig);
             // プレイヤー基礎パラメータ（体力・射撃倍率・回避）。PlayerState/PlayerBulletParameter/PlayerDodgeParameter の各DataStoreが利用
             builder.RegisterInstance(_playerBaseParameterConfig);
             // アップグレード詳細説明の効果値の装飾（UpgradeLocalizationDataStore が利用）
@@ -295,8 +337,59 @@ namespace App.Battle
             builder.RegisterInstance(_tutorialWaveConfig);
             // オーバークロックの発動しきい値（OverclockDataStore が利用）
             builder.RegisterInstance(_overclockConfig);
+            // ボスウェーブの番号・ボスグループ・出現位置（BossWaveDataStore / BossWaveUseCase が利用）
+            builder.RegisterInstance(_bossWaveConfig);
+            // ボスの体力ゲージの色・大きさ（BossLifeGaugeStoreView が利用）
+            builder.RegisterInstance(_bossLifeGaugeConfig);
 
             #endregion
+        }
+
+        /// <summary>
+        /// DebugConfig のデバッグ対戦の予約から設定を作る。予約が無い・読めないときは通常のラン（Disabled）。
+        /// ボスグループはアセットパスで受け取るため、エディタでしか解決できない（製品ビルドでは予約が常に無い）
+        /// </summary>
+        private static DebugArenaSettings CreateDebugArenaSettings()
+        {
+            var json = DebugConfig.ConsumeDebugArenaRequestJson();
+            if (string.IsNullOrEmpty(json))
+            {
+                return DebugArenaSettings.Disabled;
+            }
+
+            DebugArenaRequest request;
+            try
+            {
+                request = JsonUtility.FromJson<DebugArenaRequest>(json);
+            }
+            catch (System.ArgumentException e)
+            {
+                Debug.LogError($"[BattleLifetimeScope] デバッグ対戦の予約を読めないため通常のランで開始します: {e.Message}");
+                return DebugArenaSettings.Disabled;
+            }
+
+            BossGroupConfig bossGroup = null;
+            if (request.IsBossGroup)
+            {
+#if UNITY_EDITOR
+                bossGroup = UnityEditor.AssetDatabase.LoadAssetAtPath<BossGroupConfig>(request.BossGroupAssetPath);
+#endif
+                if (bossGroup == null)
+                {
+                    Debug.LogError($"[BattleLifetimeScope] デバッグ対戦のボスグループが見つからないため通常のランで開始します: {request.BossGroupAssetPath}");
+                    return DebugArenaSettings.Disabled;
+                }
+            }
+
+            return new DebugArenaSettings(
+                true,
+                bossGroup,
+                request.EnemyCode,
+                request.EnemyCount,
+                request.Wave,
+                request.AutoRespawn,
+                request.RespawnDelaySeconds,
+                request.Invincible);
         }
     }
 }

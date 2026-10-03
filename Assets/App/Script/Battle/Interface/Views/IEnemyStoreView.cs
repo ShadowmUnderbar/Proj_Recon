@@ -10,6 +10,24 @@ namespace App.Battle.Interface
     public interface IEnemyStoreView
     {
         Observable<(int id, Pose pose)> OnEnemyPoseUpdate { get; }
+
+        /// <summary>出現（プレハブの読み込み・生成）に失敗した敵のId。受け取った側で敵データを取り除く</summary>
+        Observable<int> OnEnemySpawnFailed { get; }
+
+        /// <summary>ボスグループの個体の状態変化（出現時に初期状態も流す）</summary>
+        Observable<(int id, BossMemberStatus status)> OnBossMemberStatusChanged { get; }
+
+        /// <summary>ボスグループの個体に行動を命令する（ボスAIでない敵・不在なら何もしない）</summary>
+        void CommandBossAction(int enemyId, int actionIndex);
+
+        /// <summary>ボスグループの個体をその場で待機させる／解除する</summary>
+        void SetBossHold(int enemyId, bool isHold);
+
+        /// <summary>ボスグループの個体にプレイヤーに対してつく位置（と横へのずれ m）を指定する</summary>
+        void SetBossFormation(int enemyId, BossFormationSlot slot, float lateralOffset);
+
+        /// <summary>ボスグループの個体の行動を打ち切る</summary>
+        void CancelBossAction(int enemyId);
         UniTask Spawn(EnemyData enemyData, string prefabPath, HitDirectionType resistanceDirectionType);
         void UnSpawn(int enemyId);
         UniTask Dead(int id);

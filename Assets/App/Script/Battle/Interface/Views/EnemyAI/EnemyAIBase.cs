@@ -19,6 +19,9 @@ namespace App.Battle.Interface.EnemyAI
         // 移動速度と行動抽選速度に掛かる倍率（スネークアイズ）
         private float _speedMultiplier = 1f;
 
+        /// <summary>移動速度と行動抽選速度に掛かる倍率（スネークアイズ）</summary>
+        protected float SpeedMultiplier => _speedMultiplier;
+
         // ワープ先をNavMesh上へ寄せるときの探索半径（m）
         private const float WarpSampleDistance = 2f;
 
@@ -363,10 +366,13 @@ namespace App.Battle.Interface.EnemyAI
             ApplyMovementBlock();
         }
 
+        /// <summary>移動を止めるべき状態か。派生クラスで停止の理由を足すときは base の値と論理和を取る</summary>
+        protected virtual bool IsMovementBlocked => IsPause || IsStun;
+
         /// <summary>
-        /// ポーズ・スタンいずれかの状態に応じてエージェントの移動を停止/再開する。
+        /// <see cref="IsMovementBlocked"/> に応じてエージェントの移動を停止/再開する。
         /// </summary>
-        private void ApplyMovementBlock()
+        protected void ApplyMovementBlock()
         {
             // NavMesh未配置のエージェントにisStoppedを設定するとエラーログが出る（SetAgentDestinationと同じガード）。
             // 論理状態(IsPause/IsStun)は先に更新済みなので、配置後のAI更新はそちらに従う
@@ -375,7 +381,7 @@ namespace App.Battle.Interface.EnemyAI
                 return;
             }
 
-            var isBlocked = IsPause || IsStun;
+            var isBlocked = IsMovementBlocked;
             Agent.isStopped = isBlocked;
 
             if (isBlocked)

@@ -14,6 +14,8 @@ namespace App.Battle.Interface
         Observable<Unit> OnReturnToMainMenu { get; }
 
         void Show(string headline);
+        void ShowHeadlineOnly(string headline);
+        void SetUpgradeList(string list);
         void SetSlotLabel(int index, string label);
         void SetStatus(string status);
         void Hide();

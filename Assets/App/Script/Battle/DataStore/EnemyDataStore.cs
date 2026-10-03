@@ -17,6 +17,9 @@ namespace App.Battle.DataStore
         private readonly EnemySpawnDatabase _enemySpawnDatabase;
         private readonly IEnemyWaveScalingCalculatorDataStore _enemyWaveScalingCalculatorDataStore;
 
+        // 体力を共有する敵（複数個体のボス）→ 共有体力
+        private readonly Dictionary<int, SharedHealth> _sharedHealthByEnemyId = new();
+
         private readonly Dictionary<int, EnemyData> _spawnEnemyDataList = new();
 
         private readonly Subject<int> _onEnemyAdded = new();
@@ -152,8 +155,33 @@ namespace App.Battle.DataStore
 
         public bool RemoveEnemyData(int enemyId)
         {
+            _sharedHealthByEnemyId.Remove(enemyId);
             _onEnemyRemoved.OnNext(enemyId);
             return _spawnEnemyDataList.Remove(enemyId);
+        }
+
+        public void LinkSharedHealth(IReadOnlyList<int> enemyIds)
+        {
+            var shared = new SharedHealth();
+            foreach (var id in enemyIds)
+            {
+                if (!_spawnEnemyDataList.TryGetValue(id, out var enemyData))
+                {
+                    continue;
+                }
+
+                shared.Hp += enemyData.Hp;
+                shared.MemberIds.Add(id);
+                _sharedHealthByEnemyId[id] = shared;
+            }
+
+            shared.ApplyTo(_spawnEnemyDataList);
+
+            // 体力ゲージ等が割合を出せるよう、最大HPも共有体力の合計にそろえる
+            foreach (var id in shared.MemberIds)
+            {
+                _spawnEnemyDataList[id].MaxHp = shared.Hp;
+            }
         }
 
         public void RemoveAllEnemyData()
@@ -161,6 +189,7 @@ namespace App.Battle.DataStore
             // 辞書の列挙中に変更を避けるため一旦コピーしてから削除
             var ids = _spawnEnemyDataList.Keys.ToList();
             _spawnEnemyDataList.Clear();
+            _sharedHealthByEnemyId.Clear();
             foreach (var id in ids)
             {
                 _onEnemyRemoved.OnNext(id);
@@ -211,7 +240,16 @@ namespace App.Battle.DataStore
                 damage = 1;
             }
 
-            enemyData.Hp -= damage;
+            var hasShared = _sharedHealthByEnemyId.TryGetValue(hitData.DamagedId, out var shared);
+            if (hasShared)
+            {
+                shared.Hp -= damage;
+                shared.ApplyTo(_spawnEnemyDataList);
+            }
+            else
+            {
+                enemyData.Hp -= damage;
+            }
 
             // 撃破に至らない命中も流す（複数体同時ヒットの演出判定などに使う）
             _onEnemyDamaged.OnNext(hitData.DamagedId);
@@ -223,10 +261,58 @@ namespace App.Battle.DataStore
 
             enemyData.IsDead = true;
 
+            // 体力を共有する仲間は、追撃を受けないよう先に撃破済みにしておく
+            if (hasShared)
+            {
+                shared.MarkDead(_spawnEnemyDataList);
+            }
+
             _onEnemyDead.OnNext(hitData.DamagedId);
 
             // 撃破の決め手となった命中情報（フォーム等）を参照したい購読者向けに、撃破と同時に流す
             _onEnemyDeadByHit.OnNext(hitData);
+
+            // 仲間は撃破扱いにせず消す（ポイント・撃破数・撃破時効果は当てた1体ぶんだけ）
+            if (hasShared)
+            {
+                foreach (var memberId in shared.MemberIds.ToList())
+                {
+                    if (memberId != hitData.DamagedId)
+                    {
+                        RemoveEnemyData(memberId);
+                    }
+                }
+            }
+        }
+
+        /// <summary>複数の敵で共有する体力（複数個体のボス）</summary>
+        private class SharedHealth
+        {
+            public float Hp;
+            public readonly List<int> MemberIds = new();
+
+            /// <summary>各メンバーの EnemyData.Hp を共有体力にそろえる（個体の体力を読む側にも正しい値が見えるように）</summary>
+            public void ApplyTo(Dictionary<int, EnemyData> enemies)
+            {
+                foreach (var id in MemberIds)
+                {
+                    if (enemies.TryGetValue(id, out var enemyData))
+                    {
+                        enemyData.Hp = Hp;
+                    }
+                }
+            }
+
+            public void MarkDead(Dictionary<int, EnemyData> enemies)
+            {
+                foreach (var id in MemberIds)
+                {
+                    if (enemies.TryGetValue(id, out var enemyData))
+                    {
+                        enemyData.IsDead = true;
+                    }
+                }
+            }
         }
 
         public void UpdateEnemyPose(int id, Pose pose)

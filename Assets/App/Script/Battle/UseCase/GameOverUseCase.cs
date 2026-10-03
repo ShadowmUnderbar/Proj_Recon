@@ -3,7 +3,6 @@ using System.Threading;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
-using App.Common.Interface;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
@@ -13,24 +12,18 @@ using VContainer.Unity;
 namespace App.Battle.UseCase
 {
     /// <summary>
-    /// プレイヤーHPが0になったらゲームオーバーにし、ゲームオーバー画面を表示する。
-    /// 画面のスロット保存ボタンで、そのランで獲得したアップグレードをメタ進行スロットへ保存する。
-    /// 保存は何度でも行え、リスタートボタンでラン状態を初期化してビルド選択へ戻る。
-    /// メインメニューボタンではシーンごと切り替えてタイトルへ戻る。
-    /// 画面を出す前に死亡演出（ヒットストップ→死亡アニメ→余韻）を挟み、その完了を待つ。
+    /// プレイヤーHPが0になったらゲームオーバーにし、死亡演出（ヒットストップ→死亡アニメ→余韻）の完了を待って
+    /// 結果画面（RunResultUseCase）を出す。保存・リスタート・メインメニューへの操作は RunResultUseCase が担う。
+    /// クリアの後にHPが0になってもゲームオーバーにはしない。
     /// </summary>
     public class GameOverUseCase : IInitializable, IDisposable
     {
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IGameStateDataStore _gameStateDataStore;
-        private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
-        private readonly IMetaProgressionDataStore _metaProgressionDataStore;
-        private readonly IGameOverPresenter _gameOverPresenter;
         private readonly IPlayerControlPresenter _playerControlPresenter;
-        private readonly RunResetUseCase _runResetUseCase;
+        private readonly RunResultUseCase _runResultUseCase;
         private readonly IFreezeDataStore _freezeDataStore;
-        private readonly ISceneTransitionUseCase _sceneTransitionUseCase;
         private readonly PlayerDeathConfig _playerDeathConfig;
 
         private readonly CompositeDisposable _disposable = new();
@@ -43,26 +36,18 @@ namespace App.Battle.UseCase
             IPlayerStateDataStore playerStateDataStore,
             IWaveManagerDataStore waveManagerDataStore,
             IGameStateDataStore gameStateDataStore,
-            IUpgradeSessionDataStore upgradeSessionDataStore,
-            IMetaProgressionDataStore metaProgressionDataStore,
-            IGameOverPresenter gameOverPresenter,
             IPlayerControlPresenter playerControlPresenter,
-            RunResetUseCase runResetUseCase,
+            RunResultUseCase runResultUseCase,
             IFreezeDataStore freezeDataStore,
-            ISceneTransitionUseCase sceneTransitionUseCase,
             PlayerDeathConfig playerDeathConfig
         )
         {
             _playerStateDataStore = playerStateDataStore;
             _waveManagerDataStore = waveManagerDataStore;
             _gameStateDataStore = gameStateDataStore;
-            _upgradeSessionDataStore = upgradeSessionDataStore;
-            _metaProgressionDataStore = metaProgressionDataStore;
-            _gameOverPresenter = gameOverPresenter;
             _playerControlPresenter = playerControlPresenter;
-            _runResetUseCase = runResetUseCase;
+            _runResultUseCase = runResultUseCase;
             _freezeDataStore = freezeDataStore;
-            _sceneTransitionUseCase = sceneTransitionUseCase;
             _playerDeathConfig = playerDeathConfig;
         }
 
@@ -74,25 +59,16 @@ namespace App.Battle.UseCase
                 .Subscribe(_ => OnPlayerDead())
                 .AddTo(_disposable);
 
-            // スロット保存ボタン（画面は開いたままなので、続けて別スロットへも保存できる）
-            _gameOverPresenter.OnSaveSlotSelected
-                .Subscribe(OnSaveSlotSelected)
-                .AddTo(_disposable);
-
-            // リスタートボタン
-            _gameOverPresenter.OnRestart
-                .Subscribe(_ => OnRestart())
-                .AddTo(_disposable);
-
-            // メインメニューへ戻るボタン
-            _gameOverPresenter.OnReturnToMainMenu
-                .Subscribe(_ => OnReturnToMainMenu())
+            // 結果画面からリスタート・メインメニューへ移るときは演出を畳む
+            _runResultUseCase.OnClosing
+                .Subscribe(_ => StopDeathSequence())
                 .AddTo(_disposable);
         }
 
         private void OnPlayerDead()
         {
-            if (_gameStateDataStore.IsGameOver.CurrentValue)
+            // ゲームオーバー済み・クリア済み（クリア表示中に倒れた場合など）は何もしない
+            if (_gameStateDataStore.IsRunEnded)
             {
                 return;
             }
@@ -161,7 +137,7 @@ namespace App.Battle.UseCase
                         cancellationToken: cancellationToken);
                 }
 
-                ShowGameOverUi();
+                _runResultUseCase.Show("GAME OVER");
             }
             catch (OperationCanceledException)
             {
@@ -169,45 +145,10 @@ namespace App.Battle.UseCase
             }
         }
 
-        private void ShowGameOverUi()
-        {
-            // 保存対象はそのランで新たに獲得した分のみ（セット読込で最初から持っていた分は除外）
-            var acquiredCount = _upgradeSessionDataStore.NewlyAcquiredUpgrades.Count;
-            _gameOverPresenter.Show($"GAME OVER\n獲得アップグレード: {acquiredCount}個\nスロットに上書き保存してからリスタート");
-
-            RefreshAllSlotLabels();
-
-            // UI表示中だけボタン選択用のハンドレイを出す
-            _playerControlPresenter.SetUiRayEnable(true);
-
-            if (acquiredCount == 0)
-            {
-                _gameOverPresenter.SetStatus("このランで新たに獲得したアップグレードはありません");
-            }
-        }
-
-        // スロットへ上書き保存する。画面は閉じないので、保存先を選び直してからリスタートできる
-        private void OnSaveSlotSelected(int slotIndex)
-        {
-            if (!_gameStateDataStore.IsGameOver.CurrentValue)
-            {
-                return;
-            }
-
-            var ids = _upgradeSessionDataStore.NewlyAcquiredUpgrades;
-            var clearedWave = _waveManagerDataStore.CurrentWave.CurrentValue;
-
-            _metaProgressionDataStore.SaveToSlot(slotIndex, ids, clearedWave);
-
-            // 保存結果をラベル（現在: 〜）と状態テキストの両方に反映する
-            RefreshAllSlotLabels();
-            _gameOverPresenter.SetStatus($"スロット{slotIndex + 1}に保存しました（{ids.Count}個 / Wave{clearedWave}）");
-        }
-
         /// <summary>
         /// 死亡演出を打ち切り、倒れた姿勢から通常のアニメ・エイムIKへ戻す。
-        /// IRunResettable にはしていない（RunResetUseCaseを注入しているため相互依存になる）ので、
-        /// リスタート処理から直接呼ぶ。
+        /// IRunResettable にはしていない（RunResultUseCase 経由で RunResetUseCase に依存しているため相互依存になる）ので、
+        /// 結果画面を閉じる通知から呼ぶ。
         /// </summary>
         private void StopDeathSequence()
         {
@@ -216,65 +157,6 @@ namespace App.Battle.UseCase
             _deathSequenceCts = null;
 
             _playerControlPresenter.ResetDeathAnimation();
-        }
-
-        // ラン状態を初期化してビルド選択からやり直す
-        private void OnRestart()
-        {
-            if (!_gameStateDataStore.IsGameOver.CurrentValue)
-            {
-                return;
-            }
-
-            _gameOverPresenter.Hide();
-            _playerControlPresenter.SetUiRayEnable(false);
-
-            // 倒れた姿勢のままランが始まらないよう、リセットの前に演出を畳む
-            StopDeathSequence();
-
-            // リセット後のビルド選択UIの表示・ハンドレイの再有効化はRunStartUseCaseが行う
-            _runResetUseCase.ResetRun();
-        }
-
-        // メインメニューシーンへ戻る。ラン状態はシーンごと破棄されるためリセットは行わない
-        private void OnReturnToMainMenu()
-        {
-            if (!_gameStateDataStore.IsGameOver.CurrentValue || _sceneTransitionUseCase.IsTransitioning)
-            {
-                return;
-            }
-
-            // 遷移を開始できてから画面を畳む。先に畳むと、遷移に失敗したときに
-            // 保存もリスタートもできない状態で取り残される
-            if (!_sceneTransitionUseCase.LoadMainMenu())
-            {
-                _gameOverPresenter.SetStatus("メインメニューへ移動できませんでした");
-                return;
-            }
-
-            _gameOverPresenter.Hide();
-            _playerControlPresenter.SetUiRayEnable(false);
-            StopDeathSequence();
-        }
-
-        private void RefreshAllSlotLabels()
-        {
-            for (var i = 0; i < _metaProgressionDataStore.SlotCount; i++)
-            {
-                _gameOverPresenter.SetSlotLabel(i, BuildSlotLabel(i));
-            }
-        }
-
-        private string BuildSlotLabel(int slotIndex)
-        {
-            if (_metaProgressionDataStore.IsSlotEmpty(slotIndex))
-            {
-                return $"スロット{slotIndex + 1}に保存\n(現在: 空)";
-            }
-
-            var count = _metaProgressionDataStore.GetSlotUpgradeIds(slotIndex).Count;
-            var wave = _metaProgressionDataStore.GetSlotClearedWave(slotIndex);
-            return $"スロット{slotIndex + 1}に保存\n(現在: {count}個 / Wave{wave})";
         }
 
         public void Dispose()
