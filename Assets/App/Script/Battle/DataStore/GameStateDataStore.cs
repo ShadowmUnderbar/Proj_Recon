@@ -8,19 +8,35 @@ namespace App.Battle.DataStore
         private readonly ReactiveProperty<bool> _isGameOver = new(false);
         public ReadOnlyReactiveProperty<bool> IsGameOver => _isGameOver;
 
+        private readonly ReactiveProperty<bool> _isCleared = new(false);
+        public ReadOnlyReactiveProperty<bool> IsCleared => _isCleared;
+
+        public bool IsRunEnded => _isGameOver.Value || _isCleared.Value;
+
         public void ResetRun()
         {
             _isGameOver.Value = false;
+            _isCleared.Value = false;
         }
 
         public void SetGameOver()
         {
-            if (_isGameOver.Value)
+            if (IsRunEnded)
             {
                 return;
             }
 
             _isGameOver.Value = true;
+        }
+
+        public void SetCleared()
+        {
+            if (IsRunEnded)
+            {
+                return;
+            }
+
+            _isCleared.Value = true;
         }
     }
 }

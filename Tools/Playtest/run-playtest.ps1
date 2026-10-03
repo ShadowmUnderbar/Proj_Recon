@@ -57,6 +57,12 @@ try {
             break
         }
 
+        # クリア（ボスウェーブのボスを全員撃破）もランの正常な終端。ウェーブは進まずショップも開かない
+        if ($wave.isCleared) {
+            Write-Host "クリアを検出（Wave $reachedWave）。終了します"
+            break
+        }
+
         if ($reachedWave -gt $Waves -and $wave.isWavePause) {
             Write-Host "目標ウェーブ数($Waves)をクリア、終了します"
             break

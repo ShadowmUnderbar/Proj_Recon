@@ -235,7 +235,7 @@ return $"{{\"count\":{gauges.Count},\"children\":{store.transform.childCount}}}"
     Assert-ProbeValue -Name '撃破後に体力ゲージが消える（管理数）' -Actual $gauge.count -Expected 0 | Out-Null
     Assert-ProbeValue -Name '撃破後に体力ゲージが消える（オブジェクト数）' -Actual $gauge.children -Expected 0 | Out-Null
     $state = Get-WaveState
-    Assert-ProbeTrue -Name '二人組を倒すと次のウェーブへ進む' -Condition ($state.currentWave -eq ($bossWaveNumber + 1) -and $state.isWavePause) -Detail "wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
+    Assert-ProbeTrue -Name '二人組を倒すとクリアになる（ウェーブは進まずポーズ）' -Condition ($state.isCleared -and $state.currentWave -eq $bossWaveNumber -and $state.isWavePause) -Detail "cleared=$($state.isCleared) wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
 }
 
 # ボスの体力ゲージ（BossLifeGaugeStoreView）の状態: 個数、メンバーごとのゲージと足元のずれ（XZ、m）、目標の割合
