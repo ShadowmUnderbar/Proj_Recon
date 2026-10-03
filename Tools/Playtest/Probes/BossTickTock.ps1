@@ -5,8 +5,8 @@
 #   - 配置（CrossFormation）: 必ず1体がプレイヤーの縦方向（上下＝±Z）、もう1体が横方向（左右＝±X）につき、
 #     プレイヤーからその方向へ一定距離（BossTickTock._keepDistance）の位置へ瞬間移動する
 #   - 弾幕役: 規定秒（EnemyMasterData の ActiveTime）のあいだ、移動方向と直交する向き（プレイヤーの側）へ一定間隔で撃つ。
-#     自分の軸の線上だけを動き（縦方向にいれば横へ、横方向にいれば縦へ）、プレイヤーに並ぶよう追う
-#   - 追跡役: 弾を撃たず、自分の側でプレイヤーとの距離を保って追う
+#     配置の方向へ一定距離を保ったまま、プレイヤーに並ぶ位置へ遅れずについてくる（プレイヤーがどう動いても位置関係と距離が崩れない）
+#   - 追跡役: 弾を撃たず、自分の側でプレイヤーとの距離を保って遅れずについてくる
 #   - 弾幕が終わると配置し直し、もう片方が弾幕役になる
 #   - 体力: どちらに当てても共有の体力が減り、0になると2体同時にいなくなる。撃破（ポイント・撃破数）は当てた1体ぶんだけ
 #   - 体力ゲージ: ボスごとに足元へ出て位置についてくる。色は BossLifeGaugeConfig（プレイヤーのゲージは変えない）。割合は共有体力÷最大体力で2体とも同じ。撃破で消える
@@ -70,14 +70,18 @@ string lastKey = null;
 var subs = new CompositeDisposable();
 enemies.OnEnemyDead.Subscribe(id => dead.Add(id)).AddTo(subs);
 enemies.OnEnemyRemoved.Subscribe(id => removed.Add(id)).AddTo(subs);
-Observable.EveryUpdate().Subscribe(_ =>
+// プレイヤーはボスの Update より前（EarlyUpdate）に動かし、記録はボスが追従した後（PostLateUpdate）に取る。
+// 同じ Update 内だと順序しだいで1フレームぶん（フレーム落ちの瞬間は 1m 近く）ずれて見える
+Observable.EveryUpdate(UnityFrameProvider.EarlyUpdate).Subscribe(_ =>
 {
     player.Health.Value = player.MaxHealth.Value;
     if (drive[0] != 0f || drive[2] != 0f)
     {
         player.WarpTo(player.Position.Value + new Vector3(drive[0], 0f, drive[2]) * Time.deltaTime);
     }
-
+}).AddTo(subs);
+Observable.EveryUpdate(UnityFrameProvider.PostLateUpdate).Subscribe(_ =>
+{
     var runner = GetRunner();
     if (runner == null) return;
     var a = GetBoss(0);
@@ -249,8 +253,9 @@ return $"{{\"count\":{gauges.Count},\"children\":{store.transform.childCount}}}"
 '@
     Assert-ProbeValue -Name '撃破後に体力ゲージが消える（管理数）' -Actual $gauge.count -Expected 0 | Out-Null
     Assert-ProbeValue -Name '撃破後に体力ゲージが消える（オブジェクト数）' -Actual $gauge.children -Expected 0 | Out-Null
+    # ボス撃破はラン終了（クリア）。ウェーブは進まずポーズのままになる（BossRagePhase と同じ判定）
     $state = Get-WaveState
-    Assert-ProbeTrue -Name '二人組を倒すと次のウェーブへ進む' -Condition ($state.currentWave -eq ($bossWaveNumber + 1) -and $state.isWavePause) -Detail "wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
+    Assert-ProbeTrue -Name '二人組を倒すとクリアになる（ウェーブは進まない）' -Condition ($state.isCleared -and $state.currentWave -eq $bossWaveNumber -and $state.isWavePause) -Detail "cleared=$($state.isCleared) wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
     $afterKill = Invoke-BossSnippet -Body @'
 var ts = scope.Container.Resolve<ITimeStopDataStore>().IsTimeStopped.CurrentValue;
 return $"{{\"ts\":{ts.ToString().ToLower()}}}";
@@ -345,24 +350,27 @@ function Test-AxisSegment {
     $minDot = ($windowRows | Measure-Object -Property $actorDot -Minimum).Minimum
     Assert-ProbeTrue -Name "$Label 弾は移動方向と直交してプレイヤーの側へ向かう" -Condition ($minDot -gt 0.99) -Detail "向きの一致（内積）の最小値=$minDot" | Out-Null
 
-    # 弾幕役は自分の軸の線上だけを動き、プレイヤーと並ぶよう追う
+    # 弾幕役は配置の方向へ一定距離を保ったまま、プレイヤーと並ぶ位置（横のずれなし）へ遅れずについてくる。
+    # プレイヤーは斜めに動かし続けているので、弾幕（攻撃の段階）の全区間で見る
     $lineAxis = if ($actorIsVertical) { 'z' } else { 'x' }
     $moveAxis = if ($actorIsVertical) { 'x' } else { 'z' }
-    $lineValues = @($windowRows | ForEach-Object { Get-AxisValue $_.$Actor $lineAxis })
-    $lineDrift = ($lineValues | Measure-Object -Maximum).Maximum - ($lineValues | Measure-Object -Minimum).Minimum
-    Assert-ProbeValue -Name "$Label 弾幕役は線上を動く（$lineAxis 座標の振れ幅、m）" -Actual $lineDrift -Expected 0 -Tolerance 0.5 | Out-Null
+    $ad = Get-SlotDirection $actorSlot
+    $lineErrs = @($windowRows | ForEach-Object {
+        $ex = $_.px + $ad[0] * $Config.distance; $ez = $_.pz + $ad[1] * $Config.distance
+        [Math]::Abs((Get-AxisValue $_.$Actor $lineAxis) - $(if ($lineAxis -eq 'x') { $ex } else { $ez }))
+    })
+    Assert-ProbeValue -Name "$Label 弾幕役がプレイヤーから一定距離を保つ（弾幕中の $lineAxis 方向のずれの最大、m）" -Actual ($lineErrs | Measure-Object -Maximum).Maximum -Expected 0 -Tolerance 0.5 | Out-Null
     $moveValues = @($windowRows | ForEach-Object { Get-AxisValue $_.$Actor $moveAxis })
     $moved = ($moveValues | Measure-Object -Maximum).Maximum - ($moveValues | Measure-Object -Minimum).Minimum
     Assert-ProbeTrue -Name "$Label 弾幕役は $moveAxis 方向へ動いている" -Condition ($moved -gt 3) -Detail "移動幅=$([Math]::Round($moved, 2))m" | Out-Null
-    $tail = @($windowRows | Where-Object { $_.time -ge $activeEnd - 2 })
-    $alignErr = ($tail | ForEach-Object { [Math]::Abs((Get-AxisValue $_.$Actor $moveAxis) - $(if ($moveAxis -eq 'x') { $_.px } else { $_.pz })) } | Measure-Object -Average).Average
-    Assert-ProbeValue -Name "$Label 弾幕役がプレイヤーと並んでいる（終盤2秒の $moveAxis 方向のずれの平均、m）" -Actual $alignErr -Expected 0 -Tolerance 1.5 | Out-Null
+    $alignErrs = @($windowRows | ForEach-Object { [Math]::Abs((Get-AxisValue $_.$Actor $moveAxis) - $(if ($moveAxis -eq 'x') { $_.px } else { $_.pz })) })
+    Assert-ProbeValue -Name "$Label 弾幕役がプレイヤーと並び続ける（弾幕中の $moveAxis 方向のずれの最大、m）" -Actual ($alignErrs | Measure-Object -Maximum).Maximum -Expected 0 -Tolerance 0.5 | Out-Null
 
-    # 追跡役は自分の側で距離を保ってプレイヤーを追う
+    # 追跡役は自分の側で距離を保ち、プレイヤーがどう動いても配置先から離れない
     $fd = Get-SlotDirection $followerSlot
-    $followErr = ($tail | ForEach-Object {
+    $followErrs = @($windowRows | ForEach-Object {
         $ex = $_.px + $fd[0] * $Config.distance; $ez = $_.pz + $fd[1] * $Config.distance
         [Math]::Sqrt([Math]::Pow($_.$Follower.x - $ex, 2) + [Math]::Pow($_.$Follower.z - $ez, 2))
-    } | Measure-Object -Average).Average
-    Assert-ProbeValue -Name "$Label 追跡役が距離を保って追っている（終盤2秒の配置先からのずれの平均、m）" -Actual $followErr -Expected 0 -Tolerance 2.0 | Out-Null
+    })
+    Assert-ProbeValue -Name "$Label 追跡役が位置関係と距離を保つ（弾幕中の配置先からのずれの最大、m）" -Actual ($followErrs | Measure-Object -Maximum).Maximum -Expected 0 -Tolerance 0.5 | Out-Null
 }

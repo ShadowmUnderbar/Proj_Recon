@@ -121,6 +121,29 @@ namespace App.Battle.Views.Enemy.AI.Boss
             return true;
         }
 
+        /// <summary>
+        /// 指定座標へ経路探索・速度の上限なしで追従する（毎フレーム呼ぶ）。
+        /// プレイヤーがどう動いても位置関係と距離を保つための移動で、NavMesh の外へは出ず縁で止まる。
+        /// 高さは NavMesh に任せる（水平のずれだけを詰める）
+        /// </summary>
+        protected void FollowTo(Vector3 position)
+        {
+            if (Agent == null || !Agent.isOnNavMesh)
+            {
+                return;
+            }
+
+            // 経路移動の目的地が残っていると Move と取り合うため消す
+            if (Agent.hasPath)
+            {
+                Agent.ResetPath();
+            }
+
+            var delta = position - transform.position;
+            delta.y = 0f;
+            Agent.Move(delta);
+        }
+
         public override void SetStun(bool isStun)
         {
             base.SetStun(isStun);
