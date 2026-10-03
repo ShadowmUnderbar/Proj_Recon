@@ -1,5 +1,5 @@
 ﻿#
-# 二人組ボスの発狂フェイズ（BossGroupConfig の RagePattern / BossAxisBarrage の帯の攻撃）を実プレイで検証するプローブ。
+# 二人組ボス「TickTock」の発狂フェイズ（BossGroupConfig の RagePattern / BossTickTock の帯の攻撃）を実プレイで検証するプローブ。
 #
 # 共有体力を発狂フェイズの割合（BossGroupConfig.RageHealthRatio）より下まで削り、次を確かめる。
 #   - 削った直後に台本が発狂フェイズへ切り替わり、行動中だった個体は打ち切られる
@@ -15,7 +15,7 @@
 
 . (Join-Path $PSScriptRoot 'Common/BossProbeCommon.ps1')
 
-$Global:RageProbeGroupPath = 'Assets/App/MasterData/Boss/BossGroup_AxisPair.asset'
+$Global:RageProbeGroupPath = 'Assets/App/MasterData/Boss/BossGroup_TickTock.asset'
 
 # 予兆の途中でプレイヤーを帯の外へ出す量（m）。ずれ ±5m・幅4m の帯のどれからも外れるよう、斜めに大きく動かす
 $Global:RageProbeDodgeOffset = 8
@@ -65,7 +65,7 @@ function Invoke-RageProbeBody {
 var config = scope.Container.Resolve<BossWaveConfig>();
 var group = config.BossGroup;
 var md = group.Members[0].EnemyMasterData;
-var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(md.PrefabPath).GetComponent<BossAxisBarrage>();
+var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(md.PrefabPath).GetComponent<BossTickTock>();
 var so = new UnityEditor.SerializedObject(prefab);
 var strike = (BossLineStrikeConfig)so.FindProperty("_lineStrikeConfig").objectReferenceValue;
 return $"{{\"ratio\":{group.RageHealthRatio},\"distance\":{so.FindProperty("_keepDistance").floatValue},\"telegraph\":{strike.TelegraphSeconds},\"strike\":{strike.StrikeSeconds},\"width\":{strike.Width},\"length\":{strike.Length},\"repeatCount\":{strike.RepeatCount},\"repeatInterval\":{strike.RepeatInterval}}}";
@@ -82,7 +82,7 @@ var rageSteps = config.BossGroup.RagePattern;
 var stepsField = typeof(App.Battle.DataStore.BossPatternRunner).GetField("_steps", BindingFlags.NonPublic | BindingFlags.Instance);
 var actionProperty = typeof(BossAIBase).GetProperty("CurrentActionIndex", BindingFlags.NonPublic | BindingFlags.Instance);
 var offsetProperty = typeof(BossAIBase).GetProperty("FormationLateralOffset", BindingFlags.NonPublic | BindingFlags.Instance);
-var stripField = typeof(BossAxisBarrage).GetField("_lineStrikeView", BindingFlags.NonPublic | BindingFlags.Instance);
+var stripField = typeof(BossTickTock).GetField("_lineStrikeView", BindingFlags.NonPublic | BindingFlags.Instance);
 var strikesSeen = 0;
 var lastAPhase = BossActionPhase.Ready;
 var dodge = new float[] { 0f, -1f }; // [0]: 0=未 / 1=待機中 / 2=済み、[1]: 予兆を出した時刻
@@ -104,8 +104,8 @@ Observable.EveryUpdate().Subscribe(_ =>
     // 2回目の帯の攻撃: 予兆を出して0.5秒たったら、プレイヤーを帯の外へ出す
     var aPhase = a.Status.CurrentValue.Phase;
     var aAction = (int)actionProperty.GetValue(a);
-    if (aAction == BossAxisBarrage.LineStrikeActionIndex && lastAPhase == BossActionPhase.Windup && aPhase == BossActionPhase.Active) strikesSeen++;
-    if (dodge[0] == 0f && strikesSeen == 1 && aAction == BossAxisBarrage.LineStrikeActionIndex && aPhase == BossActionPhase.Windup)
+    if (aAction == BossTickTock.LineStrikeActionIndex && lastAPhase == BossActionPhase.Windup && aPhase == BossActionPhase.Active) strikesSeen++;
+    if (dodge[0] == 0f && strikesSeen == 1 && aAction == BossTickTock.LineStrikeActionIndex && aPhase == BossActionPhase.Windup)
     {
         dodge[0] = 1f; dodge[1] = Time.time;
     }
@@ -122,7 +122,7 @@ Observable.EveryUpdate().Subscribe(_ =>
         xDodge = 2;
         log.Add($"XDODGE,{Time.time:F3}");
     }
-    if (xDodge == 0 && aAction == BossAxisBarrage.RepeatLineStrikeActionIndex && lastAPhase == BossActionPhase.Windup && aPhase == BossActionPhase.Active) xDodge = 1;
+    if (xDodge == 0 && aAction == BossTickTock.RepeatLineStrikeActionIndex && lastAPhase == BossActionPhase.Windup && aPhase == BossActionPhase.Active) xDodge = 1;
     lastAPhase = aPhase;
 
     string Member(BossAIBase x)

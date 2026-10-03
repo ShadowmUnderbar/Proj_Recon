@@ -1,7 +1,7 @@
 ﻿#
 # デバッグ対戦（App/デバッグ: 敵と対戦 / DebugArenaLauncher）の入口を確かめるプローブ。
 #
-# 再生前に DebugArenaLauncher.Prepare で BossGroup_AxisPair との対戦を予約し、Battle シーンを再生する。
+# 再生前に DebugArenaLauncher.Prepare で BossGroup_TickTock との対戦を予約し、Battle シーンを再生する。
 #   - 予約は組み立て時に1回だけ取り出され（EditorPrefs から消える）、DebugArenaSettings が有効になる
 #   - セット選択を出さずにすぐ始まり、プレイヤーは BossWaveConfig のプレイヤー位置、ボスグループが出る
 #   - 指定したウェーブ（ボスウェーブの番号）から始まり、ボスの体力はそのウェーブの倍率。ボスウェーブとしては扱わない（ボスが重ねて出ない）
@@ -16,7 +16,7 @@
 
 . (Join-Path $PSScriptRoot 'Common/BossProbeCommon.ps1')
 
-$Global:DebugArenaGroupPath = 'Assets/App/MasterData/Boss/BossGroup_AxisPair.asset'
+$Global:DebugArenaGroupPath = 'Assets/App/MasterData/Boss/BossGroup_TickTock.asset'
 $Global:DebugArenaRespawnDelay = 1.5
 # ボスウェーブの番号（既定5）を指定し、ボスウェーブの出現と重ならないことも確かめる
 $Global:DebugArenaWave = 5
@@ -72,7 +72,7 @@ var maxHp = bosses.Count > 0 ? bosses[0].MaxHp : 0f;
 return $"{{\"enabled\":{settings.IsEnabled.ToString().ToLower()},\"group\":\"{(settings.BossGroup != null ? settings.BossGroup.name : "")}\",\"pending\":{pending.ToString().ToLower()},\"selecting\":{runStart.IsSelecting.CurrentValue.ToString().ToLower()},\"pause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"wave\":{wave.CurrentWave.CurrentValue},\"bosses\":{bosses.Count},\"ids\":\"{string.Join(",", bosses.Select(b => b.Id))}\",\"others\":{others},\"isBossWave\":{bossWave.IsBossWave.ToString().ToLower()},\"maxHp\":{maxHp},\"expectedHp\":{expectedHp},\"baseHp\":{baseHp},\"alive\":{bossGroups.HasAliveGroup.ToString().ToLower()},\"playerOffset\":{Vector3.Distance(flat, target)}}}";
 '@
     Assert-ProbeTrue -Name '予約からデバッグ対戦の設定が作られる' -Condition $start.enabled | Out-Null
-    Assert-ProbeTrue -Name '予約したボスグループで始まる' -Condition ($start.group -eq 'BossGroup_AxisPair') -Detail "$($start.group)" | Out-Null
+    Assert-ProbeTrue -Name '予約したボスグループで始まる' -Condition ($start.group -eq 'BossGroup_TickTock') -Detail "$($start.group)" | Out-Null
     Assert-ProbeTrue -Name '予約は1回で消費される（EditorPrefs に残らない）' -Condition (-not $start.pending) | Out-Null
     Assert-ProbeTrue -Name 'セット選択を出さずに始まる' -Condition (-not $start.selecting -and -not $start.pause) -Detail "selecting=$($start.selecting) pause=$($start.pause)" | Out-Null
     Assert-ProbeValue -Name '指定したウェーブから始まる' -Actual $start.wave -Expected $Global:DebugArenaWave | Out-Null

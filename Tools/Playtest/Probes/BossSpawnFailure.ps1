@@ -1,7 +1,7 @@
 ﻿#
 # ボスのプレハブの読み込みに失敗したとき、ボスウェーブから抜けられなくならないことを確かめるプローブ。
 #
-# BossGroup_AxisPair のメンバーのマスターデータ（B-002）の PrefabPath を、実行中だけ存在しないパスへ差し替える。
+# BossGroup_TickTock のメンバーのマスターデータ（B-002）の PrefabPath を、実行中だけ存在しないパスへ差し替える。
 #   - 読み込みに失敗した敵は、敵データごと取り除かれる（撃破扱いにはしない＝撃破の通知は来ない）
 #   - ボスグループの台本は取り除かれた個体を対象から外し、全員いなくなるのでボスウェーブが進む
 #   - 体力ゲージなどボス用の表示も残らない
@@ -11,8 +11,8 @@
 
 . (Join-Path $PSScriptRoot 'Common/BossProbeCommon.ps1')
 
-$Global:SpawnFailureGroupPath = 'Assets/App/MasterData/Boss/BossGroup_AxisPair.asset'
-$Global:SpawnFailureMasterPath = 'Assets/App/MasterData/Enemy/BossAxisBarrage.asset'
+$Global:SpawnFailureGroupPath = 'Assets/App/MasterData/Boss/BossGroup_TickTock.asset'
+$Global:SpawnFailureMasterPath = 'Assets/App/MasterData/Enemy/BossTickTock.asset'
 $Global:SpawnFailureBrokenPrefabPath = 'Assets/App/Prefub/Enemy/__MissingBossForProbe__.prefab'
 
 # 想定どおりに出るエラーログ（読み込み失敗）と見なす文字列

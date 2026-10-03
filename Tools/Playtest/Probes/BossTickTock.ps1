@@ -1,9 +1,9 @@
 ﻿#
-# 体力を共有する二人組ボス（BossGroup_AxisPair / BossAxisBarrage）を実プレイで検証するプローブ。
+# 体力を共有する二人組ボス「TickTock」（BossGroup_TickTock / BossTickTock）を実プレイで検証するプローブ。
 #
 # ボスウェーブ（BossWaveConfig）に二人組を出し、次を確かめる。
 #   - 配置（CrossFormation）: 必ず1体がプレイヤーの縦方向（上下＝±Z）、もう1体が横方向（左右＝±X）につき、
-#     プレイヤーからその方向へ一定距離（BossAxisBarrage._keepDistance）の位置へ瞬間移動する
+#     プレイヤーからその方向へ一定距離（BossTickTock._keepDistance）の位置へ瞬間移動する
 #   - 弾幕役: 規定秒（EnemyMasterData の ActiveTime）のあいだ、移動方向と直交する向き（プレイヤーの側）へ一定間隔で撃つ。
 #     自分の軸の線上だけを動き（縦方向にいれば横へ、横方向にいれば縦へ）、プレイヤーに並ぶよう追う
 #   - 追跡役: 弾を撃たず、自分の側でプレイヤーとの距離を保って追う
@@ -15,12 +15,12 @@
 
 . (Join-Path $PSScriptRoot 'Common/BossProbeCommon.ps1')
 
-$Global:AxisPairGroupPath = 'Assets/App/MasterData/Boss/BossGroup_AxisPair.asset'
+$Global:TickTockGroupPath = 'Assets/App/MasterData/Boss/BossGroup_TickTock.asset'
 
 function ProbePrepare {
     Enter-BossProbeScene
     try {
-        $Global:AxisPairSavedGroup = Set-BossWaveGroup -GroupPath $Global:AxisPairGroupPath
+        $Global:TickTockSavedGroup = Set-BossWaveGroup -GroupPath $Global:TickTockGroupPath
     }
     catch {
         # 準備が途中で失敗すると ProbeCleanup が呼ばれないため、ここで戻す
@@ -30,27 +30,27 @@ function ProbePrepare {
 }
 
 function ProbeCleanup {
-    Restore-BossWaveGroup -GroupPath $Global:AxisPairSavedGroup
+    Restore-BossWaveGroup -GroupPath $Global:TickTockSavedGroup
     Exit-BossProbeScene
 }
 
 function ProbeRun {
     try {
-        Invoke-AxisPairProbeBody
+        Invoke-TickTockProbeBody
     }
     finally {
         Stop-BossProbeRecorder
     }
 }
 
-function Invoke-AxisPairProbeBody {
+function Invoke-TickTockProbeBody {
     $bossWaveNumber = Move-ToBossWaveShop
 
     # 設定値（距離・弾の間隔・弾幕の秒数）はアセットから読む
     $config = Invoke-BossSnippet -Body @'
 var config = scope.Container.Resolve<BossWaveConfig>();
 var md = config.BossGroup.Members[0].EnemyMasterData;
-var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(md.PrefabPath).GetComponent<BossAxisBarrage>();
+var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(md.PrefabPath).GetComponent<BossTickTock>();
 var so = new UnityEditor.SerializedObject(prefab);
 return $"{{\"distance\":{so.FindProperty("_keepDistance").floatValue},\"interval\":{so.FindProperty("_fireInterval").floatValue},\"active\":{md.ActiveTime},\"windup\":{md.WindupTime},\"recovery\":{md.RecoveryTime}}}";
 '@
@@ -131,7 +131,7 @@ return $"{{\"boss\":{boss},\"nonBoss\":{nonBoss},\"hpA\":{hpA},\"hpB\":{hpB}}}";
     Assert-ProbeValue -Name '通常の敵はいない' -Actual $start.nonBoss -Expected 0 | Out-Null
     Assert-ProbeTrue -Name '2体の体力が共有されている（同じ値）' -Condition ($start.hpA -eq $start.hpB -and $start.hpA -gt 0) -Detail "A=$($start.hpA) B=$($start.hpB)" | Out-Null
 
-    $gauge = Get-AxisPairGauges
+    $gauge = Get-TickTockGauges
     Assert-ProbeValue -Name '体力ゲージがボスの数だけ出ている' -Actual $gauge.count -Expected 2 | Out-Null
     # 色: ボスのゲージは BossLifeGaugeConfig の色で上書きされ、プレイヤーのゲージはマテリアルの色のまま
     $color = Invoke-BossSnippet -Body @'
@@ -165,7 +165,7 @@ return $"{{\"bossCount\":{bossCount},\"bossOk\":{bossOk},\"playerOverridden\":{p
     Start-Sleep -Seconds ([Math]::Ceiling($segment * 2 + 2))
 
     # 移動中（プレイヤーを動かしている間）にゲージが足元へついてきているか
-    $gauge = Get-AxisPairGauges
+    $gauge = Get-TickTockGauges
     Assert-ProbeValue -Name '体力ゲージがボスの足元についてくる（A、XZのずれ m）' -Actual $gauge.a.offset -Expected 0 -Tolerance 0.05 | Out-Null
     Assert-ProbeValue -Name '体力ゲージがボスの足元についてくる（B、XZのずれ m）' -Actual $gauge.b.offset -Expected 0 -Tolerance 0.05 | Out-Null
 
@@ -207,7 +207,7 @@ return $"{{\"before\":{before},\"afterA0\":{afterA0},\"afterA1\":{afterA1},\"aft
     Assert-ProbeTrue -Name 'A に当てると A・B の体力が同じだけ減る' -Condition ($hp.afterA0 -lt $hp.before -and $hp.afterA0 -eq $hp.afterA1) -Detail "前 $($hp.before) → A $($hp.afterA0) / B $($hp.afterA1)" | Out-Null
     Assert-ProbeTrue -Name 'B に当てても A・B の体力が同じだけ減る' -Condition ($hp.afterB1 -lt $hp.afterA1 -and $hp.afterB0 -eq $hp.afterB1) -Detail "A $($hp.afterB0) / B $($hp.afterB1)" | Out-Null
 
-    $gauge = Get-AxisPairGauges
+    $gauge = Get-TickTockGauges
     Assert-ProbeValue -Name '体力ゲージ A の割合が共有体力÷最大体力' -Actual $gauge.a.ratio -Expected $gauge.a.expected -Tolerance 0.0001 | Out-Null
     Assert-ProbeValue -Name '体力ゲージ B の割合が共有体力÷最大体力' -Actual $gauge.b.ratio -Expected $gauge.b.expected -Tolerance 0.0001 | Out-Null
     Assert-ProbeTrue -Name '体力ゲージは2体とも同じだけ減っている' -Condition ($gauge.a.ratio -eq $gauge.b.ratio -and $gauge.a.ratio -lt 1) -Detail "A=$($gauge.a.ratio) B=$($gauge.b.ratio)" | Out-Null
@@ -239,7 +239,7 @@ return $"{{\"count\":{gauges.Count},\"children\":{store.transform.childCount}}}"
 }
 
 # ボスの体力ゲージ（BossLifeGaugeStoreView）の状態: 個数、メンバーごとのゲージと足元のずれ（XZ、m）、目標の割合
-$Global:AxisPairGaugeSnippet = @'
+$Global:TickTockGaugeSnippet = @'
 var store = UnityEngine.Object.FindObjectOfType<App.Battle.Views.BossLifeGaugeStoreView>();
 var gauges = (System.Collections.IDictionary)typeof(App.Battle.Views.BossLifeGaugeStoreView).GetField("_gauges", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(store);
 var targetField = typeof(App.Battle.Views.PlayerLifeGaugeView).GetField("_targetHealth", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -259,8 +259,8 @@ string Gauge(int slot)
 return $"{{\"count\":{gauges.Count},\"a\":{Gauge(0)},\"b\":{Gauge(1)}}}";
 '@
 
-function Get-AxisPairGauges {
-    return Invoke-BossSnippet -Body $Global:AxisPairGaugeSnippet
+function Get-TickTockGauges {
+    return Invoke-BossSnippet -Body $Global:TickTockGaugeSnippet
 }
 
 function Get-AxisValue {
