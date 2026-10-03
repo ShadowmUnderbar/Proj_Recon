@@ -159,13 +159,15 @@ namespace App.Battle.UseCase
 
         private void ClearRunInternal()
         {
+            // クリア表示・リザルト画面は GameClearUseCase が出す。
+            // ポーズより先にクリアを確定させる（ポーズでオーバークロックが打ち切られ、溜めたダメージでHP0になっても
+            // ゲームオーバーに上書きされないようにする）
+            _gameStateDataStore.SetCleared();
             // 敵の停止＋無敵化。ウェーブ番号は進めず（スロットにはボスウェーブの番号を残す）、ショップも開かない
             _waveManagerDataStore.SetWavePause(true);
             // クリア表示の間に撃たれないよう弾を消す。粒子はラン終了で回収の意味が無くなるので消す
             _bulletStoreView.AllRemove();
             _pointParticlePresenter.AllRemove();
-            // クリア表示・リザルト画面は GameClearUseCase が出す
-            _gameStateDataStore.SetCleared();
         }
 
         public void Dispose()
