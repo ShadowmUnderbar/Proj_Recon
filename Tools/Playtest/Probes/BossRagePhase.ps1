@@ -306,11 +306,11 @@ return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits
         Assert-ProbeValue -Name '帯の攻撃の組の途中では弾幕を撃たない（行数）' -Actual $between.Count -Expected 0 | Out-Null
     }
 
-    # --- 撃破で終わる（発狂中でも全員倒せばウェーブが進む） ---
+    # --- 撃破で終わる（発狂中でも全員倒せばクリアになる） ---
     Invoke-BossSnippet -Body 'enemies.Damage(new HitData(GetRunner().MemberIds[0], 99999f, App.Common.Data.HitDirectionType.None)); return "{}";' | Out-Null
     Start-Sleep -Milliseconds 1500
     $state = Get-WaveState
-    Assert-ProbeTrue -Name '発狂フェイズ中でも二人組を倒せば次のウェーブへ進む' -Condition ($state.currentWave -eq ($bossWaveNumber + 1) -and $state.isWavePause) -Detail "wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
+    Assert-ProbeTrue -Name '発狂フェイズ中でも二人組を倒せばクリアになる' -Condition ($state.isCleared -and $state.currentWave -eq $bossWaveNumber -and $state.isWavePause) -Detail "cleared=$($state.isCleared) wave=$($state.currentWave) pause=$($state.isWavePause)" | Out-Null
     $strips = Invoke-BossSnippet -Body 'return $"{{\"count\":{UnityEngine.Object.FindObjectsOfType<BossLineStrikeView>().Length}}}";'
     Assert-ProbeValue -Name '撃破後に帯の表示が残らない' -Actual $strips.count -Expected 0 | Out-Null
 }

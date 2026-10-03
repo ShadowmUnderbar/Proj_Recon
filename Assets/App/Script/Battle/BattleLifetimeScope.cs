@@ -42,6 +42,7 @@ namespace App.Battle
         [SerializeField] private PointParticleConfig _pointParticleConfig;
         [SerializeField] private PointDropConfig _pointDropConfig;
         [SerializeField] private PlayerDeathConfig _playerDeathConfig;
+        [SerializeField] private GameClearConfig _gameClearConfig;
         [SerializeField] private UpgradeDescriptionStyle _upgradeDescriptionStyle;
         [SerializeField] private PlayerBaseParameterConfig _playerBaseParameterConfig;
         [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
@@ -147,7 +148,10 @@ namespace App.Battle
             // アップグレード付与副作用の共通処理（ShopUseCase・RunStartUseCaseが利用）
             builder.Register<UpgradeSideEffectApplier>(Lifetime.Singleton);
 
-            // ラン状態の一括リセット（GameOverUseCaseのリスタートが利用）
+            // 結果画面の獲得アップグレード一覧の組み立て（RunResultUseCaseが利用）
+            builder.Register<AcquiredUpgradeListBuilder>(Lifetime.Singleton).As<IAcquiredUpgradeListBuilder>();
+
+            // ラン状態の一括リセット（RunResultUseCaseのリスタートが利用）
             builder.Register<RunResetUseCase>(Lifetime.Singleton);
 
             // 配信用カメラのフレーミング計算（StreamerCameraViewが利用）
@@ -184,7 +188,11 @@ namespace App.Battle
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
+            // ランの結果画面（スロット保存・リスタート・メインメニュー）。ゲームオーバーとクリアで共用する
+            builder.RegisterEntryPoint<RunResultUseCase>().AsSelf();
             builder.RegisterEntryPoint<GameOverUseCase>();
+            // ボスを倒したらクリア表示 → 結果画面
+            builder.RegisterEntryPoint<GameClearUseCase>();
             builder.RegisterEntryPoint<PlayerLifeGaugeUseCase>();
             builder.RegisterEntryPoint<RunStartUseCase>();
             builder.RegisterEntryPoint<StreamerCameraUseCase>();
@@ -313,6 +321,8 @@ namespace App.Battle
             builder.RegisterInstance(_pointParticleConfig);
             builder.RegisterInstance(_pointDropConfig);
             builder.RegisterInstance(_playerDeathConfig);
+            // クリア表示の見出しと、結果画面のボタンを出すまでの秒数（GameClearUseCase が利用）
+            builder.RegisterInstance(_gameClearConfig);
             // プレイヤー基礎パラメータ（体力・射撃倍率・回避）。PlayerState/PlayerBulletParameter/PlayerDodgeParameter の各DataStoreが利用
             builder.RegisterInstance(_playerBaseParameterConfig);
             // アップグレード詳細説明の効果値の装飾（UpgradeLocalizationDataStore が利用）

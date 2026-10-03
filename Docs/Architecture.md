@@ -69,7 +69,9 @@ VContainerSettings.RootLifetimeScope = CommonLifetimeScope.prefab  ← DontDestr
   → BattleLifetimeScope: RunStartUseCase が RunLoadoutDataStore の選択を装備（1回で消費）してすぐウェーブ1 開始
        （選択が無い＝Battle シーンを直接再生したときは、バトル内でセット選択 UI を出す。IsWavePause=true）
        （メニュー側・バトル側とも、保存済みスロットが 1 つも無ければ選択 UI を出さず「使わずに開始」扱いで即開始）
-  → … → HP0 → GameOverUseCase
+  → … → HP0 → GameOverUseCase（死亡演出）→ RunResultUseCase（結果画面）
+  → … → ボスウェーブのボスを全員撃破 → GameClearUseCase（クリア表示）→ RunResultUseCase（結果画面）
+       ├ スロット保存: MetaProgressionDataStore.SaveToSlot（何度でも）
        ├ リスタート: RunResetUseCase → 全 IRunResettable.ResetRun() → バトル内のセット選択へ
        └ メインメニューへ: ISceneTransitionUseCase.LoadMainMenu()
 ```
@@ -179,14 +181,19 @@ RunStartUseCase  : RunLoadoutDataStore（メインメニューの選択）の Up
                    選択が無い（Battle シーン直接再生・リスタート）ときはセット選択 UI（RunStartView）を出して待つ
 WaveManagerUseCase: 経過時間 or キル数が WaveConfig に達したら AdvanceWave
                    （IsWavePause=true → スポーン周期リセット → 弾・粒子全消去 → OnWaveAdvanced）
-                   ボスウェーブ（BossWaveConfig、既定5）だけは時間・キル数を見ず、ボスを全員倒したときに進める
+                   ボスウェーブ（BossWaveConfig、既定5）だけは時間・キル数を見ず、ボスを全員倒したらクリア
+                   （IsWavePause=true → 弾・粒子全消去 → GameStateDataStore.SetCleared。ウェーブ番号は進めずショップも開かない）。
+                   出現・読み込みの失敗で誰も倒さずに消えたときはクリアにせず、止まらないよう次のウェーブへ進める
 BossWaveUseCase  : ボスウェーブの開始（IsWavePause=false）で残った敵を撃破扱いせずに消し、
                    プレイヤーを BossWaveConfig.PlayerPosition へ移して BossGroupConfig のボスを出す。
                    ボスウェーブ中は EnemyRandomSpawnCycleDataStore が周期スポーンを止める
 ShopUseCase      : OnWaveAdvanced でショップを開く。UpgradeLotteryDataStore で抽選、ポイントで購入
                    → 「次のウェーブへ」で IsWavePause=false
-GameOverUseCase  : PlayerState.Health<=0 → 死亡演出（PlayerDeathConfig）→ GameOverView
-                   → スロット保存（MetaProgressionDataStore） / リスタート（RunResetUseCase） / メインメニューへ
+GameOverUseCase  : PlayerState.Health<=0 → 死亡演出（PlayerDeathConfig）→ RunResultUseCase.Show("GAME OVER")
+                   クリア後に HP が 0 になってもゲームオーバーにしない（GameStateDataStore はゲームオーバーとクリアが排他）
+GameClearUseCase : IsCleared → 見出しだけのクリア表示 → GameClearConfig の秒数後に RunResultUseCase.Show("STAGE CLEAR")
+RunResultUseCase : 結果画面（GameOverView を共用）の操作。今回のランで獲得したアップグレードの一覧（AcquiredUpgradeListBuilder）を出す。スロット保存（MetaProgressionDataStore） / リスタート（RunResetUseCase） / メインメニューへ。
+                   閉じる直前に OnClosing を流し、死亡演出・クリア表示の待ちを畳ませる
 RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・弾・粒子を消す → RunStartDataStore.IsSelecting=true（セット選択へ）
 ```
 
@@ -229,7 +236,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | （共通）`RunStartView` | 直接再生時・リスタート時のセット選択（スロット3＋「使わずに開始」）。実装は `Common/Views`、プレハブは `UI/RunStartView.prefab` |
 | `ShopView` + `UpgradeCardBoardView` + `UpgradeCardView` + `CardHighlight` | ウェーブ間ショップ。VR は 3D カードを掴んでトリガー確定、PC はマウスクリック。Canvas ボタンはフォールバック |
 | └ `UpgradeCardBoardLayout` / `UpgradeCardFinder` / `UpgradeCardHandInteraction` / `UpgradeCardPointerInteraction` | ボードの内部分担（plain C#、DI 対象外）。配置の純粋計算／近接・レイ・UI越しの検索／VR両手の掴み・ひねり・確定の状態機械／非VRのホバー・クリック確定。Inspector 値は `UpgradeCardHoldSettings` / `UpgradeCardGrabSettings` に毎フレーム束ねて渡す |
-| `GameOverView` | スロット保存／リスタート／メインメニューへ |
+| `GameOverView` | ランの結果画面（ゲームオーバー・クリア共用）。スロット保存／リスタート／メインメニューへ。`ShowHeadlineOnly` でボタンを隠して見出しだけ出す（クリア表示）。見出しとスロットボタンの間に獲得アップグレードの一覧（`UpgradeList`、横に折り返して最良サイズに縮める） |
 | `PointParticleStoreView` / `PointParticleView` | ポイント粒子（一括更新、粒子ごとの Update 無し） |
 | `StreamerCameraView` | 配信用カメラ（HMD 映像に干渉しない）。`StreamerModeConfig` で既定 OFF |
 | `TutorialMessageView` | バトル中のチュートリアルメッセージ（WorldSpace Canvas、プレハブは `UI/TutorialMessageView.prefab`）。表示直後は視点の正面に追従し、規定時間後に非利き手の脇へ移って常に頭の方を向く。追従先の姿勢は UseCase から毎フレーム受け取る。オフセット・時間・追従速度は Inspector |
@@ -270,7 +277,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `BossLifeGaugeUseCase` | Boss ランクの敵が出たら足元に体力ゲージを出し、`OnEnemyPoseUpdate` で位置に追従、命中のたびに `Hp / MaxHp` を反映（体力共有の仲間も同時に更新）、`OnEnemyRemoved` で消す | Enemy, BossLifeGauge |
 | `BossWaveUseCase` | ボスウェーブ開始時に残った敵の消去・プレイヤーの移動・ボスの出現（3.2 参照） | BossWave, Enemy, PlayerState |
 | `DebugArenaUseCase` | デバッグ対戦（5章）のときだけ動く。ラン開始で残った敵を消してプレイヤーを `BossWaveConfig.PlayerPosition` へ移し、`DebugArenaSettings` のボスグループ（`BossOrigin` に出す）か敵（`BossOrigin` 付近に指定数）を出す。全員いなくなったら秒数のあとで出し直す（ポーズ・フリーズ中は待ちを進めない）。出現に失敗した・誰も撃破されずに全員消えた（読み込み失敗など）ときは出し直さない | DebugArena, Enemy, BossGroup, PlayerState |
-| `WaveManagerUseCase` / `ShopUseCase` / `RunStartUseCase` / `GameOverUseCase` / `RunResetUseCase` | 3.2 参照 | |
+| `WaveManagerUseCase` / `ShopUseCase` / `RunStartUseCase` / `GameOverUseCase` / `GameClearUseCase` / `RunResultUseCase` / `RunResetUseCase` | 3.2 参照 | |
 | `UpgradeSideEffectApplier` | アップグレード付与の副作用（バフ起動・バリア満タン）。Shop と RunStart の共通処理 | BuffState, PlayerBarrier |
 | `StreamerCameraUseCase` | ウェーブ進行・ボス・マルチキルで配信カメラの演出をトリガー | StreamerCamera, Enemy |
 | `TutorialMessageUseCase` | チュートリアルメッセージを出す手段。`ITutorialMessageUseCase`（`Show(TutorialType)` / `Hide()`）として登録し、呼び出し側が注入する。リスタートでセット選択へ戻ると自動で消す。文言は `TutorialLocalizationDataStore`、頭は `TryGetGazePose`、手は `NonDominantHand` 側の Pose を毎フレーム View へ渡す。表示のきっかけと `MarkViewed` は呼び出し側の責務 | TutorialLocalization, PlayerSetting, PlayerControl |
@@ -309,6 +316,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 |---|---|
 | `UpgradeSessionDataStore` | このランで所持しているアップグレード ID |
 | `UpgradeEffectSimpleCalculatorDataStore` | `UpgradeType` ごとの単純倍率（`CalcMultiply`） |
+| `AcquiredUpgradeListBuilder` | 結果画面の獲得アップグレード一覧（獲得順に「・名前-レベル」を半角スペースで並べる。旧 Text は全角スペースで折り返さない） |
 | `UpgradeLotteryDataStore` / `UpgradeLocalizationDataStore` / `UpgradeDescriptionFormatter` / `EffectTextStyler` / `UpgradeLocalizationKey` | 抽選・ローカライズ・説明文の整形 |
 | `BuffStateDataStore` | 取得済みバフの発動条件進行と残り時間 |
 | 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |
