@@ -10,9 +10,11 @@ namespace App.Battle.Views.Enemy.AI.Boss
     /// プレイヤーの上下左右（ワールドの軸）のいずれかについて動く、二人組ボス「TickTock」用のAI。
     /// 台本の配置（CrossFormation）を受けると、プレイヤーからその方向へ一定距離、横へ指定のずれだけ離れた位置へ瞬間移動する。
     /// 以後はプレイヤーがどう動いても位置関係と距離が崩れないよう、経路探索ではなく毎フレーム配置先へ直接追従する（FollowTo）。
+    /// 追従は帯の攻撃中・台本の待機中（時止めの記憶攻撃）も続ける。止まるのはスタン・停止中だけ。
     /// 行動0（弾幕）: 配置の方向へ一定距離を保ったままプレイヤーと並ぶ位置（横のずれなし）を追い、
     ///   移動方向と直交する向き（プレイヤーの側）へ弾を連射する。長さは EnemyMasterData の ActiveTime。
-    /// 行動1（帯の攻撃）: その場に留まり、プレイヤーの側へ伸びる帯を予兆として出し、予兆が明けた瞬間に帯の中のプレイヤーへ当てる。
+    /// 行動1（帯の攻撃）: プレイヤーの側へ伸びる帯を予兆として出し、予兆が明けた瞬間に帯の中のプレイヤーへ当てる。
+    ///   帯は予兆を出した時点の位置・向きで地面に固定する（本体は追従を続ける）。
     ///   範囲・秒数・ダメージは BossLineStrikeConfig。
     /// 行動2（帯の連続攻撃）: 行動1と同じ帯を、予兆1回のあと同じ向き・同じ位置のまま予兆なしで続けて当てる（×字の配置で使う）。
     ///   回数と間隔は BossLineStrikeConfig の RepeatCount / RepeatInterval。
@@ -99,6 +101,9 @@ namespace App.Battle.Views.Enemy.AI.Boss
             base.GetActionDurations(actionIndex, out windup, out active, out recovery);
         }
 
+        // 時止めの記憶攻撃などで台本に待機させられている間も、プレイヤーとの位置関係を保つ
+        protected override bool KeepsMovingWhileHeld => true;
+
         protected override void OnFormationAssigned(BossFormationSlot slot)
         {
             if (slot == BossFormationSlot.None || PlayerTransform == null)
@@ -119,14 +124,10 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
             FaceFireDirection();
 
-            // 帯の攻撃の間はその場に留まる（予兆と攻撃の範囲を動かさない）
-            if (IsActing && IsLineStrike(CurrentActionIndex))
-            {
-                return;
-            }
-
-            // 弾幕中はプレイヤーと並ぶ（横のずれなし）。どちらもプレイヤーの動きに遅れず距離を保つ
-            FollowTo(GetFormationPosition(IsActing ? 0f : FormationLateralOffset));
+            // 弾幕中はプレイヤーと並ぶ（横のずれなし）。それ以外（帯の攻撃中・台本の待機中も含む）は配置どおりの位置を保つ。
+            // 帯の範囲は予兆を出した時点で地面に固定するので、本体が動いても避けられる
+            var isBarrage = IsActing && !IsLineStrike(CurrentActionIndex);
+            FollowTo(GetFormationPosition(isBarrage ? 0f : FormationLateralOffset));
         }
 
         protected override void OnActionWindup(int actionIndex)
@@ -213,7 +214,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
             }
         }
 
-        /// <summary>帯を出す行動か（予兆だけの行動も含む。どれもその場に留まる）</summary>
+        /// <summary>帯を出す行動か（予兆だけの行動も含む）</summary>
         private static bool IsLineStrike(int actionIndex)
         {
             return actionIndex == LineStrikeActionIndex || actionIndex == RepeatLineStrikeActionIndex

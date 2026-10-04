@@ -36,8 +36,14 @@ namespace App.Battle.Views.Enemy.AI.Boss
         /// <summary>台本の指示でその場に待機させられているか</summary>
         protected bool IsHold => _isHold;
 
+        /// <summary>
+        /// 台本の待機中も移動（配置先への追従）を続けるか。true なら待機は「行動の命令を受けない」だけの意味になる。
+        /// プレイヤーとの位置関係を常に保つボスで上書きする
+        /// </summary>
+        protected virtual bool KeepsMovingWhileHeld => false;
+
         protected override bool IsMovementBlocked =>
-            base.IsMovementBlocked || _isHold || (_stopMovingWhileActing && IsActing);
+            base.IsMovementBlocked || (_isHold && !KeepsMovingWhileHeld) || (_stopMovingWhileActing && IsActing);
 
         public override void Init(EnemyData enemyData, int enemyId)
         {
