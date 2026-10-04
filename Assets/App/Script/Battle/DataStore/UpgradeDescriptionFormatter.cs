@@ -100,6 +100,9 @@ namespace App.Battle.DataStore
             { UpgradeType.FocusConflict, RawValue1To2 },
             { UpgradeType.MergeConflict, RawValue1To2 },
             { UpgradeType.WaltzConflict, RawValue1To2 },
+
+            // Value1=回避中の被弾無効化1回あたりの獲得秒数
+            { UpgradeType.Overclock, new[] { ValueFormat.Raw } },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む

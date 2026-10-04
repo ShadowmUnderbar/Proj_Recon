@@ -4,6 +4,7 @@ using App.Battle.Interface.DataStore;
 using App.Common.Data;
 using App.Common.Data.MasterData;
 using UnityEngine;
+using VContainer;
 using VContainer.Unity;
 
 namespace App.Battle.DataStore
@@ -70,8 +71,22 @@ namespace App.Battle.DataStore
 
         private float _currentHealthRatio = 1f;
 
+        private readonly IOverclockDataStore _overclockDataStore;
+
+        [Inject]
+        public BuffStateDataStore(IOverclockDataStore overclockDataStore)
+        {
+            _overclockDataStore = overclockDataStore;
+        }
+
         public void Tick()
         {
+            // オーバークロック中は効果時間を減らさない（付与・蓄積は通常どおり受け付ける）
+            if (_overclockDataStore.IsActive.CurrentValue)
+            {
+                return;
+            }
+
             foreach (var state in _buffStates)
             {
                 if (state.RemainingTime > 0f)

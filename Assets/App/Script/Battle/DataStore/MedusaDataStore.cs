@@ -15,6 +15,7 @@ namespace App.Battle.DataStore
     public class MedusaDataStore : IMedusaDataStore, IRunResettable
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
+        private readonly IOverclockDataStore _overclockDataStore;
 
         // スタン中の敵ID → 残りスタン時間
         private readonly Dictionary<int, float> _stunRemainingTime = new();
@@ -30,11 +31,16 @@ namespace App.Battle.DataStore
 
         [Inject]
         public MedusaDataStore(
-            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore
+            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
+            IOverclockDataStore overclockDataStore
         )
         {
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
+            _overclockDataStore = overclockDataStore;
         }
+
+        // オーバークロック中は効果時間を減らさない（付与は通常どおり受け付ける）
+        private float DeltaTime => _overclockDataStore.IsActive.CurrentValue ? 0f : Time.deltaTime;
 
         public bool TryGetGazeRadius(out float radius)
         {
@@ -74,7 +80,7 @@ namespace App.Battle.DataStore
 
             foreach (var enemyId in _activeEnemyIds)
             {
-                var remainingTime = _stunRemainingTime[enemyId] - Time.deltaTime;
+                var remainingTime = _stunRemainingTime[enemyId] - DeltaTime;
                 if (remainingTime > 0f)
                 {
                     _stunRemainingTime[enemyId] = remainingTime;

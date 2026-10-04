@@ -18,6 +18,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
+        private readonly IOverclockDataStore _overclockDataStore;
         private readonly ITimeStopDataStore _timeStopDataStore;
 
         private readonly CompositeDisposable _disposable = new();
@@ -28,6 +29,7 @@ namespace App.Battle.UseCase
             IPlayerStateDataStore playerStateDataStore,
             IWaveManagerDataStore waveManagerDataStore,
             IPlayerDodgeParameterDataStore playerDodgeParameterDataStore,
+            IOverclockDataStore overclockDataStore,
             ITimeStopDataStore timeStopDataStore
         )
         {
@@ -35,6 +37,7 @@ namespace App.Battle.UseCase
             _playerStateDataStore = playerStateDataStore;
             _waveManagerDataStore = waveManagerDataStore;
             _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
+            _overclockDataStore = overclockDataStore;
             _timeStopDataStore = timeStopDataStore;
         }
 
@@ -65,6 +68,13 @@ namespace App.Battle.UseCase
             if (_playerDodgeParameterDataStore.IsDodging.CurrentValue)
             {
                 _playerDodgeParameterDataStore.NotifyDamageBlocked(damagedData);
+                return;
+            }
+
+            // オーバークロック中はダメージだけを溜め、終了時に1回のダメージとして受ける（OverclockUseCase）
+            if (_overclockDataStore.IsActive.CurrentValue)
+            {
+                _overclockDataStore.AddStockedDamage(damagedData.Damage);
                 return;
             }
 

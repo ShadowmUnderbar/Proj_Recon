@@ -34,6 +34,9 @@ namespace App.Battle.Views
         // 被弾受け（子のコライダーに載る PlayerDamageReceiverView）をAwakeで取得
         private PlayerDamageReceiverView _damageReceiver;
 
+        // 視点を留める機能（子のカメラ階層に載る PlayerCameraPinView）をAwakeで取得
+        private PlayerCameraPinView _cameraPinView;
+
         // 注視判定の基準カメラ（VRではHMD）。初回アクセス時に取得してキャッシュする
         private Camera _gazeCamera;
         public Observable<PlayerDamagedData> OnDamaged => _damageReceiver.OnDamaged;
@@ -109,6 +112,7 @@ namespace App.Battle.Views
             _onHit.AddTo(this);
             _playerTopDownAimListView.OnHit.Subscribe(OnHitBullet).AddTo(this);
             _damageReceiver = GetComponentInChildren<PlayerDamageReceiverView>();
+            _cameraPinView = GetComponentInChildren<PlayerCameraPinView>();
         }
 
         private void Update()
@@ -198,6 +202,17 @@ namespace App.Battle.Views
 
                 rayView.SetEnable(enable);
             }
+        }
+
+        public void SetCameraPinned(bool isPinned)
+        {
+            if (_cameraPinView == null)
+            {
+                Debug.LogWarning("PlayerCameraPinView が見つからないため、視点を留められません");
+                return;
+            }
+
+            _cameraPinView.SetPinned(isPinned);
         }
 
         public bool TryGetGazePose(out Pose pose)

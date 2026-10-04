@@ -111,6 +111,11 @@ namespace App.Battle.Presenters
             _playerView.SetUiRayEnable(enable);
         }
 
+        public void SetCameraPinned(bool isPinned)
+        {
+            _playerView.SetCameraPinned(isPinned);
+        }
+
         public void IsFocusRight(bool isFocus)
         {
             _playerView.IsFocusRight(isFocus);

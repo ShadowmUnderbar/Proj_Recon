@@ -272,7 +272,8 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `BattleHitUseCase` | `OnHit` → 倍率（貫通バフ／ガン飛ばし／クリティカル）→ 感電伝播 → `EnemyDataStore.Damage`。撃破時の回復（HealOnKill）等 | Enemy, BuffState, CriticalHit, ElectricShock |
 | `PointDropUseCase` | 撃破 → 粒子ドロップ、回収 → ポイント加算。`BattleHitUseCase` より先に登録（撃破地点を読むため） | Point, PointDropCalculator |
 | `BuffConditionUseCase` / `CareNodeUseCase` | バフ条件の入力（ヒット・HP割合・回避）／ケア・ノードの毎秒効果 | BuffState, CareNode |
-| `FreezeUseCase` | フリーズの開始・解除で敵・弾・レイ演出を止める。ボスの時止めの間も弾・レイ演出は止める（敵は止めない） | Freeze, TimeStop, Enemy, BulletStore |
+| `FreezeUseCase` | フリーズの開始・解除、ボスの時止めの開始・解除で弾・レイ演出を止める（論理和。ボスの時止めでは敵は止めない）。**敵の停止は「ウェーブ間ポーズ・フリーズ・オーバークロック」の論理和をここ1か所で計算して `EnemyPresenter.SetPause` に渡す**（停止要因ごとに別々に呼ぶと片方の解除で他を解いてしまう） | Freeze, WaveManager, Overclock, TimeStop, Enemy, BulletStore |
+| `OverclockUseCase` | オーバークロック。回避中の被弾無効化で秒数を獲得 → 3秒超で自動発動。発動中は敵弾の停止・レイ/トレイルの保持・視点の固定（`PlayerCameraPinView`）、終了時に溜めたダメージを1回で適用。ウェーブ間ポーズで打ち切り | Overclock, DodgeParameter, PlayerState, BulletStore |
 | `BossGroupUseCase` | ボスの個体の状態（`OnBossMemberStatusChanged`）を `BossGroupDataStore` へ渡し、台本が出した行動・待機の命令を `EnemyPresenter` 経由で個体へ届け、時止めの命令は `TimeStopDataStore` へ渡す。フリーズ・ウェーブ間ポーズ中は台本を止める | BossGroup, Enemy, Freeze, WaveManager, TimeStop |
 | `BossLifeGaugeUseCase` | Boss ランクの敵が出たら足元に体力ゲージを出し、`OnEnemyPoseUpdate` で位置に追従、命中のたびに `Hp / MaxHp` を反映（体力共有の仲間も同時に更新）、`OnEnemyRemoved` で消す | Enemy, BossLifeGauge |
 | `BossWaveUseCase` | ボスウェーブ開始時に残った敵の消去・プレイヤーの移動・ボスの出現（3.2 参照） | BossWave, Enemy, PlayerState |
@@ -308,6 +309,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `BossWaveDataStore` | 現在ウェーブがボスウェーブか・出現済みか・全員倒したか |
 | `DebugArenaDataStore` | デバッグ対戦で出した相手の敵Idと、全員いなくなってからの出し直しの待ち（ラン開始で初期化） |
 | `GameStateDataStore` / `RunStartDataStore` / `FreezeDataStore` | ゲームオーバー／セット選択中／フリーズ残時間 |
+| `OverclockDataStore` | オーバークロックのストック秒数・発動状態・残り時間・溜めたダメージ。しきい値は `OverclockConfig`。発動中は、時間で進む処理（バフ・デバフの効果時間、スポーン周期、ウェーブ経過時間、バリア再生、ケア・ノード）が `IsActive` を見て止まる。射撃・回避のクールダウンは止めない |
 | `TimeStopDataStore` | ボスによる時止め中か。台本の `TimeStopMemory` が始める・解く（秒数では解かない）。フリーズと違いボスは止めず、プレイヤーの移動・射撃・回避と弾・レイ演出だけを止め、プレイヤーは被弾しない |
 
 **アップグレード・バフ**
@@ -369,6 +371,12 @@ BossGroupUseCase.Tick → BossGroupDataStore.Tick → BossDirectorCommand → En
 【回避 → 跳ね返し】
 IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
  → DodgeCounterAttackUseCase → DodgeCounterAttackDataStore(対象・ダメージ算出) → FreezeDataStore → ダメージ適用
+
+【オーバークロック】
+回避中の被弾 → PlayerHitUseCase → PlayerDodgeParameterDataStore.NotifyDamageBlocked → OnDamagedDuringDodge
+ → OverclockUseCase(アップグレード所持なら Value1 秒) → OverclockDataStore.AddStock → 3秒超で IsActive
+ → FreezeUseCase(敵停止) / BulletStoreView.SetOverclock(敵弾停止・トレイル保持) / TracerFreezeState / PlayerCameraPinView
+ 発動中の被弾: PlayerHitUseCase → OverclockDataStore.AddStockedDamage → 終了時に PlayerStateDataStore.TakeDamage(合計)
 ```
 
 ---

@@ -22,6 +22,21 @@ namespace App.Battle.Views
             }
         }
 
+        public void SetOverclock(bool isActive)
+        {
+            // 敵弾の停止・自弾の飛行継続の振り分けは弾側が自分の撃ち手を見て行う
+            var bullets = GameObject.FindGameObjectsWithTag(TagConstants.Bullet);
+            foreach (var bullet in bullets)
+            {
+                if (!bullet.TryGetComponent<BaseBulletView>(out var bulletView))
+                {
+                    continue;
+                }
+
+                bulletView.SetOverclock(isActive);
+            }
+        }
+
         public void AllRemove()
         {
             // プレイヤー弾・敵弾共に Tag "Bullet" が付いている前提で一括破棄する

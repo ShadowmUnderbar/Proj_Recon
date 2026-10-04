@@ -25,6 +25,7 @@ namespace App.Battle.UseCase
         private readonly IDebugArenaDataStore _debugArenaDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IFreezeDataStore _freezeDataStore;
+        private readonly IOverclockDataStore _overclockDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IBossGroupDataStore _bossGroupDataStore;
         private readonly IEnemyRandomSpawnCycleDataStore _enemyRandomSpawnCycleDataStore;
@@ -40,6 +41,7 @@ namespace App.Battle.UseCase
             IDebugArenaDataStore debugArenaDataStore,
             IWaveManagerDataStore waveManagerDataStore,
             IFreezeDataStore freezeDataStore,
+            IOverclockDataStore overclockDataStore,
             IEnemyDataStore enemyDataStore,
             IBossGroupDataStore bossGroupDataStore,
             IEnemyRandomSpawnCycleDataStore enemyRandomSpawnCycleDataStore,
@@ -51,6 +53,7 @@ namespace App.Battle.UseCase
             _debugArenaDataStore = debugArenaDataStore;
             _waveManagerDataStore = waveManagerDataStore;
             _freezeDataStore = freezeDataStore;
+            _overclockDataStore = overclockDataStore;
             _enemyDataStore = enemyDataStore;
             _bossGroupDataStore = bossGroupDataStore;
             _enemyRandomSpawnCycleDataStore = enemyRandomSpawnCycleDataStore;
@@ -86,8 +89,10 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            // セット選択・ゲームオーバー・ショップ中（ウェーブ間ポーズ）とフリーズ中は出し直しの待ちも進めない
-            if (_waveManagerDataStore.IsWavePause.Value || _freezeDataStore.IsFreezing.CurrentValue)
+            // セット選択・ゲームオーバー・ショップ中（ウェーブ間ポーズ）とフリーズ・オーバークロック中は出し直しの待ちも進めない
+            if (_waveManagerDataStore.IsWavePause.Value
+                || _freezeDataStore.IsFreezing.CurrentValue
+                || _overclockDataStore.IsActive.CurrentValue)
             {
                 return;
             }
