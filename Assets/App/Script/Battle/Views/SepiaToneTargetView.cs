@@ -6,7 +6,7 @@ namespace App.Battle.Views
     /// <summary>
     /// 自身と子の Renderer を、セピア調のグループに所属させる。
     /// グループは Renderer の renderingLayerMask のビットで表すため、マテリアルを敵・プレイヤーで共有していても分けられる。
-    /// 敵・弾・レイ・背景などのプレハブのルートに付ける。uGUI は Renderer を持たないので、UI 用マテリアルの設定で分ける。
+    /// 敵・弾・レイ・背景などのプレハブのルートに付ける。uGUI（Canvas）は Renderer を持たないので対象外。
     /// </summary>
     public class SepiaToneTargetView : MonoBehaviour
     {
