@@ -52,6 +52,29 @@ namespace App.Battle.Data
             };
         }
 
+        /// <summary>プレイヤーを中心に90度回りこんだ先の位置（None・回りこまないときはそのまま）</summary>
+        public static BossFormationSlot Turn90(this BossFormationSlot slot, BossTurnDirection direction)
+        {
+            var isClockwise = direction == BossTurnDirection.Clockwise;
+            if (direction == BossTurnDirection.None)
+            {
+                return slot;
+            }
+
+            return slot switch
+            {
+                BossFormationSlot.Up => isClockwise ? BossFormationSlot.Right : BossFormationSlot.Left,
+                BossFormationSlot.Right => isClockwise ? BossFormationSlot.Down : BossFormationSlot.Up,
+                BossFormationSlot.Down => isClockwise ? BossFormationSlot.Left : BossFormationSlot.Right,
+                BossFormationSlot.Left => isClockwise ? BossFormationSlot.Up : BossFormationSlot.Down,
+                BossFormationSlot.UpLeft => isClockwise ? BossFormationSlot.UpRight : BossFormationSlot.DownLeft,
+                BossFormationSlot.UpRight => isClockwise ? BossFormationSlot.DownRight : BossFormationSlot.UpLeft,
+                BossFormationSlot.DownRight => isClockwise ? BossFormationSlot.DownLeft : BossFormationSlot.UpRight,
+                BossFormationSlot.DownLeft => isClockwise ? BossFormationSlot.UpLeft : BossFormationSlot.DownRight,
+                _ => slot
+            };
+        }
+
         /// <summary>斜めの位置か</summary>
         public static bool IsDiagonal(this BossFormationSlot slot)
         {

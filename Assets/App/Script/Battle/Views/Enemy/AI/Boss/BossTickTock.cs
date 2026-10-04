@@ -16,9 +16,10 @@ namespace App.Battle.Views.Enemy.AI.Boss
     ///   範囲・秒数・ダメージは BossLineStrikeConfig。
     /// 行動2（帯の連続攻撃）: 行動1と同じ帯を、予兆1回のあと同じ向き・同じ位置のまま予兆なしで続けて当てる（×字の配置で使う）。
     ///   回数と間隔は BossLineStrikeConfig の RepeatCount / RepeatInterval。
-    /// 行動3（時止め中の予兆）: 行動1と同じ帯の予兆だけを出し、当てずに消す（台本の TimeStopMemory で使う）。
-    ///   秒数は BossLineStrikeConfig の MemoryTelegraphSeconds / MemoryIntervalSeconds。
-    /// 行動4（時止め明けの攻撃）: 行動1と同じ帯を、短い予兆（ReplayTelegraphSeconds）のあとに当てる。
+    /// 行動3（回りこみ連射）: 命令された向きへプレイヤーを中心に90度回りこみながら、プレイヤーへ向けて弾を連射する。
+    ///   撃った弾はその場に止めておき、時止めの解除で動き出す（台本の TimeStopOrbit で、時止め中にだけ使う）。
+    /// 行動4（回りこみ）: 行動3と同じく回りこむだけで撃たない（行動3の相方）。
+    ///   どちらも回りこみ終えたら、回りこんだ先の配置（上→右など）につき直す。秒数・間隔は Inspector の値。
     /// プレハブでは基底の「行動中は移動を止める」を切っておくこと（弾幕中も動くため）。
     /// </summary>
     public class BossTickTock : BossAIBase
@@ -32,11 +33,11 @@ namespace App.Battle.Views.Enemy.AI.Boss
         /// <summary>帯の連続攻撃の行動番号（予兆1回のあと続けて当てる）</summary>
         public const int RepeatLineStrikeActionIndex = 2;
 
-        /// <summary>時止め中に予兆だけを見せる行動番号（当てない）</summary>
-        public const int MemoryTelegraphActionIndex = 3;
+        /// <summary>回りこみながら連射する行動番号（時止め中に使う。撃った弾は時止めの解除まで止まる）</summary>
+        public const int OrbitBarrageActionIndex = 3;
 
-        /// <summary>時止めが明けたあと、短い予兆で帯を当てる行動番号</summary>
-        public const int ReplayLineStrikeActionIndex = 4;
+        /// <summary>回りこむだけの行動番号（回りこみ連射の相方）</summary>
+        public const int OrbitActionIndex = 4;
 
         [SerializeField] private BaseBulletView _bulletPrefab;
         [SerializeField] private Transform _muzzleTransform;
@@ -46,6 +47,16 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         [SerializeField, Min(0.02f), Tooltip("弾幕で弾を撃つ間隔（秒）")]
         private float _fireInterval = 0.2f;
+
+        [SerializeField, Min(0f), Tooltip("弾を撃つ高さ（m、ボスの足元から）。銃口の高さは使わず、水平位置だけを銃口から取る。プレイヤーの当たり判定に収まる高さにする")]
+        private float _bulletHeight = 1.5f;
+
+        [Header("回りこみ（時止め）")]
+        [SerializeField, Min(0.1f), Tooltip("プレイヤーを中心に90度回りこむのに掛ける秒数")]
+        private float _orbitSeconds = 1f;
+
+        [SerializeField, Min(0.02f), Tooltip("回りこみ連射で弾を撃つ間隔（秒）")]
+        private float _orbitFireInterval = 0.15f;
 
         [Header("帯の攻撃")]
         [SerializeField, Tooltip("帯の攻撃の範囲・秒数・ダメージ・色")]
@@ -57,8 +68,15 @@ namespace App.Battle.Views.Enemy.AI.Boss
         // 帯の当たり判定の高さ（m）。地面からプレイヤーの頭上までを覆う
         private const float StrikeHitHeight = 4f;
 
+        // 回りこむ角度（度）
+        private const float OrbitAngle = 90f;
+
         // 次の弾までの残り時間（秒）
         private float _fireTimer;
+
+        // 回りこみの起点の向き（プレイヤーから見た方向）と、回りこみ始めてからの秒数
+        private Vector3 _orbitStartDirection;
+        private float _orbitElapsed;
 
         // 帯の攻撃の向きと起点（予兆を出した時点で固定する）
         private Vector3 _strikeOrigin;
@@ -74,20 +92,18 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         protected override void GetActionDurations(int actionIndex, out float windup, out float active, out float recovery)
         {
-            if (actionIndex == MemoryTelegraphActionIndex && _lineStrikeConfig != null)
+            if (IsOrbit(actionIndex))
             {
-                // 攻撃の段階は無く、予兆を消してから次の予兆までの間を硬直にする
-                windup = _lineStrikeConfig.MemoryTelegraphSeconds;
-                active = 0f;
-                recovery = _lineStrikeConfig.MemoryIntervalSeconds;
+                // 回りこんでいる間をまるごと攻撃の段階にする（時止めの長さ＝回りこみの秒数）
+                windup = 0f;
+                active = _orbitSeconds;
+                recovery = 0f;
                 return;
             }
 
             if (IsLineStrike(actionIndex) && _lineStrikeConfig != null)
             {
-                windup = actionIndex == ReplayLineStrikeActionIndex
-                    ? _lineStrikeConfig.ReplayTelegraphSeconds
-                    : _lineStrikeConfig.TelegraphSeconds;
+                windup = _lineStrikeConfig.TelegraphSeconds;
                 // 連続攻撃は最後の1回の表示が終わるまでを攻撃の段階にする
                 active = actionIndex == RepeatLineStrikeActionIndex
                     ? _lineStrikeConfig.RepeatInterval * (_lineStrikeConfig.RepeatCount - 1) + _lineStrikeConfig.StrikeSeconds
@@ -117,6 +133,12 @@ namespace App.Battle.Views.Enemy.AI.Boss
                 return;
             }
 
+            // 回りこみの移動と向きは OnActionActiveUpdate で行う
+            if (IsActing && IsOrbit(CurrentActionIndex))
+            {
+                return;
+            }
+
             FaceFireDirection();
 
             // 帯の攻撃の間はその場に留まる（予兆と攻撃の範囲を動かさない）
@@ -137,14 +159,18 @@ namespace App.Battle.Views.Enemy.AI.Boss
                 return;
             }
 
+            if (IsOrbit(actionIndex))
+            {
+                BeginOrbit();
+            }
+
             // 攻撃の段階に入った最初のフレームで1発目を撃つ
             _fireTimer = 0f;
         }
 
         protected override void OnActionActive(int actionIndex)
         {
-            // 時止め中の予兆は当てない
-            if (!IsLineStrike(actionIndex) || actionIndex == MemoryTelegraphActionIndex)
+            if (!IsLineStrike(actionIndex))
             {
                 return;
             }
@@ -166,6 +192,12 @@ namespace App.Battle.Views.Enemy.AI.Boss
                 return;
             }
 
+            if (IsOrbit(actionIndex))
+            {
+                UpdateOrbit(actionIndex, deltaTime);
+                return;
+            }
+
             if (actionIndex != BarrageActionIndex || FormationSlot == BossFormationSlot.None)
             {
                 return;
@@ -174,7 +206,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
             _fireTimer -= deltaTime;
             while (_fireTimer <= 0f)
             {
-                Fire();
+                Fire(GetFireDirection(), false);
                 _fireTimer += _fireInterval;
             }
         }
@@ -194,6 +226,64 @@ namespace App.Battle.Views.Enemy.AI.Boss
             {
                 _lineStrikeView.Hide();
             }
+
+            // 回りこんだ先の配置につき直す（以後の追従・弾幕・帯の向きがその配置になる）。
+            // 最後のフレームの端数で回りきれなかった分もここで詰める。途中で打ち切られたときも回りこんだ先へ移す（撃破されたときは動かさない）
+            if (IsOrbit(actionIndex) && FormationSlot != BossFormationSlot.None && PlayerTransform != null
+                && State.Value != EnemyAIState.Dead)
+            {
+                SetFormation(FormationSlot.Turn90(CurrentTurnDirection), 0f);
+            }
+        }
+
+        /// <summary>回りこみの起点を決める（配置の方向から回り始める。横のずれは無くす）</summary>
+        private void BeginOrbit()
+        {
+            _orbitElapsed = 0f;
+            if (FormationSlot != BossFormationSlot.None || PlayerTransform == null)
+            {
+                _orbitStartDirection = FormationSlot.ToDirection();
+                return;
+            }
+
+            // 配置の指定が無ければ、今いる方向から回り始める
+            var offset = transform.position - PlayerTransform.position;
+            offset.y = 0f;
+            _orbitStartDirection = offset.sqrMagnitude > 0f ? offset.normalized : Vector3.forward;
+        }
+
+        /// <summary>プレイヤーを中心に、一定距離を保ったまま回りこむ。回りこみ連射ならプレイヤーへ向けて撃つ</summary>
+        private void UpdateOrbit(int actionIndex, float deltaTime)
+        {
+            if (PlayerTransform == null || _orbitStartDirection == Vector3.zero)
+            {
+                return;
+            }
+
+            _orbitElapsed += deltaTime;
+            var progress = Mathf.Clamp01(_orbitElapsed / _orbitSeconds);
+            var angle = OrbitAngle * progress * CurrentTurnDirection.ToSign();
+            var direction = Quaternion.AngleAxis(angle, Vector3.up) * _orbitStartDirection;
+
+            FollowTo(PlayerTransform.position + direction * _keepDistance);
+            transform.rotation = Quaternion.LookRotation(-direction, Vector3.up);
+
+            if (actionIndex != OrbitBarrageActionIndex)
+            {
+                return;
+            }
+
+            _fireTimer -= deltaTime;
+            while (_fireTimer <= 0f)
+            {
+                Fire(-direction, true);
+                _fireTimer += _orbitFireInterval;
+            }
+        }
+
+        private static bool IsOrbit(int actionIndex)
+        {
+            return actionIndex == OrbitBarrageActionIndex || actionIndex == OrbitActionIndex;
         }
 
         /// <summary>2回目以降の連続攻撃。予兆なしで、1回目と同じ向き・同じ位置へ間隔ごとに当てる</summary>
@@ -213,14 +303,14 @@ namespace App.Battle.Views.Enemy.AI.Boss
             }
         }
 
-        /// <summary>帯を出す行動か（予兆だけの行動も含む。どれもその場に留まる）</summary>
+        /// <summary>帯を出す行動か（どれもその場に留まる）</summary>
         private static bool IsLineStrike(int actionIndex)
         {
-            return actionIndex == LineStrikeActionIndex || actionIndex == RepeatLineStrikeActionIndex
-                || actionIndex == MemoryTelegraphActionIndex || actionIndex == ReplayLineStrikeActionIndex;
+            return actionIndex == LineStrikeActionIndex || actionIndex == RepeatLineStrikeActionIndex;
         }
 
-        private void Fire()
+        /// <summary>弾を撃つ。isHeld なら撃った弾をその場に止めておく（時止めの解除で BulletStoreView が一括で動かす）</summary>
+        private void Fire(Vector3 direction, bool isHeld)
         {
             if (_bulletPrefab == null || _muzzleTransform == null)
             {
@@ -228,9 +318,18 @@ namespace App.Battle.Views.Enemy.AI.Boss
                 return;
             }
 
-            var pose = new Pose(_muzzleTransform.position, Quaternion.LookRotation(GetFireDirection(), Vector3.up));
+            // 銃口はモデルの拡大率で高くなりプレイヤーの頭上を抜けるため、高さだけ足元からの固定値にする
+            var position = _muzzleTransform.position;
+            position.y = transform.position.y + _bulletHeight;
+            var pose = new Pose(position, Quaternion.LookRotation(direction, Vector3.up));
             var bullet = Instantiate(_bulletPrefab);
             bullet.Spawn(EnemyId, pose, EnemyData.CreateBulletData(), -1, PlayerTransform);
+
+            // 時止め中に生まれた弾は BulletStoreView の一括停止に間に合わないため、自分で止める
+            if (isHeld)
+            {
+                bullet.SetPause(true);
+            }
         }
 
         private void BeginTelegraph()
