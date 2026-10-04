@@ -92,9 +92,9 @@ namespace App.Battle.Presenters
             _enemyStoreView.SetPause(isPause);
         }
 
-        public void CommandBossAction(int enemyId, int actionIndex)
+        public void CommandBossAction(int enemyId, int actionIndex, BossTurnDirection turnDirection)
         {
-            _enemyStoreView.CommandBossAction(enemyId, actionIndex);
+            _enemyStoreView.CommandBossAction(enemyId, actionIndex, turnDirection);
         }
 
         public void SetBossHold(int enemyId, bool isHold)

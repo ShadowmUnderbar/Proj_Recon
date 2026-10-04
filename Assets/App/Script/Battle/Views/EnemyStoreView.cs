@@ -349,14 +349,14 @@ namespace App.Battle.Views
             }
         }
 
-        public void CommandBossAction(int enemyId, int actionIndex)
+        public void CommandBossAction(int enemyId, int actionIndex, BossTurnDirection turnDirection)
         {
             if (!_bossMembers.TryGetValue(enemyId, out var bossMember))
             {
                 return;
             }
 
-            bossMember.CommandAction(actionIndex);
+            bossMember.CommandAction(actionIndex, turnDirection);
         }
 
         public void SetBossHold(int enemyId, bool isHold)

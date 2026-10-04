@@ -32,7 +32,7 @@ namespace App.Tests.EditMode
 
         private static BossPatternStep Step(BossPatternStepType type, int[] slots = null, int action = 0, bool hold = false,
             float wait = 0f, float[] offsets = null, bool aligned = false, int loopBack = 1, int loopMin = 1, int loopMax = 1,
-            int memoryCount = 3, int replayAction = 0)
+            int partnerAction = 0)
         {
             var step = new BossPatternStep();
             void Set(string field, object value) =>
@@ -47,8 +47,7 @@ namespace App.Tests.EditMode
             Set("_loopBackSteps", loopBack);
             Set("_loopMin", loopMin);
             Set("_loopMax", loopMax);
-            Set("_memoryCount", memoryCount);
-            Set("_replayActionIndex", replayAction);
+            Set("_partnerActionIndex", partnerAction);
             return step;
         }
 
@@ -63,14 +62,14 @@ namespace App.Tests.EditMode
         private static BossPatternStep Cross(float[] offsets = null, bool aligned = false) =>
             Step(BossPatternStepType.CrossFormation, new[] { 0, 1 }, offsets: offsets, aligned: aligned);
 
-        // 時止めの記憶攻撃（予兆の行動 3・攻撃の行動 4・一息 1秒）
-        private const int MemoryTelegraphAction = 3;
-        private const int ReplayAction = 4;
+        // 時止めの回りこみ攻撃（回りこみ連射の行動 3・回りこむだけの行動 4・一息 1秒）
+        private const int OrbitBarrageAction = 3;
+        private const int OrbitAction = 4;
         private const float Breath = 1f;
 
-        private static BossPatternStep TimeStop(int[] slots = null, int count = 3, float[] offsets = null) =>
-            Step(BossPatternStepType.TimeStopMemory, slots ?? new[] { 0, 1 }, MemoryTelegraphAction, wait: Breath,
-                offsets: offsets, memoryCount: count, replayAction: ReplayAction);
+        private static BossPatternStep TimeStop(int[] slots = null) =>
+            Step(BossPatternStepType.TimeStopOrbit, slots ?? new[] { 0, 1 }, OrbitBarrageAction, wait: Breath,
+                partnerAction: OrbitAction);
 
         /// <summary>
         /// 命令に合わせて個体の状態を動かしながら台本を進め、出た命令を順に返す。
@@ -373,72 +372,77 @@ namespace App.Tests.EditMode
             Assert.That(output.All(c => c.Type == BossDirectorCommandType.Act && c.ActionIndex == 1), Is.True);
         }
 
-        // --- 時止めの記憶攻撃 ---
+        // --- 時止めの回りこみ攻撃 ---
 
         [Test]
-        public void TimeStopMemory_時を止めて1体ずつ予兆を見せ_解いて一息おき_同じ個体と配置で同じ順に攻撃する()
+        public void TimeStopOrbit_時を止めて対象全員を同じ向きで回りこませ_1体だけ連射させる()
         {
-            var runner = Runner(new[] { A, B }, new[] { TimeStop(offsets: new[] { -5f, 0f, 5f }), Act(new[] { 0, 1 }, 9) });
+            var runner = Runner(new[] { A, B }, new[] { TimeStop(), Act(new[] { 0, 1 }, 9) });
             SetAll(runner, Ready, A, B);
 
-            var commands = Drive(runner, 200, stopAfter: c => c.Type == BossDirectorCommandType.Act && c.ActionIndex == 9);
-            var types = commands.Select(c => c.Type).ToList();
-
-            // 時止めの前に全員を待機させる
+            var output = Tick(runner);
+            var types = output.Select(c => c.Type).ToList();
             var begin = types.IndexOf(BossDirectorCommandType.BeginTimeStop);
             Assert.That(begin, Is.GreaterThanOrEqualTo(0), "時止めを始める");
-            Assert.That(commands.Take(begin).Where(c => c.Type == BossDirectorCommandType.Hold).Select(c => c.EnemyId),
-                Is.EquivalentTo(new[] { A, B }), "時止めの前に2体とも待機させる");
+            Assert.That(runner.IsTimeStopping, Is.True);
 
-            var end = types.IndexOf(BossDirectorCommandType.EndTimeStop);
-            Assert.That(end, Is.GreaterThan(begin), "予兆を見せ終えたら時止めを解く");
-            Assert.That(types.Count(t => t == BossDirectorCommandType.EndTimeStop), Is.EqualTo(1));
-
-            // 時止めの間: 配置 → 予兆の行動 を1体ずつ3回
-            var during = commands.Skip(begin + 1).Take(end - begin - 1).ToList();
-            var shownFormations = during.Where(c => c.Type == BossDirectorCommandType.Formation).ToList();
-            var shownActs = during.Where(c => c.Type == BossDirectorCommandType.Act).ToList();
-            Assert.That(shownFormations.Count, Is.EqualTo(3), "予兆の配置は3回");
-            Assert.That(shownActs.Select(c => c.ActionIndex), Is.All.EqualTo(MemoryTelegraphAction), "時止め中は予兆だけの行動");
-            Assert.That(shownActs.Select(c => c.EnemyId), Is.EqualTo(shownFormations.Select(c => c.EnemyId)),
-                "配置した個体が、その配置で予兆を出す（1回に1体）");
-            var axisSlots = new[] { BossFormationSlot.Up, BossFormationSlot.Down, BossFormationSlot.Left, BossFormationSlot.Right };
-            Assert.That(shownFormations.All(c => axisSlots.Contains(c.Slot)), Is.True, "配置は上下左右のどれか");
-            Assert.That(shownFormations.All(c => new[] { -5f, 0f, 5f }.Contains(c.LateralOffset)), Is.True, "横のずれは候補から選ぶ");
-
-            // 時止めを解いたあと: 同じ個体・同じ配置・同じ順で攻撃
-            var after = commands.Skip(end + 1).ToList();
-            var replayFormations = after.Where(c => c.Type == BossDirectorCommandType.Formation).ToList();
-            var replayActs = after.Where(c => c.Type == BossDirectorCommandType.Act && c.ActionIndex == ReplayAction).ToList();
-            Assert.That(replayFormations.Select(c => (c.EnemyId, c.Slot, c.LateralOffset)),
-                Is.EqualTo(shownFormations.Select(c => (c.EnemyId, c.Slot, c.LateralOffset))), "見せたときと同じ個体・配置・順");
-            Assert.That(replayActs.Select(c => c.EnemyId), Is.EqualTo(shownActs.Select(c => c.EnemyId)), "見せた順に攻撃する");
-
-            // 攻撃が済んだら待機を解いて次のステップへ
-            var lastReplay = after.FindLastIndex(c => c.Type == BossDirectorCommandType.Act && c.ActionIndex == ReplayAction);
-            Assert.That(after.Skip(lastReplay + 1).Where(c => c.Type == BossDirectorCommandType.Release).Select(c => c.EnemyId),
-                Is.EquivalentTo(new[] { A, B }), "終わったら2体とも待機を解く");
-            Assert.That(after.Last().ActionIndex, Is.EqualTo(9), "次のステップへ進む");
-            Assert.That(runner.IsTimeStopping, Is.False);
+            var acts = output.Skip(begin + 1).Where(c => c.Type == BossDirectorCommandType.Act).ToList();
+            Assert.That(acts.Select(c => c.EnemyId), Is.EquivalentTo(new[] { A, B }), "時を止めた同じティックで2体とも動かす");
+            Assert.That(acts.Count(c => c.ActionIndex == OrbitBarrageAction), Is.EqualTo(1), "連射するのは1体だけ");
+            Assert.That(acts.Count(c => c.ActionIndex == OrbitAction), Is.EqualTo(1), "もう1体は回りこむだけ");
+            Assert.That(acts.Select(c => c.TurnDirection).Distinct().Single(), Is.Not.EqualTo(BossTurnDirection.None),
+                "2体とも同じ向きに回りこむ");
+            Assert.That(output.Any(c => c.Type == BossDirectorCommandType.Hold), Is.False, "回りこむ対象は待機させない");
         }
 
         [Test]
-        public void TimeStopMemory_時止めを解いてから一息の秒数が経つまで攻撃を始めない()
+        public void TimeStopOrbit_回りこみ終えたら時止めを解き_一息おいて待機を解き次へ進む()
         {
-            var runner = Runner(new[] { A, B }, new[] { TimeStop(count: 1) });
+            var runner = Runner(new[] { A, B }, new[] { TimeStop(), Act(new[] { 0, 1 }, 9) });
             SetAll(runner, Ready, A, B);
+            Tick(runner);
+            SetAll(runner, Busy, A, B);
 
-            Drive(runner, 50, stopAfter: c => c.Type == BossDirectorCommandType.EndTimeStop);
+            Assert.That(Tick(runner), Is.Empty, "回りこんでいる間は時止めを解かない");
+            Assert.That(runner.IsTimeStopping, Is.True);
+
+            SetAll(runner, Ready, A, B);
+            var output = Tick(runner);
+            Assert.That(output.Select(c => c.Type), Does.Contain(BossDirectorCommandType.EndTimeStop), "回りこみ終えたら解く");
+            Assert.That(output.Where(c => c.Type == BossDirectorCommandType.Hold).Select(c => c.EnemyId),
+                Is.EquivalentTo(new[] { A, B }), "一息の間は2体ともその場で待機");
             Assert.That(runner.IsTimeStopping, Is.False);
 
             // 1秒の一息を 0.25秒ずつ進める（解いたティックでは時間を使わない）
-            Assert.That(Drive(runner, 3, 0.25f), Is.Empty, "0.75秒では攻撃を始めない");
-            var output = Drive(runner, 3, 0.25f);
-            Assert.That(output.Any(c => c.Type == BossDirectorCommandType.Formation), Is.True, "1秒経ったら攻撃の配置を出す");
+            Assert.That(Drive(runner, 3, 0.25f), Is.Empty, "0.75秒では次へ進まない");
+            var after = Drive(runner, 3, 0.25f,
+                stopAfter: c => c.Type == BossDirectorCommandType.Act && c.ActionIndex == 9);
+            Assert.That(after.Where(c => c.Type == BossDirectorCommandType.Release).Select(c => c.EnemyId),
+                Is.EquivalentTo(new[] { A, B }), "一息が明けたら待機を解く");
+            Assert.That(after.Last().ActionIndex, Is.EqualTo(9), "次のステップへ進む");
+            Assert.That(after.Count(c => c.Type == BossDirectorCommandType.EndTimeStop), Is.Zero, "時止めを二重に解かない");
         }
 
         [Test]
-        public void TimeStopMemory_対象以外も含めて全員の行動が明けるまで時を止めない()
+        public void TimeStopOrbit_連射する個体と回る向きは毎回ランダムに選ぶ()
+        {
+            var shooters = new HashSet<int>();
+            var directions = new HashSet<BossTurnDirection>();
+            for (var seed = 0; seed < 20; seed++)
+            {
+                var runner = Runner(new[] { A, B }, new[] { TimeStop() }, seed);
+                SetAll(runner, Ready, A, B);
+                var acts = Tick(runner).Where(c => c.Type == BossDirectorCommandType.Act).ToList();
+                shooters.Add(acts.Single(c => c.ActionIndex == OrbitBarrageAction).EnemyId);
+                directions.Add(acts[0].TurnDirection);
+            }
+
+            Assert.That(shooters, Is.EquivalentTo(new[] { A, B }));
+            Assert.That(directions, Is.EquivalentTo(new[] { BossTurnDirection.Clockwise, BossTurnDirection.CounterClockwise }));
+        }
+
+        [Test]
+        public void TimeStopOrbit_対象以外も含めて全員の行動が明けるまで時を止めず_対象以外は待機させる()
         {
             var runner = Runner(new[] { A, B }, new[] { TimeStop(slots: new[] { 0 }) });
             runner.TrySetStatus(A, Ready);
@@ -448,57 +452,74 @@ namespace App.Tests.EditMode
             runner.TrySetStatus(B, Ready);
             var output = Tick(runner);
             Assert.That(output.Select(c => c.Type), Does.Contain(BossDirectorCommandType.BeginTimeStop));
-            Assert.That(runner.IsTimeStopping, Is.True);
-
-            var commands = Drive(runner, 100, stopAfter: c => c.Type == BossDirectorCommandType.EndTimeStop);
-            Assert.That(commands.Where(c => c.Type == BossDirectorCommandType.Formation).Select(c => c.EnemyId),
-                Is.All.EqualTo(A), "予兆を見せるのは対象の A だけ");
+            Assert.That(output.Where(c => c.Type == BossDirectorCommandType.Hold).Select(c => c.EnemyId),
+                Is.EqualTo(new[] { B }), "対象外の B は待機させる");
+            Assert.That(output.Where(c => c.Type == BossDirectorCommandType.Act).Select(c => (c.EnemyId, c.ActionIndex)),
+                Is.EqualTo(new[] { (A, OrbitBarrageAction) }), "対象が1体ならその1体が連射する");
         }
 
         [Test]
-        public void TimeStopMemory_途中で発狂フェイズへ切り替えると時止めを解いて待機も解く()
+        public void TimeStopOrbit_途中で発狂フェイズへ切り替えると時止めを解いて待機も解く()
         {
-            var runner = Runner(new[] { A, B }, new[] { TimeStop() });
+            var runner = Runner(new[] { A, B }, new[] { TimeStop(slots: new[] { 0 }) });
             SetAll(runner, Ready, A, B);
-            Drive(runner, 3);
+            Tick(runner);
             Assert.That(runner.IsTimeStopping, Is.True);
 
             var output = new List<BossDirectorCommand>();
             runner.SwitchPattern(new[] { Act(new[] { 0 }, 1) }, output);
             Assert.That(output.Select(c => c.Type), Does.Contain(BossDirectorCommandType.EndTimeStop));
             Assert.That(output.Where(c => c.Type == BossDirectorCommandType.Release).Select(c => c.EnemyId),
-                Is.EquivalentTo(new[] { A, B }));
+                Is.EqualTo(new[] { B }));
             Assert.That(runner.IsTimeStopping, Is.False);
         }
 
         [Test]
-        public void TimeStopMemory_撃破された個体の攻撃は飛ばす()
+        public void TimeStopOrbit_回りこみ中に対象が全員撃破されたら時止めを解いて次へ進む()
         {
-            // 1回目の予兆を見せた個体を、時止めが解けたあとで撃破する
-            var runner = Runner(new[] { A, B }, new[] { TimeStop(), Act(new[] { 0, 1 }, 9) });
-            SetAll(runner, Ready, A, B);
-            var shown = Drive(runner, 200, stopAfter: c => c.Type == BossDirectorCommandType.EndTimeStop)
-                .Where(c => c.Type == BossDirectorCommandType.Act).Select(c => c.EnemyId).ToList();
-            var dead = shown[0];
-            runner.TryMarkGone(dead);
+            // 対象外の C が残っていれば台本は進む
+            var runner = Runner(new[] { A, B, C }, new[] { TimeStop(), Act(new[] { 2 }, 9) });
+            SetAll(runner, Ready, A, B, C);
+            Tick(runner);
+            runner.TryMarkGone(A);
+            runner.TryMarkGone(B);
 
-            var after = Drive(runner, 200, stopAfter: c => c.Type == BossDirectorCommandType.Act && c.ActionIndex == 9);
-            Assert.That(after.Where(c => c.Type == BossDirectorCommandType.Act && c.ActionIndex == ReplayAction).Select(c => c.EnemyId),
-                Is.EqualTo(shown.Where(id => id != dead)), "撃破された個体の分だけ飛ばし、残りは同じ順");
-            Assert.That(after.Any(c => c.EnemyId == dead), Is.False, "撃破された個体へは命令しない");
+            var output = Tick(runner);
+            Assert.That(output.Select(c => c.Type), Does.Contain(BossDirectorCommandType.EndTimeStop));
+            Assert.That(output.Where(c => c.Type == BossDirectorCommandType.Release).Select(c => c.EnemyId),
+                Is.EqualTo(new[] { C }));
+            Assert.That(output.Last().ActionIndex, Is.EqualTo(9), "次のステップへ進む");
+            Assert.That(runner.IsTimeStopping, Is.False);
         }
 
         [Test]
-        public void TimeStopMemory_時止めの間に全員撃破されたら台本は時止め中のまま終わる()
+        public void TimeStopOrbit_時止めの間に全員撃破されたら台本は時止め中のまま終わる()
         {
             // 全員いなくなった台本は進まないため、時止めは BossGroupUseCase が撃破・消去の通知で解く（BossGroupDataStore.IsTimeStopping は終わったグループを数えない）
             var runner = Runner(new[] { A, B }, new[] { TimeStop() });
             SetAll(runner, Ready, A, B);
-            Drive(runner, 3);
+            Tick(runner);
             runner.TryMarkGone(A);
             runner.TryMarkGone(B);
             Assert.That(runner.IsFinished, Is.True);
             Assert.That(runner.IsTimeStopping, Is.True);
+        }
+
+        [TestCase(BossFormationSlot.Up, BossTurnDirection.Clockwise, BossFormationSlot.Right)]
+        [TestCase(BossFormationSlot.Right, BossTurnDirection.Clockwise, BossFormationSlot.Down)]
+        [TestCase(BossFormationSlot.Up, BossTurnDirection.CounterClockwise, BossFormationSlot.Left)]
+        [TestCase(BossFormationSlot.Left, BossTurnDirection.CounterClockwise, BossFormationSlot.Down)]
+        [TestCase(BossFormationSlot.UpLeft, BossTurnDirection.Clockwise, BossFormationSlot.UpRight)]
+        [TestCase(BossFormationSlot.DownLeft, BossTurnDirection.CounterClockwise, BossFormationSlot.DownRight)]
+        [TestCase(BossFormationSlot.Down, BossTurnDirection.None, BossFormationSlot.Down)]
+        public void BossFormationSlot_Turn90_回りこんだ先が回転の向きと一致する(BossFormationSlot from, BossTurnDirection direction,
+            BossFormationSlot expected)
+        {
+            Assert.That(from.Turn90(direction), Is.EqualTo(expected));
+
+            // 回転の向きの符号（時計回りが正）で方向ベクトルを回した先とも一致する
+            var rotated = Quaternion.AngleAxis(90f * direction.ToSign(), Vector3.up) * from.ToDirection();
+            Assert.That(Vector3.Distance(rotated, expected.ToDirection()), Is.LessThan(1e-4f));
         }
 
         // --- 行動段階 ---

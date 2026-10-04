@@ -30,13 +30,15 @@ namespace App.Battle.Data
     public readonly struct BossDirectorCommand
     {
         private BossDirectorCommand(BossDirectorCommandType type, int enemyId, int actionIndex,
-            BossFormationSlot slot = BossFormationSlot.None, float lateralOffset = 0f)
+            BossFormationSlot slot = BossFormationSlot.None, float lateralOffset = 0f,
+            BossTurnDirection turnDirection = BossTurnDirection.None)
         {
             Type = type;
             EnemyId = enemyId;
             ActionIndex = actionIndex;
             Slot = slot;
             LateralOffset = lateralOffset;
+            TurnDirection = turnDirection;
         }
 
         // 場全体への命令（時止め）で EnemyId に入れる値
@@ -54,9 +56,14 @@ namespace App.Battle.Data
         /// <summary>Formation のときの横（移動方向と直交する向き）へのずれ（m）</summary>
         public float LateralOffset { get; }
 
-        public static BossDirectorCommand Act(int enemyId, int actionIndex)
+        /// <summary>Act のときの回りこむ向き（回りこむ行動でだけ使う）</summary>
+        public BossTurnDirection TurnDirection { get; }
+
+        public static BossDirectorCommand Act(int enemyId, int actionIndex,
+            BossTurnDirection turnDirection = BossTurnDirection.None)
         {
-            return new BossDirectorCommand(BossDirectorCommandType.Act, enemyId, actionIndex);
+            return new BossDirectorCommand(BossDirectorCommandType.Act, enemyId, actionIndex,
+                turnDirection: turnDirection);
         }
 
         public static BossDirectorCommand Hold(int enemyId)
@@ -93,6 +100,8 @@ namespace App.Battle.Data
         {
             return Type switch
             {
+                BossDirectorCommandType.Act when TurnDirection != BossTurnDirection.None =>
+                    $"{Type}(id:{EnemyId}, action:{ActionIndex}, turn:{TurnDirection})",
                 BossDirectorCommandType.Act => $"{Type}(id:{EnemyId}, action:{ActionIndex})",
                 BossDirectorCommandType.Formation => $"{Type}(id:{EnemyId}, slot:{Slot}, offset:{LateralOffset})",
                 BossDirectorCommandType.BeginTimeStop or BossDirectorCommandType.EndTimeStop => Type.ToString(),
