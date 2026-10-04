@@ -15,6 +15,9 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("ゲージのプレハブ（プレイヤーのライフゲージと同じもの）")]
         private PlayerLifeGaugeView _gaugePrefab;
 
+        [SerializeField, Tooltip("ゲージのセピア調のグループ。プレハブはプレイヤーのUIとして作られているので、生成後にこちらへ付け替える")]
+        private SepiaToneGroup _sepiaToneGroup = SepiaToneGroup.Enemy;
+
         private BossLifeGaugeConfig _config;
 
         private readonly Dictionary<int, PlayerLifeGaugeView> _gauges = new();
@@ -43,6 +46,11 @@ namespace App.Battle.Views
             gauge.transform.localScale = _gaugePrefab.transform.localScale * _config.Scale;
             gauge.SetColors(_config.HealthColor, _config.LowHealthColor, _config.TrackColor);
             gauge.SetBarrierVisible(false);
+            if (gauge.TryGetComponent<SepiaToneTargetView>(out var sepiaToneTarget))
+            {
+                sepiaToneTarget.SetGroup(_sepiaToneGroup);
+            }
+
             _gauges.Add(enemyId, gauge);
         }
 

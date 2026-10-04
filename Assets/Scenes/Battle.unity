@@ -184,6 +184,7 @@ MonoBehaviour:
   _playerBaseParameterConfig: {fileID: 11400000, guid: 0f2aa746c929905408f65a5b2c2f4427, type: 2}
   _tutorialWaveConfig: {fileID: 11400000, guid: 40b11f405d2442746b2424e1de13720a, type: 2}
   _overclockConfig: {fileID: 11400000, guid: c83c832e42f725a43afa38ec885017ca, type: 2}
+  _sepiaToneConfig: {fileID: 11400000, guid: ed5cb793c3b8f874ab6cbd8b8d503b9c, type: 2}
   _bossWaveConfig: {fileID: 11400000, guid: 5232382f13db8ba458caca28bb44cba5, type: 2}
   _bossLifeGaugeStoreView: {fileID: 9098238497290529744, guid: 14a317ddbe4e990429b3c053974c589e, type: 3}
   _bossLifeGaugeConfig: {fileID: 11400000, guid: 2e6923bd89b677149a966bdca22498b4, type: 2}
@@ -247,6 +248,7 @@ GameObject:
   - component: {fileID: 906881067}
   - component: {fileID: 906881066}
   - component: {fileID: 906881070}
+  - component: {fileID: 906881071}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -372,6 +374,19 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: af50011ca253cee488e7032dac1e3f46, type: 2}
   m_BuildHeightMesh: 0
+--- !u!114 &906881071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906881065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80593038fa089df4d98aefc0a4d5a186, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _group: 1
 --- !u!1 &1131396425
 GameObject:
   m_ObjectHideFlags: 0
@@ -590,6 +605,7 @@ GameObject:
   - component: {fileID: 1770217224}
   - component: {fileID: 1770217223}
   - component: {fileID: 1770217222}
+  - component: {fileID: 1770217226}
   m_Layer: 0
   m_Name: CurvedGround
   m_TagString: Untagged
@@ -675,6 +691,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1770217226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1770217221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80593038fa089df4d98aefc0a4d5a186, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _group: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

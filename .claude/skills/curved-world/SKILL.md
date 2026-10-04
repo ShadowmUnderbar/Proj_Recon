@@ -75,6 +75,8 @@ float CurvedWorld_Drop(float2 positionXZ)
 | UIを指すレイ（`VrUiRayView`） | **そのまま** | — | **曲げない**。指す先のUIが曲がらないため外れる |
 | ワールド座標から画面へ出すHUDマーカー | — | — | `CurvedWorldDisplacement.Apply()` を通す |
 
+バトルで描くものは、上の作業に加えて **プレハブのルートへ `SepiaToneTargetView` を付け、セピア調のグループ（背景 / 敵 / プレイヤー / UI）を選ぶ**。付け忘れるとオーバークロック中もそれだけ元の色のまま残る。`CurvedWorld` 系の新しいシェーダを書くときは、`SepiaTone.hlsl` を include し、フォグまで混ぜた最終色に `SepiaTone_Apply(color.rgb, SepiaTone_RendererWeight())` を通す。
+
 ### ピボットか頂点ごとかの決め方
 
 マテリアルの `_CurvedWorldPerObject` トグルで切り替える。

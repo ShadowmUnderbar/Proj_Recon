@@ -56,6 +56,7 @@ Shader "App/CurvedWorldLit"
             #pragma multi_compile_instancing
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "SepiaTone.hlsl"
 
             TEXTURE2D(_BaseMap);
             SAMPLER(sampler_BaseMap);
@@ -139,6 +140,7 @@ Shader "App/CurvedWorldLit"
 
                 half4 color = UniversalFragmentBlinnPhong(inputData, surfaceData);
                 color.rgb = MixFog(color.rgb, inputData.fogCoord);
+                color.rgb = SepiaTone_Apply(color.rgb, SepiaTone_RendererWeight());
                 return color;
             }
             ENDHLSL

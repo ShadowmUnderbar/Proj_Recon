@@ -93,6 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7989105056784031673}
   - component: {fileID: 5981154650532844316}
+  - component: {fileID: 2331723544988985280}
   m_Layer: 0
   m_Name: PlayerLifeGaugeView
   m_TagString: Untagged
@@ -132,3 +133,16 @@ MonoBehaviour:
   _heightOffset: 0.02
   _worldYaw: 0
   _fillSpeed: 1.5
+--- !u!114 &2331723544988985280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4742465148297896744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80593038fa089df4d98aefc0a4d5a186, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _group: 8

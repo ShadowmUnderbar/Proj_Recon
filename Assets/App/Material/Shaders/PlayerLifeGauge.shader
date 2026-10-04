@@ -55,6 +55,7 @@ Shader "App/PlayerLifeGauge"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "CurvedWorld.hlsl"
+            #include "SepiaTone.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
                 half4 _HealthColor;
@@ -160,6 +161,7 @@ Shader "App/PlayerLifeGauge"
                 // 2本の弧は重ならないので、アルファで重み付けして1色にまとめる
                 half alpha = saturate(health.a + barrier.a);
                 half3 rgb = (health.rgb * health.a + barrier.rgb * barrier.a) / max(alpha, 1e-4);
+                rgb = SepiaTone_Apply(rgb, SepiaTone_RendererWeight());
                 return half4(rgb, alpha * halfMask);
             }
             ENDHLSL

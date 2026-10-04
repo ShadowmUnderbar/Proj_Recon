@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1554432471099018473}
   - component: {fileID: 8959355507770873111}
   - component: {fileID: -3607481314956868652}
+  - component: {fileID: 870224729071483560}
   m_Layer: 0
   m_Name: BlitzEffectView
   m_TagString: Untagged
@@ -150,3 +151,16 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &870224729071483560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3981466952255758496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80593038fa089df4d98aefc0a4d5a186, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _group: 4
