@@ -6,8 +6,7 @@
 #   - 2体ともプレイヤーを中心に同じ向きへ90度回りこむ（距離は _keepDistance のまま）。回りこみ終えたら回りこんだ先の配置につく
 #   - 時止めの長さは回りこみの秒数（_orbitSeconds）。連射役だけが _orbitFireInterval ごとに撃ち、撃った弾は時止めの間その場で止まる
 #   - 時止め中はプレイヤーが動けない（W を押しても動かない。時止めの前は動く）、被弾しない
-#   - 時止めを解くと止めていた弾が動き出し、立ち止まっているプレイヤーの位置へ向かう（水平距離で見る。
-#     銃口の高さが当たり判定より高く頭上を抜けることがあるため、被弾そのものは判定しない）。一息（WaitSeconds）の間は2体とも待機し、そのあと台本の先頭へ戻る
+#   - 時止めを解くと止めていた弾が動き出し、立ち止まっているプレイヤーの位置へ届いて当たる。一息（WaitSeconds）の間は2体とも待機し、そのあと台本の先頭へ戻る
 # 他のボス系プローブと同じく、開始時アップグレードは実行中だけ空にする（BossProbeCommon）。デバッグ対戦の無敵で HP は減らない（被弾の通知は流れる）。
 #
 
@@ -264,6 +263,8 @@ return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits
     $arrivalRows = @($rows | Where-Object { $_.time -gt $endRow.time -and $_.time -le $endRow.time + $arrival })
     $closest = if ($arrivalRows.Count -gt 0) { ($arrivalRows | Measure-Object -Property bulletDistance -Minimum).Minimum } else { 999 }
     Assert-ProbeTrue -Name '時止めを解くと、止めていた弾が立ち止まっているプレイヤーの位置へ届く（水平距離）' -Condition ($closest -lt 1.0) -Detail ("解いてから {0:F1}秒（距離÷弾速＋余裕）の間の最小の水平距離 {1:F2}m" -f $arrival, $closest) | Out-Null
+    $releasedHits = @($hits | Where-Object { -not $_.ts -and $_.time -gt $endRow.time -and $_.time -le $endRow.time + $arrival }).Count
+    Assert-ProbeTrue -Name '時止めを解くと、止めていた弾が立ち止まっているプレイヤーに当たる' -Condition ($releasedHits -ge 1) -Detail ("解いてから {0:F1}秒の被弾 {1} 回" -f $arrival, $releasedHits) | Out-Null
 
     # --- 一息と、終わったあと ---
     $breathRows = @($rows | Where-Object { $_.time -gt $endRow.time + 0.05 -and $_.time -lt $endRow.time + $config.breath - 0.1 })

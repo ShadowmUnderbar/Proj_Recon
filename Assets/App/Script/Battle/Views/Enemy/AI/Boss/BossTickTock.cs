@@ -48,6 +48,9 @@ namespace App.Battle.Views.Enemy.AI.Boss
         [SerializeField, Min(0.02f), Tooltip("弾幕で弾を撃つ間隔（秒）")]
         private float _fireInterval = 0.2f;
 
+        [SerializeField, Min(0f), Tooltip("弾を撃つ高さ（m、ボスの足元から）。銃口の高さは使わず、水平位置だけを銃口から取る。プレイヤーの当たり判定に収まる高さにする")]
+        private float _bulletHeight = 1.5f;
+
         [Header("回りこみ（時止め）")]
         [SerializeField, Min(0.1f), Tooltip("プレイヤーを中心に90度回りこむのに掛ける秒数")]
         private float _orbitSeconds = 1f;
@@ -315,7 +318,10 @@ namespace App.Battle.Views.Enemy.AI.Boss
                 return;
             }
 
-            var pose = new Pose(_muzzleTransform.position, Quaternion.LookRotation(direction, Vector3.up));
+            // 銃口はモデルの拡大率で高くなりプレイヤーの頭上を抜けるため、高さだけ足元からの固定値にする
+            var position = _muzzleTransform.position;
+            position.y = transform.position.y + _bulletHeight;
+            var pose = new Pose(position, Quaternion.LookRotation(direction, Vector3.up));
             var bullet = Instantiate(_bulletPrefab);
             bullet.Spawn(EnemyId, pose, EnemyData.CreateBulletData(), -1, PlayerTransform);
 
