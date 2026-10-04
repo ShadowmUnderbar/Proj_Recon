@@ -31,7 +31,7 @@ namespace App.Battle.Data
     {
         private BossDirectorCommand(BossDirectorCommandType type, int enemyId, int actionIndex,
             BossFormationSlot slot = BossFormationSlot.None, float lateralOffset = 0f,
-            BossTurnDirection turnDirection = BossTurnDirection.None)
+            BossTurnDirection turnDirection = BossTurnDirection.None, float moveSeconds = 0f)
         {
             Type = type;
             EnemyId = enemyId;
@@ -39,6 +39,7 @@ namespace App.Battle.Data
             Slot = slot;
             LateralOffset = lateralOffset;
             TurnDirection = turnDirection;
+            MoveSeconds = moveSeconds;
         }
 
         // 場全体への命令（時止め）で EnemyId に入れる値
@@ -59,6 +60,9 @@ namespace App.Battle.Data
         /// <summary>Act のときの回りこむ向き（回りこむ行動でだけ使う）</summary>
         public BossTurnDirection TurnDirection { get; }
 
+        /// <summary>Formation のときに配置先へ移動するのに掛ける秒数（0なら瞬間移動）</summary>
+        public float MoveSeconds { get; }
+
         public static BossDirectorCommand Act(int enemyId, int actionIndex,
             BossTurnDirection turnDirection = BossTurnDirection.None)
         {
@@ -76,9 +80,11 @@ namespace App.Battle.Data
             return new BossDirectorCommand(BossDirectorCommandType.Release, enemyId, 0);
         }
 
-        public static BossDirectorCommand Formation(int enemyId, BossFormationSlot slot, float lateralOffset = 0f)
+        public static BossDirectorCommand Formation(int enemyId, BossFormationSlot slot, float lateralOffset = 0f,
+            float moveSeconds = 0f)
         {
-            return new BossDirectorCommand(BossDirectorCommandType.Formation, enemyId, 0, slot, lateralOffset);
+            return new BossDirectorCommand(BossDirectorCommandType.Formation, enemyId, 0, slot, lateralOffset,
+                moveSeconds: moveSeconds);
         }
 
         public static BossDirectorCommand Cancel(int enemyId)
@@ -103,7 +109,7 @@ namespace App.Battle.Data
                 BossDirectorCommandType.Act when TurnDirection != BossTurnDirection.None =>
                     $"{Type}(id:{EnemyId}, action:{ActionIndex}, turn:{TurnDirection})",
                 BossDirectorCommandType.Act => $"{Type}(id:{EnemyId}, action:{ActionIndex})",
-                BossDirectorCommandType.Formation => $"{Type}(id:{EnemyId}, slot:{Slot}, offset:{LateralOffset})",
+                BossDirectorCommandType.Formation => $"{Type}(id:{EnemyId}, slot:{Slot}, offset:{LateralOffset}, move:{MoveSeconds})",
                 BossDirectorCommandType.BeginTimeStop or BossDirectorCommandType.EndTimeStop => Type.ToString(),
                 _ => $"{Type}(id:{EnemyId})"
             };

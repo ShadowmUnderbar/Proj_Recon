@@ -369,14 +369,14 @@ namespace App.Battle.Views
             bossMember.SetHold(isHold);
         }
 
-        public void SetBossFormation(int enemyId, BossFormationSlot slot, float lateralOffset)
+        public void SetBossFormation(int enemyId, BossFormationSlot slot, float lateralOffset, float moveSeconds)
         {
             if (!_bossMembers.TryGetValue(enemyId, out var bossMember))
             {
                 return;
             }
 
-            bossMember.SetFormation(slot, lateralOffset);
+            bossMember.SetFormation(slot, lateralOffset, moveSeconds);
         }
 
         public void CancelBossAction(int enemyId)

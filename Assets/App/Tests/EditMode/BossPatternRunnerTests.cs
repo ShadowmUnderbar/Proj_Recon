@@ -32,7 +32,7 @@ namespace App.Tests.EditMode
 
         private static BossPatternStep Step(BossPatternStepType type, int[] slots = null, int action = 0, bool hold = false,
             float wait = 0f, float[] offsets = null, bool aligned = false, int loopBack = 1, int loopMin = 1, int loopMax = 1,
-            int partnerAction = 0)
+            int partnerAction = 0, float move = 0f)
         {
             var step = new BossPatternStep();
             void Set(string field, object value) =>
@@ -48,6 +48,7 @@ namespace App.Tests.EditMode
             Set("_loopMin", loopMin);
             Set("_loopMax", loopMax);
             Set("_partnerActionIndex", partnerAction);
+            Set("_moveSeconds", move);
             return step;
         }
 
@@ -320,6 +321,71 @@ namespace App.Tests.EditMode
             }
 
             Assert.That(pairs.Count, Is.EqualTo(4), "4通りの角の組がすべて出る");
+        }
+
+        // 時を止めて配置先へ移動する秒数
+        private const float FormationMove = 0.25f;
+
+        private static BossPatternStep MovingCross(int[] slots = null) =>
+            Step(BossPatternStepType.CrossFormation, slots ?? new[] { 0, 1 }, move: FormationMove);
+
+        [Test]
+        public void Formation_移動秒数があれば時を止めて配置し_移動し終えたら時止めを解いて次へ進む()
+        {
+            var runner = Runner(new[] { A, B }, new[] { MovingCross(), Act(new[] { 0, 1 }, 9) });
+            SetAll(runner, Ready, A, B);
+
+            var output = Tick(runner);
+            Assert.That(output[0].Type, Is.EqualTo(BossDirectorCommandType.BeginTimeStop), "配置より先に時を止める");
+            var formations = output.Where(c => c.Type == BossDirectorCommandType.Formation).ToList();
+            Assert.That(formations.Select(c => c.EnemyId), Is.EquivalentTo(new[] { A, B }));
+            Assert.That(formations.All(c => c.MoveSeconds == FormationMove), Is.True, "移動秒数を個体へ渡す");
+            Assert.That(output.Any(c => c.Type == BossDirectorCommandType.Act), Is.False, "移動中は撃たせない");
+            Assert.That(runner.IsTimeStopping, Is.True);
+
+            // 時を止めたティックでは時間を使わない
+            Assert.That(Tick(runner, 0.2f), Is.Empty, "0.2秒では移動し終えていない");
+            Assert.That(runner.IsTimeStopping, Is.True);
+
+            output = Tick(runner, 0.1f);
+            Assert.That(output[0].Type, Is.EqualTo(BossDirectorCommandType.EndTimeStop), "移動し終えたら時止めを解く");
+            Assert.That(output.Skip(1).All(c => c.Type == BossDirectorCommandType.Act && c.ActionIndex == 9), Is.True,
+                "同じティックで次のステップへ進む");
+            Assert.That(runner.IsTimeStopping, Is.False);
+        }
+
+        [Test]
+        public void Formation_移動で時を止めるのは全員の行動が明けてからで_対象以外は待機させる()
+        {
+            var runner = Runner(new[] { A, B }, new[] { MovingCross(new[] { 0 }) });
+            runner.TrySetStatus(A, Ready);
+            runner.TrySetStatus(B, Busy);
+            Assert.That(Tick(runner), Is.Empty, "対象外の B が弾幕などの最中なら待つ");
+
+            runner.TrySetStatus(B, Ready);
+            var output = Tick(runner);
+            Assert.That(output.Where(c => c.Type == BossDirectorCommandType.Hold).Select(c => c.EnemyId),
+                Is.EqualTo(new[] { B }));
+            Assert.That(output.Where(c => c.Type == BossDirectorCommandType.Formation).Select(c => c.EnemyId),
+                Is.EqualTo(new[] { A }));
+
+            output = Tick(runner, FormationMove);
+            Assert.That(output.Where(c => c.Type == BossDirectorCommandType.Release).Select(c => c.EnemyId),
+                Is.EqualTo(new[] { B }), "移動し終えたら待機を解く");
+        }
+
+        [Test]
+        public void Formation_移動中に発狂フェイズへ切り替えると時止めを解く()
+        {
+            var runner = Runner(new[] { A, B }, new[] { Step(BossPatternStepType.DiagonalFormation, new[] { 0, 1 }, move: FormationMove) });
+            SetAll(runner, Ready, A, B);
+            Assert.That(Tick(runner).Select(c => c.Type), Does.Contain(BossDirectorCommandType.BeginTimeStop),
+                "DiagonalFormation も移動秒数があれば時を止める");
+
+            var output = new List<BossDirectorCommand>();
+            runner.SwitchPattern(new[] { Act(new[] { 0 }, 1) }, output);
+            Assert.That(output.Count(c => c.Type == BossDirectorCommandType.EndTimeStop), Is.EqualTo(1));
+            Assert.That(runner.IsTimeStopping, Is.False);
         }
 
         // --- 繰り返し・台本の差し替え ---

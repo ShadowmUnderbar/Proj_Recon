@@ -26,8 +26,11 @@ namespace App.Battle.Interface
         /// <summary>ボスグループの個体をその場で待機させる／解除する</summary>
         void SetBossHold(int enemyId, bool isHold);
 
-        /// <summary>ボスグループの個体にプレイヤーに対してつく位置（と横へのずれ m）を指定する</summary>
-        void SetBossFormation(int enemyId, BossFormationSlot slot, float lateralOffset);
+        /// <summary>
+        /// ボスグループの個体にプレイヤーに対してつく位置（と横へのずれ m）を指定する。
+        /// moveSeconds はその位置へ移動するのに掛ける秒数（0なら瞬間移動）
+        /// </summary>
+        void SetBossFormation(int enemyId, BossFormationSlot slot, float lateralOffset, float moveSeconds);
 
         /// <summary>ボスグループの個体の行動を打ち切る</summary>
         void CancelBossAction(int enemyId);

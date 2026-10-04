@@ -98,15 +98,18 @@ namespace App.Battle.Views.Enemy.AI.Boss
         /// <summary>配置先を横（プレイヤーへ向かう向きと直交する向き）へずらす量（m）</summary>
         protected float FormationLateralOffset { get; private set; }
 
-        public void SetFormation(BossFormationSlot slot, float lateralOffset)
+        public void SetFormation(BossFormationSlot slot, float lateralOffset, float moveSeconds)
         {
             FormationSlot = slot;
             FormationLateralOffset = lateralOffset;
-            OnFormationAssigned(slot);
+            OnFormationAssigned(slot, moveSeconds);
         }
 
-        /// <summary>配置の指定を受けたとき（既定では何もしない。位置へつく処理は派生クラスが行う）</summary>
-        protected virtual void OnFormationAssigned(BossFormationSlot slot)
+        /// <summary>
+        /// 配置の指定を受けたとき（既定では何もしない。位置へつく処理は派生クラスが行う）。
+        /// moveSeconds は配置先へ移動するのに掛ける秒数（0なら瞬間移動）
+        /// </summary>
+        protected virtual void OnFormationAssigned(BossFormationSlot slot, float moveSeconds)
         {
         }
 

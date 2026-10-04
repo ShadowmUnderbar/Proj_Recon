@@ -25,6 +25,7 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _moveSeconds: 0.25
     _loopBackSteps: 1
     _loopMin: 1
     _loopMax: 1
@@ -61,6 +62,7 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _moveSeconds: 0.25
     _loopBackSteps: 1
     _loopMin: 1
     _loopMax: 1
@@ -115,6 +117,7 @@ MonoBehaviour:
     - 0
     - 5
     _requireAlignedOne: 1
+    _moveSeconds: 0.25
     _loopBackSteps: 1
     _loopMin: 1
     _loopMax: 1
@@ -175,6 +178,7 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _moveSeconds: 0.25
     _loopBackSteps: 1
     _loopMin: 1
     _loopMax: 1
@@ -223,6 +227,7 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _moveSeconds: 0.25
     _loopBackSteps: 1
     _loopMin: 1
     _loopMax: 1
@@ -262,6 +267,7 @@ MonoBehaviour:
     - 0
     - 5
     _requireAlignedOne: 1
+    _moveSeconds: 0.25
     _loopBackSteps: 1
     _loopMin: 1
     _loopMax: 1
@@ -322,6 +328,7 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _moveSeconds: 0.25
     _loopBackSteps: 1
     _loopMin: 1
     _loopMax: 1
@@ -370,6 +377,7 @@ MonoBehaviour:
     _waitSeconds: 0
     _lateralOffsets: []
     _requireAlignedOne: 0
+    _moveSeconds: 0.25
     _loopBackSteps: 1
     _loopMin: 1
     _loopMax: 1
