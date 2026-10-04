@@ -9,7 +9,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
     /// <summary>
     /// プレイヤーの上下左右（ワールドの軸）のいずれかについて動く、二人組ボス「TickTock」用のAI。
     /// 台本の配置（CrossFormation など）を受けると、プレイヤーからその方向へ一定距離、横へ指定のずれだけ離れた位置へ、
-    /// 指定の秒数を掛けてまっすぐ移動する（台本が時を止めている間に動く。秒数が0なら瞬間移動）。
+    /// 指定の秒数を掛けて、プレイヤーを中心に回りこみながら距離を詰める（離す）ように移動する（台本が時を止めている間に動く。秒数が0なら瞬間移動）。
     /// 以後はプレイヤーがどう動いても位置関係と距離が崩れないよう、経路探索ではなく毎フレーム配置先へ直接追従する（FollowTo）。
     /// 行動0（弾幕）: 配置の方向へ一定距離を保ったままプレイヤーと並ぶ位置（横のずれなし）を追い、
     ///   移動方向と直交する向き（プレイヤーの側）へ弾を連射する。長さは EnemyMasterData の ActiveTime。
@@ -75,8 +75,8 @@ namespace App.Battle.Views.Enemy.AI.Boss
         // 次の弾までの残り時間（秒）
         private float _fireTimer;
 
-        // 配置先への移動（起点・掛ける秒数・経過秒数）。_formationMoveSeconds が0なら移動していない
-        private Vector3 _formationMoveStart;
+        // 配置先への移動（起点のプレイヤーからの水平の向きと距離・掛ける秒数・経過秒数）。_formationMoveSeconds が0なら移動していない
+        private Vector3 _formationMoveStartOffset;
         private float _formationMoveSeconds;
         private float _formationMoveElapsed;
 
@@ -138,7 +138,8 @@ namespace App.Battle.Views.Enemy.AI.Boss
             }
 
             // 移動そのものは BattleMove で毎フレーム進める
-            _formationMoveStart = transform.position;
+            _formationMoveStartOffset = transform.position - PlayerTransform.position;
+            _formationMoveStartOffset.y = 0f;
             _formationMoveSeconds = moveSeconds;
             _formationMoveElapsed = 0f;
         }
@@ -263,14 +264,27 @@ namespace App.Battle.Views.Enemy.AI.Boss
         }
 
         /// <summary>
-        /// 配置先へ、起点から指定の秒数でまっすぐ近づける。
+        /// 配置先へ、プレイヤーを中心に回りこみながら指定の秒数で近づける。
+        /// 向き（角度）は近い側の回り方で配置先の向きへ、距離は起点の距離から配置先の距離へ、どちらも一定の速さで変える。
+        /// 真反対へ移るとき（上→下など）は回る向きが決まらないため、Mathf.DeltaAngle の符号に任せる。
         /// 台本の時止めの長さと揃えるため、スネークアイズの減速は掛けない（時止めが解けた時点で移動し終えている）
         /// </summary>
         private void UpdateFormationMove()
         {
             _formationMoveElapsed += Time.deltaTime;
             var progress = Mathf.Clamp01(_formationMoveElapsed / _formationMoveSeconds);
-            FollowTo(Vector3.Lerp(_formationMoveStart, GetFormationPosition(), progress));
+            var targetOffset = GetFormationPosition() - PlayerTransform.position;
+            targetOffset.y = 0f;
+
+            var startAngle = Mathf.Atan2(_formationMoveStartOffset.x, _formationMoveStartOffset.z) * Mathf.Rad2Deg;
+            var targetAngle = Mathf.Atan2(targetOffset.x, targetOffset.z) * Mathf.Rad2Deg;
+            var angle = startAngle + Mathf.DeltaAngle(startAngle, targetAngle) * progress;
+            var radius = Mathf.Lerp(_formationMoveStartOffset.magnitude, targetOffset.magnitude, progress);
+            var direction = Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward;
+
+            FollowTo(PlayerTransform.position + direction * radius);
+            // 回りこんでいる間はプレイヤーの側を向く（回りこみの攻撃と同じ）。移動し終えたら BattleMove が撃つ向きへ戻す
+            transform.rotation = Quaternion.LookRotation(-direction, Vector3.up);
 
             if (progress >= 1f)
             {

@@ -1,9 +1,12 @@
 ﻿#
 # 二人組ボス「TickTock」の配置のつき直し（台本の CrossFormation / DiagonalFormation の MoveSeconds / BossTickTock）を実プレイで検証するプローブ。
 #
-# デバッグ対戦（Request-DebugArena）で BossGroup_TickTock と戦い、通常の台本の配置のつき直しを毎フレーム記録して、次を確かめる。
+# デバッグ対戦（Request-DebugArena）で BossGroup_TickTock と戦い、通常の台本と、共有体力を削って入れた発狂フェイズ（横のずれあり）の
+# 配置のつき直しを毎フレーム記録して、次を確かめる。
 #   - 2体とも行動が明けてから時を止め、時止めの長さは台本の MoveSeconds
 #   - 時止めの間に配置先へ連続的に移動する（瞬間移動しない＝1フレームの移動が移動距離の大半を占めない）
+#   - プレイヤーを中心に回りこみながら移動する（向きは一方向にだけ進み、プレイヤーとの距離は起点と配置先の距離の間を保つ＝プレイヤーを突っ切らない）。
+#     発狂フェイズでは横のずれで配置先の距離が変わるため、回りこみながら距離を詰める・離す移動も含まれる
 #   - 時止めの間は行動を始めず、弾も撃たない
 #   - 時止めが解けた時点で、配置先（プレイヤーからその方向へ _keepDistance、横へ指定のずれ）に着いている
 #   - 時止めの外では、ボスが1フレームで大きく飛ばない（ワープが残っていない）
@@ -13,12 +16,18 @@
 . (Join-Path $PSScriptRoot 'Common/BossProbeCommon.ps1')
 
 $Global:FormationMoveGroupPath = 'Assets/App/MasterData/Boss/BossGroup_TickTock.asset'
-# 記録する秒数（弾幕2回ぶんで配置のつき直しが2回以上入る）
+# 通常の台本を記録する秒数（弾幕2回ぶんで配置のつき直しが2回以上入る）
 $Global:FormationMoveRecordSeconds = 22
+# 発狂フェイズを記録する秒数（帯の攻撃ごとに横のずれつきで配置し直す）
+$Global:FormationMoveRageRecordSeconds = 15
 # 配置先に着いたとみなすずれ（m）
 $Global:FormationMoveArriveTolerance = 1.0
 # 時止めの外で、1フレームの移動がこれを超えたらワープとみなす（m）
 $Global:FormationMoveWarpThreshold = 1.0
+# 回りこみの途中で戻ってよい角度の合計（度）と、距離が起点・配置先の範囲からはみ出してよい量（m）。
+# どちらも2体がすれ違うときの NavMeshAgent の回避による押し合いのぶん
+$Global:FormationMoveBackAngleTolerance = 5
+$Global:FormationMoveRadiusTolerance = 1.0
 
 function ProbePrepare {
     Enter-BossProbeScene
@@ -66,26 +75,46 @@ function Get-FormationTargetGap {
     return [Math]::Sqrt([Math]::Pow($Member.x - $tx, 2) + [Math]::Pow($Member.z - $tz, 2))
 }
 
+function Get-AroundAngle {
+    # プレイヤーから見たボスの向き（度。+Z を0、+X 側へ回ると増える）
+    param($Member, $Row)
+    return [Math]::Atan2($Member.x - $Row.px, $Member.z - $Row.pz) * 180 / [Math]::PI
+}
+
+function Get-AngleDelta {
+    # 2つの向きの差（度、-180〜180）
+    param([double]$From, [double]$To)
+    $d = ($To - $From) % 360
+    if ($d -gt 180) { $d -= 360 }
+    if ($d -lt -180) { $d += 360 }
+    return $d
+}
+
+function Get-PlayerDistance {
+    param($Member, $Row)
+    return [Math]::Sqrt([Math]::Pow($Member.x - $Row.px, 2) + [Math]::Pow($Member.z - $Row.pz, 2))
+}
+
 function Invoke-FormationMoveProbeBody {
     $config = Invoke-BossSnippet -Body @'
 var group = UnityEditor.AssetDatabase.LoadAssetAtPath<BossGroupConfig>("Assets/App/MasterData/Boss/BossGroup_TickTock.asset");
-var steps = group.Pattern.ToList();
-var formationSteps = Enumerable.Range(0, steps.Count)
-    .Where(i => steps[i].Type == BossPatternStepType.CrossFormation || steps[i].Type == BossPatternStepType.DiagonalFormation).ToList();
-var move = steps[formationSteps[0]].MoveSeconds;
+var move = group.Pattern.Concat(group.RagePattern)
+    .Where(s => s.Type == BossPatternStepType.CrossFormation || s.Type == BossPatternStepType.DiagonalFormation)
+    .Select(s => s.MoveSeconds).Distinct().ToList();
 var prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(group.Members[0].EnemyMasterData.PrefabPath).GetComponent<BossTickTock>();
 var so = new UnityEditor.SerializedObject(prefab);
-return $"{{\"move\":{move},\"steps\":\"{string.Join(" ", formationSteps)}\",\"distance\":{so.FindProperty("_keepDistance").floatValue}}}";
+// 配置のステップの移動秒数がすべて同じであることを前提にする（違えば count が2以上になる）
+return $"{{\"move\":{move[0]},\"moveKinds\":{move.Count},\"distance\":{so.FindProperty("_keepDistance").floatValue}}}";
 '@
-    $formationSteps = @($config.steps.Split(' ') | ForEach-Object { [int]$_ })
-    Write-Host "設定: 移動 $($config.move)秒 / 距離 $($config.distance)m / 配置のステップ $($formationSteps -join ',')"
-    Assert-ProbeTrue -Name '台本の配置のつき直しに移動の秒数が入っている' -Condition ($config.move -gt 0) -Detail "$($config.move)秒" | Out-Null
+    Write-Host "設定: 移動 $($config.move)秒 / 距離 $($config.distance)m"
+    Assert-ProbeTrue -Name '台本の配置のつき直し（通常・発狂とも）に同じ移動の秒数が入っている' -Condition ($config.move -gt 0 -and $config.moveKinds -eq 1) -Detail "$($config.move)秒 / 種類 $($config.moveKinds)" | Out-Null
 
     # --- 毎フレームの記録（時止め・ステップ・2体の段階・配置・ずれ・位置・プレイヤーの位置・弾の数） ---
     Invoke-BossSnippet -Body @'
 var log = new List<string>();
 var timeStop = scope.Container.Resolve<ITimeStopDataStore>();
 var offsetProperty = typeof(BossAIBase).GetProperty("FormationLateralOffset", BindingFlags.NonPublic | BindingFlags.Instance);
+var stepsField = typeof(App.Battle.DataStore.BossPatternRunner).GetField("_steps", BindingFlags.NonPublic | BindingFlags.Instance);
 var subs = new CompositeDisposable();
 Observable.EveryUpdate().Subscribe(_ =>
 {
@@ -97,7 +126,10 @@ Observable.EveryUpdate().Subscribe(_ =>
         $"{x.Status.CurrentValue.Phase}|{GetFormation(x)}|{(float)offsetProperty.GetValue(x):F2}|{x.transform.position.x:F3}|{x.transform.position.z:F3}";
     var pp = player.Position.Value;
     var bullets = GameObject.FindGameObjectsWithTag("Bullet").Length;
-    log.Add($"{Time.time:F3},{timeStop.IsTimeStopped.CurrentValue},{runner.StepIndex},{Member(a)},{Member(b)},{pp.x:F3}|{pp.z:F3},{bullets}");
+    // 発狂フェイズで台本が差し替わってもよいよう、ステップ番号ではなく今のステップが配置かどうかを残す
+    var stepType = ((IReadOnlyList<BossPatternStep>)stepsField.GetValue(runner))[runner.StepIndex].Type;
+    var isFormation = stepType == BossPatternStepType.CrossFormation || stepType == BossPatternStepType.DiagonalFormation;
+    log.Add($"{Time.time:F3},{timeStop.IsTimeStopped.CurrentValue},{isFormation},{Member(a)},{Member(b)},{pp.x:F3}|{pp.z:F3},{bullets}");
 }).AddTo(subs);
 AppDomain.CurrentDomain.SetData("bossProbe.sub", subs);
 AppDomain.CurrentDomain.SetData("bossProbe.log", log);
@@ -105,6 +137,18 @@ return "{}";
 '@ | Out-Null
 
     Start-Sleep -Seconds $Global:FormationMoveRecordSeconds
+
+    # --- 共有体力を発狂の割合より少し下まで削り、横のずれつきの配置も記録する ---
+    $cut = Invoke-BossSnippet -Body @'
+var group = UnityEditor.AssetDatabase.LoadAssetAtPath<BossGroupConfig>("Assets/App/MasterData/Boss/BossGroup_TickTock.asset");
+var ids = GetRunner().MemberIds;
+var enemy = enemies.Enemies.First(e => e.Id == ids[0]);
+var target = enemy.MaxHp * (group.RageHealthRatio - 0.02f);
+enemies.Damage(new HitData(ids[0], enemy.Hp - target, App.Common.Data.HitDirectionType.None));
+return $"{{\"time\":{Time.time},\"ratio\":{enemy.Hp / enemy.MaxHp}}}";
+'@
+    Write-Host "発狂フェイズへ: 削った時刻 t=$($cut.time) / 体力の割合 $([Math]::Round($cut.ratio, 3))"
+    Start-Sleep -Seconds $Global:FormationMoveRageRecordSeconds
 
     $data = Invoke-BossSnippet -Body @'
 var log = (List<string>)AppDomain.CurrentDomain.GetData("bossProbe.log");
@@ -119,7 +163,7 @@ return $"{{\"log\":\"{string.Join(";", log)}\"}}";
             [pscustomobject]@{ phase = $p[0]; slot = $p[1]; offset = [double]$p[2]; x = [double]$p[3]; z = [double]$p[4] }
         }
         $pp = $c[5].Split('|')
-        [pscustomobject]@{ time = [double]$c[0]; ts = ($c[1] -eq 'True'); step = [int]$c[2]; a = (Parse $c[3]); b = (Parse $c[4]); px = [double]$pp[0]; pz = [double]$pp[1]; bullets = [int]$c[6] }
+        [pscustomobject]@{ time = [double]$c[0]; ts = ($c[1] -eq 'True'); formation = ($c[2] -eq 'True'); a = (Parse $c[3]); b = (Parse $c[4]); px = [double]$pp[0]; pz = [double]$pp[1]; bullets = [int]$c[6] }
     })
     Write-Host "記録: $($rows.Count) 行"
 
@@ -127,7 +171,7 @@ return $"{{\"log\":\"{string.Join(";", log)}\"}}";
     $segments = @()
     $startIndex = -1
     for ($i = 0; $i -lt $rows.Count; $i++) {
-        $isFormationStop = $rows[$i].ts -and ($formationSteps -contains $rows[$i].step)
+        $isFormationStop = $rows[$i].ts -and $rows[$i].formation
         if ($isFormationStop -and $startIndex -lt 0) { $startIndex = $i }
         if (-not $isFormationStop -and $startIndex -ge 0) {
             $segments += , @($startIndex, ($i - 1))
@@ -139,6 +183,7 @@ return $"{{\"log\":\"{string.Join(";", log)}\"}}";
     if (-not (Assert-ProbeTrue -Name '配置のつき直しの時止めを2回以上記録できた' -Condition ($segments.Count -ge 2) -Detail "$($segments.Count) 回")) { return }
 
     $n = 0
+    $radiusChanged = 0
     foreach ($segment in $segments) {
         $n++
         $label = "配置$n"
@@ -165,6 +210,25 @@ return $"{{\"log\":\"{string.Join(";", log)}\"}}";
             }
             if ($total -gt 2) {
                 Assert-ProbeTrue -Name "$label $role 時止めの間に連続的に動く（1フレームの移動が全体の半分未満）" -Condition ($maxStep -lt $total * 0.5) -Detail ("移動 {0:F2}m / 1フレームの最大 {1:F2}m / 記録 {2} 行" -f $total, $maxStep, $stopRows.Count) | Out-Null
+
+                # 回りこみ: 向きは一方向にだけ進み、距離は起点と配置先の距離の間に収まる（プレイヤーを突っ切らない）。
+                # 真反対（180度）へ移ると起点と終点だけでは回った向きが決まらないため、毎フレームの角度の変化を足して向きを決める
+                $stepAngles = @()
+                for ($i = 1; $i -lt $path.Count; $i++) {
+                    $stepAngles += Get-AngleDelta -From (Get-AroundAngle -Member $path[$i - 1].$key -Row $path[$i - 1]) -To (Get-AroundAngle -Member $path[$i].$key -Row $path[$i])
+                }
+                $turn = ($stepAngles | Measure-Object -Sum).Sum
+                $sign = [Math]::Sign($turn)
+                # 2体が同じ円周を逆向きにすれ違うと NavMeshAgent の回避で押し合い、わずかに戻ることがある。戻った角度の合計で見る
+                $backAngle = (@($stepAngles | Where-Object { $_ * $sign -lt 0 } | ForEach-Object { [Math]::Abs($_) }) + 0.0 | Measure-Object -Sum).Sum
+                Assert-ProbeValue -Name "$label $role 回りこみの途中で逆へ戻った角度の合計（回った角度 $([Math]::Round($turn))度、度）" -Actual $backAngle -Expected 0 -Tolerance $Global:FormationMoveBackAngleTolerance | Out-Null
+                $r0 = Get-PlayerDistance -Member $before.$key -Row $before
+                $r1 = Get-PlayerDistance -Member $end.$key -Row $end
+                if ([Math]::Abs($r1 - $r0) -gt 0.5) { $radiusChanged++ }
+                $distances = @($path | ForEach-Object { Get-PlayerDistance -Member $_.$key -Row $_ })
+                $minR = ($distances | Measure-Object -Minimum).Minimum
+                $maxR = ($distances | Measure-Object -Maximum).Maximum
+                Assert-ProbeTrue -Name "$label $role プレイヤーとの距離が起点と配置先の距離の間に収まる（突っ切らない）" -Condition ($minR -ge [Math]::Min($r0, $r1) - $Global:FormationMoveRadiusTolerance -and $maxR -le [Math]::Max($r0, $r1) + $Global:FormationMoveRadiusTolerance) -Detail ("起点 {0:F2}m → 配置先 {1:F2}m / 途中 {2:F2}〜{3:F2}m" -f $r0, $r1, $minR, $maxR) | Out-Null
             }
             else {
                 Write-Host ("    {0} は配置先がほぼ同じ（移動 {1:F2}m）なので連続性は判定しない" -f $role, $total)
@@ -174,6 +238,8 @@ return $"{{\"log\":\"{string.Join(";", log)}\"}}";
         }
     }
 
+    Assert-ProbeTrue -Name '回りこみながら距離を詰める・離す移動（横のずれで配置先の距離が変わる）を記録できた' -Condition ($radiusChanged -ge 1) -Detail "$radiusChanged 回" | Out-Null
+
     # --- 時止めの外ではワープしない ---
     $maxOutside = 0
     $where = ''
@@ -181,7 +247,13 @@ return $"{{\"log\":\"{string.Join(";", log)}\"}}";
         if ($rows[$i].ts -or $rows[$i - 1].ts) { continue }
         foreach ($key in 'a', 'b') {
             $d = [Math]::Sqrt([Math]::Pow($rows[$i].$key.x - $rows[$i - 1].$key.x, 2) + [Math]::Pow($rows[$i].$key.z - $rows[$i - 1].$key.z, 2))
-            if ($d -gt $maxOutside) { $maxOutside = $d; $where = "t=$($rows[$i].time) $key ステップ $($rows[$i].step)" }
+            if ($d -gt $maxOutside) { $maxOutside = $d; $where = "t=$($rows[$i].time) $key"; $whereIndex = $i }
+        }
+    }
+    if ($maxOutside -gt $Global:FormationMoveWarpThreshold) {
+        # 調査用に前後の記録を出す（時刻,時止め,配置のステップか,A,B,プレイヤー,弾）
+        foreach ($row in $rows[[Math]::Max(0, $whereIndex - 3)..[Math]::Min($rows.Count - 1, $whereIndex + 2)]) {
+            Write-Host ("    t={0:F3} ts={1} 配置={2} A={3}/{4}/{5:F1}/({6:F2},{7:F2}) B={8}/{9}/{10:F1}/({11:F2},{12:F2}) P=({13:F2},{14:F2})" -f $row.time, $row.ts, $row.formation, $row.a.phase, $row.a.slot, $row.a.offset, $row.a.x, $row.a.z, $row.b.phase, $row.b.slot, $row.b.offset, $row.b.x, $row.b.z, $row.px, $row.pz)
         }
     }
     Assert-ProbeTrue -Name '時止めの外でボスが1フレームで大きく飛ばない' -Condition ($maxOutside -le $Global:FormationMoveWarpThreshold) -Detail ("1フレームの最大 {0:F2}m（{1}）" -f $maxOutside, $where) | Out-Null
