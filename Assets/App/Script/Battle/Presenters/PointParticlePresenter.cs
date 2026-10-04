@@ -28,5 +28,10 @@ namespace App.Battle.Presenters
         {
             _pointParticleStoreView.AllRemove();
         }
+
+        public void SetPause(bool isPaused)
+        {
+            _pointParticleStoreView.SetPause(isPaused);
+        }
     }
 }

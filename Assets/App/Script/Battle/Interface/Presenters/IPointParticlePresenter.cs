@@ -14,5 +14,8 @@ namespace App.Battle.Interface
 
         /// <summary>漂っている粒子を全て消す（ポイントは加算しない）。ウェーブ切り替わり時に呼ばれる</summary>
         void AllRemove();
+
+        /// <summary>粒子をその場で止める（回収・吸い寄せもしない）。オーバークロック中に呼ばれる</summary>
+        void SetPause(bool isPaused);
     }
 }

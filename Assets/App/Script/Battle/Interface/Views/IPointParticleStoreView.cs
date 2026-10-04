@@ -18,5 +18,11 @@ namespace App.Battle.Interface
         /// ウェーブ切り替わり時に弾の一括消去と合わせて呼ばれる
         /// </summary>
         void AllRemove();
+
+        /// <summary>
+        /// 粒子をその場で止める。止まっている間は漂い・吸い寄せ・回収のどれも起きず、弾が当たっても吸い込まない。
+        /// 吸い込み途中の粒子は止まった位置から再開する。オーバークロック中に呼ばれる
+        /// </summary>
+        void SetPause(bool isPaused);
     }
 }

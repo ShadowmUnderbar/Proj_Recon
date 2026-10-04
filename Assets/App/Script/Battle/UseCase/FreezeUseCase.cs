@@ -13,6 +13,7 @@ namespace App.Battle.UseCase
     /// プレイヤーの移動・回避・射撃は各UseCaseが入口で <see cref="IFreezeDataStore.IsFreezing"/> を見て止める。
     /// 敵の停止はウェーブ間ポーズ・フリーズ・オーバークロックのいずれかで掛かるため、その判定もここに一本化する
     /// （停止要因ごとに別々に SetPause すると、片方の解除でもう片方の停止を解いてしまう）。
+    /// ポイント粒子はオーバークロック中だけ止める（回収も吸い寄せもさせない）。
     /// </summary>
     public class FreezeUseCase : IInitializable, IDisposable
     {
@@ -23,6 +24,7 @@ namespace App.Battle.UseCase
         private readonly ITracerFreezeState _tracerFreezeState;
         private readonly IOverclockDataStore _overclockDataStore;
         private readonly ITimeStopDataStore _timeStopDataStore;
+        private readonly IPointParticlePresenter _pointParticlePresenter;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -34,7 +36,8 @@ namespace App.Battle.UseCase
             IBulletStoreView bulletStoreView,
             ITracerFreezeState tracerFreezeState,
             IOverclockDataStore overclockDataStore,
-            ITimeStopDataStore timeStopDataStore
+            ITimeStopDataStore timeStopDataStore,
+            IPointParticlePresenter pointParticlePresenter
         )
         {
             _freezeDataStore = freezeDataStore;
@@ -44,6 +47,7 @@ namespace App.Battle.UseCase
             _tracerFreezeState = tracerFreezeState;
             _overclockDataStore = overclockDataStore;
             _timeStopDataStore = timeStopDataStore;
+            _pointParticlePresenter = pointParticlePresenter;
         }
 
         public void Initialize()
@@ -61,6 +65,10 @@ namespace App.Battle.UseCase
 
             _timeStopDataStore.IsTimeStopped
                 .Subscribe(_ => ApplyProjectilePause())
+                .AddTo(_disposable);
+
+            _overclockDataStore.IsActive
+                .Subscribe(_pointParticlePresenter.SetPause)
                 .AddTo(_disposable);
         }
 
