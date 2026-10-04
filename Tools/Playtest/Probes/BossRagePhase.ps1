@@ -8,6 +8,7 @@
 #   - 予兆の間は帯が表示され、攻撃のあと消える
 #   - 立ち止まっていれば攻撃の瞬間に当たり、予兆の間に帯の外へ出れば当たらない
 #   - 帯の攻撃を3〜6回（ランダム）やったら、×字の配置（隣り合う斜めの角）へつき直し、予兆1回のあと同じ向き・位置で3連続攻撃する
+#     （その間もボス本体はプレイヤーとの相対位置を保って追従し、帯だけが地面に固定される）
 #     （1回目のあとプレイヤーを帯の外へ出し、2・3回目は向き直さずに外れることで、向き・位置の固定を確かめる）
 #   - ×字のあとは弾幕を1回挟み、また帯の攻撃に戻る
 # 個体の状態・帯の表示・プレイヤーの被弾は毎フレーム記録し、まとめて判定する。記録中は毎フレームHPを全快させる。
@@ -281,8 +282,13 @@ return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits
         $expectedActive = $config.repeatInterval * ($config.repeatCount - 1) + $config.strike
         Assert-ProbeValue -Name '×字: 連続攻撃の長さ（2回目以降は予兆なし、秒）' -Actual ($xEnd.time - $xActive.time) -Expected $expectedActive -Tolerance 0.1 | Out-Null
         $xRows = @($rageRows | Where-Object { $_.time -ge $xw.time -and $_.time -lt $xEnd.time })
-        $moved = ($xRows | ForEach-Object { [Math]::Abs($_.a.x - $xw.a.x) + [Math]::Abs($_.a.z - $xw.a.z) + [Math]::Abs($_.b.x - $xw.b.x) + [Math]::Abs($_.b.z - $xw.b.z) } | Measure-Object -Maximum).Maximum
-        Assert-ProbeValue -Name '×字: 予兆から連続攻撃の終わりまでボスは動かない（m）' -Actual $moved -Expected 0 -Tolerance 0.1 | Out-Null
+        # 途中でプレイヤーを帯の外へ出しても、ボスはプレイヤーとの位置関係を保ったまま追従する（帯は地面に固定）
+        $relDrift = ($xRows | ForEach-Object {
+                [Math]::Abs(($_.a.x - $_.px) - ($xw.a.x - $xw.px)) + [Math]::Abs(($_.a.z - $_.pz) - ($xw.a.z - $xw.pz)) +
+                [Math]::Abs(($_.b.x - $_.px) - ($xw.b.x - $xw.px)) + [Math]::Abs(($_.b.z - $_.pz) - ($xw.b.z - $xw.pz)) } | Measure-Object -Maximum).Maximum
+        Assert-ProbeValue -Name '×字: 予兆から連続攻撃の終わりまで、ボスはプレイヤーとの相対位置を保つ（m）' -Actual $relDrift -Expected 0 -Tolerance 0.3 | Out-Null
+        $playerMoved = ($xRows | ForEach-Object { [Math]::Abs($_.px - $xw.px) + [Math]::Abs($_.pz - $xw.pz) } | Measure-Object -Maximum).Maximum
+        Assert-ProbeTrue -Name '×字: 相対位置の判定の間にプレイヤーが動いている（追従を確かめられた）' -Condition ($playerMoved -gt 1) -Detail ("プレイヤーの移動 {0:F2}m" -f $playerMoved) | Out-Null
         $stripAll = @($xRows | Where-Object { $_.time -gt $xw.time -and (-not $_.a.strip -or -not $_.b.strip) }).Count
         Assert-ProbeValue -Name '×字: 予兆から連続攻撃の間、帯は出たまま（消えた行数）' -Actual $stripAll -Expected 0 | Out-Null
 

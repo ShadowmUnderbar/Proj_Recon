@@ -7,6 +7,7 @@
 #   - 時止め中はプレイヤーが動けない（W を押しても動かない。時止めの前は動く）、弾が止まる、被弾しない
 #   - 時止めを解いて一息（WaitSeconds）おいてから、見せたときと同じ個体・配置・横のずれで、同じ順に帯を当てる
 #     （予兆は ReplayTelegraphSeconds。立ち止まっていれば攻撃の瞬間に当たる）
+#   - 時止めを解いた瞬間にプレイヤーをずらし、一息の間も2体が（待機したまま）プレイヤーとの相対位置を保って追従する
 #   - 攻撃が済んだら待機を解き、台本の先頭へ戻る。帯の表示が残らない
 # 他のボス系プローブと同じく、開始時アップグレードは実行中だけ空にする（BossProbeCommon）。デバッグ対戦の無敵で HP は減らない（被弾の通知は流れる）。
 #
@@ -16,6 +17,8 @@
 $Global:TimeStopGroupPath = 'Assets/App/MasterData/Boss/BossGroup_TickTock.asset'
 # 時止めの前に、移動の入力が効くことを確かめる押下秒数
 $Global:TimeStopControlPressSeconds = 0.5
+# 時止めを解いた瞬間にプレイヤーをずらす量（m、X・Z とも）。待機中のボスが追従するかを見る
+$Global:TimeStopBreathShift = 6
 # 時止め中に移動の入力を押し続ける秒数
 $Global:TimeStopPressSeconds = 1.0
 
@@ -96,8 +99,12 @@ return $"{{\"count\":{step.MemoryCount},\"action\":{step.ActionIndex},\"replayAc
     Write-Host "設定: 予兆 $($config.count) 回（行動 $($config.action) / $($config.memoryTelegraph)秒）/ 一息 $($config.breath)秒 / 攻撃 行動 $($config.replayAction)（予兆 $($config.replayTelegraph)秒）/ 台本のステップ $($config.stepIndex)"
 
     # --- 毎フレームの記録 ---
-    Invoke-BossSnippet -Body @'
+    $recorderPrefix = "const float BreathShift = $($Global:TimeStopBreathShift)f;`n"
+    Invoke-BossSnippet -Body ($recorderPrefix + @'
 var log = new List<string>();
+// 時止めが解けた瞬間にプレイヤーをずらした時刻（-1 は未）
+var shift = new float[] { -1f };
+var wasStopped = false;
 var hits = new List<string>();
 var timeStop = scope.Container.Resolve<ITimeStopDataStore>();
 var actionProperty = typeof(BossAIBase).GetProperty("CurrentActionIndex", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -137,6 +144,12 @@ Observable.EveryUpdate().Subscribe(_ =>
     }
     var ma = Member(a); var mb = Member(b);
     var ts = timeStop.IsTimeStopped.CurrentValue;
+    if (wasStopped && !ts && shift[0] < 0f)
+    {
+        player.WarpTo(player.Position.Value + new Vector3(BreathShift, 0f, BreathShift));
+        shift[0] = Time.time;
+    }
+    wasStopped = ts;
     string Key(string m) { var p = m.Split('|'); return $"{p[0]}|{p[1]}|{p[2]}|{p[3]}|{p[6]}|{p[7]}"; }
     var key = $"{ts},{runner.StepIndex},{Key(ma)},{Key(mb)}";
     frame++;
@@ -150,8 +163,9 @@ Observable.EveryUpdate().Subscribe(_ =>
 AppDomain.CurrentDomain.SetData("bossProbe.sub", subs);
 AppDomain.CurrentDomain.SetData("bossProbe.log", log);
 AppDomain.CurrentDomain.SetData("bossProbe.hits", hits);
+AppDomain.CurrentDomain.SetData("bossProbe.shift", shift);
 return "{}";
-'@ | Out-Null
+'@) | Out-Null
 
     $positionSnippet = @'
 var p = player.Position.Value;
@@ -186,7 +200,8 @@ return $"{{\"x\":{p.x},\"z\":{p.z},\"time\":{Time.time},\"ts\":{ts.ToString().To
     $data = Invoke-BossSnippet -Body @'
 var log = (List<string>)AppDomain.CurrentDomain.GetData("bossProbe.log");
 var hits = (List<string>)AppDomain.CurrentDomain.GetData("bossProbe.hits");
-return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits)}\"}}";
+var shift = (float[])AppDomain.CurrentDomain.GetData("bossProbe.shift");
+return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits)}\",\"shift\":{shift[0]}}}";
 '@
 
     $rows = @($data.log.Split(';') | Where-Object { $_ } | ForEach-Object {
@@ -243,6 +258,23 @@ return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits
     }
     else {
         Write-Host '    時止め中に弾が残っていなかったため、弾の停止は判定しない'
+    }
+
+    # --- 時止め明けの一息: 待機中もプレイヤーとの相対位置を保つ ---
+    $shiftTime = [double]$data.shift
+    if (Assert-ProbeTrue -Name '時止めが解けた瞬間にプレイヤーをずらした' -Condition ($shiftTime -ge 0) -Detail "t=$shiftTime") {
+        $baseRow = $rows | Where-Object { $_.time -lt $shiftTime } | Select-Object -Last 1
+        $firstReplay = @(Get-TimeStopWindups -Rows $rows -Action $config.replayAction) | Select-Object -First 1
+        $breathEnd = if ($null -ne $firstReplay) { $firstReplay.previousTime } else { $shiftTime + $config.breath }
+        # ずらしたフレームはボスの更新順しだいで1フレーム遅れるため、少しおいた行から見る
+        $breathRows = @($rows | Where-Object { $_.time -gt $shiftTime + 0.1 -and $_.time -le $breathEnd })
+        $playerShift = [Math]::Abs($breathRows[-1].px - $baseRow.px) + [Math]::Abs($breathRows[-1].pz - $baseRow.pz)
+        $relDrift = ($breathRows | ForEach-Object {
+                [Math]::Abs(($_.a.x - $_.px) - ($baseRow.a.x - $baseRow.px)) + [Math]::Abs(($_.a.z - $_.pz) - ($baseRow.a.z - $baseRow.pz)) +
+                [Math]::Abs(($_.b.x - $_.px) - ($baseRow.b.x - $baseRow.px)) + [Math]::Abs(($_.b.z - $_.pz) - ($baseRow.b.z - $baseRow.pz)) } | Measure-Object -Maximum).Maximum
+        Assert-ProbeTrue -Name '一息の間は2体とも待機している' -Condition ($breathRows.Count -gt 0 -and @($breathRows | Where-Object { -not ($_.a.hold -and $_.b.hold) }).Count -eq 0) -Detail "$($breathRows.Count) 行" | Out-Null
+        Assert-ProbeTrue -Name '一息の間にプレイヤーが動いている（追従を確かめられた）' -Condition ($playerShift -gt 1) -Detail ("プレイヤーの移動 {0:F2}m" -f $playerShift) | Out-Null
+        Assert-ProbeValue -Name '一息の間も2体はプレイヤーとの相対位置を保つ（m）' -Actual $relDrift -Expected 0 -Tolerance 0.3 | Out-Null
     }
 
     # --- 時止め明けの攻撃 ---
