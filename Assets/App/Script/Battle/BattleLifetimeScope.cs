@@ -47,6 +47,7 @@ namespace App.Battle
         [SerializeField] private PlayerBaseParameterConfig _playerBaseParameterConfig;
         [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
         [SerializeField] private OverclockConfig _overclockConfig;
+        [SerializeField] private SepiaToneConfig _sepiaToneConfig;
         [SerializeField] private BossWaveConfig _bossWaveConfig;
         [SerializeField] private BossLifeGaugeStoreView _bossLifeGaugeStoreView;
         [SerializeField] private BossLifeGaugeConfig _bossLifeGaugeConfig;
@@ -61,6 +62,10 @@ namespace App.Battle
             // オーバークロック（敵・敵弾の停止）。バフ・スポーン等の時間進行がこの発動状態を見るため先に登録する
             builder.Register<OverclockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IOverclockDataStore>();
+
+            // セピア調の演出（オーバークロックなどがプリセットを指定してかける）
+            builder.Register<SepiaToneDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ISepiaToneDataStore>();
 
             // ボスによる時止め（プレイヤーと弾だけを止める。ボスの台本が始める・解く）
             builder.Register<TimeStopDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -180,6 +185,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
             builder.RegisterEntryPoint<FreezeUseCase>();
             builder.RegisterEntryPoint<OverclockUseCase>();
+            // セピア調の強さをシェーダへ配る
+            builder.RegisterEntryPoint<SepiaToneUseCase>();
             // ボスグループの台本進行と個体をつなぐ（フリーズ・ウェーブ間ポーズ中は台本を止める）
             builder.RegisterEntryPoint<BossGroupUseCase>();
             // ボスウェーブ開始時に残った敵を消し、プレイヤーを移してボスを出す
@@ -305,6 +312,9 @@ namespace App.Battle
 
             builder.Register<TracerFreezeState>(Lifetime.Singleton).As<ITracerFreezeState>();
 
+            // セピア調のグローバル変数を配る（破棄時に効果なしへ戻す）
+            builder.Register<SepiaToneView>(Lifetime.Singleton).As<ISepiaToneView>();
+
             builder.Register<SimpleObjectFactory<CounterTracerView, CounterTracerView>>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<CounterTracerView>>()
                 .WithParameter("prefab", _counterTracerView);
@@ -337,6 +347,8 @@ namespace App.Battle
             builder.RegisterInstance(_tutorialWaveConfig);
             // オーバークロックの発動しきい値（OverclockDataStore が利用）
             builder.RegisterInstance(_overclockConfig);
+            // セピア調の色味（SepiaToneView が利用）
+            builder.RegisterInstance(_sepiaToneConfig);
             // ボスウェーブの番号・ボスグループ・出現位置（BossWaveDataStore / BossWaveUseCase が利用）
             builder.RegisterInstance(_bossWaveConfig);
             // ボスの体力ゲージの色・大きさ（BossLifeGaugeStoreView が利用）

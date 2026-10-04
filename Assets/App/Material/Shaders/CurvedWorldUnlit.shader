@@ -51,6 +51,7 @@ Shader "App/CurvedWorldUnlit"
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "CurvedWorld.hlsl"
+            #include "SepiaTone.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _BaseMap_ST;
@@ -119,6 +120,8 @@ Shader "App/CurvedWorldUnlit"
                 // アルファも落としたくなるが、フォグ無効時は fogFactor が0になるため
                 // 単純に掛けると全て透明になる。落とすならフォグのキーワードで分岐すること
                 color.rgb = MixFog(color.rgb, input.fogFactor);
+                // フォグまで混ぜた最終色を寄せる。遠方のフォグ色ごとセピアにそろえる
+                color.rgb = SepiaTone_Apply(color.rgb, SepiaTone_RendererWeight());
                 return color;
             }
             ENDHLSL

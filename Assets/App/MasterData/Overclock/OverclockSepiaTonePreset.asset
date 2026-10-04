@@ -9,8 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7a190468d274604ca6ba99758d04dcb, type: 3}
-  m_Name: OverclockConfig
+  m_Script: {fileID: 11500000, guid: 3226df3bd79216645bef9d4726c4d8c3, type: 3}
+  m_Name: OverclockSepiaTonePreset
   m_EditorClassIdentifier: 
-  _activationThresholdSeconds: 3
-  _sepiaTonePreset: {fileID: 11400000, guid: 3c8e31b32b30a4c4b85465c9ddc3332c, type: 2}
+  _targetGroups: 3
+  _intensity: 1
+  _fadeInSeconds: 0.3
+  _fadeOutSeconds: 0.5

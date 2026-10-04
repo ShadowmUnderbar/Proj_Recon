@@ -1,4 +1,5 @@
 using System;
+using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using R3;
@@ -23,6 +24,8 @@ namespace App.Battle.UseCase
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IBulletStoreView _bulletStoreView;
         private readonly ITracerFreezeState _tracerFreezeState;
+        private readonly ISepiaToneDataStore _sepiaToneDataStore;
+        private readonly OverclockConfig _overclockConfig;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -35,7 +38,9 @@ namespace App.Battle.UseCase
             IPlayerStateDataStore playerStateDataStore,
             IPlayerControlPresenter playerControlPresenter,
             IBulletStoreView bulletStoreView,
-            ITracerFreezeState tracerFreezeState
+            ITracerFreezeState tracerFreezeState,
+            ISepiaToneDataStore sepiaToneDataStore,
+            OverclockConfig overclockConfig
         )
         {
             _overclockDataStore = overclockDataStore;
@@ -46,6 +51,8 @@ namespace App.Battle.UseCase
             _playerControlPresenter = playerControlPresenter;
             _bulletStoreView = bulletStoreView;
             _tracerFreezeState = tracerFreezeState;
+            _sepiaToneDataStore = sepiaToneDataStore;
+            _overclockConfig = overclockConfig;
         }
 
         public void Initialize()
@@ -94,8 +101,11 @@ namespace App.Battle.UseCase
 
             if (isActive)
             {
+                _sepiaToneDataStore.Apply(_overclockConfig.SepiaTonePreset);
                 return;
             }
+
+            _sepiaToneDataStore.Release(_overclockConfig.SepiaTonePreset);
 
             // 発動中に溜めたダメージを1回のダメージとして受ける（軽減・バリア・被弾条件バフもここで1回通る）
             var stockedDamage = _overclockDataStore.ConsumeStockedDamage();

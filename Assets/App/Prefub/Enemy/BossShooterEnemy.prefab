@@ -144,6 +144,7 @@ GameObject:
   - component: {fileID: 7857086813434416639}
   - component: {fileID: 3981600075220127688}
   - component: {fileID: 3615096008489713842}
+  - component: {fileID: 3034208074652363532}
   m_Layer: 6
   m_Name: BossShooterEnemy
   m_TagString: Enemy
@@ -267,6 +268,19 @@ MonoBehaviour:
   - _bulletCount: 5
     _spreadAngle: 40
   _keepDistanceRatio: 0.75
+--- !u!114 &3034208074652363532
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6969719736142006962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80593038fa089df4d98aefc0a4d5a186, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _group: 2
 --- !u!1 &7523971642200183986
 GameObject:
   m_ObjectHideFlags: 0

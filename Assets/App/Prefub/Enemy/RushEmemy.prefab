@@ -196,6 +196,7 @@ GameObject:
   - component: {fileID: 3995038226262220038}
   - component: {fileID: 7682538228379039763}
   - component: {fileID: 953374212201805860}
+  - component: {fileID: 2753168618243726184}
   m_Layer: 6
   m_Name: RushEmemy
   m_TagString: Enemy
@@ -309,3 +310,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _centerHeight: 1.5
   _radius: 1.23
+--- !u!114 &2753168618243726184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6969719736142006962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80593038fa089df4d98aefc0a4d5a186, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _group: 2

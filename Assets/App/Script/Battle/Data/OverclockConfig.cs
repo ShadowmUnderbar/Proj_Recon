@@ -12,6 +12,10 @@ namespace App.Battle.Data
         [SerializeField, Tooltip("ストックがこの秒数を超えた瞬間に発動する（ちょうどでは発動しない）")]
         private float _activationThresholdSeconds = 3f;
 
+        [SerializeField, Tooltip("発動中にかけるセピア調。未指定ならかけない")]
+        private SepiaTonePreset _sepiaTonePreset;
+
         public float ActivationThresholdSeconds => _activationThresholdSeconds;
+        public SepiaTonePreset SepiaTonePreset => _sepiaTonePreset;
     }
 }

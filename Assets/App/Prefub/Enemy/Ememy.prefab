@@ -195,6 +195,7 @@ GameObject:
   - component: {fileID: 6844357106535673486}
   - component: {fileID: 5893286377446606969}
   - component: {fileID: 798123423304041535}
+  - component: {fileID: 1001694477323372604}
   m_Layer: 6
   m_Name: Ememy
   m_TagString: Enemy
@@ -311,6 +312,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _centerHeight: 1.5
   _radius: 1.23
+--- !u!114 &1001694477323372604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6969719736142006962}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80593038fa089df4d98aefc0a4d5a186, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _group: 2
 --- !u!1 &7867251612806641316
 GameObject:
   m_ObjectHideFlags: 0

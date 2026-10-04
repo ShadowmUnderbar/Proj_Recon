@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6804756073938474117}
   - component: {fileID: 2210691424677833176}
   - component: {fileID: 8605140445550053168}
+  - component: {fileID: 6670032201966478893}
   m_Layer: 8
   m_Name: PointParticle
   m_TagString: Untagged
@@ -120,3 +121,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _renderer: {fileID: 2210691424677833176}
   _hitCollider: {fileID: 6804756073938474117}
+--- !u!114 &6670032201966478893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8767735044636196417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80593038fa089df4d98aefc0a4d5a186, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _group: 1
