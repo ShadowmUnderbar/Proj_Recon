@@ -100,7 +100,7 @@ namespace App.Battle.UseCase
             switch (command.Type)
             {
                 case BossDirectorCommandType.Act:
-                    _enemyPresenter.CommandBossAction(command.EnemyId, command.ActionIndex);
+                    _enemyPresenter.CommandBossAction(command.EnemyId, command.ActionIndex, command.TurnDirection);
                     break;
                 case BossDirectorCommandType.Hold:
                     _enemyPresenter.SetBossHold(command.EnemyId, true);

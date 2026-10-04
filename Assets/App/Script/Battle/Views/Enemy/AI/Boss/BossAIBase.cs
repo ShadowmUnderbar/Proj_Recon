@@ -33,6 +33,9 @@ namespace App.Battle.Views.Enemy.AI.Boss
         /// <summary>実行中（または直前に実行した）行動の番号</summary>
         protected int CurrentActionIndex => _actionPhase.ActionIndex;
 
+        /// <summary>実行中（または直前に実行した）行動で、プレイヤーのまわりを回りこむ向き</summary>
+        protected BossTurnDirection CurrentTurnDirection { get; private set; }
+
         /// <summary>台本の指示でその場に待機させられているか</summary>
         protected bool IsHold => _isHold;
 
@@ -52,7 +55,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
             UpdateStatus();
         }
 
-        public bool CommandAction(int actionIndex)
+        public bool CommandAction(int actionIndex, BossTurnDirection turnDirection)
         {
             if (!_status.Value.IsActionable)
             {
@@ -60,6 +63,8 @@ namespace App.Battle.Views.Enemy.AI.Boss
                 return false;
             }
 
+            // 予備動作の開始通知（Begin の中で呼ばれる）より前に、回る向きを渡しておく
+            CurrentTurnDirection = turnDirection;
             GetActionDurations(actionIndex, out var windup, out var active, out var recovery);
             _actionPhase.SetDurations(windup, active, recovery);
             return _actionPhase.Begin(actionIndex);

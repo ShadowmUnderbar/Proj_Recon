@@ -14,8 +14,9 @@ namespace App.Battle.Interface.EnemyAI
 
         /// <summary>
         /// 指定の行動を始める。行動不能（行動中・硬直・スタン・撃破済み）なら何もせず false を返す。
+        /// turnDirection は回りこむ行動での回る向き（それ以外の行動では None）
         /// </summary>
-        bool CommandAction(int actionIndex);
+        bool CommandAction(int actionIndex, BossTurnDirection turnDirection);
 
         /// <summary>その場での待機を設定する（待機中は移動も止める）</summary>
         void SetHold(bool isHold);

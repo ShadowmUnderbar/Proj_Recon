@@ -17,8 +17,11 @@ namespace App.Battle.Interface
         /// <summary>ボスグループの個体の状態変化（出現時に初期状態も流す）</summary>
         Observable<(int id, BossMemberStatus status)> OnBossMemberStatusChanged { get; }
 
-        /// <summary>ボスグループの個体に行動を命令する（ボスAIでない敵・不在なら何もしない）</summary>
-        void CommandBossAction(int enemyId, int actionIndex);
+        /// <summary>
+        /// ボスグループの個体に行動を命令する（ボスAIでない敵・不在なら何もしない）。
+        /// turnDirection は回りこむ行動での回る向き（それ以外の行動では None）
+        /// </summary>
+        void CommandBossAction(int enemyId, int actionIndex, BossTurnDirection turnDirection);
 
         /// <summary>ボスグループの個体をその場で待機させる／解除する</summary>
         void SetBossHold(int enemyId, bool isHold);
