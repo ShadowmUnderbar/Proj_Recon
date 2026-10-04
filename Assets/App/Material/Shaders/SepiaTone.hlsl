@@ -15,8 +15,10 @@
 float4 _SepiaToneWeights;
 // グループごとの renderingLayerMask のビット値（2のべき乗を float で渡す）。並びは _SepiaToneWeights と同じ
 float4 _SepiaToneLayerBits;
-// 輝度に掛けてセピアの色にする係数。a は使わない
+// 輝度に掛けてセピアの色にする係数（輝度1のときの色）。a は使わない
 float4 _SepiaToneColor;
+// 輝度0（黒）のときのセピアの色。暗い部分も黒のまま残さず色を付ける。a は使わない
+float4 _SepiaToneShadowColor;
 
 // Rec.601 の輝度係数。セピア写真の見た目に合わせて、知覚輝度ではなく古典的な係数を使う
 #define SEPIA_TONE_LUMA half3(0.299, 0.587, 0.114)
@@ -31,11 +33,13 @@ half SepiaTone_RendererWeight()
     return (half)max(max(weights.x, weights.y), max(weights.z, weights.w));
 }
 
-// 色を強さに応じてセピアへ寄せる。HDR の値も輝度として扱い、明るさは保つ
+// 色を強さに応じてセピアへ寄せる。輝度0で暗部の色、輝度1でセピアの色になるよう線形に結ぶ。
+// HDR（輝度1超え）はそのまま延長し、明るさは保つ
 half3 SepiaTone_Apply(half3 color, half weight)
 {
     half luma = dot(color, SEPIA_TONE_LUMA);
-    half3 sepia = luma * (half3)_SepiaToneColor.rgb;
+    half3 shadow = (half3)_SepiaToneShadowColor.rgb;
+    half3 sepia = shadow + luma * ((half3)_SepiaToneColor.rgb - shadow);
     return lerp(color, sepia, weight);
 }
 

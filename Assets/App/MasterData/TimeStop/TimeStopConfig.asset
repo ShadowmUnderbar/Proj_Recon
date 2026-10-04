@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01cad26e0c181394bae9fe721b633b71, type: 3}
-  m_Name: SepiaToneConfig
+  m_Script: {fileID: 11500000, guid: 9648dc6608ab6a84f94dc9a2be3d15e1, type: 3}
+  m_Name: TimeStopConfig
   m_EditorClassIdentifier: 
-  _toneColor: {r: 1.12, g: 0.94, b: 0.7, a: 1}
-  _shadowColor: {r: 0.22, g: 0.14, b: 0.07, a: 1}
+  _sepiaTonePreset: {fileID: 11400000, guid: 846d80df2bbb4c941bf6c7f783c06dc0, type: 2}

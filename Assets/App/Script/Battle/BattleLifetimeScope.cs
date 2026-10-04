@@ -48,6 +48,7 @@ namespace App.Battle
         [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
         [SerializeField] private OverclockConfig _overclockConfig;
         [SerializeField] private SepiaToneConfig _sepiaToneConfig;
+        [SerializeField] private TimeStopConfig _timeStopConfig;
         [SerializeField] private BossWaveConfig _bossWaveConfig;
         [SerializeField] private BossLifeGaugeStoreView _bossLifeGaugeStoreView;
         [SerializeField] private BossLifeGaugeConfig _bossLifeGaugeConfig;
@@ -187,6 +188,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<OverclockUseCase>();
             // セピア調の強さをシェーダへ配る
             builder.RegisterEntryPoint<SepiaToneUseCase>();
+            builder.RegisterEntryPoint<TimeStopEffectUseCase>();
             // ボスグループの台本進行と個体をつなぐ（フリーズ・ウェーブ間ポーズ中は台本を止める）
             builder.RegisterEntryPoint<BossGroupUseCase>();
             // ボスウェーブ開始時に残った敵を消し、プレイヤーを移してボスを出す
@@ -347,6 +349,8 @@ namespace App.Battle
             builder.RegisterInstance(_tutorialWaveConfig);
             // オーバークロックの発動しきい値（OverclockDataStore が利用）
             builder.RegisterInstance(_overclockConfig);
+            // 時止めの演出（TimeStopEffectUseCase が利用）
+            builder.RegisterInstance(_timeStopConfig);
             // セピア調の色味（SepiaToneView が利用）
             builder.RegisterInstance(_sepiaToneConfig);
             // ボスウェーブの番号・ボスグループ・出現位置（BossWaveDataStore / BossWaveUseCase が利用）
