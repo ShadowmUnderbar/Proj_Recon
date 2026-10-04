@@ -241,7 +241,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `StreamerCameraView` | 配信用カメラ（HMD 映像に干渉しない）。`StreamerModeConfig` で既定 OFF |
 | `TutorialMessageView` | バトル中のチュートリアルメッセージ（WorldSpace Canvas、プレハブは `UI/TutorialMessageView.prefab`）。表示直後は視点の正面に追従し、規定時間後に非利き手の脇へ移って常に頭の方を向く。追従先の姿勢は UseCase から毎フレーム受け取る。オフセット・時間・追従速度は Inspector |
 | └ `TutorialMessagePlacement` / `TutorialMessagePlacementSettings` | 配置の状態機械と純粋計算（plain C#、DI 対象外）。左手向けオフセットを右手では x 反転、真下では頭の向きへフォールバック |
-| `SepiaToneView` | セピア調のグローバル変数（グループごとの強さ・色・グループのビット対応）を全シェーダへ配る（plain C#）。破棄時に強さを0へ戻す。受け手は `Material/Shaders/SepiaTone.hlsl`（`CurvedWorldLit` / `CurvedWorldUnlit` / `PlayerLifeGauge` が最終色に適用） |
+| `SepiaToneView` | セピア調のグローバル変数（グループごとの強さ・色・暗部の色・グループのビット対応）を全シェーダへ配る（plain C#）。破棄時に強さを0へ戻す。受け手は `Material/Shaders/SepiaTone.hlsl`（`CurvedWorldLit` / `CurvedWorldUnlit` / `PlayerLifeGauge` が最終色に適用） |
 | `SepiaToneTargetView` | プレハブ・シーンのルートに付け、子の Renderer の `renderingLayerMask` のビット8〜11でセピア調のグループ（背景 / 敵 / プレイヤー / UI）を表す。マテリアルではなく Renderer 側に持たせるので、マテリアルを陣営間で共有しても分けられる。ボスの体力ゲージはプレイヤーのゲージを流用するため、`BossLifeGaugeStoreView` が生成後に「敵」へ付け替える |
 
 ### 3.4 Presenters（`Battle/Presenters`）
@@ -277,6 +277,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `FreezeUseCase` | フリーズの開始・解除、ボスの時止めの開始・解除で弾・レイ演出を止める（論理和。ボスの時止めでは敵は止めない）。**敵の停止は「ウェーブ間ポーズ・フリーズ・オーバークロック」の論理和をここ1か所で計算して `EnemyPresenter.SetPause` に渡す**（停止要因ごとに別々に呼ぶと片方の解除で他を解いてしまう） | Freeze, WaveManager, Overclock, TimeStop, Enemy, BulletStore |
 | `OverclockUseCase` | オーバークロック。回避中の被弾無効化で秒数を獲得 → 3秒超で自動発動。発動中は敵弾の停止・レイ/トレイルの保持・視点の固定（`PlayerCameraPinView`）、終了時に溜めたダメージを1回で適用。ウェーブ間ポーズで打ち切り。発動・終了で `OverclockConfig` のセピア調プリセットをかける・外す | Overclock, DodgeParameter, PlayerState, BulletStore, SepiaTone |
 | `SepiaToneUseCase` | `SepiaToneDataStore.Weights` の変化を `SepiaToneView` へ流す | SepiaTone |
+| `TimeStopEffectUseCase` | ボスの時止めの間、`TimeStopConfig` のセピア調プリセット（既定はプレイヤー＝自機・自弾・照準・レイと、背景＝床。敵・UI・空はかけない）をかける・外す | TimeStop, SepiaTone |
 | `BossGroupUseCase` | ボスの個体の状態（`OnBossMemberStatusChanged`）を `BossGroupDataStore` へ渡し、台本が出した行動・待機の命令を `EnemyPresenter` 経由で個体へ届け、時止めの命令は `TimeStopDataStore` へ渡す。フリーズ・ウェーブ間ポーズ中は台本を止める | BossGroup, Enemy, Freeze, WaveManager, TimeStop |
 | `BossLifeGaugeUseCase` | Boss ランクの敵が出たら足元に体力ゲージを出し、`OnEnemyPoseUpdate` で位置に追従、命中のたびに `Hp / MaxHp` を反映（体力共有の仲間も同時に更新）、`OnEnemyRemoved` で消す | Enemy, BossLifeGauge |
 | `BossWaveUseCase` | ボスウェーブ開始時に残った敵の消去・プレイヤーの移動・ボスの出現（3.2 参照） | BossWave, Enemy, PlayerState |
@@ -338,7 +339,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 
 | 種別 | クラス |
 |---|---|
-| ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle`, `BossWaveConfig`（ボスウェーブの番号・出すボスグループ・プレイヤー/ボスの位置、`MasterData/Boss`）, `BossLifeGaugeConfig`（ボスの体力ゲージの色・大きさ、`MasterData/Boss`。既定は紫）, `BossLineStrikeConfig`（ボスの帯の攻撃の幅・長さ・予兆/攻撃/硬直の秒数・連続攻撃の回数と間隔・ダメージ倍率・色、`MasterData/Boss`）, `BossGroupConfig`（ボスのメンバー・行動台本 `BossPatternStep[]`・体力共有、`MasterData/Boss`。`BossGroup_TwinShooter`＝交代と同時行動の確認用、`BossGroup_TickTock`＝体力共有の二人組）, `SepiaToneConfig`（セピアの色味、`MasterData/SepiaTone`）, `SepiaTonePreset`（演出ごとの対象グループ・強さ・フェード秒数。オーバークロック用は `MasterData/Overclock/OverclockSepiaTonePreset`） |
+| ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle`, `BossWaveConfig`（ボスウェーブの番号・出すボスグループ・プレイヤー/ボスの位置、`MasterData/Boss`）, `BossLifeGaugeConfig`（ボスの体力ゲージの色・大きさ、`MasterData/Boss`。既定は紫）, `BossLineStrikeConfig`（ボスの帯の攻撃の幅・長さ・予兆/攻撃/硬直の秒数・連続攻撃の回数と間隔・ダメージ倍率・色、`MasterData/Boss`）, `BossGroupConfig`（ボスのメンバー・行動台本 `BossPatternStep[]`・体力共有、`MasterData/Boss`。`BossGroup_TwinShooter`＝交代と同時行動の確認用、`BossGroup_TickTock`＝体力共有の二人組）, `SepiaToneConfig`（セピアの色味。輝度1の色と輝度0＝黒の色の2点を結ぶので、黒い部分にも色が付く。`MasterData/SepiaTone`）, `SepiaTonePreset`（演出ごとの対象グループ・強さ・フェード秒数。オーバークロック用は `MasterData/Overclock/OverclockSepiaTonePreset`、時止め用は `MasterData/TimeStop/TimeStopSepiaTonePreset`）, `TimeStopConfig`（時止めの演出。セピア調プリセット、`MasterData/TimeStop`） |
 | デバッグ設定（組み立て時に `DebugConfig` から作って注入） | `EnemyGazeDebugSettings`, `DebugArenaSettings`（デバッグ対戦の相手・出し直し・無敵。予約が無ければ `Disabled`。`Common/Data/DebugArenaRequest` が予約の中身） |
 | 定数 | `PlayerConstants.PlayerId`（**今回新設**）, `ThemeColors`, `SepiaToneRenderingLayer`（セピア調のグループと renderingLayerMask のビットの対応） |
 | POCO / struct | `EnemyData`, `HitData`, `BossMemberStatus`, `BossDirectorCommand`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `TutorialMessageAnchor`, `UpgradeLocalizedText` |

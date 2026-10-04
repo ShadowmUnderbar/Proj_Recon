@@ -185,6 +185,7 @@ MonoBehaviour:
   _tutorialWaveConfig: {fileID: 11400000, guid: 40b11f405d2442746b2424e1de13720a, type: 2}
   _overclockConfig: {fileID: 11400000, guid: c83c832e42f725a43afa38ec885017ca, type: 2}
   _sepiaToneConfig: {fileID: 11400000, guid: ed5cb793c3b8f874ab6cbd8b8d503b9c, type: 2}
+  _timeStopConfig: {fileID: 11400000, guid: 30200d164218d7846b2502b06eb98d48, type: 2}
   _bossWaveConfig: {fileID: 11400000, guid: 5232382f13db8ba458caca28bb44cba5, type: 2}
   _bossLifeGaugeStoreView: {fileID: 9098238497290529744, guid: 14a317ddbe4e990429b3c053974c589e, type: 3}
   _bossLifeGaugeConfig: {fileID: 11400000, guid: 2e6923bd89b677149a966bdca22498b4, type: 2}
