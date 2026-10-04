@@ -14,6 +14,7 @@ namespace App.Battle.Views
         private static readonly int WeightsId = Shader.PropertyToID("_SepiaToneWeights");
         private static readonly int LayerBitsId = Shader.PropertyToID("_SepiaToneLayerBits");
         private static readonly int ColorId = Shader.PropertyToID("_SepiaToneColor");
+        private static readonly int ShadowColorId = Shader.PropertyToID("_SepiaToneShadowColor");
 
         private readonly SepiaToneConfig _config;
 
@@ -27,6 +28,7 @@ namespace App.Battle.Views
             // 色は実機で調整しながら見たいので、強さと一緒に毎回配り直す（変化したときにしか呼ばれない）
             Shader.SetGlobalVector(LayerBitsId, LayerBits());
             Shader.SetGlobalColor(ColorId, _config.ToneColor);
+            Shader.SetGlobalColor(ShadowColorId, _config.ShadowColor);
             Shader.SetGlobalVector(WeightsId, weights);
         }
 
