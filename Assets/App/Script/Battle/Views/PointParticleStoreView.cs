@@ -20,6 +20,9 @@ namespace App.Battle.Views
 
         private readonly List<PointParticleView> _particles = new();
 
+        // 止まっている間に生成された粒子にも同じ状態を渡すため保持する
+        private bool _isPaused;
+
         private readonly Subject<int> _onCollected = new();
         public Observable<int> OnCollected => _onCollected;
 
@@ -50,6 +53,7 @@ namespace App.Battle.Views
                 // 最初から漂いの中心へ生成する
                 var particle = Instantiate(_pointParticlePrefab, driftCenter, Quaternion.identity, transform);
                 particle.Init(units[i], driftCenter, _config);
+                particle.SetPause(_isPaused);
                 _particles.Add(particle);
             }
         }
@@ -65,6 +69,19 @@ namespace App.Battle.Views
             }
 
             _particles.Clear();
+        }
+
+        public void SetPause(bool isPaused)
+        {
+            _isPaused = isPaused;
+
+            for (var i = 0; i < _particles.Count; i++)
+            {
+                if (_particles[i] != null)
+                {
+                    _particles[i].SetPause(isPaused);
+                }
+            }
         }
 
         private void Update()

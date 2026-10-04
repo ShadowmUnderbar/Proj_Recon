@@ -34,6 +34,9 @@ namespace App.Battle.Views
         private float _pullElapsed;
         private Vector3 _pullStartPosition;
 
+        // 止まっている間は Tick・StartPull を受け付けない
+        private bool _isPaused;
+
         // 色をインスタンス化せずに差し替えるためのブロック（粒子ごとにマテリアルを増やさない）
         private static MaterialPropertyBlock _propertyBlock;
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
@@ -93,7 +96,7 @@ namespace App.Battle.Views
         /// </summary>
         public void Tick(float deltaTime, Vector3 playerCenter)
         {
-            if (IsCollected)
+            if (IsCollected || _isPaused)
             {
                 return;
             }
@@ -136,7 +139,7 @@ namespace App.Battle.Views
         /// </summary>
         public void StartPull()
         {
-            if (IsCollected || IsPulling)
+            if (IsCollected || IsPulling || _isPaused)
             {
                 return;
             }
@@ -144,6 +147,11 @@ namespace App.Battle.Views
             IsPulling = true;
             _pullElapsed = 0f;
             _pullStartPosition = transform.position;
+        }
+
+        public void SetPause(bool isPaused)
+        {
+            _isPaused = isPaused;
         }
 
         /// <summary>

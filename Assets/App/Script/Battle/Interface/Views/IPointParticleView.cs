@@ -16,5 +16,8 @@ namespace App.Battle.Interface
         /// （実際のポイント加算と破棄は PointParticleStoreView が行う）
         /// </summary>
         void StartPull();
+
+        /// <summary>止まっている間は漂い・吸い寄せ・回収をせず、弾が当たっても吸い込みを始めない</summary>
+        void SetPause(bool isPaused);
     }
 }
