@@ -55,6 +55,7 @@ MonoBehaviour:
   _buffDatabase: {fileID: 11400000, guid: 151c973fef82b9749b1aa9286ecd29de, type: 2}
   _waveScalingDatabase: {fileID: 11400000, guid: 302016ccb39ccea4d8311d82fbd3f5a3, type: 2}
   _streamerModeConfig: {fileID: 11400000, guid: 48652d6077c903549a4d8fa114ea2a4f, type: 2}
+  _effectTextStyle: {fileID: 11400000, guid: 02d9350ccbe6a2f4397e58de142f6f80, type: 2}
   _gazeTargetStoreView: {fileID: 3792779028097221987}
 --- !u!114 &3792779028097221987
 MonoBehaviour:

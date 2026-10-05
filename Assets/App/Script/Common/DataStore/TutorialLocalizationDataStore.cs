@@ -8,6 +8,7 @@ using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.Localization.Tables;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using VContainer;
 using VContainer.Unity;
 
 namespace App.Common.DataStore
@@ -34,6 +35,15 @@ namespace App.Common.DataStore
         private int _loadGeneration;
         private bool _isDisposed;
 
+        // 本文中の色タグ（<p>/<n>/<w> など）の文字色
+        private readonly EffectTextStyle _textStyle;
+
+        [Inject]
+        public TutorialLocalizationDataStore(EffectTextStyle textStyle)
+        {
+            _textStyle = textStyle;
+        }
+
         public void Initialize()
         {
             LocalizationSettings.SelectedLocaleChanged += OnSelectedLocaleChanged;
@@ -42,7 +52,7 @@ namespace App.Common.DataStore
 
         public string GetText(TutorialType type)
         {
-            return GetString(TutorialLocalizationKey.Text(type));
+            return EffectTextStyler.ApplyEffectTags(GetString(TutorialLocalizationKey.Text(type)), _textStyle);
         }
 
         private string GetString(string key)

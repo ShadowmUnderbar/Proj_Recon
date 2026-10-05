@@ -117,7 +117,7 @@ namespace App.Battle.DataStore
         /// 値の装飾設定。指定すると ParameterType が強化/弱化の値を色付き（TextMeshPro のリッチテキスト）にする。
         /// null なら装飾せず数値だけを埋め込む
         /// </param>
-        public static string Format(string template, UpgradeMasterData upgrade, UpgradeDescriptionStyle style = null)
+        public static string Format(string template, UpgradeMasterData upgrade, EffectTextStyle style = null)
         {
             if (string.IsNullOrEmpty(template) || !ValueFormats.TryGetValue(upgrade.UpgradeType, out var formats))
             {
