@@ -19,11 +19,11 @@ MonoBehaviour:
   _basePenetration: 0
   _focusFireRateMagnification: 0.9
   _focusDamageMagnification: 3
-  _waltzDamageMagnification: 0.5
-  _waltzFireRateMagnification: 0.3
-  _mergeDamageMagnification: 2
-  _mergeFireRateMagnification: 1.5
-  _mergeBulletSpeed: 40
+  _waltzDamageMagnification: 0.2
+  _waltzFireRateMagnification: 0.5
+  _mergeDamageMagnification: 2.3
+  _mergeFireRateMagnification: 1.3
+  _mergeBulletSpeed: 50
   _mergeExplosiveScale: 2
   _mergeExplosiveDamageRate: 1
   _dodgeRange: 10
