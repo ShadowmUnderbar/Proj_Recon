@@ -196,7 +196,7 @@ BossWaveUseCase  : ボスウェーブの開始（IsWavePause=false）で残っ�
                    プレイヤーを BossWaveConfig.PlayerPosition へ移して BossGroupConfig のボスを出す。
                    ボスウェーブ中は EnemyRandomSpawnCycleDataStore が周期スポーンを止める
 ShopUseCase      : OnWaveAdvanced でショップを開く。UpgradeLotteryDataStore で抽選、ポイントで購入
-                   → 「次のウェーブへ」で IsWavePause=false。開いたときにチュートリアル Shop を出し、閉じるときに出ているチュートリアルを消す
+                   → 「次のウェーブへ」で IsWavePause=false。開くときにウェーブ中のチュートリアルを消してから Shop を出し（既読で出なくても前の説明は残さない）、閉じるときにも消す
                    （ウェーブ再開より先に消すので、次のウェーブの説明は TutorialWaveUseCase が出せる）
 GameOverUseCase  : PlayerState.Health<=0 → 死亡演出（PlayerDeathConfig）→ RunResultUseCase.Show("GAME OVER")
                    クリア後に HP が 0 になってもゲームオーバーにしない（GameStateDataStore はゲームオーバーとクリアが排他）

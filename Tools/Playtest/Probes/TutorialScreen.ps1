@@ -3,6 +3,7 @@
 #
 # - ショップを開くと Shop が出る
 # - ショップを抜けるとダイアログが閉じる。次のウェーブに出す説明があればそれは出る
+# - ウェーブ中に出ていた説明は、ショップを開くと消える（Shop が既読で出ないときも残らない）
 # - セットを持ち込まずに始めたランのゲームオーバーでは GameOver が出る
 # - リスタートでバトル内のセット選択に戻ると SelectSlot が出る（前のメッセージは消える）
 # - スロットを選んで始めたランのゲームオーバーでは GameOver の代わりに OtherBuild が出る
@@ -261,6 +262,48 @@ var progress = scope.Container.Resolve<ITutorialProgressDataStore>();
 progress.ResetProgress(TutorialType.Shop);
 progress.MarkViewed(TutorialType.Shop);
 return "ok";
+'@ | Out-Null
+
+        # --- 2c. ウェーブ中に出ていた説明は、ショップを開くと消える（Shop は既読なので何も出ない） ---
+        # 2b で出したウェーブ1の説明が出たまま、再表示OFF・Shop 既読（規定回数）の状態でショップを開く
+        $beforeReopen = Get-TutorialScreenState
+        Invoke-UnityCode -Snippet @'
+using System.Linq;
+using System.Reflection;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.UseCase;
+using App.Common.Data;
+using App.Common.DataStore;
+using App.Common.Interface;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var progress = scope.Container.Resolve<ITutorialProgressDataStore>();
+while (progress.GetViewCount(TutorialType.Shop) < TutorialProgressDataStore.RequiredViewCount) progress.MarkViewed(TutorialType.Shop);
+var shop = scope.Container.Resolve<System.Collections.Generic.IReadOnlyList<IInitializable>>().OfType<ShopUseCase>().First();
+typeof(ShopUseCase).GetMethod("OpenShopForDebug", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(shop, null);
+return "open";
+'@ | Out-Null
+        $afterReopen = Get-TutorialScreenState
+        Assert-ProbeTrue -Name 'ショップを開く前はウェーブの説明が出ている' -Condition ($beforeReopen.type -like 'Wave*') `
+            -Detail "(種類: $($beforeReopen.type))" | Out-Null
+        Assert-ProbeTrue -Name 'Shop が既読でも、ショップを開くとウェーブ中の説明が消える' `
+            -Condition ($afterReopen.type -eq 'None' -and $afterReopen.phase -eq 'Hidden') `
+            -Detail "(種類: $($afterReopen.type), phase: $($afterReopen.phase))" | Out-Null
+        Assert-ProbeValue -Name '既読の Shop は閲覧回数が増えない' -Actual ([double]$afterReopen.shop) -Expected 3 | Out-Null
+        Invoke-UnityCode -Snippet @'
+using System.Linq;
+using System.Reflection;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.UseCase;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var shop = scope.Container.Resolve<System.Collections.Generic.IReadOnlyList<IInitializable>>().OfType<ShopUseCase>().First();
+typeof(ShopUseCase).GetMethod("StartNextWave", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(shop, null);
+return "next";
 '@ | Out-Null
 
         # --- 3. セットを持ち込まずに始めたランのゲームオーバーでは GameOver ---

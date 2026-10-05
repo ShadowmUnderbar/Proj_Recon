@@ -17,7 +17,7 @@ namespace App.Battle.UseCase
     /// ウェーブ間ショップの制御（仮組み）
     /// ウェーブ突破（OnWaveAdvanced）でショップを開き、所持ポイントで買えるだけアップグレードを購入させ、
     /// 「次のウェーブへ」でショップを閉じてウェーブを再開する。
-    /// 開いたときにショップのチュートリアルを出し、閉じるときに出ているチュートリアルを消す。
+    /// 開くときにウェーブ中のチュートリアルを消してからショップのチュートリアルを出し、閉じるときにも出ているチュートリアルを消す。
     /// デバッグ対戦では出さない（既読にして、通常のプレイで出なくなるのを防ぐ）
     /// </summary>
     public class ShopUseCase : IRunResettable, IInitializable, ITickable, IDisposable
@@ -128,6 +128,10 @@ namespace App.Battle.UseCase
 
             // UI表示中だけボタン選択用のハンドレイを出す
             _playerControlPresenter.SetUiRayEnable(true);
+
+            // ウェーブ中に出していたチュートリアル（ウェーブ開始時のものなど）をショップへ持ち越さない。
+            // ショップの説明が既読で出ないときも、前のメッセージが残ったままにならないよう先に消す
+            _tutorialMessageUseCase.Hide();
 
             if (!_debugArenaSettings.IsEnabled)
             {
