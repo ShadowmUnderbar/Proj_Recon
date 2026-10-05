@@ -2,25 +2,9 @@ using UnityEngine;
 
 namespace App.Common.Data
 {
-    /// <summary>ShotLineColorConfig から引けるライン色の種類（文字色の連動先に使う）</summary>
-    public enum ShotLineColorType
-    {
-        /// <summary>ノーマルショット（非フォーカス）</summary>
-        Normal,
-
-        /// <summary>フォーカスショット（ノーマル＋フォーカス）</summary>
-        Focus,
-
-        /// <summary>ワルツショット（非フォーカス）</summary>
-        Waltz,
-
-        /// <summary>マージショット（非フォーカス）</summary>
-        Merge,
-    }
-
     /// <summary>
     /// 射撃形態ごとの照準ライン（手元・エイムのレイ）の色。
-    /// PlayerShotUseCase がレイの色に、EffectTextStyle が文言の色タグ（&lt;w&gt; など）の色に使うので、ここを変えると両方が変わる
+    /// PlayerShotUseCase がレイの色に使う。文言の色タグ（&lt;w&gt; など）の色は EffectTextStyle 側で別に持つ
     /// </summary>
     [CreateAssetMenu(fileName = "ShotLineColorConfig", menuName = "Config/ShotLineColorConfig")]
     public class ShotLineColorConfig : ScriptableObject
@@ -36,17 +20,6 @@ namespace App.Common.Data
 
         [SerializeField, Tooltip("マージショット（非フォーカス）のライン色")]
         private Color _mergeColor = new(0.2f, 0.2f, 0.3f);
-
-        public Color GetColor(ShotLineColorType type)
-        {
-            return type switch
-            {
-                ShotLineColorType.Focus => _focusColor,
-                ShotLineColorType.Waltz => _waltzColor,
-                ShotLineColorType.Merge => _mergeColor,
-                _ => _normalColor,
-            };
-        }
 
         /// <summary>射撃形態とフォーカス状態からレイの色を決める</summary>
         public Color GetRayColor(ShotType shotType, AimFocusType focusType)

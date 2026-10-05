@@ -52,7 +52,7 @@ namespace App.Common.Data
             var result = text;
             for (var i = 0; i < MaxNestDepth; i++)
             {
-                // 色を引けない（ライン色設定が未割り当てなど）ときはタグだけ外して中身を残す
+                // 色を引けないときはタグだけ外して中身を残す
                 var replaced = pattern.Replace(result, match =>
                     style.TryGetColor(match.Groups[1].Value, out var color)
                         ? WrapColor(match.Groups[2].Value, color)
