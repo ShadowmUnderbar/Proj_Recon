@@ -1,6 +1,8 @@
 using System;
+using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
+using App.Common.Data;
 using App.Common.Interface;
 using R3;
 using VContainer;
@@ -14,6 +16,8 @@ namespace App.Battle.UseCase
     /// 保存は何度でも行え、リスタートボタンでラン状態を初期化してビルド選択へ戻る。
     /// メインメニューボタンではシーンごと切り替えてタイトルへ戻る。
     /// いつ画面を出すか（死亡演出・クリア表示の後）は GameOverUseCase / GameClearUseCase が決める。
+    /// 画面を出したらスロット保存のチュートリアルを出す（ゲームオーバー・クリア共通）。保存済みのセットを装備して始めたランなら、
+    /// スロット保存の説明（GameOver）の代わりに別ビルドを勧める説明（OtherBuild）を出す。
     /// </summary>
     public class RunResultUseCase : IInitializable, IDisposable
     {
@@ -26,6 +30,9 @@ namespace App.Battle.UseCase
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly RunResetUseCase _runResetUseCase;
         private readonly ISceneTransitionUseCase _sceneTransitionUseCase;
+        private readonly IRunStartDataStore _runStartDataStore;
+        private readonly ITutorialMessageUseCase _tutorialMessageUseCase;
+        private readonly DebugArenaSettings _debugArenaSettings;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -50,7 +57,10 @@ namespace App.Battle.UseCase
             IGameOverPresenter gameOverPresenter,
             IPlayerControlPresenter playerControlPresenter,
             RunResetUseCase runResetUseCase,
-            ISceneTransitionUseCase sceneTransitionUseCase
+            ISceneTransitionUseCase sceneTransitionUseCase,
+            IRunStartDataStore runStartDataStore,
+            ITutorialMessageUseCase tutorialMessageUseCase,
+            DebugArenaSettings debugArenaSettings
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -62,6 +72,9 @@ namespace App.Battle.UseCase
             _playerControlPresenter = playerControlPresenter;
             _runResetUseCase = runResetUseCase;
             _sceneTransitionUseCase = sceneTransitionUseCase;
+            _runStartDataStore = runStartDataStore;
+            _tutorialMessageUseCase = tutorialMessageUseCase;
+            _debugArenaSettings = debugArenaSettings;
         }
 
         public void Initialize()
@@ -109,6 +122,23 @@ namespace App.Battle.UseCase
             {
                 _gameOverPresenter.SetStatus("このランで新たに獲得したアップグレードはありません");
             }
+
+            ShowSaveTutorial();
+        }
+
+        /// <summary>
+        /// スロット保存のチュートリアルを出す。
+        /// デバッグ対戦では出さない（既読にして、通常のプレイで出なくなるのを防ぐ）
+        /// </summary>
+        private void ShowSaveTutorial()
+        {
+            if (_debugArenaSettings.IsEnabled)
+            {
+                return;
+            }
+
+            var type = _runStartDataStore.HasLoadedBuild ? TutorialType.OtherBuild : TutorialType.GameOver;
+            _tutorialMessageUseCase.ShowIfNeeded(type);
         }
 
         private bool CanOperate => _isResultShown && _gameStateDataStore.IsRunEnded;

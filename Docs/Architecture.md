@@ -199,10 +199,11 @@ ShopUseCase      : OnWaveAdvanced でショップを開く。UpgradeLotteryDataS
                    → 「次のウェーブへ」で IsWavePause=false。開いたときにチュートリアル Shop を出す（消すのは次のウェーブ開始時の TutorialWaveUseCase）
 GameOverUseCase  : PlayerState.Health<=0 → 死亡演出（PlayerDeathConfig）→ RunResultUseCase.Show("GAME OVER")
                    クリア後に HP が 0 になってもゲームオーバーにしない（GameStateDataStore はゲームオーバーとクリアが排他）
-                   結果画面を出したらチュートリアル GameOver（セットを持ち込んだランなら代わりに OtherBuild）。デバッグ対戦では出さない
 GameClearUseCase : IsCleared → 見出しだけのクリア表示 → GameClearConfig の秒数後に RunResultUseCase.Show("STAGE CLEAR")
 RunResultUseCase : 結果画面（GameOverView を共用）の操作。今回のランで獲得したアップグレードの一覧（AcquiredUpgradeListBuilder）を出す。スロット保存（MetaProgressionDataStore） / リスタート（RunResetUseCase） / メインメニューへ。
                    閉じる直前に OnClosing を流し、死亡演出・クリア表示の待ちを畳ませる
+                   画面を出したらスロット保存のチュートリアル GameOver（セットを持ち込んだランなら代わりに OtherBuild）。
+                   ゲームオーバー・クリア共通。デバッグ対戦では出さない
 RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・弾・粒子を消す → RunStartDataStore.IsSelecting=true（セット選択へ）
 ```
 
@@ -294,7 +295,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `WaveManagerUseCase` / `ShopUseCase` / `RunStartUseCase` / `GameOverUseCase` / `GameClearUseCase` / `RunResultUseCase` / `RunResetUseCase` | 3.2 参照 | |
 | `UpgradeSideEffectApplier` | アップグレード付与の副作用（バフ起動・バリア満タン）。Shop と RunStart の共通処理 | BuffState, PlayerBarrier |
 | `StreamerCameraUseCase` | ウェーブ進行・ボス・マルチキルで配信カメラの演出をトリガー | StreamerCamera, Enemy |
-| （共通）`TutorialMessageUseCase` | 4.2 参照。表示のきっかけはウェーブ開始（`TutorialWaveUseCase`）・ショップ（`ShopUseCase`）・結果画面（`GameOverUseCase`）・セット選択（`RunStartUseCase`） | |
+| （共通）`TutorialMessageUseCase` | 4.2 参照。表示のきっかけはウェーブ開始（`TutorialWaveUseCase`）・ショップ（`ShopUseCase`）・結果画面（`RunResultUseCase`、ゲームオーバー・クリア共通）・セット選択（`RunStartUseCase`） | |
 | `TutorialWaveUseCase` | ウェーブ開始（`IsWavePause` が false になった瞬間）に `TutorialWaveConfig` の割り当てを引き、`ITutorialMessageUseCase.ShowIfNeeded` で出す。出すものが無いウェーブでは前のメッセージ（ショップの説明など）を消す | WaveManager, TutorialMessage |
 
 ### 3.6 DataStore（`Battle/DataStore`）

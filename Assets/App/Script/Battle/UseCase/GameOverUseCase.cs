@@ -3,8 +3,6 @@ using System.Threading;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
-using App.Common.Data;
-using App.Common.Interface;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
@@ -17,8 +15,6 @@ namespace App.Battle.UseCase
     /// プレイヤーHPが0になったらゲームオーバーにし、死亡演出（ヒットストップ→死亡アニメ→余韻）の完了を待って
     /// 結果画面（RunResultUseCase）を出す。保存・リスタート・メインメニューへの操作は RunResultUseCase が担う。
     /// クリアの後にHPが0になってもゲームオーバーにはしない。
-    /// 結果画面を出したらチュートリアルを出す。保存済みのセットを装備して始めたランなら、
-    /// スロット保存の説明（GameOver）の代わりに別ビルドを勧める説明（OtherBuild）を出す。
     /// </summary>
     public class GameOverUseCase : IInitializable, IDisposable
     {
@@ -29,9 +25,6 @@ namespace App.Battle.UseCase
         private readonly RunResultUseCase _runResultUseCase;
         private readonly IFreezeDataStore _freezeDataStore;
         private readonly PlayerDeathConfig _playerDeathConfig;
-        private readonly IRunStartDataStore _runStartDataStore;
-        private readonly ITutorialMessageUseCase _tutorialMessageUseCase;
-        private readonly DebugArenaSettings _debugArenaSettings;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -46,10 +39,7 @@ namespace App.Battle.UseCase
             IPlayerControlPresenter playerControlPresenter,
             RunResultUseCase runResultUseCase,
             IFreezeDataStore freezeDataStore,
-            PlayerDeathConfig playerDeathConfig,
-            IRunStartDataStore runStartDataStore,
-            ITutorialMessageUseCase tutorialMessageUseCase,
-            DebugArenaSettings debugArenaSettings
+            PlayerDeathConfig playerDeathConfig
         )
         {
             _playerStateDataStore = playerStateDataStore;
@@ -59,9 +49,6 @@ namespace App.Battle.UseCase
             _runResultUseCase = runResultUseCase;
             _freezeDataStore = freezeDataStore;
             _playerDeathConfig = playerDeathConfig;
-            _runStartDataStore = runStartDataStore;
-            _tutorialMessageUseCase = tutorialMessageUseCase;
-            _debugArenaSettings = debugArenaSettings;
         }
 
         public void Initialize()
@@ -151,27 +138,11 @@ namespace App.Battle.UseCase
                 }
 
                 _runResultUseCase.Show("GAME OVER");
-                ShowResultTutorial();
             }
             catch (OperationCanceledException)
             {
                 // リスタート・シーン終了による中断。画面は出さない
             }
-        }
-
-        /// <summary>
-        /// 結果画面のチュートリアルを出す。
-        /// デバッグ対戦では出さない（既読にして、通常のプレイで出なくなるのを防ぐ）
-        /// </summary>
-        private void ShowResultTutorial()
-        {
-            if (_debugArenaSettings.IsEnabled)
-            {
-                return;
-            }
-
-            var type = _runStartDataStore.HasLoadedBuild ? TutorialType.OtherBuild : TutorialType.GameOver;
-            _tutorialMessageUseCase.ShowIfNeeded(type);
         }
 
         /// <summary>

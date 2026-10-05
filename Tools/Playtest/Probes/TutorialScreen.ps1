@@ -1,11 +1,12 @@
 ﻿#
-# 画面ごとのチュートリアル表示（ショップ・ゲームオーバー・セット選択）を検証するプローブ。
+# 画面ごとのチュートリアル表示（ショップ・結果画面・セット選択）を検証するプローブ。
 #
 # - ショップを開くと Shop が出る
 # - 次のウェーブが始まるとショップの説明は残らない（ウェーブに割り当てが無い・閲覧済みなら Hide）
 # - セットを持ち込まずに始めたランのゲームオーバーでは GameOver が出る
 # - リスタートでバトル内のセット選択に戻ると SelectSlot が出る（前のメッセージは消える）
 # - スロットを選んで始めたランのゲームオーバーでは GameOver の代わりに OtherBuild が出る
+# - クリア時の結果画面でも同じく GameOver / OtherBuild が出る
 # - メインメニューのセット選択でも SelectSlot が出て、タイトルへ戻ると消える
 #
 # 表示中の種類は TutorialMessageUseCase の _currentType を読んで判定する。
@@ -95,6 +96,44 @@ return "damaged";
 '@ | Out-Null
 
     return (Wait-GameOverPanel)
+}
+
+# 結果画面のリスタートボタンを押してセット選択へ戻る
+function Invoke-TutorialScreenRestart {
+    Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
+        action = 'Click'; 'target-path' = $Global:ProbeTutorialScreenRestartButtonPath; 'bypass-raycast' = 'true'
+    } | Out-Null
+    Start-Sleep -Milliseconds 1000
+}
+
+# クリアを起こし、見出しだけの表示の後にボタン付きの結果画面が出るまで待つ
+function Invoke-TutorialScreenClear {
+    Invoke-UnityCode -Snippet @'
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.Interface.DataStore;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+scope.Container.Resolve<IWaveManagerDataStore>().SetWavePause(true);
+scope.Container.Resolve<IGameStateDataStore>().SetCleared();
+return "cleared";
+'@ | Out-Null
+
+    # 見出しだけの間はリスタートボタンが出ないので、ボタンの表示で結果画面を待つ
+    for ($i = 0; $i -lt 50; $i++) {
+        $state = Invoke-UnityJson -Snippet @'
+using UnityEngine;
+
+var button = GameObject.Find("BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel/RestartButton");
+var shown = button != null && button.activeInHierarchy;
+return $"{{\"shown\":{shown.ToString().ToLower()}}}";
+'@
+        if ([bool]$state.shown) { return $true }
+        Start-Sleep -Milliseconds 200
+    }
+
+    return $false
 }
 
 function ProbeRun {
@@ -192,10 +231,7 @@ return "next";
         Assert-ProbeValue -Name '持ち込みなしでは OtherBuild を出さない' -Actual ([double]$afterGameOver.otherBuild) -Expected 0 | Out-Null
 
         # --- 4. リスタートでバトル内のセット選択に戻ると SelectSlot ---
-        Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
-            action = 'Click'; 'target-path' = $Global:ProbeTutorialScreenRestartButtonPath; 'bypass-raycast' = 'true'
-        } | Out-Null
-        Start-Sleep -Milliseconds 1000
+        Invoke-TutorialScreenRestart
 
         $afterRestart = Get-TutorialScreenState
         $selecting = Invoke-UnityJson -Snippet @'
@@ -249,6 +285,58 @@ return $"{{\"slot\":{slot},\"selecting\":{runStart.IsSelecting.CurrentValue.ToSt
         Assert-ProbeValue -Name 'OtherBuild の閲覧回数が1になる' -Actual ([double]$afterOther.otherBuild) -Expected 1 | Out-Null
         Assert-ProbeValue -Name '持ち込みありでは GameOver を出さない（回数が増えない）' -Actual ([double]$afterOther.gameOver) -Expected 1 | Out-Null
 
+        # --- 5b. クリア時の結果画面でも同じく出す（持ち込みなし → GameOver、持ち込みあり → OtherBuild） ---
+        Invoke-TutorialScreenRestart
+        Invoke-UnityCode -Snippet @'
+using System.Linq;
+using System.Reflection;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.UseCase;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+// 「使わずに開始」と同じ経路（StartRun）で持ち込みなしのランを始める
+var runStartUseCase = scope.Container.Resolve<System.Collections.Generic.IReadOnlyList<IInitializable>>().OfType<RunStartUseCase>().First();
+typeof(RunStartUseCase).GetMethod("StartRun", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(runStartUseCase, null);
+return "started";
+'@ | Out-Null
+
+        $shown = Invoke-TutorialScreenClear
+        $afterClear = Get-TutorialScreenState
+        Assert-ProbeTrue -Name '持ち込みなしのクリアで GameOver が出る' `
+            -Condition ($shown -and $afterClear.type -eq 'GameOver' -and $afterClear.phase -eq 'HeadFollow') `
+            -Detail "(画面: $shown, 種類: $($afterClear.type), phase: $($afterClear.phase))" | Out-Null
+        Assert-ProbeValue -Name 'クリアでも GameOver の閲覧回数が記録される' -Actual ([double]$afterClear.gameOver) -Expected 2 | Out-Null
+
+        Invoke-TutorialScreenRestart
+        Invoke-UnityCode -Snippet @'
+using System.Linq;
+using System.Reflection;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.UseCase;
+using App.Common.Interface;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var meta = scope.Container.Resolve<IMetaProgressionDataStore>();
+var slot = 0;
+while (slot < meta.SlotCount && meta.IsSlotEmpty(slot)) slot++;
+var runStartUseCase = scope.Container.Resolve<System.Collections.Generic.IReadOnlyList<IInitializable>>().OfType<RunStartUseCase>().First();
+typeof(RunStartUseCase).GetMethod("OnSlotSelected", BindingFlags.NonPublic | BindingFlags.Instance)
+    .Invoke(runStartUseCase, new object[] { slot });
+return "loaded";
+'@ | Out-Null
+
+        $shown = Invoke-TutorialScreenClear
+        $afterClearOther = Get-TutorialScreenState
+        Assert-ProbeTrue -Name '持ち込みありのクリアで OtherBuild が出る' `
+            -Condition ($shown -and $afterClearOther.type -eq 'OtherBuild' -and $afterClearOther.phase -eq 'HeadFollow') `
+            -Detail "(画面: $shown, 種類: $($afterClearOther.type), phase: $($afterClearOther.phase))" | Out-Null
+        Assert-ProbeValue -Name 'クリアでも OtherBuild の閲覧回数が記録される' -Actual ([double]$afterClearOther.otherBuild) -Expected 2 | Out-Null
+        Assert-ProbeValue -Name '持ち込みありのクリアでは GameOver を出さない（回数が増えない）' -Actual ([double]$afterClearOther.gameOver) -Expected 2 | Out-Null
+
         # --- 6. メインメニューのセット選択でも SelectSlot が出て、タイトルへ戻ると消える ---
         Invoke-UnityCode -Snippet @'
 using VContainer;
@@ -282,6 +370,7 @@ using System.Linq;
 using System.Reflection;
 using VContainer;
 using VContainer.Unity;
+using App.Common.Data;
 using App.Common.Interface;
 using App.MainMenu;
 using App.MainMenu.UseCase;
@@ -289,6 +378,9 @@ using App.MainMenu.UseCase;
 var scope = LifetimeScope.Find<MainMenuLifetimeScope>();
 var view = scope.Container.Resolve<ITutorialMessageView>();
 var before = view.Phase.ToString();
+
+// バトル内のリスタートで既に何度か出ているので、未閲覧に戻してから見る
+scope.Container.Resolve<ITutorialProgressDataStore>().ResetProgress(TutorialType.SelectSlot);
 
 // START ボタンと同じ経路（OnStart）でセット選択を出す
 var mainMenu = scope.Container.Resolve<System.Collections.Generic.IReadOnlyList<IInitializable>>().OfType<MainMenuUseCase>().First();
@@ -300,7 +392,7 @@ return $"{{\"before\":\"{before}\"}}";
         Assert-ProbeTrue -Name 'メインメニューのセット選択で SelectSlot が出る' `
             -Condition ($menu.before -eq 'Hidden' -and $menuShown.type -eq 'SelectSlot' -and $menuShown.phase -eq 'HeadFollow') `
             -Detail "(before: $($menu.before), 種類: $($menuShown.type), phase: $($menuShown.phase))" | Out-Null
-        Assert-ProbeValue -Name 'メインメニューでも SelectSlot の閲覧回数が記録される' -Actual ([double]$menuShown.selectSlot) -Expected 2 | Out-Null
+        Assert-ProbeValue -Name 'メインメニューでも SelectSlot の閲覧回数が記録される' -Actual ([double]$menuShown.selectSlot) -Expected 1 | Out-Null
 
         $menuText = Invoke-UnityJson -Snippet @'
 using TMPro;
