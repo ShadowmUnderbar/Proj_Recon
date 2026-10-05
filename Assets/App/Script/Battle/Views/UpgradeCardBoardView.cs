@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using App.Battle.Data;
 using App.Common.Data.MasterData;
+using App.Common.Views;
 using R3;
 using UnityEngine;
 
@@ -32,7 +33,10 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("カメラからカードまでの距離[m]")]
         private float _distance = 0.9f;
 
-        [SerializeField, Range(-180f, 180f), Tooltip("カードを配置する俯角[deg]。0で視線の正面、正の値で下側")]
+        [SerializeField, Tooltip("俯角を揃えるHUD。設定するとHUDの俯角でカードを並べ、HUDの手前に出す")]
+        private VrUiFollowCanvasView _pitchSource;
+
+        [SerializeField, Range(-180f, 180f), Tooltip("カードを配置する俯角[deg]。0で視線の正面、正の値で下側。_pitchSource未設定時のみ使う")]
         private float _pitchAngle = 30f;
 
         [SerializeField, Tooltip("1行あたりのカード枚数")]
@@ -119,7 +123,7 @@ namespace App.Battle.Views
 
             var boardPose = isPointerMode
                 ? UpgradeCardBoardLayout.CalcPointerBoardPose(targetCamera.transform, _pointerLocalPosition)
-                : UpgradeCardBoardLayout.CalcBoardPose(targetCamera.transform, _distance, _pitchAngle);
+                : UpgradeCardBoardLayout.CalcBoardPose(targetCamera.transform, _distance, GetPitchAngle());
 
             transform.SetPositionAndRotation(boardPose.position, boardPose.rotation);
 
@@ -246,6 +250,15 @@ namespace App.Battle.Views
 
                 card.MoveToHome(_followSpeed);
             }
+        }
+
+        /// <summary>
+        /// カードを並べる俯角。HUDと別々に値を持つと食い違ってカードが視界から外れるため、
+        /// HUDが設定されていればその俯角に揃える
+        /// </summary>
+        private float GetPitchAngle()
+        {
+            return _pitchSource != null ? _pitchSource.PitchAngle : _pitchAngle;
         }
 
         private bool TryGetTargetCamera(out Camera targetCamera)

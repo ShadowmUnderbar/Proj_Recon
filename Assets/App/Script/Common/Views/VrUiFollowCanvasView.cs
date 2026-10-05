@@ -57,7 +57,9 @@ namespace App.Common.Views
         [SerializeField, Tooltip("非VR時のカメラ相対位置[m]。見下ろしカメラでも画面内に収まるようにする")]
         private Vector3 _nonVrLocalPosition = new(0f, 0f, 1.2f);
 
-        /// <summary>方向ベクトルが実質ゼロかを判定するしきい値。Mathf.Epsilonでは小さすぎて機能しない</summary>
+        /// <summary>UIを配置する俯角[deg]。同じ位置に重ねて出すUI（アップグレードカード等）が向きを揃えるために参照する</summary>
+        public float PitchAngle => _pitchAngle;
+
         private Canvas _canvas;
         private Camera _targetCamera;
 
