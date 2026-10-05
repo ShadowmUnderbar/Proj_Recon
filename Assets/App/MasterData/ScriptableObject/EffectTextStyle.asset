@@ -20,13 +20,13 @@ MonoBehaviour:
     _color: {r: 1, g: 0.3, b: 0.3, a: 1}
     _memo: "\u5F31\u5316\u52B9\u679C\uFF08ParameterType.Negative \u306E\u52B9\u679C\u5024\u3082\u542B\u3080\uFF09"
   - _tagName: w
-    _color: {r: 1, g: 0.5, b: 0, a: 1}
+    _color: {r: 0.28627452, g: 1, b: 0, a: 1}
     _memo: "\u30EF\u30EB\u30C4\u30B7\u30E7\u30C3\u30C8\uFF08\u30E9\u30A4\u30F3\u3068\u540C\u3058\u8272\uFF09"
   - _tagName: m
-    _color: {r: 0.2, g: 0.2, b: 0.3, a: 1}
+    _color: {r: 0, g: 0.21176471, b: 1, a: 1}
     _memo: "\u30DE\u30FC\u30B8\u30B7\u30E7\u30C3\u30C8\uFF08\u30E9\u30A4\u30F3\u3068\u540C\u3058\u8272\uFF09"
   - _tagName: f
-    _color: {r: 1, g: 0.3, b: 1, a: 1}
+    _color: {r: 0.78431374, g: 0.7254902, b: 0, a: 1}
     _memo: "\u30D5\u30A9\u30FC\u30AB\u30B9\u30B7\u30E7\u30C3\u30C8\uFF08\u30CE\u30FC\u30DE\u30EB\uFF0B\u30D5\u30A9\u30FC\u30AB\u30B9\u6642\u306E\u30E9\u30A4\u30F3\u3068\u540C\u3058\u8272\uFF09"
   - _tagName: o
     _color: {r: 0.85, g: 0.66, b: 0.42, a: 1}

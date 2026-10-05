@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: ShotLineColorConfig
   m_EditorClassIdentifier: 
   _normalColor: {r: 1, g: 0, b: 0, a: 1}
-  _focusColor: {r: 1, g: 0.3, b: 1, a: 1}
-  _waltzColor: {r: 1, g: 0.5, b: 0, a: 1}
-  _mergeColor: {r: 0.2, g: 0.2, b: 0.3, a: 1}
+  _focusColor: {r: 0.78431374, g: 0.72316575, b: 0, a: 1}
+  _waltzColor: {r: 0.28730118, g: 1, b: 0, a: 1}
+  _mergeColor: {r: 0, g: 0.2120986, b: 1, a: 1}

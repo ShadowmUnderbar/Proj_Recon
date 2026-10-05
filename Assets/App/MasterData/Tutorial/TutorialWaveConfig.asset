@@ -15,3 +15,9 @@ MonoBehaviour:
   _entries:
   - Wave: 1
     Type: 1
+  - Wave: 2
+    Type: 2
+  - Wave: 3
+    Type: 3
+  - Wave: 4
+    Type: 4
