@@ -16,9 +16,9 @@ MonoBehaviour:
   _enemyMasterDataId: B-002
   _enemyRankType: 4
   _dropPointOverride: 0
-  _damage: 1
+  _damage: 5
   _attackInterval: 4.5
-  _hp: 50
+  _hp: 75
   _resistanceDirectionType: 0
   _resistanceMultiplier: 1
   _weakDirectionType: 0
