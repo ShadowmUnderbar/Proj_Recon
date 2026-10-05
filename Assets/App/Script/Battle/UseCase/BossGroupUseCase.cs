@@ -109,7 +109,8 @@ namespace App.Battle.UseCase
                     _enemyPresenter.SetBossHold(command.EnemyId, false);
                     break;
                 case BossDirectorCommandType.Formation:
-                    _enemyPresenter.SetBossFormation(command.EnemyId, command.Slot, command.LateralOffset);
+                    _enemyPresenter.SetBossFormation(command.EnemyId, command.Slot, command.LateralOffset,
+                        command.MoveSeconds);
                     break;
                 case BossDirectorCommandType.Cancel:
                     _enemyPresenter.CancelBossAction(command.EnemyId);

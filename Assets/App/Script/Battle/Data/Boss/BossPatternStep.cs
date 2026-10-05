@@ -19,7 +19,9 @@ namespace App.Battle.Data
 
         /// <summary>
         /// 対象をプレイヤーの縦方向（上下）と横方向（左右）に交互に振り分けて配置し直す。
-        /// どの個体がどちらになるか・正負のどちら側かはランダム。同じ軸に偏らない（2体なら必ず縦と横の組）
+        /// どの個体がどちらになるか・正負のどちら側かはランダム。同じ軸に偏らない（2体なら必ず縦と横の組）。
+        /// MoveSeconds が0より大きければ、全員の行動が明けてから時を止め、その秒数で配置先へ移動させてから時止めを解いて次へ進む
+        /// （対象以外は移動の間その場で待機させる）。0なら時を止めずに瞬間移動させる
         /// </summary>
         CrossFormation,
 
@@ -31,7 +33,8 @@ namespace App.Battle.Data
 
         /// <summary>
         /// 対象2体を、プレイヤーから見て隣り合う斜めの角（左上と右上など）へ配置する。
-        /// 2体の向きが直交するので、プレイヤーへ向けた帯が×字に交わる。どの角の組になるかはランダム
+        /// 2体の向きが直交するので、プレイヤーへ向けた帯が×字に交わる。どの角の組になるかはランダム。
+        /// MoveSeconds の扱いは CrossFormation と同じ
         /// </summary>
         DiagonalFormation,
 
@@ -72,6 +75,10 @@ namespace App.Battle.Data
         [SerializeField, Tooltip("CrossFormation のみ。少なくとも1体はずれ0（プレイヤーと重なる位置）にする。候補に0が無いときは効かない")]
         private bool _requireAlignedOne;
 
+        [SerializeField, Min(0f),
+         Tooltip("CrossFormation / DiagonalFormation のみ。時を止めて配置先へ移動する秒数。0なら時を止めずに瞬間移動する")]
+        private float _moveSeconds;
+
         [SerializeField, Min(1), Tooltip("RandomLoop のみ。繰り返す範囲（このステップの直前の何個か）")]
         private int _loopBackSteps = 1;
 
@@ -92,6 +99,7 @@ namespace App.Battle.Data
         public float WaitSeconds => _waitSeconds;
         public float[] LateralOffsets => _lateralOffsets;
         public bool RequireAlignedOne => _requireAlignedOne;
+        public float MoveSeconds => _moveSeconds;
         public int LoopBackSteps => _loopBackSteps;
         public int LoopMin => _loopMin;
         public int LoopMax => _loopMax;

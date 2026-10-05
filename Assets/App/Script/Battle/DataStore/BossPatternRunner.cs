@@ -46,6 +46,9 @@ namespace App.Battle.DataStore
         // TimeStopOrbit ステップの進み具合
         private readonly BossTimeStopOrbit _timeStopOrbit = new();
 
+        // 配置のつき直しで時を止めて移動させている間 true（経過秒数は _waitElapsed で数える）
+        private bool _isFormationMoving;
+
         public IReadOnlyList<int> MemberIds => _memberIds;
 
         /// <summary>メンバーが全員撃破・消去済みか</summary>
@@ -58,7 +61,7 @@ namespace App.Battle.DataStore
         /// この台本が時を止めているか。全員いなくなると台本は進まず true のまま残るため、
         /// そのときは呼び出し側が時止めを解くこと（<see cref="SwitchPattern"/> は自分で解く命令を出す）
         /// </summary>
-        public bool IsTimeStopping => _timeStopOrbit.IsTimeStopping;
+        public bool IsTimeStopping => _timeStopOrbit.IsTimeStopping || _isFormationMoving;
 
         public BossPatternRunner(IReadOnlyList<int> memberIds, IReadOnlyList<BossPatternStep> steps,
             System.Random random)
@@ -165,22 +168,8 @@ namespace App.Battle.DataStore
                     return ProcessRandomLoop(step);
 
                 case BossPatternStepType.DiagonalFormation:
-                    if (!AreTargetsSpawned(step))
-                    {
-                        return StepResult.Blocked;
-                    }
-
-                    return AssignDiagonalFormation(step, output) ? StepResult.CompletedAndYield : StepResult.Completed;
-
                 case BossPatternStepType.CrossFormation:
-                    // 出現（プレハブの読み込み）が済んでいない個体には配置を届けられないため待つ
-                    if (!AreTargetsSpawned(step))
-                    {
-                        return StepResult.Blocked;
-                    }
-
-                    // 配置し直した直後は、移動が反映されてから次のステップへ進む
-                    return AssignCrossFormation(step, output) ? StepResult.CompletedAndYield : StepResult.Completed;
+                    return ProcessFormation(step, ref deltaTime, output);
 
                 case BossPatternStepType.TimeStopOrbit:
                     return ProcessTimeStopOrbit(step, ref deltaTime, output);
@@ -245,6 +234,76 @@ namespace App.Battle.DataStore
         }
 
         /// <summary>
+        /// 配置のつき直し。MoveSeconds が0なら瞬間移動させて終わる。
+        /// 0より大きければ、時を止めてその秒数で移動させ、移動し終えたら時止めを解いて Completed
+        /// </summary>
+        private StepResult ProcessFormation(BossPatternStep step, ref float deltaTime, List<BossDirectorCommand> output)
+        {
+            if (_isFormationMoving)
+            {
+                // 経過時間は1ティックに1回だけ使う（Wait と同じ）
+                _waitElapsed += deltaTime;
+                deltaTime = 0f;
+                if (_waitElapsed < step.MoveSeconds)
+                {
+                    return StepResult.Blocked;
+                }
+
+                FinishFormationMove(output);
+                return StepResult.Completed;
+            }
+
+            // 出現（プレハブの読み込み）が済んでいない個体には配置を届けられないため待つ
+            if (!AreTargetsSpawned(step))
+            {
+                return StepResult.Blocked;
+            }
+
+            if (step.MoveSeconds <= 0f)
+            {
+                // 配置し直した直後は、移動が反映されてから次のステップへ進む
+                return AssignFormation(step, output, 0f) ? StepResult.CompletedAndYield : StepResult.Completed;
+            }
+
+            if (!HasAliveTarget(step))
+            {
+                return StepResult.Completed;
+            }
+
+            // 対象以外も含めて全員の行動が明けてから止める（弾幕の途中で止めると、止めたあとに撃った弾が止まらない）
+            if (!AreAllAliveActionable())
+            {
+                return StepResult.Blocked;
+            }
+
+            HoldNonTargets(step, output);
+            output.Add(BossDirectorCommand.BeginTimeStop());
+            AssignFormation(step, output, step.MoveSeconds);
+            _isFormationMoving = true;
+            return StepResult.Blocked;
+        }
+
+        private bool AssignFormation(BossPatternStep step, List<BossDirectorCommand> output, float moveSeconds)
+        {
+            return step.Type == BossPatternStepType.DiagonalFormation
+                ? AssignDiagonalFormation(step, output, moveSeconds)
+                : AssignCrossFormation(step, output, moveSeconds);
+        }
+
+        /// <summary>時を止めた配置の移動を終える（時止めを解き、待機させていた個体を解放する）</summary>
+        private void FinishFormationMove(List<BossDirectorCommand> output)
+        {
+            if (!_isFormationMoving)
+            {
+                return;
+            }
+
+            _isFormationMoving = false;
+            output.Add(BossDirectorCommand.EndTimeStop());
+            ReleaseAllHeld(output);
+        }
+
+        /// <summary>
         /// 時止めの回りこみ攻撃を1段階ずつ進める（命令を出したら次のティックで状態を見てから進む）。
         /// 時止め → 対象が90度回りこむ（1体は連射）→ 時止めを解く → 一息、の順。終わったら Completed
         /// </summary>
@@ -305,17 +364,7 @@ namespace App.Battle.DataStore
         /// </summary>
         private void BeginTimeStopOrbit(BossPatternStep step, List<BossDirectorCommand> output)
         {
-            for (var slot = 0; slot < _memberIds.Length; slot++)
-            {
-                if (_isGone[slot] || _isHeld[slot] || ContainsSlot(step, slot))
-                {
-                    continue;
-                }
-
-                _isHeld[slot] = true;
-                output.Add(BossDirectorCommand.Hold(_memberIds[slot]));
-            }
-
+            HoldNonTargets(step, output);
             output.Add(BossDirectorCommand.BeginTimeStop());
 
             // PickAliveTarget が生存している対象（重複なし）を _formationSlots に集める
@@ -371,6 +420,21 @@ namespace App.Battle.DataStore
             return true;
         }
 
+        /// <summary>生存している対象以外をその場で待機させる</summary>
+        private void HoldNonTargets(BossPatternStep step, List<BossDirectorCommand> output)
+        {
+            for (var slot = 0; slot < _memberIds.Length; slot++)
+            {
+                if (_isGone[slot] || _isHeld[slot] || ContainsSlot(step, slot))
+                {
+                    continue;
+                }
+
+                _isHeld[slot] = true;
+                output.Add(BossDirectorCommand.Hold(_memberIds[slot]));
+            }
+        }
+
         /// <summary>生存している全員をその場で待機させる</summary>
         private void HoldAllAlive(List<BossDirectorCommand> output)
         {
@@ -390,7 +454,7 @@ namespace App.Battle.DataStore
         /// 生存している対象を並べ替え、縦（上下）・横（左右）の順に交互に割り当てる。正負の側はそれぞれランダム。
         /// 割り当てた個体がいれば true
         /// </summary>
-        private bool AssignCrossFormation(BossPatternStep step, List<BossDirectorCommand> output)
+        private bool AssignCrossFormation(BossPatternStep step, List<BossDirectorCommand> output, float moveSeconds)
         {
             _formationSlots.Clear();
             foreach (var slot in step.MemberSlots)
@@ -416,7 +480,8 @@ namespace App.Battle.DataStore
                 var formation = i % 2 == 0
                     ? (isPositive ? BossFormationSlot.Up : BossFormationSlot.Down)
                     : (isPositive ? BossFormationSlot.Right : BossFormationSlot.Left);
-                output.Add(BossDirectorCommand.Formation(_memberIds[_formationSlots[i]], formation, _formationOffsets[i]));
+                output.Add(BossDirectorCommand.Formation(_memberIds[_formationSlots[i]], formation, _formationOffsets[i],
+                    moveSeconds));
             }
 
             return _formationSlots.Count > 0;
@@ -450,7 +515,7 @@ namespace App.Battle.DataStore
         /// 生存している対象（先頭の2体）を、隣り合う斜めの角へ割り当てる。2体の向きが直交するので帯が×字になる。
         /// 割り当てた個体がいれば true
         /// </summary>
-        private bool AssignDiagonalFormation(BossPatternStep step, List<BossDirectorCommand> output)
+        private bool AssignDiagonalFormation(BossPatternStep step, List<BossDirectorCommand> output, float moveSeconds)
         {
             _formationSlots.Clear();
             foreach (var slot in step.MemberSlots)
@@ -466,7 +531,8 @@ namespace App.Battle.DataStore
 
             for (var i = 0; i < _formationSlots.Count && i < 2; i++)
             {
-                output.Add(BossDirectorCommand.Formation(_memberIds[_formationSlots[i]], DiagonalCorners[i == 0 ? first : second]));
+                output.Add(BossDirectorCommand.Formation(_memberIds[_formationSlots[i]], DiagonalCorners[i == 0 ? first : second],
+                    moveSeconds: moveSeconds));
             }
 
             return _formationSlots.Count > 0;
@@ -522,6 +588,7 @@ namespace App.Battle.DataStore
 
             // 時止めの回りこみ攻撃の途中なら時止めを解き、待機させていた個体を解放する
             FinishTimeStopOrbit(output);
+            FinishFormationMove(output);
 
             _steps = steps;
             _stepIndex = 0;

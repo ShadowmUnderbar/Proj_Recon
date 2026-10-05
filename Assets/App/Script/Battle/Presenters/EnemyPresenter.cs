@@ -102,9 +102,9 @@ namespace App.Battle.Presenters
             _enemyStoreView.SetBossHold(enemyId, isHold);
         }
 
-        public void SetBossFormation(int enemyId, BossFormationSlot slot, float lateralOffset)
+        public void SetBossFormation(int enemyId, BossFormationSlot slot, float lateralOffset, float moveSeconds)
         {
-            _enemyStoreView.SetBossFormation(enemyId, slot, lateralOffset);
+            _enemyStoreView.SetBossFormation(enemyId, slot, lateralOffset, moveSeconds);
         }
 
         public void CancelBossAction(int enemyId)

@@ -8,12 +8,14 @@ namespace App.Battle.Views.Enemy.AI.Boss
 {
     /// <summary>
     /// プレイヤーの上下左右（ワールドの軸）のいずれかについて動く、二人組ボス「TickTock」用のAI。
-    /// 台本の配置（CrossFormation）を受けると、プレイヤーからその方向へ一定距離、横へ指定のずれだけ離れた位置へ瞬間移動する。
+    /// 台本の配置（CrossFormation など）を受けると、プレイヤーからその方向へ一定距離、横へ指定のずれだけ離れた位置へ、
+    /// 指定の秒数を掛けて、プレイヤーを中心に回りこみながら距離を詰める（離す）ように移動する（台本が時を止めている間に動く。秒数が0なら瞬間移動）。
     /// 以後はプレイヤーがどう動いても位置関係と距離が崩れないよう、経路探索ではなく毎フレーム配置先へ直接追従する（FollowTo）。
     /// 行動0（弾幕）: 配置の方向へ一定距離を保ったままプレイヤーと並ぶ位置（横のずれなし）を追い、
     ///   移動方向と直交する向き（プレイヤーの側）へ弾を連射する。長さは EnemyMasterData の ActiveTime。
     /// 行動1（帯の攻撃）: その場に留まり、プレイヤーの側へ伸びる帯を予兆として出し、予兆が明けた瞬間に帯の中のプレイヤーへ当てる。
     ///   範囲・秒数・ダメージは BossLineStrikeConfig。
+    ///   帯の攻撃（行動1・2）を終えたら、次の配置の指定までプレイヤーを追わずに攻撃した位置に留まる（次の配置は攻撃後の位置から回りこむ）。
     /// 行動2（帯の連続攻撃）: 行動1と同じ帯を、予兆1回のあと同じ向き・同じ位置のまま予兆なしで続けて当てる（×字の配置で使う）。
     ///   回数と間隔は BossLineStrikeConfig の RepeatCount / RepeatInterval。
     /// 行動3（回りこみ連射）: 命令された向きへプレイヤーを中心に90度回りこみながら、プレイヤーへ向けて弾を連射する。
@@ -74,6 +76,14 @@ namespace App.Battle.Views.Enemy.AI.Boss
         // 次の弾までの残り時間（秒）
         private float _fireTimer;
 
+        // 配置先への移動（起点のプレイヤーからの水平の向きと距離・掛ける秒数・経過秒数）。_formationMoveSeconds が0なら移動していない
+        private Vector3 _formationMoveStartOffset;
+        private float _formationMoveSeconds;
+        private float _formationMoveElapsed;
+
+        // 帯の攻撃を終えてから次の配置の指定までの間 true（その間はプレイヤーを追わず、攻撃した位置に留まる）
+        private bool _isHoldingStrikePosition;
+
         // 回りこみの起点の向き（プレイヤーから見た方向）と、回りこみ始めてからの秒数
         private Vector3 _orbitStartDirection;
         private float _orbitElapsed;
@@ -115,15 +125,28 @@ namespace App.Battle.Views.Enemy.AI.Boss
             base.GetActionDurations(actionIndex, out windup, out active, out recovery);
         }
 
-        protected override void OnFormationAssigned(BossFormationSlot slot)
+        protected override void OnFormationAssigned(BossFormationSlot slot, float moveSeconds)
         {
+            _formationMoveSeconds = 0f;
+            _isHoldingStrikePosition = false;
             if (slot == BossFormationSlot.None || PlayerTransform == null)
             {
                 return;
             }
 
-            TeleportTo(GetFormationPosition());
             FaceFireDirection();
+
+            if (moveSeconds <= 0f)
+            {
+                TeleportTo(GetFormationPosition());
+                return;
+            }
+
+            // 移動そのものは BattleMove で毎フレーム進める
+            _formationMoveStartOffset = transform.position - PlayerTransform.position;
+            _formationMoveStartOffset.y = 0f;
+            _formationMoveSeconds = moveSeconds;
+            _formationMoveElapsed = 0f;
         }
 
         protected override void BattleMove()
@@ -141,8 +164,14 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
             FaceFireDirection();
 
-            // 帯の攻撃の間はその場に留まる（予兆と攻撃の範囲を動かさない）
-            if (IsActing && IsLineStrike(CurrentActionIndex))
+            if (_formationMoveSeconds > 0f)
+            {
+                UpdateFormationMove();
+                return;
+            }
+
+            // 帯の攻撃の間はその場に留まる（予兆と攻撃の範囲を動かさない）。攻撃を終えてから次の配置までも攻撃した位置に留まる
+            if ((IsActing && IsLineStrike(CurrentActionIndex)) || _isHoldingStrikePosition)
             {
                 return;
             }
@@ -153,11 +182,17 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         protected override void OnActionWindup(int actionIndex)
         {
+            // 配置先への移動が残っていれば（移動中のスタンなど）ここで詰め切る。帯の起点や弾幕の追従が移動の途中から始まらないようにする
+            FinishFormationMove();
+
             if (IsLineStrike(actionIndex))
             {
                 BeginTelegraph();
                 return;
             }
+
+            // 帯以外の行動（弾幕など）は配置を挟まずに始まっても、留まらずにプレイヤーを追う
+            _isHoldingStrikePosition = false;
 
             if (IsOrbit(actionIndex))
             {
@@ -227,12 +262,62 @@ namespace App.Battle.Views.Enemy.AI.Boss
                 _lineStrikeView.Hide();
             }
 
+            // 帯の攻撃のあとは、次の配置の指定まで攻撃した位置に留まる
+            if (IsLineStrike(actionIndex))
+            {
+                _isHoldingStrikePosition = true;
+            }
+
             // 回りこんだ先の配置につき直す（以後の追従・弾幕・帯の向きがその配置になる）。
             // 最後のフレームの端数で回りきれなかった分もここで詰める。途中で打ち切られたときも回りこんだ先へ移す（撃破されたときは動かさない）
             if (IsOrbit(actionIndex) && FormationSlot != BossFormationSlot.None && PlayerTransform != null
                 && State.Value != EnemyAIState.Dead)
             {
-                SetFormation(FormationSlot.Turn90(CurrentTurnDirection), 0f);
+                SetFormation(FormationSlot.Turn90(CurrentTurnDirection), 0f, 0f);
+            }
+        }
+
+        /// <summary>
+        /// 配置先へ、プレイヤーを中心に回りこみながら指定の秒数で近づける。
+        /// 向き（角度）は近い側の回り方で配置先の向きへ、距離は起点の距離から配置先の距離へ、どちらも一定の速さで変える。
+        /// 真反対へ移るとき（上→下など）は回る向きが決まらないため、Mathf.DeltaAngle の符号に任せる。
+        /// 台本の時止めの長さと揃えるため、スネークアイズの減速は掛けない（時止めが解けた時点で移動し終えている）
+        /// </summary>
+        private void UpdateFormationMove()
+        {
+            _formationMoveElapsed += Time.deltaTime;
+            var progress = Mathf.Clamp01(_formationMoveElapsed / _formationMoveSeconds);
+            var targetOffset = GetFormationPosition() - PlayerTransform.position;
+            targetOffset.y = 0f;
+
+            var startAngle = Mathf.Atan2(_formationMoveStartOffset.x, _formationMoveStartOffset.z) * Mathf.Rad2Deg;
+            var targetAngle = Mathf.Atan2(targetOffset.x, targetOffset.z) * Mathf.Rad2Deg;
+            var angle = startAngle + Mathf.DeltaAngle(startAngle, targetAngle) * progress;
+            var radius = Mathf.Lerp(_formationMoveStartOffset.magnitude, targetOffset.magnitude, progress);
+            var direction = Quaternion.AngleAxis(angle, Vector3.up) * Vector3.forward;
+
+            FollowTo(PlayerTransform.position + direction * radius);
+            // 回りこんでいる間はプレイヤーの側を向く（回りこみの攻撃と同じ）。移動し終えたら BattleMove が撃つ向きへ戻す
+            transform.rotation = Quaternion.LookRotation(-direction, Vector3.up);
+
+            if (progress >= 1f)
+            {
+                _formationMoveSeconds = 0f;
+            }
+        }
+
+        /// <summary>配置先への移動が残っていれば、配置先へ詰めて終える</summary>
+        private void FinishFormationMove()
+        {
+            if (_formationMoveSeconds <= 0f)
+            {
+                return;
+            }
+
+            _formationMoveSeconds = 0f;
+            if (FormationSlot != BossFormationSlot.None && PlayerTransform != null)
+            {
+                FollowTo(GetFormationPosition());
             }
         }
 

@@ -2,6 +2,7 @@
 # 二人組ボス「TickTock」の時止めの回りこみ攻撃（台本の TimeStopOrbit / BossTickTock の行動3・4 / TimeStopDataStore）を実プレイで検証するプローブ。
 #
 # デバッグ対戦（Request-DebugArena）で BossGroup_TickTock と戦い、通常の台本（弾幕の交代2回のあと）に入っている時止めまで待って、次を確かめる。
+# 配置のつき直し（CrossFormation の MoveSeconds）でも短く時が止まるため、TimeStopOrbit のステップで止まった区間だけを見る。
 #   - 2体とも行動が明けてから時を止め、時止めと同時に2体が回りこみ始める（1体は回りこみ連射＝ActionIndex、もう1体は回りこむだけ＝PartnerActionIndex）
 #   - 2体ともプレイヤーを中心に同じ向きへ90度回りこむ（距離は _keepDistance のまま）。回りこみ終えたら回りこんだ先の配置につく
 #   - 時止めの長さは回りこみの秒数（_orbitSeconds）。連射役だけが _orbitFireInterval ごとに撃ち、撃った弾は時止めの間その場で止まる
@@ -138,7 +139,8 @@ return "{}";
     $positionSnippet = @'
 var p = player.Position.Value;
 var ts = scope.Container.Resolve<ITimeStopDataStore>().IsTimeStopped.CurrentValue;
-return $"{{\"x\":{p.x},\"z\":{p.z},\"time\":{Time.time},\"ts\":{ts.ToString().ToLower()}}}";
+var step = GetRunner()?.StepIndex ?? -1;
+return $"{{\"x\":{p.x},\"z\":{p.z},\"time\":{Time.time},\"ts\":{ts.ToString().ToLower()},\"step\":{step}}}";
 '@
 
     # --- 時止めの前は移動の入力が効く ---
@@ -153,10 +155,10 @@ return $"{{\"x\":{p.x},\"z\":{p.z},\"time\":{Time.time},\"ts\":{ts.ToString().To
     $state = $null
     for ($i = 0; $i -lt 300; $i++) {
         $state = Invoke-BossSnippet -Body $positionSnippet
-        if ($state.ts) { break }
+        if ($state.ts -and $state.step -eq $config.stepIndex) { break }
         Start-Sleep -Milliseconds 100
     }
-    if (-not (Assert-ProbeTrue -Name '台本どおりに時止めが始まる' -Condition ($state.ts) -Detail "t=$($state.time)")) { return }
+    if (-not (Assert-ProbeTrue -Name '台本どおりに回りこみの時止めが始まる' -Condition ($state.ts -and $state.step -eq $config.stepIndex) -Detail "t=$($state.time) ステップ $($state.step)")) { return }
     $pressStart = $state.time
     Invoke-Uloop -Command 'simulate-keyboard' -Params @{ action = 'Press'; key = 'W'; duration = "$($Global:TimeStopPressSeconds)" } | Out-Null
     $pressEnd = (Invoke-BossSnippet -Body $positionSnippet).time
@@ -190,7 +192,8 @@ return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits
     })
     Write-Host "記録: $($rows.Count) 行 / 被弾の通知 $($hits.Count) 回"
 
-    $stopRows = @($rows | Where-Object { $_.ts })
+    # 配置のつき直しの時止めは除き、回りこみのステップで止まった区間だけを見る
+    $stopRows = @($rows | Where-Object { $_.ts -and $_.step -eq $config.stepIndex })
     $firstStop = [Array]::IndexOf($rows, $stopRows[0])
     $lastStop = [Array]::IndexOf($rows, $stopRows[-1])
     $beforeRow = $rows[[Math]::Max(0, $firstStop - 1)]
@@ -201,7 +204,6 @@ return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits
 
     # --- 時止めの始まり ---
     Assert-ProbeTrue -Name '時止めの直前は2体とも行動していない' -Condition ($beforeRow.a.phase -eq 'Ready' -and $beforeRow.b.phase -eq 'Ready') -Detail "A=$($beforeRow.a.phase) B=$($beforeRow.b.phase)" | Out-Null
-    Assert-ProbeTrue -Name '時止めは台本の TimeStopOrbit ステップで起きる' -Condition (@($stopRows | Where-Object { $_.step -ne $config.stepIndex }).Count -eq 0) -Detail "ステップ $($config.stepIndex)" | Out-Null
     $actions = @($startRow.a.action, $startRow.b.action) | Sort-Object
     $expectedActions = @($config.action, $config.partnerAction) | Sort-Object
     Assert-ProbeTrue -Name '時止めと同時に、1体は回りこみ連射・もう1体は回りこみを始める' -Condition (($actions -join ',') -eq ($expectedActions -join ',') -and $startRow.a.phase -ne 'Ready' -and $startRow.b.phase -ne 'Ready') -Detail "A=$($startRow.a.phase)/行動$($startRow.a.action) B=$($startRow.b.phase)/行動$($startRow.b.action)" | Out-Null
@@ -271,16 +273,16 @@ return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits
     Assert-ProbeTrue -Name '時止めを解いてから一息の間、2体とも待機する' -Condition ($breathRows.Count -gt 0 -and @($breathRows | Where-Object { -not ($_.a.hold -and $_.b.hold) }).Count -eq 0) -Detail "記録 $($breathRows.Count) 行" | Out-Null
     $afterRows = @($rows | Where-Object { $_.time -gt $endRow.time + $config.breath + 0.3 })
     Assert-ProbeTrue -Name '一息のあと待機を解いて台本の先頭へ戻る' -Condition ($afterRows.Count -gt 0 -and $afterRows[-1].step -ne $config.stepIndex -and -not $afterRows[-1].a.hold -and -not $afterRows[-1].b.hold) -Detail $(if ($afterRows.Count -gt 0) { "ステップ $($afterRows[-1].step) / 待機 A=$($afterRows[-1].a.hold) B=$($afterRows[-1].b.hold)" } else { '記録なし' }) | Out-Null
-    Assert-ProbeValue -Name '時止めは1回だけ（解けたあとに止まった行数）' -Actual @($rows | Select-Object -Skip ($lastStop + 1) | Where-Object { $_.ts }).Count -Expected 0 | Out-Null
+    Assert-ProbeValue -Name '回りこみの時止めは1回だけ（解けたあとに回りこみのステップで止まった行数）' -Actual @($rows | Select-Object -Skip ($lastStop + 1) | Where-Object { $_.ts -and $_.step -eq $config.stepIndex }).Count -Expected 0 | Out-Null
 
     # --- 時止めの途中で全員倒すと時止めが解ける（解けないと次のウェーブでも動けなくなる） ---
     $state = $null
     for ($i = 0; $i -lt 400; $i++) {
         $state = Invoke-BossSnippet -Body $positionSnippet
-        if ($state.ts) { break }
+        if ($state.ts -and $state.step -eq $config.stepIndex) { break }
         Start-Sleep -Milliseconds 100
     }
-    if (-not (Assert-ProbeTrue -Name '台本を一周して2回目の時止めが始まる' -Condition ($state.ts) -Detail "t=$($state.time)")) { return }
+    if (-not (Assert-ProbeTrue -Name '台本を一周して2回目の回りこみの時止めが始まる' -Condition ($state.ts -and $state.step -eq $config.stepIndex) -Detail "t=$($state.time) ステップ $($state.step)")) { return }
     Invoke-BossSnippet -Body @'
 var ids = GetRunner().MemberIds;
 var enemy = enemies.Enemies.First(e => e.Id == ids[0]);

@@ -22,10 +22,11 @@ namespace App.Battle.Interface.EnemyAI
         void SetHold(bool isHold);
 
         /// <summary>
-        /// プレイヤーに対してつく位置を指定する（対応するボスAIは指定位置へ瞬間移動する）。
-        /// lateralOffset は配置先を横（プレイヤーへ向かう向きと直交する向き）へずらす量（m）
+        /// プレイヤーに対してつく位置を指定する（対応するボスAIは指定位置へ移動する）。
+        /// lateralOffset は配置先を横（プレイヤーへ向かう向きと直交する向き）へずらす量（m）。
+        /// moveSeconds は配置先へ移動するのに掛ける秒数（0なら瞬間移動）
         /// </summary>
-        void SetFormation(BossFormationSlot slot, float lateralOffset);
+        void SetFormation(BossFormationSlot slot, float lateralOffset, float moveSeconds);
 
         /// <summary>行動を打ち切って待機へ戻す（行動していなければ何もしない）</summary>
         void CancelAction();

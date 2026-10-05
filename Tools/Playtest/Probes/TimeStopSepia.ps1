@@ -2,7 +2,8 @@
 # ボスの時止めの間、プレイヤー側にセピア調がかかることを実プレイで検証するプローブ
 # （TimeStopEffectUseCase / TimeStopConfig のプリセット / SepiaToneDataStore / SepiaToneView）。
 #
-# デバッグ対戦（Request-DebugArena）で BossGroup_TickTock と戦い、台本の時止めまで待って、次を確かめる。
+# デバッグ対戦（Request-DebugArena）で BossGroup_TickTock と戦い、台本の時止め（TimeStopOrbit）まで待って、次を確かめる。
+# 配置のつき直し（CrossFormation の MoveSeconds）でも短く時が止まるため、TimeStopOrbit のステップで止まった区間だけを見る。
 #   - 時止めの前は、どのグループにもセピアがかかっていない（_SepiaToneWeights が0）
 #   - 時止めが始まると、プリセットの対象グループ（既定はプレイヤーと背景＝床）の強さがフェードインの秒数で Intensity まで上がり、
 #     対象外のグループ（既定は敵・UI）は0のまま
@@ -45,7 +46,10 @@ function Invoke-TimeStopSepiaProbeBody {
     $config = Invoke-BossSnippet -Body @'
 var config = UnityEditor.AssetDatabase.LoadAssetAtPath<TimeStopConfig>("Assets/App/MasterData/TimeStop/TimeStopConfig.asset");
 var preset = config.SepiaTonePreset;
-return $"{{\"groups\":{(int)preset.TargetGroups},\"intensity\":{preset.Intensity},\"fadeIn\":{preset.FadeInSeconds},\"fadeOut\":{preset.FadeOutSeconds}}}";
+var group = UnityEditor.AssetDatabase.LoadAssetAtPath<BossGroupConfig>("Assets/App/MasterData/Boss/BossGroup_TickTock.asset");
+var orbitStep = group.Pattern.ToList().FindIndex(s => s.Type == BossPatternStepType.TimeStopOrbit);
+var breath = group.Pattern[orbitStep].WaitSeconds;
+return $"{{\"groups\":{(int)preset.TargetGroups},\"intensity\":{preset.Intensity},\"fadeIn\":{preset.FadeInSeconds},\"fadeOut\":{preset.FadeOutSeconds},\"stepIndex\":{orbitStep},\"breath\":{breath}}}";
 '@
     Write-Host "設定: 対象グループ $($config.groups)（1＝背景 2＝敵 4＝プレイヤー 8＝UI の和）/ 強さ $($config.intensity) / フェードイン $($config.fadeIn)秒 / フェードアウト $($config.fadeOut)秒"
     Assert-ProbeTrue -Name 'プリセットの対象にプレイヤーのグループが入っている' -Condition (($config.groups -band 4) -ne 0) -Detail "対象グループ $($config.groups)" | Out-Null
@@ -79,7 +83,8 @@ var subs = new CompositeDisposable();
 Observable.EveryUpdate().Subscribe(_ =>
 {
     var w = Shader.GetGlobalVector(weightsId);
-    log.Add($"{Time.time:F3},{timeStop.IsTimeStopped.CurrentValue},{overclock.IsActive.CurrentValue},{w.x:F3},{w.y:F3},{w.z:F3},{w.w:F3}");
+    var step = GetRunner()?.StepIndex ?? -1;
+    log.Add($"{Time.time:F3},{timeStop.IsTimeStopped.CurrentValue},{overclock.IsActive.CurrentValue},{w.x:F3},{w.y:F3},{w.z:F3},{w.w:F3},{step}");
 }).AddTo(subs);
 AppDomain.CurrentDomain.SetData("bossProbe.sub", subs);
 AppDomain.CurrentDomain.SetData("bossProbe.log", log);
@@ -88,15 +93,16 @@ return "{}";
 
     $positionSnippet = @'
 var ts = scope.Container.Resolve<ITimeStopDataStore>().IsTimeStopped.CurrentValue;
-return $"{{\"time\":{Time.time},\"ts\":{ts.ToString().ToLower()}}}";
+var step = GetRunner()?.StepIndex ?? -1;
+return $"{{\"time\":{Time.time},\"ts\":{ts.ToString().ToLower()},\"step\":{step}}}";
 '@
     $state = $null
     for ($i = 0; $i -lt 300; $i++) {
         $state = Invoke-BossSnippet -Body $positionSnippet
-        if ($state.ts) { break }
+        if ($state.ts -and $state.step -eq $config.stepIndex) { break }
         Start-Sleep -Milliseconds 100
     }
-    if (-not (Assert-ProbeTrue -Name '台本どおりに時止めが始まる' -Condition ($state.ts) -Detail "t=$($state.time)")) { return }
+    if (-not (Assert-ProbeTrue -Name '台本どおりに回りこみの時止めが始まる' -Condition ($state.ts -and $state.step -eq $config.stepIndex) -Detail "t=$($state.time) ステップ $($state.step)")) { return }
     # 時止めが解けるのを待ち、フェードアウトを見届ける（時止めの長さは台本しだいなので、解けるまで見る）
     for ($i = 0; $i -lt 300; $i++) {
         $state = Invoke-BossSnippet -Body $positionSnippet
@@ -111,19 +117,21 @@ return $"{{\"log\":\"{string.Join(";", log)}\"}}";
 '@
     $rows = @($data.log.Split(';') | Where-Object { $_ } | ForEach-Object {
         $c = $_.Split(',')
-        [pscustomobject]@{ time = [double]$c[0]; ts = ($c[1] -eq 'True'); oc = ($c[2] -eq 'True'); bg = [double]$c[3]; enemy = [double]$c[4]; player = [double]$c[5]; ui = [double]$c[6] }
+        [pscustomobject]@{ time = [double]$c[0]; ts = ($c[1] -eq 'True'); oc = ($c[2] -eq 'True'); bg = [double]$c[3]; enemy = [double]$c[4]; player = [double]$c[5]; ui = [double]$c[6]; step = [int]$c[7] }
     })
     Write-Host "記録: $($rows.Count) 行"
     Assert-ProbeValue -Name '記録中にオーバークロックは発動していない（行数）' -Actual @($rows | Where-Object { $_.oc }).Count -Expected 0 | Out-Null
 
-    $stopRows = @($rows | Where-Object { $_.ts })
+    # 配置のつき直しの時止めは除き、回りこみのステップで止まった区間だけを見る
+    $stopRows = @($rows | Where-Object { $_.ts -and $_.step -eq $config.stepIndex })
     $firstStop = [Array]::IndexOf($rows, $stopRows[0])
     $lastStop = [Array]::IndexOf($rows, $stopRows[-1])
     $start = $stopRows[0].time
     $end = $rows[$lastStop + 1].time
     Write-Host ("時止め: t={0:F3}〜{1:F3}" -f $start, $end)
 
-    $beforeRows = @($rows | Select-Object -First $firstStop)
+    # 直前の配置のつき直しの時止め（弾幕の前）のフェードアウトは済んでいる、時止めの直前1秒を見る
+    $beforeRows = @($rows | Select-Object -First $firstStop | Where-Object { $_.time -ge $start - 1 })
     $beforeMax = if ($beforeRows.Count -gt 0) { ($beforeRows | ForEach-Object { [Math]::Max([Math]::Max($_.bg, $_.enemy), [Math]::Max($_.player, $_.ui)) } | Measure-Object -Maximum).Maximum } else { 0 }
     Assert-ProbeValue -Name '時止めの前はどのグループにもセピアがかかっていない（強さの最大）' -Actual $beforeMax -Expected 0 -Tolerance 0.001 | Out-Null
 
@@ -163,7 +171,8 @@ return $"{{\"log\":\"{string.Join(";", log)}\"}}";
     $cleared = @($afterRows | Where-Object { $_.player -le 0.001 } | Select-Object -First 1)
     $fadeOut = if ($cleared.Count -gt 0) { $cleared[0].time - $end } else { 999 }
     Assert-ProbeTrue -Name '時止めが解けるとフェードアウトの秒数で元の色に戻る' -Condition ($fadeOut -le $config.fadeOut + 0.1) -Detail ("{0:F3}秒（設定 {1}秒）" -f $fadeOut, $config.fadeOut) | Out-Null
-    $settled = @($afterRows | Where-Object { $_.time -gt $end + $config.fadeOut + 0.2 })
+    # 一息が明けると次の配置のつき直しでまた時が止まるため、一息の間（回りこみのステップに留まっている間）だけを見る
+    $settled = @($afterRows | Where-Object { $_.time -gt $end + $config.fadeOut + 0.2 -and $_.step -eq $config.stepIndex })
     $settledMax = if ($settled.Count -gt 0) { ($settled | ForEach-Object { [Math]::Max([Math]::Max($_.bg, $_.enemy), [Math]::Max($_.player, $_.ui)) } | Measure-Object -Maximum).Maximum } else { 999 }
     Assert-ProbeValue -Name '戻ったあとはどのグループにもセピアが残らない（強さの最大）' -Actual $settledMax -Expected 0 -Tolerance 0.001 | Out-Null
 }
