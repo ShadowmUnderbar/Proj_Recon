@@ -196,14 +196,15 @@ BossWaveUseCase  : ボスウェーブの開始（IsWavePause=false）で残っ�
                    プレイヤーを BossWaveConfig.PlayerPosition へ移して BossGroupConfig のボスを出す。
                    ボスウェーブ中は EnemyRandomSpawnCycleDataStore が周期スポーンを止める
 ShopUseCase      : OnWaveAdvanced でショップを開く。UpgradeLotteryDataStore で抽選、ポイントで購入
-                   → 「次のウェーブへ」で IsWavePause=false。開いたときにチュートリアル Shop を出す（消すのは次のウェーブ開始時の TutorialWaveUseCase）
+                   → 「次のウェーブへ」で IsWavePause=false。開いたときにチュートリアル Shop を出し、閉じるときに出ているチュートリアルを消す
+                   （ウェーブ再開より先に消すので、次のウェーブの説明は TutorialWaveUseCase が出せる）
 GameOverUseCase  : PlayerState.Health<=0 → 死亡演出（PlayerDeathConfig）→ RunResultUseCase.Show("GAME OVER")
                    クリア後に HP が 0 になってもゲームオーバーにしない（GameStateDataStore はゲームオーバーとクリアが排他）
 GameClearUseCase : IsCleared → 見出しだけのクリア表示 → GameClearConfig の秒数後に RunResultUseCase.Show("STAGE CLEAR")
 RunResultUseCase : 結果画面（GameOverView を共用）の操作。今回のランで獲得したアップグレードの一覧（AcquiredUpgradeListBuilder）を出す。スロット保存（MetaProgressionDataStore） / リスタート（RunResetUseCase） / メインメニューへ。
                    閉じる直前に OnClosing を流し、死亡演出・クリア表示の待ちを畳ませる
                    画面を出したらスロット保存のチュートリアル GameOver（セットを持ち込んだランなら代わりに OtherBuild）。
-                   ゲームオーバー・クリア共通。デバッグ対戦では出さない
+                   ゲームオーバー・クリア共通。デバッグ対戦では出さない。画面を閉じる（リスタート・メインメニューへ）ときに消す
 RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・弾・粒子を消す → RunStartDataStore.IsSelecting=true（セット選択へ）
 ```
 

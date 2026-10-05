@@ -16,7 +16,7 @@ namespace App.Battle.UseCase
     /// 保存は何度でも行え、リスタートボタンでラン状態を初期化してビルド選択へ戻る。
     /// メインメニューボタンではシーンごと切り替えてタイトルへ戻る。
     /// いつ画面を出すか（死亡演出・クリア表示の後）は GameOverUseCase / GameClearUseCase が決める。
-    /// 画面を出したらスロット保存のチュートリアルを出す（ゲームオーバー・クリア共通）。保存済みのセットを装備して始めたランなら、
+    /// 画面を出したらスロット保存のチュートリアルを出し、画面を閉じる（リスタート・メインメニューへ）ときに消す（ゲームオーバー・クリア共通）。保存済みのセットを装備して始めたランなら、
     /// スロット保存の説明（GameOver）の代わりに別ビルドを勧める説明（OtherBuild）を出す。
     /// </summary>
     public class RunResultUseCase : IInitializable, IDisposable
@@ -199,6 +199,7 @@ namespace App.Battle.UseCase
             _isResultShown = false;
             _gameOverPresenter.Hide();
             _playerControlPresenter.SetUiRayEnable(false);
+            _tutorialMessageUseCase.Hide();
 
             // 倒れた姿勢のままランが始まらないよう、リセットの前に演出を畳ませる
             _onClosing.OnNext(Unit.Default);

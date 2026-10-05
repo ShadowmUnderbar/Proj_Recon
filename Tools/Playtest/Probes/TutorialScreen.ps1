@@ -2,11 +2,12 @@
 # 画面ごとのチュートリアル表示（ショップ・結果画面・セット選択）を検証するプローブ。
 #
 # - ショップを開くと Shop が出る
-# - 次のウェーブが始まるとショップの説明は残らない（ウェーブに割り当てが無い・閲覧済みなら Hide）
+# - ショップを抜けるとダイアログが閉じる。次のウェーブに出す説明があればそれは出る
 # - セットを持ち込まずに始めたランのゲームオーバーでは GameOver が出る
 # - リスタートでバトル内のセット選択に戻ると SelectSlot が出る（前のメッセージは消える）
 # - スロットを選んで始めたランのゲームオーバーでは GameOver の代わりに OtherBuild が出る
 # - クリア時の結果画面でも同じく GameOver / OtherBuild が出る
+# - 結果画面を抜ける（メインメニューへ）とダイアログが閉じる
 # - メインメニューのセット選択でも SelectSlot が出て、タイトルへ戻ると消える
 #
 # 表示中の種類は TutorialMessageUseCase の _currentType を読んで判定する。
@@ -203,7 +204,7 @@ return $"{{\"pausedBefore\":{paused.ToString().ToLower()},\"pausedAfter\":{wave.
             -Detail "(種類: $($afterShop.type), phase: $($afterShop.phase), ポーズ: $($shop.pausedBefore)→$($shop.pausedAfter))" | Out-Null
         Assert-ProbeValue -Name 'Shop の閲覧回数が1になる' -Actual ([double]$afterShop.shop) -Expected 1 | Out-Null
 
-        # --- 2. 次のウェーブが始まるとショップの説明は残らない ---
+        # --- 2. ショップを抜けるとダイアログが閉じる ---
         Invoke-UnityCode -Snippet @'
 using System.Linq;
 using System.Reflection;
@@ -218,8 +219,49 @@ typeof(ShopUseCase).GetMethod("StartNextWave", BindingFlags.NonPublic | BindingF
 return "next";
 '@ | Out-Null
         $afterNext = Get-TutorialScreenState
-        Assert-ProbeTrue -Name '次のウェーブ開始でショップの説明が消える（または差し替わる）' -Condition ($afterNext.type -ne 'Shop') `
+        Assert-ProbeTrue -Name 'ショップを抜けるとダイアログが閉じる' -Condition ($afterNext.type -eq 'None' -and $afterNext.phase -eq 'Hidden') `
             -Detail "(種類: $($afterNext.type), phase: $($afterNext.phase))" | Out-Null
+
+        # --- 2b. 次のウェーブに出すチュートリアルがあれば、ショップを抜けた後にそれが出る（閉じる処理が後から消さない） ---
+        Invoke-UnityCode -Snippet @'
+using System.Linq;
+using System.Reflection;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Battle.UseCase;
+using App.Common.Interface;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var shop = scope.Container.Resolve<System.Collections.Generic.IReadOnlyList<IInitializable>>().OfType<ShopUseCase>().First();
+var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+var setting = scope.Container.Resolve<IPlayerSettingDataStore>();
+
+// 再表示を有効にして、閲覧済みのウェーブ1の説明も出る状態にする
+setting.SetTutorialReplayEnabled(true);
+typeof(ShopUseCase).GetMethod("OpenShopForDebug", flags).Invoke(shop, null);
+typeof(ShopUseCase).GetMethod("StartNextWave", flags).Invoke(shop, null);
+setting.SetTutorialReplayEnabled(false);
+return "next";
+'@ | Out-Null
+        $afterNextWave = Get-TutorialScreenState
+        Assert-ProbeTrue -Name 'ショップを抜けた後、次のウェーブの説明は出る' `
+            -Condition ($afterNextWave.type -like 'Wave*' -and $afterNextWave.phase -eq 'HeadFollow') `
+            -Detail "(種類: $($afterNextWave.type), phase: $($afterNextWave.phase))" | Out-Null
+        Invoke-UnityCode -Snippet @'
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Common.Data;
+using App.Common.Interface;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+// 2b でもう一度開いたぶんの Shop の記録を 1 回に戻す（以降の検証とは無関係だが回数を揃えておく）
+var progress = scope.Container.Resolve<ITutorialProgressDataStore>();
+progress.ResetProgress(TutorialType.Shop);
+progress.MarkViewed(TutorialType.Shop);
+return "ok";
+'@ | Out-Null
 
         # --- 3. セットを持ち込まずに始めたランのゲームオーバーでは GameOver ---
         $shown = Invoke-TutorialScreenGameOver
@@ -337,17 +379,29 @@ return "loaded";
         Assert-ProbeValue -Name 'クリアでも OtherBuild の閲覧回数が記録される' -Actual ([double]$afterClearOther.otherBuild) -Expected 2 | Out-Null
         Assert-ProbeValue -Name '持ち込みありのクリアでは GameOver を出さない（回数が増えない）' -Actual ([double]$afterClearOther.gameOver) -Expected 2 | Out-Null
 
-        # --- 6. メインメニューのセット選択でも SelectSlot が出て、タイトルへ戻ると消える ---
-        Invoke-UnityCode -Snippet @'
+        # --- 6. 結果画面からメインメニューへ抜けるとダイアログが閉じる ---
+        # シーンの読み込みは非同期なので、同じスニペット内ならバトルのダイアログを遷移前に読める
+        $leave = Invoke-UnityJson -Snippet @'
+using System.Reflection;
 using VContainer;
 using VContainer.Unity;
-using App.Common;
+using App.Battle;
+using App.Battle.UseCase;
+using App.Common.Data;
 using App.Common.Interface;
 
-var scope = LifetimeScope.Find<CommonLifetimeScope>();
-scope.Container.Resolve<ISceneTransitionUseCase>().LoadMainMenu();
-return "loading";
-'@ | Out-Null
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var view = scope.Container.Resolve<ITutorialMessageView>();
+var before = view.Phase.ToString();
+var result = scope.Container.Resolve<RunResultUseCase>();
+typeof(RunResultUseCase).GetMethod("OnReturnToMainMenu", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(result, null);
+return $"{{\"before\":\"{before}\",\"after\":\"{view.Phase}\"}}";
+'@
+        Assert-ProbeTrue -Name '結果画面からメインメニューへ抜けるとダイアログが閉じる' `
+            -Condition ($leave.before -eq 'HeadFollow' -and $leave.after -eq 'Hidden') `
+            -Detail "(before: $($leave.before), after: $($leave.after))" | Out-Null
+
+        # --- 7. メインメニューのセット選択でも SelectSlot が出て、タイトルへ戻ると消える ---
 
         $menuReady = $false
         for ($i = 0; $i -lt 50; $i++) {
@@ -430,7 +484,7 @@ return "title";
             -Detail "(種類: $($menuHidden.type), phase: $($menuHidden.phase))" | Out-Null
     }
     finally {
-        # --- 7. セーブデータを元に戻して保存する（シーンに依らず常駐スコープから触る） ---
+        # --- 8. セーブデータを元に戻して保存する（シーンに依らず常駐スコープから触る） ---
         Invoke-UnityCode -Snippet @'
 using VContainer;
 using VContainer.Unity;
