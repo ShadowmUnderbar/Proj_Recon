@@ -1523,6 +1523,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cardPrefab: {fileID: 7616037995001214442, guid: 506deb99f4ecb2d4797b7e2a8f00288a, type: 3}
   _distance: 0.9
+  _pitchSource: {fileID: 5264785232271319944}
   _pitchAngle: 90
   _columnCount: 5
   _cardSpacing: {x: 0.18, y: 0.26}
