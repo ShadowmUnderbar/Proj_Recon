@@ -187,9 +187,9 @@ RunStartUseCase  : RunLoadoutDataStore（メインメニューの選択）の Up
                    選択が無い（Battle シーン直接再生・リスタート）ときはセット選択 UI（RunStartView）を出して待つ
                    セット選択に入るたびに前のランのチュートリアルを消し、選択 UI を出したら SelectSlot を出す。
                    空でないセットを装備したら RunStartDataStore.HasLoadedBuild=true（結果画面のチュートリアルの出し分けに使う）
-WaveManagerUseCase: 経過時間 or キル数が WaveConfig に達したら AdvanceWave
+WaveManagerUseCase: 経過時間が WaveConfig に達したら AdvanceWave（キル数は集計のみで進行条件にしない）
                    （IsWavePause=true → スポーン周期リセット → 弾・粒子全消去 → OnWaveAdvanced）
-                   ボスウェーブ（BossWaveConfig、既定5）だけは時間・キル数を見ず、ボスを全員倒したらクリア
+                   ボスウェーブ（BossWaveConfig、既定5）だけは時間を見ず、ボスを全員倒したらクリア
                    （IsWavePause=true → 弾・粒子全消去 → GameStateDataStore.SetCleared。ウェーブ番号は進めずショップも開かない）。
                    出現・読み込みの失敗で誰も倒さずに消えたときはクリアにせず、止まらないよう次のウェーブへ進める
 BossWaveUseCase  : ボスウェーブの開始（IsWavePause=false）で残った敵を撃破扱いせずに消し、
@@ -365,7 +365,7 @@ GameInputDataStore.IsRightTrigger
  → PlayerControlPresenter.Shot → BattlePlayerView → PlayerShotView → PlayerBulletView(即着弾 SphereCast)
  → HitBoxView.OnHit → HitBoxStoreView → BattleHitPresenter.OnHit
  → BattleHitUseCase(倍率・感電) → EnemyDataStore.Damage → OnEnemyDead
-     ├→ WaveManagerUseCase(キル数) / PointDropUseCase(粒子) / BattleHitUseCase(撃破処理)
+     ├→ WaveManagerUseCase(キル数集計・ボス撃破判定) / PointDropUseCase(粒子) / BattleHitUseCase(撃破処理)
      └→ EnemyPresenter.UnSpawn
 
 【被弾】

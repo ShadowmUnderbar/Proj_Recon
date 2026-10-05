@@ -53,7 +53,7 @@ namespace App.Battle.UseCase
 
         public void Initialize()
         {
-            // 敵撃破でキル数加算 → 進行条件評価
+            // 敵撃破でキル数加算（集計のみ。ウェーブ進行は時間だけで判定する）→ ボス撃破の判定
             _enemyDataStore.OnEnemyDead
                 .Subscribe(_ => OnEnemyDead())
                 .AddTo(_disposable);
@@ -108,7 +108,7 @@ namespace App.Battle.UseCase
             var isMaxWaveReached = _waveConfig.HasMaxWave
                                    && _waveManagerDataStore.CurrentWave.CurrentValue >= _waveConfig.MaxWaveCount;
 
-            // ボスウェーブは制限時間・撃破数では進めず、ボスを全員倒したらクリアにする。
+            // ボスウェーブは制限時間では進めず、ボスを全員倒したらクリアにする。
             // 出現・読み込みの失敗で誰も倒さずに消えたときはクリアにせず、止まらないよう次のウェーブへ進める
             if (_bossWaveDataStore.IsBossWave)
             {
@@ -129,12 +129,11 @@ namespace App.Battle.UseCase
                 return;
             }
 
+            // 通常ウェーブは制限時間の経過だけで進める（撃破数では進めない）
             var isTimeReached = _waveManagerDataStore.ElapsedTime.CurrentValue
                                 >= _waveConfig.WaveDurationSeconds;
-            var isKillCountReached = _waveManagerDataStore.KillCount.CurrentValue
-                                     >= _waveConfig.WaveEnemyKillCount;
 
-            if (!isTimeReached && !isKillCountReached)
+            if (!isTimeReached)
             {
                 return;
             }
