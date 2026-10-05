@@ -104,7 +104,8 @@ Google スプレッドシート（GAS で CSV/ScriptableObject 出力）
 |---|---|
 | `MainMenuLifetimeScope` | DI スコープ |
 | `MenuRoom` / `Floor` / `Ceiling` / `Wall*` | `Tools/MainMenu/メインメニューの部屋を生成` で作った部屋（`Editor/MainMenuRoomBuilder.cs`） |
-| `MenuPlayerRig` | XR リグの親。`MenuLocomotionView`（CharacterController）と `VrUiRayAlwaysOnView` が付く |
+| `MenuPlayerRig` | XR リグの親。`MenuLocomotionView`（CharacterController）と `VrUiRayAlwaysOnView`、頭と両手の姿勢を返す `MenuPlayerPoseView` が付く |
+| `TutorialMessageView` | チュートリアルメッセージ（`UI/TutorialMessageView.prefab` をシーンのルートに配置。バトルと同じプレハブ） |
 | `TeleportLine` / `TeleportMarker` | テレポート照準の見た目 |
 | UI パネル（`UI/MainMenuView.prefab`, `UI/OptionPanelView.prefab`） | 部屋に固定設置。`MenuPanelProximityView` で近づいたときだけ操作可 |
 
@@ -118,6 +119,8 @@ Google スプレッドシート（GAS で CSV/ScriptableObject 出力）
 | （共通）`RunStartView` | `MainMenuView.prefab` 内の BuildSelectPanel に付く。スロット3＋「使わずに開始」＋「戻る」。実装は `Common/Views`（4.3） |
 | `OptionPanelView` | 利き手／移動方式ボタン、移動速度／スナップターン角スライダー。値の表示と操作通知のみ |
 | `MenuLocomotionView` | XR リグを CharacterController で動かす。カプセルを毎フレーム HMD 真下へ合わせる。スナップターン・テレポート実行 |
+| `MenuPlayerPoseView` | リグの HMD と左右コントローラの Transform を Inspector で持ち、姿勢を返す。チュートリアルメッセージの追従先 |
+| （共通）`TutorialMessageView` | チュートリアルメッセージ。実装は `Common/Views`（4.3） |
 | `MenuPanelProximityView` | CanvasGroup の interactable/alpha を距離で切り替える（ヒステリシスあり）。DI 対象外の純粋な見た目制御 |
 
 **Presenters（`MainMenu/Presenters`）** — すべて委譲のみ
@@ -128,14 +131,17 @@ Google スプレッドシート（GAS で CSV/ScriptableObject 出力）
 | （共通）`RunStartPresenter` | `IRunStartView`（`Common/Presenters`） |
 | `OptionPanelPresenter` | `IOptionPanelView` |
 | `MenuLocomotionPresenter` | `IMenuLocomotionView` |
+| `MenuPlayerPosePresenter` | `IMenuPlayerPoseView`。共通の `IPlayerPosePresenter` として登録し、`TutorialMessageUseCase` に頭と手の姿勢を渡す |
+| （共通）`TutorialMessagePresenter` | `ITutorialMessageView`（`Common/Presenters`） |
 
 **UseCase（`MainMenu/UseCase`）**
 
 | クラス | 依存 | 何をするか |
 |---|---|---|
-| `MainMenuUseCase` | `IMainMenuPresenter`, `IRunStartPresenter`, `IRunLoadoutDataStore`, `IMetaProgressionDataStore`, `ISceneTransitionUseCase` | START → セット選択 UI を表示。スロット／使わずに開始 → `RunLoadoutDataStore` に積んで `LoadBattle()`。失敗時は選び直せる状態へ戻す。Initialize で前回の選択を `Clear()` |
+| `MainMenuUseCase` | `IMainMenuPresenter`, `IRunStartPresenter`, `IRunLoadoutDataStore`, `IMetaProgressionDataStore`, `ISceneTransitionUseCase`, `ITutorialMessageUseCase` | START → セット選択 UI を表示（あわせてチュートリアル `SelectSlot`、タイトルへ戻ると消す）。スロット／使わずに開始 → `RunLoadoutDataStore` に積んで `LoadBattle()`。失敗時は選び直せる状態へ戻す。Initialize で前回の選択を `Clear()` |
 | `OptionUseCase` | `IOptionPanelPresenter`, `IPlayerSettingDataStore` | 設定→パネル表示、パネル操作→保存。スライダーは 0.3 秒 Debounce、Dispose 時に保存漏れを回収 |
 | `MenuLocomotionUseCase` | `IMenuLocomotionPresenter`, `IGameInputDataStore`, `IPlayerSettingDataStore` | 左スティック＝歩行／テレポート照準、右スティック左右＝スナップターン。移動方式は設定で切替 |
+| （共通）`TutorialMessageUseCase` | 4.2 参照 | チュートリアルメッセージを出す手段。メインメニューのスコープにも登録する |
 
 **DataStore / Data** — メニュー固有のものは無く、常駐の `RunLoadoutDataStore`（次ランのセット選択）、`MetaProgressionDataStore`（スロット内容）、`PlayerSettingDataStore`（`SaveData` の `DominantHand` / `Locomotion` / `MoveSpeed` / `SnapTurnAngle`）と `PlayerSettingRange`（範囲・刻み・既定値）を使う。
 
@@ -179,6 +185,8 @@ RunStartView.OnBack → MainMenuUseCase → タイトル表示へ戻す
 RunStartUseCase  : RunLoadoutDataStore（メインメニューの選択）の UpgradeIds を UpgradeSessionDataStore.Preload
                    → UpgradeSideEffectApplier で副作用適用 → 選択を Clear（消費）→ IsWavePause=false でウェーブ1開始
                    選択が無い（Battle シーン直接再生・リスタート）ときはセット選択 UI（RunStartView）を出して待つ
+                   セット選択に入るたびに前のランのチュートリアルを消し、選択 UI を出したら SelectSlot を出す。
+                   空でないセットを装備したら RunStartDataStore.HasLoadedBuild=true（結果画面のチュートリアルの出し分けに使う）
 WaveManagerUseCase: 経過時間 or キル数が WaveConfig に達したら AdvanceWave
                    （IsWavePause=true → スポーン周期リセット → 弾・粒子全消去 → OnWaveAdvanced）
                    ボスウェーブ（BossWaveConfig、既定5）だけは時間・キル数を見ず、ボスを全員倒したらクリア
@@ -188,9 +196,10 @@ BossWaveUseCase  : ボスウェーブの開始（IsWavePause=false）で残っ�
                    プレイヤーを BossWaveConfig.PlayerPosition へ移して BossGroupConfig のボスを出す。
                    ボスウェーブ中は EnemyRandomSpawnCycleDataStore が周期スポーンを止める
 ShopUseCase      : OnWaveAdvanced でショップを開く。UpgradeLotteryDataStore で抽選、ポイントで購入
-                   → 「次のウェーブへ」で IsWavePause=false
+                   → 「次のウェーブへ」で IsWavePause=false。開いたときにチュートリアル Shop を出す（消すのは次のウェーブ開始時の TutorialWaveUseCase）
 GameOverUseCase  : PlayerState.Health<=0 → 死亡演出（PlayerDeathConfig）→ RunResultUseCase.Show("GAME OVER")
                    クリア後に HP が 0 になってもゲームオーバーにしない（GameStateDataStore はゲームオーバーとクリアが排他）
+                   結果画面を出したらチュートリアル GameOver（セットを持ち込んだランなら代わりに OtherBuild）。デバッグ対戦では出さない
 GameClearUseCase : IsCleared → 見出しだけのクリア表示 → GameClearConfig の秒数後に RunResultUseCase.Show("STAGE CLEAR")
 RunResultUseCase : 結果画面（GameOverView を共用）の操作。今回のランで獲得したアップグレードの一覧（AcquiredUpgradeListBuilder）を出す。スロット保存（MetaProgressionDataStore） / リスタート（RunResetUseCase） / メインメニューへ。
                    閉じる直前に OnClosing を流し、死亡演出・クリア表示の待ちを畳ませる
@@ -239,8 +248,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `GameOverView` | ランの結果画面（ゲームオーバー・クリア共用）。スロット保存／リスタート／メインメニューへ。`ShowHeadlineOnly` でボタンを隠して見出しだけ出す（クリア表示）。見出しとスロットボタンの間に獲得アップグレードの一覧（`UpgradeList`、横に折り返して最良サイズに縮める） |
 | `PointParticleStoreView` / `PointParticleView` | ポイント粒子（一括更新、粒子ごとの Update 無し） |
 | `StreamerCameraView` | 配信用カメラ（HMD 映像に干渉しない）。`StreamerModeConfig` で既定 OFF |
-| `TutorialMessageView` | バトル中のチュートリアルメッセージ（WorldSpace Canvas、プレハブは `UI/TutorialMessageView.prefab`）。表示直後は視点の正面に追従し、規定時間後に非利き手の脇へ移って常に頭の方を向く。追従先の姿勢は UseCase から毎フレーム受け取る。オフセット・時間・追従速度は Inspector |
-| └ `TutorialMessagePlacement` / `TutorialMessagePlacementSettings` | 配置の状態機械と純粋計算（plain C#、DI 対象外）。左手向けオフセットを右手では x 反転、真下では頭の向きへフォールバック |
+| （共通）`TutorialMessageView` | チュートリアルメッセージ。実装は `Common/Views`（4.3）。`BattleLifetimeScope` がプレハブから生成する |
 | `SepiaToneView` | セピア調のグローバル変数（グループごとの強さ・色・暗部の色・グループのビット対応）を全シェーダへ配る（plain C#）。破棄時に強さを0へ戻す。受け手は `Material/Shaders/SepiaTone.hlsl`（`CurvedWorldLit` / `CurvedWorldUnlit` / `PlayerLifeGauge` が最終色に適用） |
 | `SepiaToneTargetView` | プレハブ・シーンのルートに付け、子の Renderer の `renderingLayerMask` のビット8〜11でセピア調のグループ（背景 / 敵 / プレイヤー / UI）を表す。マテリアルではなく Renderer 側に持たせるので、マテリアルを陣営間で共有しても分けられる。ボスの体力ゲージはプレイヤーのゲージを流用するため、`BossLifeGaugeStoreView` が生成後に「敵」へ付け替える |
 
@@ -248,12 +256,13 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 
 | クラス | 対応 View | 備考 |
 |---|---|---|
-| `PlayerControlPresenter` | `IBattlePlayerView` | 移動・射撃・照準・レイ色・死亡アニメなど、UseCase からプレイヤーへの窓口を一手に持つ |
+| `PlayerControlPresenter` | `IBattlePlayerView` | 移動・射撃・照準・レイ色・死亡アニメなど、UseCase からプレイヤーへの窓口を一手に持つ。共通の `IPlayerPosePresenter`（頭と手の姿勢）も兼ねる |
 | `EnemyPresenter` | `IEnemyStoreView` | スポーン／消去／検索／ポーズ／スタン／速度倍率／吹き飛ばし |
 | `BattleHitPresenter` | `IHitBoxStoreView` | `OnHit` の集約 |
 | `ShopPresenter` / `GameOverPresenter` | 各 UI View | |
 | （共通）`RunStartPresenter` | `IRunStartView`（`Common/Presenters`） | |
-| `PlayerLifeGaugePresenter` / `PointParticlePresenter` / `StreamerCameraPresenter` / `TutorialMessagePresenter` | 各 View | |
+| `PlayerLifeGaugePresenter` / `PointParticlePresenter` / `StreamerCameraPresenter` | 各 View | |
+| （共通）`TutorialMessagePresenter` | `ITutorialMessageView`（`Common/Presenters`） | |
 
 ### 3.5 UseCase（`Battle/UseCase`）
 
@@ -285,8 +294,8 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `WaveManagerUseCase` / `ShopUseCase` / `RunStartUseCase` / `GameOverUseCase` / `GameClearUseCase` / `RunResultUseCase` / `RunResetUseCase` | 3.2 参照 | |
 | `UpgradeSideEffectApplier` | アップグレード付与の副作用（バフ起動・バリア満タン）。Shop と RunStart の共通処理 | BuffState, PlayerBarrier |
 | `StreamerCameraUseCase` | ウェーブ進行・ボス・マルチキルで配信カメラの演出をトリガー | StreamerCamera, Enemy |
-| `TutorialMessageUseCase` | チュートリアルメッセージを出す手段。`ITutorialMessageUseCase`（`Show(TutorialType)` / `Hide()`）として登録し、呼び出し側が注入する。リスタートでセット選択へ戻ると自動で消す。文言は `TutorialLocalizationDataStore`、頭は `TryGetGazePose`、手は `NonDominantHand` 側の Pose を毎フレーム View へ渡す。表示のきっかけと `MarkViewed` は呼び出し側の責務 | TutorialLocalization, PlayerSetting, PlayerControl |
-| `TutorialWaveUseCase` | ウェーブ開始（`IsWavePause` が false になった瞬間）に `TutorialWaveConfig` の割り当てを引き、`ShouldShow` なら `ITutorialMessageUseCase.Show` して `MarkViewed`。出すものが無いウェーブでは前のメッセージを消す | WaveManager, TutorialProgress, TutorialMessage |
+| （共通）`TutorialMessageUseCase` | 4.2 参照。表示のきっかけはウェーブ開始（`TutorialWaveUseCase`）・ショップ（`ShopUseCase`）・結果画面（`GameOverUseCase`）・セット選択（`RunStartUseCase`） | |
+| `TutorialWaveUseCase` | ウェーブ開始（`IsWavePause` が false になった瞬間）に `TutorialWaveConfig` の割り当てを引き、`ITutorialMessageUseCase.ShowIfNeeded` で出す。出すものが無いウェーブでは前のメッセージ（ショップの説明など）を消す | WaveManager, TutorialMessage |
 
 ### 3.6 DataStore（`Battle/DataStore`）
 
@@ -312,7 +321,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `BossGroupDataStore` / `BossPatternRunner` | 複数個体のボスの出現（メンバーを `EnemyDataStore` へ登録。`SharedHealth` なら体力を共有させる）と行動台本の進行。`BossPatternRunner`（plain C#）が個体の状態から `Act`（全員が行動可能になったら同じフレームで一斉に行動、`HoldOthers` で対象の行動・硬直が終わるまで他を待機）・`WaitActionable`（硬直・スタン明けを待つ）・`Wait`（秒数）・`CrossFormation`（対象をプレイヤーの縦方向・横方向へ交互に振り分けて配置し直す。どちらが縦か・正負の側はランダム。横へのずれの候補と「少なくとも1体は0」を指定できる）・`RandomLoop`（直前のいくつかのステップを合計 Min〜Max 回ランダムに繰り返す。入れ子不可）・`DiagonalFormation`（2体を隣り合う斜めの角へ。向きが直交して帯が×字になる。`CrossFormation` とも `MoveSeconds` が0より大きければ、全員の行動が明けてから対象以外を待機させて時を止め、その秒数で配置先へ移動させてから時止めを解く。0なら時を止めず瞬間移動）・`TimeStopOrbit`（全員の行動が明けたら対象以外を待機させて時を止め、対象の全員へ同じ向き（時計回りか反時計回りかはランダム）の回りこみを `Act` で命令する。ランダムな1体は `ActionIndex`（回りこみ連射）、残りは `PartnerActionIndex`（回りこむだけ）→ 全員が回りこみ終えたら時止めを解き、全員を待機させて `WaitSeconds` 待つ → 待機を解いて次へ。進み具合は `BossTimeStopOrbit`）を進め、命令（`BossDirectorCommand`）を出す。撃破されたメンバーは対象から外す（時止めの途中で全員いなくなったら、`BossGroupUseCase` が撃破・消去の通知を受けた時点で時止めを解く）。`BossGroupConfig.RageHealthRatio` 以下まで体力が減ったら台本を `RagePattern`（発狂フェイズ）へ差し替え、行動中の個体は `Cancel` で打ち切る |
 | `BossWaveDataStore` | 現在ウェーブがボスウェーブか・出現済みか・全員倒したか |
 | `DebugArenaDataStore` | デバッグ対戦で出した相手の敵Idと、全員いなくなってからの出し直しの待ち（ラン開始で初期化） |
-| `GameStateDataStore` / `RunStartDataStore` / `FreezeDataStore` | ゲームオーバー／セット選択中／フリーズ残時間 |
+| `GameStateDataStore` / `RunStartDataStore` / `FreezeDataStore` | ゲームオーバー／セット選択中・保存済みセットを装備して始めたか（`HasLoadedBuild`）／フリーズ残時間 |
 | `OverclockDataStore` | オーバークロックのストック秒数・発動状態・残り時間・溜めたダメージ。しきい値は `OverclockConfig`。発動中は、時間で進む処理（バフ・デバフの効果時間、スポーン周期、ウェーブ経過時間、バリア再生、ケア・ノード）が `IsActive` を見て止まる。射撃・回避のクールダウンは止めない |
 | `SepiaToneDataStore` | かかっているセピア調のプリセットと、それぞれのフェードの進み具合。グループごとの強さは対象に含むプリセットの最大値（重ねても倍にならない）。演出の発生源はプリセットを `Apply` / `Release` するだけ |
 | `TimeStopDataStore` | ボスによる時止め中か。台本の `TimeStopOrbit` が始める・解く（秒数では解かない。ボスが回りこみ終えたら解く）。フリーズと違いボスは止めず、プレイヤーの移動・射撃・回避と弾・レイ演出だけを止め、プレイヤーは被弾しない |
@@ -342,8 +351,8 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle`, `BossWaveConfig`（ボスウェーブの番号・出すボスグループ・プレイヤー/ボスの位置、`MasterData/Boss`）, `BossLifeGaugeConfig`（ボスの体力ゲージの色・大きさ、`MasterData/Boss`。既定は紫）, `BossLineStrikeConfig`（ボスの帯の攻撃の幅・長さ・予兆/攻撃/硬直の秒数・連続攻撃の回数と間隔・ダメージ倍率・色、`MasterData/Boss`）, `BossGroupConfig`（ボスのメンバー・行動台本 `BossPatternStep[]`・体力共有、`MasterData/Boss`。`BossGroup_TwinShooter`＝交代と同時行動の確認用、`BossGroup_TickTock`＝体力共有の二人組）, `SepiaToneConfig`（セピアの色味。輝度1の色と輝度0＝黒の色の2点を結ぶので、黒い部分にも色が付く。`MasterData/SepiaTone`）, `SepiaTonePreset`（演出ごとの対象グループ・強さ・フェード秒数。オーバークロック用は `MasterData/Overclock/OverclockSepiaTonePreset`、時止め用は `MasterData/TimeStop/TimeStopSepiaTonePreset`）, `TimeStopConfig`（時止めの演出。セピア調プリセット、`MasterData/TimeStop`） |
 | デバッグ設定（組み立て時に `DebugConfig` から作って注入） | `EnemyGazeDebugSettings`, `DebugArenaSettings`（デバッグ対戦の相手・出し直し・無敵。予約が無ければ `Disabled`。`Common/Data/DebugArenaRequest` が予約の中身） |
 | 定数 | `PlayerConstants.PlayerId`（**今回新設**）, `ThemeColors`, `SepiaToneRenderingLayer`（セピア調のグループと renderingLayerMask のビットの対応） |
-| POCO / struct | `EnemyData`, `HitData`, `BossMemberStatus`, `BossDirectorCommand`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `TutorialMessageAnchor`, `UpgradeLocalizedText` |
-| enum | `EnemyAIState`, `BossActionPhase`, `BossPatternStepType`, `BossFormationSlot`（プレイヤーの上下左右、ワールド軸）, `SepiaToneGroup`（Flags）, `HitBoxType`, `StreamerCameraShotType`, `TutorialMessagePhase` |
+| POCO / struct | `EnemyData`, `HitData`, `BossMemberStatus`, `BossDirectorCommand`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `UpgradeLocalizedText` |
+| enum | `EnemyAIState`, `BossActionPhase`, `BossPatternStepType`, `BossFormationSlot`（プレイヤーの上下左右、ワールド軸）, `SepiaToneGroup`（Flags）, `HitBoxType`, `StreamerCameraShotType` |
 
 ### 3.8 主要データフロー
 
@@ -407,6 +416,7 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | `SceneTransitionUseCase` | `LoadMainMenu` / `LoadBattle`。二重遷移防止、失敗を戻り値で返す |
 | `XRInitUseCase` | XR Loader 起動／停止 |
 | `StreamerDisplayUseCase` | ストリーマーモード時のミラー表示抑制 |
+| `TutorialMessageUseCase` | チュートリアルメッセージを出す手段。常駐スコープではなく、**バトル・メインメニューの各シーンスコープに登録**する（View がシーンごとにあるため）。`ITutorialMessageUseCase`（`Show` / `ShowIfNeeded` / `Hide`）として呼び出し側が注入する。`ShowIfNeeded` は `ShouldShow` なら出して `MarkViewed` する。文言は `TutorialLocalizationDataStore`、頭と手の姿勢は `IPlayerPosePresenter`（バトルは `PlayerControlPresenter`、メインメニューは `MenuPlayerPosePresenter`）から取り、`NonDominantHand` 側を毎フレーム View へ渡す。いつ出す・消すかは呼び出し側の責務 |
 
 ### 4.3 Views / Presenters（`Common/Views`, `Common/Presenters`）
 
@@ -416,6 +426,8 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | `VrUiFollowCanvasView` / `VrUiRayView` / `VrUiRayAlwaysOnView` | VR 向け UI 基盤（遅延追従キャンバス・ハンドレイ） |
 | `ForwardRayView` / `HandForwardRayView` / `PlatformHandRotation` | 手・照準のレイ表示、プラットフォーム別の手の回転補正 |
 | `GazeTargetView` / `GazeTargetStoreView` / `GazeDetector` / `GazeHitTest` | 視線が対象に当たっているかの汎用判定。対象は球で近似し、余白は角度で持つ。`GazeTargetView`（対象に付ける）が有効な間だけ `GazeTargetStoreView`（`CommonLifetimeScope.prefab` 上に常駐、`IGazeTargetStoreView` で注入）に登録され、Store が LateUpdate で1フレームに決まった数ずつ順番に判定する。結果は `IsGazed`（R3）。判定本体の `GazeDetector`／`GazeHitTest` は plain C# で、入り／外れの余白差（ヒステリシス）と遅延でちらつきを抑える |
+| `TutorialMessageView` / `TutorialMessagePresenter` | チュートリアルメッセージ（WorldSpace Canvas、プレハブは `UI/TutorialMessageView.prefab`）。バトル・メインメニュー共用。表示直後は視点の正面に追従し、規定時間後に非利き手の脇へ移って常に頭の方を向く。手元にいる間は見ていなければ1行目へ縮める。追従先の姿勢は UseCase から毎フレーム受け取る。オフセット・時間・追従速度は Inspector |
+| └ `TutorialMessagePlacement` / `TutorialMessagePlacementSettings` / `TutorialMessageFold` | 配置の状態機械と純粋計算、縮小・展開の状態（plain C#、DI 対象外）。左手向けオフセットを右手では x 反転、真下では頭の向きへフォールバック |
 | `PlayerCameraTrackingView` | エディタ非 VR 時に `TrackedPoseDriver` を切る（旧 `PlayerCameraData`、`Camera.prefab` に付く） |
 | `CurvedWorldView` / `CurvedWorldGroundView` / `CurvedWorldBoundsView` / `CurvedWorldCameraRigView` / `CurvedWorldLine` | 水平線カーブ（頂点シェーダ）。詳細は `curved-world` スキル |
 | `CurvedWorldPrototypeMoveView` / `CurvedWorldTunerView` | `CurvedWorldPrototype.unity` 専用のプロトタイプ用（本編未使用） |
@@ -429,6 +441,7 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | Config（ScriptableObject） | `WaveConfig`, `StreamerModeConfig`, `CurvedWorldConfig`, `EnemyHitFeedbackConfig` |
 | 定数・設定 | `DebugConfig`（EditorPrefs）, `SceneNames`, `LayerConstants`（`Default` / `Enemy` / `PointParticle`、名前から引く）, `TagConstants`, `GameParamData`, `PlayerSettingRange`, `VectorConstants`（`DirectionEpsilon`、各 View の方向判定で共用） |
 | セーブ | `SaveData`, `UpgradeSetSlot` |
+| チュートリアル | `TutorialType`（種類。セーブに数値で記録）, `TutorialMessageAnchor`（追従先の姿勢）, `TutorialMessagePhase`（配置フェーズ） |
 | enum | `AimFocusType`, `ShotType`, `HandType`, `LocomotionType`, `PlatformType`, `EnemyRankType`, `HitDirectionType`, `UpgradeType`, `BuffConditionType`, `BuffEffectType`, `ParameterType`, `PlayerUnlockType`, `UnlockCoreSkillType` |
 
 ### 4.5 Framework（`Framework`）
