@@ -3,10 +3,11 @@ using App.Battle.Interface;
 using VContainer;
 using R3;
 using App.Common.Data;
+using App.Common.Interface;
 
 namespace App.Battle.Presenters
 {
-    public class PlayerControlPresenter : IPlayerControlPresenter
+    public class PlayerControlPresenter : IPlayerControlPresenter, IPlayerPosePresenter
     {
         private readonly IBattlePlayerView _playerView;
 
@@ -33,6 +34,17 @@ namespace App.Battle.Presenters
         public bool TryGetGazePose(out Pose pose)
         {
             return _playerView.TryGetGazePose(out pose);
+        }
+
+        // チュートリアルメッセージなどの追従の基準。頭は注視判定と同じカメラを使う
+        public bool TryGetHeadPose(out Pose pose)
+        {
+            return _playerView.TryGetGazePose(out pose);
+        }
+
+        public Pose GetHandPose(HandType hand)
+        {
+            return hand == HandType.Left ? LeftHandPose.Value : RightHandPose.Value;
         }
 
         public void Move(Vector2 moveV2)

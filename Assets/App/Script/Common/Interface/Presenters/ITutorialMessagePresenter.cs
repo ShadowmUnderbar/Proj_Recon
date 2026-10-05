@@ -1,6 +1,6 @@
-using App.Battle.Data;
+using App.Common.Data;
 
-namespace App.Battle.Interface
+namespace App.Common.Interface
 {
     /// <summary>
     /// チュートリアルメッセージ表示への窓口

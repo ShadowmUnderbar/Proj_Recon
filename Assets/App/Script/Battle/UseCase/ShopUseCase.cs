@@ -16,7 +16,9 @@ namespace App.Battle.UseCase
     /// <summary>
     /// ウェーブ間ショップの制御（仮組み）
     /// ウェーブ突破（OnWaveAdvanced）でショップを開き、所持ポイントで買えるだけアップグレードを購入させ、
-    /// 「次のウェーブへ」でショップを閉じてウェーブを再開する
+    /// 「次のウェーブへ」でショップを閉じてウェーブを再開する。
+    /// 開いたときにショップのチュートリアルを出す（消すのは次のウェーブ開始時の TutorialWaveUseCase）。
+    /// デバッグ対戦では出さない（既読にして、通常のプレイで出なくなるのを防ぐ）
     /// </summary>
     public class ShopUseCase : IRunResettable, IInitializable, ITickable, IDisposable
     {
@@ -36,6 +38,8 @@ namespace App.Battle.UseCase
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
         private readonly IUpgradeLocalizationDataStore _upgradeLocalizationDataStore;
+        private readonly ITutorialMessageUseCase _tutorialMessageUseCase;
+        private readonly DebugArenaSettings _debugArenaSettings;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -56,7 +60,9 @@ namespace App.Battle.UseCase
             IShopPresenter shopPresenter,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputDataStore gameInputDataStore,
-            IUpgradeLocalizationDataStore upgradeLocalizationDataStore
+            IUpgradeLocalizationDataStore upgradeLocalizationDataStore,
+            ITutorialMessageUseCase tutorialMessageUseCase,
+            DebugArenaSettings debugArenaSettings
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -69,6 +75,8 @@ namespace App.Battle.UseCase
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
             _upgradeLocalizationDataStore = upgradeLocalizationDataStore;
+            _tutorialMessageUseCase = tutorialMessageUseCase;
+            _debugArenaSettings = debugArenaSettings;
         }
 
         public void Initialize()
@@ -120,6 +128,11 @@ namespace App.Battle.UseCase
 
             // UI表示中だけボタン選択用のハンドレイを出す
             _playerControlPresenter.SetUiRayEnable(true);
+
+            if (!_debugArenaSettings.IsEnabled)
+            {
+                _tutorialMessageUseCase.ShowIfNeeded(TutorialType.Shop);
+            }
         }
 
         /// <summary>

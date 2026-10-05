@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace App.Battle.Views
+namespace App.Common.Views
 {
     /// <summary>
     /// チュートリアルメッセージの縮小（1行目だけの表示）と展開の状態（plain C#、DI 対象外）。

@@ -6,7 +6,8 @@
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:77221876cc6b8244180b96e320b1bcd4",
         "GUID:f132077da0b539844bdbbae657da156d",
-        "App.MainMenu.Interfaces"
+        "App.MainMenu.Interfaces",
+        "GUID:e48ba82fc88d7f549912144c2b5a7e80"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

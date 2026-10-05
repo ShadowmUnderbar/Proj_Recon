@@ -1,4 +1,4 @@
-namespace App.Battle.Data
+namespace App.Common.Data
 {
     /// <summary>
     /// チュートリアルメッセージの配置フェーズ

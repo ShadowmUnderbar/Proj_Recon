@@ -1,9 +1,9 @@
-using App.Battle.Data;
+using App.Common.Data;
 
-namespace App.Battle.Interface
+namespace App.Common.Interface
 {
     /// <summary>
-    /// バトル中に出すチュートリアルメッセージの表示。
+    /// チュートリアルメッセージの表示（バトル・メインメニュー共通）。
     /// 表示直後は視点の正面へ追従し、一定時間後に非利き手の脇へ移って常にプレイヤーの方を向く
     /// </summary>
     public interface ITutorialMessageView

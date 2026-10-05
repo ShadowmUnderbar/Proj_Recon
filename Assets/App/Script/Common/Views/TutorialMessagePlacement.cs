@@ -1,8 +1,7 @@
-using App.Battle.Data;
 using App.Common.Data;
 using UnityEngine;
 
-namespace App.Battle.Views
+namespace App.Common.Views
 {
     /// <summary>
     /// チュートリアルメッセージの配置計算（plain C#、DI 対象外）。

@@ -72,6 +72,7 @@ function ProbeRun {
 using UnityEngine;
 using App.Battle.Data;
 using App.Battle.Views;
+using App.Common.Views;
 using App.Common.Data;
 
 var settings = new TutorialMessagePlacementSettings(
@@ -154,6 +155,7 @@ return $"{{\"hiddenResult\":{hiddenResult.ToString().ToLower()},\"hiddenPhase\":
 using UnityEngine;
 using App.Battle.Data;
 using App.Battle.Views;
+using App.Common.Views;
 using App.Common.Data;
 
 var settings = new TutorialMessagePlacementSettings(
@@ -204,6 +206,7 @@ return $"{{\"moveError\":{moveError},\"turnGap\":{turnGap},\"turnRotGap\":{turnR
     # --- 1c. 縮小・展開の状態（TutorialMessageFold）: 縮小は本文を先に、展開は背景が広がりきってから本文を戻す ---
     $fold = Invoke-UnityJson -Snippet @'
 using App.Battle.Views;
+using App.Common.Views;
 
 var fold = new TutorialMessageFold();
 var initialProgress = fold.Progress;
@@ -251,6 +254,7 @@ using VContainer.Unity;
 using App.Battle;
 using App.Battle.Interface;
 using App.Battle.Views;
+using App.Common.Views;
 using App.Common.Data;
 using App.Common.Interface;
 
@@ -285,8 +289,10 @@ using VContainer;
 using VContainer.Unity;
 using App.Battle;
 using App.Battle.Interface;
+using App.Common.Interface;
 using App.Battle.UseCase;
 using App.Battle.Views;
+using App.Common.Views;
 using App.Common.Data;
 using TMPro;
 
@@ -313,7 +319,9 @@ using VContainer;
 using VContainer.Unity;
 using App.Battle;
 using App.Battle.Interface;
+using App.Common.Interface;
 using App.Battle.Views;
+using App.Common.Views;
 
 var scope = LifetimeScope.Find<BattleLifetimeScope>();
 var view = scope.Container.Resolve<ITutorialMessageView>() as TutorialMessageView;
@@ -345,9 +353,9 @@ using VContainer.Unity;
 using App.Battle;
 using App.Battle.Interface;
 using App.Battle.Views;
+using App.Common.Views;
 using App.Common.Data;
 using App.Common.Interface;
-using App.Common.Views;
 
 var scope = LifetimeScope.Find<BattleLifetimeScope>();
 var view = scope.Container.Resolve<ITutorialMessageView>() as TutorialMessageView;
@@ -399,6 +407,7 @@ using VContainer;
 using VContainer.Unity;
 using App.Battle;
 using App.Battle.Interface;
+using App.Common.Interface;
 using App.Battle.Views;
 using App.Common.Views;
 using TMPro;
@@ -497,6 +506,7 @@ using VContainer;
 using VContainer.Unity;
 using App.Battle;
 using App.Battle.Interface;
+using App.Common.Interface;
 using App.Battle.Views;
 using App.Common.Views;
 
@@ -518,6 +528,7 @@ using VContainer;
 using VContainer.Unity;
 using App.Battle;
 using App.Battle.Interface;
+using App.Common.Interface;
 using App.Battle.UseCase;
 using App.Common.Data;
 
@@ -525,7 +536,7 @@ var scope = LifetimeScope.Find<BattleLifetimeScope>();
 scope.Container.Resolve<ITutorialMessageUseCase>().Show(TutorialType.Wave1);
 var view = scope.Container.Resolve<ITutorialMessageView>();
 var size = ((UnityEngine.RectTransform)((UnityEngine.Component)view).transform).sizeDelta;
-var expandedSize = (UnityEngine.Vector2)typeof(App.Battle.Views.TutorialMessageView)
+var expandedSize = (UnityEngine.Vector2)typeof(App.Common.Views.TutorialMessageView)
     .GetField("_expandedSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).GetValue(view);
 
 return $"{{\"phase\":\"{view.Phase}\",\"width\":{size.x},\"height\":{size.y},\"expandedWidth\":{expandedSize.x},\"expandedHeight\":{expandedSize.y}}}";
@@ -542,8 +553,10 @@ using VContainer;
 using VContainer.Unity;
 using App.Battle;
 using App.Battle.Interface;
+using App.Common.Interface;
 using App.Battle.UseCase;
 using App.Battle.Views;
+using App.Common.Views;
 
 var scope = LifetimeScope.Find<BattleLifetimeScope>();
 scope.Container.Resolve<ITutorialMessageUseCase>().Hide();
