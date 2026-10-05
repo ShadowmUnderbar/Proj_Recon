@@ -7,6 +7,8 @@
 #   - 時止めの間に配置先へ連続的に移動する（瞬間移動しない＝1フレームの移動が移動距離の大半を占めない）
 #   - プレイヤーを中心に回りこみながら移動する（向きは一方向にだけ進み、プレイヤーとの距離は起点と配置先の距離の間を保つ＝プレイヤーを突っ切らない）。
 #     発狂フェイズでは横のずれで配置先の距離が変わるため、回りこみながら距離を詰める・離す移動も含まれる
+#   - 発狂フェイズでは、帯の攻撃を終えてから次の配置の時止めまで、プレイヤーが動いてもボスは攻撃した位置に留まる
+#     （発狂フェイズの間は時止めの外でプレイヤーを一定の速さで円を描くように動かす）
 #   - 時止めの間は行動を始めず、弾も撃たない
 #   - 時止めが解けた時点で、配置先（プレイヤーからその方向へ _keepDistance、横へ指定のずれ）に着いている
 #   - 時止めの外では、ボスが1フレームで大きく飛ばない（ワープが残っていない）
@@ -28,6 +30,11 @@ $Global:FormationMoveWarpThreshold = 1.0
 # どちらも2体がすれ違うときの NavMeshAgent の回避による押し合いのぶん
 $Global:FormationMoveBackAngleTolerance = 5
 $Global:FormationMoveRadiusTolerance = 1.0
+# 発狂フェイズの間にプレイヤーを動かす速さ（m/秒）と、円を一周する秒数
+$Global:FormationMovePlayerSpeed = 3
+$Global:FormationMovePlayerLoopSeconds = 4
+# 帯の攻撃のあと留まっているとみなす、ボスの位置のずれ（m）
+$Global:FormationMoveHoldTolerance = 0.1
 
 function ProbePrepare {
     Enter-BossProbeScene
@@ -115,15 +122,24 @@ var log = new List<string>();
 var timeStop = scope.Container.Resolve<ITimeStopDataStore>();
 var offsetProperty = typeof(BossAIBase).GetProperty("FormationLateralOffset", BindingFlags.NonPublic | BindingFlags.Instance);
 var stepsField = typeof(App.Battle.DataStore.BossPatternRunner).GetField("_steps", BindingFlags.NonPublic | BindingFlags.Instance);
+var actionProperty = typeof(BossAIBase).GetProperty("CurrentActionIndex", BindingFlags.NonPublic | BindingFlags.Instance);
 var subs = new CompositeDisposable();
-Observable.EveryUpdate().Subscribe(_ =>
+// 発狂フェイズの間（drive に速さが入ったら）、時止めの外でプレイヤーを円を描くように動かす。ボスの Update より前に動かす
+Observable.EveryUpdate(UnityFrameProvider.EarlyUpdate).Subscribe(_ =>
+{
+    var drive = AppDomain.CurrentDomain.GetData("formationProbe.drive") as float[];
+    if (drive == null || timeStop.IsTimeStopped.CurrentValue) return;
+    var angle = Time.time * Mathf.PI * 2f / drive[1];
+    player.WarpTo(player.Position.Value + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * drive[0] * Time.deltaTime);
+}).AddTo(subs);
+Observable.EveryUpdate(UnityFrameProvider.PostLateUpdate).Subscribe(_ =>
 {
     var runner = GetRunner();
     var a = GetBoss(0);
     var b = GetBoss(1);
     if (runner == null || a == null || b == null) return;
     string Member(BossAIBase x) =>
-        $"{x.Status.CurrentValue.Phase}|{GetFormation(x)}|{(float)offsetProperty.GetValue(x):F2}|{x.transform.position.x:F3}|{x.transform.position.z:F3}";
+        $"{x.Status.CurrentValue.Phase}|{GetFormation(x)}|{(float)offsetProperty.GetValue(x):F2}|{x.transform.position.x:F3}|{x.transform.position.z:F3}|{(int)actionProperty.GetValue(x)}";
     var pp = player.Position.Value;
     var bullets = GameObject.FindGameObjectsWithTag("Bullet").Length;
     // 発狂フェイズで台本が差し替わってもよいよう、ステップ番号ではなく今のステップが配置かどうかを残す
@@ -139,19 +155,22 @@ return "{}";
     Start-Sleep -Seconds $Global:FormationMoveRecordSeconds
 
     # --- 共有体力を発狂の割合より少し下まで削り、横のずれつきの配置も記録する ---
-    $cut = Invoke-BossSnippet -Body @'
+    $cutSnippet = @'
 var group = UnityEditor.AssetDatabase.LoadAssetAtPath<BossGroupConfig>("Assets/App/MasterData/Boss/BossGroup_TickTock.asset");
 var ids = GetRunner().MemberIds;
 var enemy = enemies.Enemies.First(e => e.Id == ids[0]);
 var target = enemy.MaxHp * (group.RageHealthRatio - 0.02f);
 enemies.Damage(new HitData(ids[0], enemy.Hp - target, App.Common.Data.HitDirectionType.None));
+AppDomain.CurrentDomain.SetData("formationProbe.drive", new[] { __SPEED__f, __LOOP__f });
 return $"{{\"time\":{Time.time},\"ratio\":{enemy.Hp / enemy.MaxHp}}}";
 '@
+    $cut = Invoke-BossSnippet -Body $cutSnippet.Replace('__SPEED__', "$Global:FormationMovePlayerSpeed").Replace('__LOOP__', "$Global:FormationMovePlayerLoopSeconds")
     Write-Host "発狂フェイズへ: 削った時刻 t=$($cut.time) / 体力の割合 $([Math]::Round($cut.ratio, 3))"
     Start-Sleep -Seconds $Global:FormationMoveRageRecordSeconds
 
     $data = Invoke-BossSnippet -Body @'
 var log = (List<string>)AppDomain.CurrentDomain.GetData("bossProbe.log");
+AppDomain.CurrentDomain.SetData("formationProbe.drive", null);
 return $"{{\"log\":\"{string.Join(";", log)}\"}}";
 '@
     Stop-BossProbeRecorder
@@ -160,7 +179,7 @@ return $"{{\"log\":\"{string.Join(";", log)}\"}}";
         $c = $_.Split(',')
         function Parse([string]$m) {
             $p = $m.Split('|')
-            [pscustomobject]@{ phase = $p[0]; slot = $p[1]; offset = [double]$p[2]; x = [double]$p[3]; z = [double]$p[4] }
+            [pscustomobject]@{ phase = $p[0]; slot = $p[1]; offset = [double]$p[2]; x = [double]$p[3]; z = [double]$p[4]; action = [int]$p[5] }
         }
         $pp = $c[5].Split('|')
         [pscustomobject]@{ time = [double]$c[0]; ts = ($c[1] -eq 'True'); formation = ($c[2] -eq 'True'); a = (Parse $c[3]); b = (Parse $c[4]); px = [double]$pp[0]; pz = [double]$pp[1]; bullets = [int]$c[6] }
@@ -237,6 +256,30 @@ return $"{{\"log\":\"{string.Join(";", log)}\"}}";
             Assert-ProbeValue -Name "$label $role 時止めが解けた時点の配置先からのずれ（$($end.$key.slot) / ずれ$($end.$key.offset)、m）" -Actual $gap -Expected 0 -Tolerance $Global:FormationMoveArriveTolerance | Out-Null
         }
     }
+
+    # --- 発狂フェイズ: 帯の攻撃を終えてから次の配置の時止めまで、プレイヤーが動いても攻撃した位置に留まる ---
+    $holdChecked = 0
+    foreach ($segment in $segments) {
+        if ($rows[$segment[0]].time -le $cut.time) { continue }
+        foreach ($key in 'a', 'b') {
+            $role = $key.ToUpper()
+            # 時止めの直前から遡り、最後に行動していた行を探す
+            $last = -1
+            for ($i = $segment[0] - 1; $i -ge 0 -and $rows[$i].time -gt $cut.time; $i--) {
+                if ($rows[$i].$key.phase -ne 'Ready') { $last = $i; break }
+            }
+            # 帯の攻撃（行動1・2）のあとだけを見る（弾幕のあとはプレイヤーを追う）
+            if ($last -lt 0 -or ($rows[$last].$key.action -ne 1 -and $rows[$last].$key.action -ne 2)) { continue }
+            $window = @($rows[($last + 1)..($segment[0] - 1)])
+            if ($window.Count -lt 2) { continue }
+            $origin = $window[0]
+            $maxShift = ($window | ForEach-Object { [Math]::Sqrt([Math]::Pow($_.$key.x - $origin.$key.x, 2) + [Math]::Pow($_.$key.z - $origin.$key.z, 2)) } | Measure-Object -Maximum).Maximum
+            $playerMove = [Math]::Sqrt([Math]::Pow($window[-1].px - $origin.px, 2) + [Math]::Pow($window[-1].pz - $origin.pz, 2))
+            $holdChecked++
+            Assert-ProbeValue -Name ("帯の攻撃のあと {0} は次の配置まで攻撃した位置に留まる（t={1:F2}〜{2:F2} / プレイヤーの移動 {3:F2}m、ボスのずれの最大 m）" -f $role, $origin.time, $window[-1].time, $playerMove) -Actual $maxShift -Expected 0 -Tolerance $Global:FormationMoveHoldTolerance | Out-Null
+        }
+    }
+    Assert-ProbeTrue -Name '帯の攻撃のあとの留まりを判定できた' -Condition ($holdChecked -ge 2) -Detail "$holdChecked 回" | Out-Null
 
     Assert-ProbeTrue -Name '回りこみながら距離を詰める・離す移動（横のずれで配置先の距離が変わる）を記録できた' -Condition ($radiusChanged -ge 1) -Detail "$radiusChanged 回" | Out-Null
 

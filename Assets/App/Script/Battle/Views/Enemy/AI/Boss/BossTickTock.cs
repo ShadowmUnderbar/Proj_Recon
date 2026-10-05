@@ -15,6 +15,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
     ///   移動方向と直交する向き（プレイヤーの側）へ弾を連射する。長さは EnemyMasterData の ActiveTime。
     /// 行動1（帯の攻撃）: その場に留まり、プレイヤーの側へ伸びる帯を予兆として出し、予兆が明けた瞬間に帯の中のプレイヤーへ当てる。
     ///   範囲・秒数・ダメージは BossLineStrikeConfig。
+    ///   帯の攻撃（行動1・2）を終えたら、次の配置の指定までプレイヤーを追わずに攻撃した位置に留まる（次の配置は攻撃後の位置から回りこむ）。
     /// 行動2（帯の連続攻撃）: 行動1と同じ帯を、予兆1回のあと同じ向き・同じ位置のまま予兆なしで続けて当てる（×字の配置で使う）。
     ///   回数と間隔は BossLineStrikeConfig の RepeatCount / RepeatInterval。
     /// 行動3（回りこみ連射）: 命令された向きへプレイヤーを中心に90度回りこみながら、プレイヤーへ向けて弾を連射する。
@@ -80,6 +81,9 @@ namespace App.Battle.Views.Enemy.AI.Boss
         private float _formationMoveSeconds;
         private float _formationMoveElapsed;
 
+        // 帯の攻撃を終えてから次の配置の指定までの間 true（その間はプレイヤーを追わず、攻撃した位置に留まる）
+        private bool _isHoldingStrikePosition;
+
         // 回りこみの起点の向き（プレイヤーから見た方向）と、回りこみ始めてからの秒数
         private Vector3 _orbitStartDirection;
         private float _orbitElapsed;
@@ -124,6 +128,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
         protected override void OnFormationAssigned(BossFormationSlot slot, float moveSeconds)
         {
             _formationMoveSeconds = 0f;
+            _isHoldingStrikePosition = false;
             if (slot == BossFormationSlot.None || PlayerTransform == null)
             {
                 return;
@@ -165,8 +170,8 @@ namespace App.Battle.Views.Enemy.AI.Boss
                 return;
             }
 
-            // 帯の攻撃の間はその場に留まる（予兆と攻撃の範囲を動かさない）
-            if (IsActing && IsLineStrike(CurrentActionIndex))
+            // 帯の攻撃の間はその場に留まる（予兆と攻撃の範囲を動かさない）。攻撃を終えてから次の配置までも攻撃した位置に留まる
+            if ((IsActing && IsLineStrike(CurrentActionIndex)) || _isHoldingStrikePosition)
             {
                 return;
             }
@@ -185,6 +190,9 @@ namespace App.Battle.Views.Enemy.AI.Boss
                 BeginTelegraph();
                 return;
             }
+
+            // 帯以外の行動（弾幕など）は配置を挟まずに始まっても、留まらずにプレイヤーを追う
+            _isHoldingStrikePosition = false;
 
             if (IsOrbit(actionIndex))
             {
@@ -252,6 +260,12 @@ namespace App.Battle.Views.Enemy.AI.Boss
             if (_lineStrikeView != null)
             {
                 _lineStrikeView.Hide();
+            }
+
+            // 帯の攻撃のあとは、次の配置の指定まで攻撃した位置に留まる
+            if (IsLineStrike(actionIndex))
+            {
+                _isHoldingStrikePosition = true;
             }
 
             // 回りこんだ先の配置につき直す（以後の追従・弾幕・帯の向きがその配置になる）。
