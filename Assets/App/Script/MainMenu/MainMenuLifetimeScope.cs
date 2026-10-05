@@ -1,5 +1,6 @@
 using App.Common.Interface;
 using App.Common.Presenters;
+using App.Common.UseCase;
 using App.Common.Views;
 using App.MainMenu.Interface;
 using App.MainMenu.Presenters;
@@ -26,6 +27,8 @@ namespace App.MainMenu
             builder.RegisterEntryPoint<MainMenuUseCase>();
             builder.RegisterEntryPoint<MenuLocomotionUseCase>();
             builder.RegisterEntryPoint<OptionUseCase>();
+            // チュートリアルメッセージ（バトルと共通）。セット選択の説明を MainMenuUseCase から出す
+            builder.RegisterEntryPoint<TutorialMessageUseCase>().As<ITutorialMessageUseCase>();
 
             #endregion
 
@@ -40,6 +43,11 @@ namespace App.MainMenu
                 .As<IMenuLocomotionPresenter>();
             builder.Register<OptionPanelPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IOptionPanelPresenter>();
+            builder.Register<TutorialMessagePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ITutorialMessagePresenter>();
+            // チュートリアルメッセージの追従先（リグの頭と非利き手）
+            builder.Register<MenuPlayerPosePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IPlayerPosePresenter>();
 
             #endregion
 
@@ -54,6 +62,11 @@ namespace App.MainMenu
                 .AsImplementedInterfaces().As<IMenuLocomotionView>();
             builder.RegisterComponentInHierarchy<OptionPanelView>()
                 .AsImplementedInterfaces().As<IOptionPanelView>();
+            builder.RegisterComponentInHierarchy<MenuPlayerPoseView>()
+                .AsImplementedInterfaces().As<IMenuPlayerPoseView>();
+            // チュートリアルメッセージ（WorldSpace Canvas）。バトルと同じプレハブをシーンに置く
+            builder.RegisterComponentInHierarchy<TutorialMessageView>()
+                .AsImplementedInterfaces().As<ITutorialMessageView>();
 
             #endregion
         }

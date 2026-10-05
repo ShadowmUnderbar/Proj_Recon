@@ -12,5 +12,12 @@ namespace App.Battle.DataStore
         {
             _isSelecting.Value = isSelecting;
         }
+
+        public bool HasLoadedBuild { get; private set; }
+
+        public void SetLoadedBuild(bool hasLoadedBuild)
+        {
+            HasLoadedBuild = hasLoadedBuild;
+        }
     }
 }

@@ -1,14 +1,13 @@
-using App.Battle.Data;
-using App.Battle.Interface;
-using App.Common.Views;
+using App.Common.Data;
+using App.Common.Interface;
 using TMPro;
 using UnityEngine;
 using VContainer;
 
-namespace App.Battle.Views
+namespace App.Common.Views
 {
     /// <summary>
-    /// バトル中のチュートリアルメッセージ（WorldSpace Canvas）。
+    /// チュートリアルメッセージ（WorldSpace Canvas）。バトルとメインメニューの双方で使う。
     /// 生成・破棄と Inspector 値だけを持ち、配置の計算と状態遷移は <see cref="TutorialMessagePlacement"/>、
     /// 縮小・展開の状態は <see cref="TutorialMessageFold"/> に任せる。
     /// 追従先の姿勢は UseCase から <see cref="UpdateAnchor"/> で毎フレーム受け取る。

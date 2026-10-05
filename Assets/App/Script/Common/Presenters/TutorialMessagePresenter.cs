@@ -1,8 +1,8 @@
-using App.Battle.Data;
-using App.Battle.Interface;
+using App.Common.Data;
+using App.Common.Interface;
 using VContainer;
 
-namespace App.Battle.Presenters
+namespace App.Common.Presenters
 {
     public class TutorialMessagePresenter : ITutorialMessagePresenter
     {

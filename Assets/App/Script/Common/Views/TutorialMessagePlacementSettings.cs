@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace App.Battle.Views
+namespace App.Common.Views
 {
     /// <summary>
     /// チュートリアルメッセージの配置設定。

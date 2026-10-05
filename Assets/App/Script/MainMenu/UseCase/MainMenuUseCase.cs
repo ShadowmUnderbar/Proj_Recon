@@ -1,4 +1,5 @@
 using System;
+using App.Common.Data;
 using App.Common.Interface;
 using App.MainMenu.Interface;
 using R3;
@@ -13,6 +14,7 @@ namespace App.MainMenu.UseCase
     /// スロットを選ぶか「使わずに開始」で、その選択を <see cref="IRunLoadoutDataStore"/> に積んでバトルシーンへ遷移する。
     /// 保存済みスロットが1つも無いときは選ぶものが無いので、選択UIを出さず「使わずに開始」と同じ扱いで遷移する。
     /// 選んだセットの装備はバトル側の RunStartUseCase が行う。
+    /// セット選択を出している間はスロット選択のチュートリアルを出し、タイトルへ戻ったら消す。
     /// </summary>
     public class MainMenuUseCase : IInitializable, IDisposable
     {
@@ -22,6 +24,7 @@ namespace App.MainMenu.UseCase
         private readonly IRunLoadoutDataStore _runLoadoutDataStore;
         private readonly IMetaProgressionDataStore _metaProgressionDataStore;
         private readonly ISceneTransitionUseCase _sceneTransitionUseCase;
+        private readonly ITutorialMessageUseCase _tutorialMessageUseCase;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -32,7 +35,8 @@ namespace App.MainMenu.UseCase
             IOptionPanelPresenter optionPanelPresenter,
             IRunLoadoutDataStore runLoadoutDataStore,
             IMetaProgressionDataStore metaProgressionDataStore,
-            ISceneTransitionUseCase sceneTransitionUseCase
+            ISceneTransitionUseCase sceneTransitionUseCase,
+            ITutorialMessageUseCase tutorialMessageUseCase
         )
         {
             _mainMenuPresenter = mainMenuPresenter;
@@ -41,6 +45,7 @@ namespace App.MainMenu.UseCase
             _runLoadoutDataStore = runLoadoutDataStore;
             _metaProgressionDataStore = metaProgressionDataStore;
             _sceneTransitionUseCase = sceneTransitionUseCase;
+            _tutorialMessageUseCase = tutorialMessageUseCase;
         }
 
         public void Initialize()
@@ -92,11 +97,14 @@ namespace App.MainMenu.UseCase
 
             _runStartPresenter.Show("セット選択\nスロットを選ぶと最初から装備で開始 / 使わずに開始も可");
             RefreshAllSlotLabels();
+
+            _tutorialMessageUseCase.ShowIfNeeded(TutorialType.SelectSlot);
         }
 
         /// <summary>セット選択からタイトル表示へ戻す</summary>
         private void ShowTitle()
         {
+            _tutorialMessageUseCase.Hide();
             _runStartPresenter.Hide();
             _mainMenuPresenter.SetStartVisible(true);
             _mainMenuPresenter.SetInteractable(true);

@@ -16,7 +16,9 @@ namespace App.Battle.UseCase
     /// <summary>
     /// ウェーブ間ショップの制御（仮組み）
     /// ウェーブ突破（OnWaveAdvanced）でショップを開き、所持ポイントで買えるだけアップグレードを購入させ、
-    /// 「次のウェーブへ」でショップを閉じてウェーブを再開する
+    /// 「次のウェーブへ」でショップを閉じてウェーブを再開する。
+    /// 開くときにウェーブ中のチュートリアルを消してからショップのチュートリアルを出し、閉じるときにも出ているチュートリアルを消す。
+    /// デバッグ対戦では出さない（既読にして、通常のプレイで出なくなるのを防ぐ）
     /// </summary>
     public class ShopUseCase : IRunResettable, IInitializable, ITickable, IDisposable
     {
@@ -36,6 +38,8 @@ namespace App.Battle.UseCase
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
         private readonly IUpgradeLocalizationDataStore _upgradeLocalizationDataStore;
+        private readonly ITutorialMessageUseCase _tutorialMessageUseCase;
+        private readonly DebugArenaSettings _debugArenaSettings;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -56,7 +60,9 @@ namespace App.Battle.UseCase
             IShopPresenter shopPresenter,
             IPlayerControlPresenter playerControlPresenter,
             IGameInputDataStore gameInputDataStore,
-            IUpgradeLocalizationDataStore upgradeLocalizationDataStore
+            IUpgradeLocalizationDataStore upgradeLocalizationDataStore,
+            ITutorialMessageUseCase tutorialMessageUseCase,
+            DebugArenaSettings debugArenaSettings
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -69,6 +75,8 @@ namespace App.Battle.UseCase
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
             _upgradeLocalizationDataStore = upgradeLocalizationDataStore;
+            _tutorialMessageUseCase = tutorialMessageUseCase;
+            _debugArenaSettings = debugArenaSettings;
         }
 
         public void Initialize()
@@ -120,6 +128,15 @@ namespace App.Battle.UseCase
 
             // UI表示中だけボタン選択用のハンドレイを出す
             _playerControlPresenter.SetUiRayEnable(true);
+
+            // ウェーブ中に出していたチュートリアル（ウェーブ開始時のものなど）をショップへ持ち越さない。
+            // ショップの説明が既読で出ないときも、前のメッセージが残ったままにならないよう先に消す
+            _tutorialMessageUseCase.Hide();
+
+            if (!_debugArenaSettings.IsEnabled)
+            {
+                _tutorialMessageUseCase.ShowIfNeeded(TutorialType.Shop);
+            }
         }
 
         /// <summary>
@@ -294,6 +311,10 @@ namespace App.Battle.UseCase
             _gameInputDataStore.SetFocusInputEnable(true);
             _shopPresenter.Close();
             _playerControlPresenter.SetUiRayEnable(false);
+
+            // ショップの説明などを次のウェーブへ持ち越さない。
+            // ウェーブ再開より先に消すので、次のウェーブに割り当てたチュートリアルは TutorialWaveUseCase が出せる
+            _tutorialMessageUseCase.Hide();
 
             // ポーズ解除で次ウェーブ再開（時間計測・スポーン・撃破カウントが再始動）
             _waveManagerDataStore.SetWavePause(false);

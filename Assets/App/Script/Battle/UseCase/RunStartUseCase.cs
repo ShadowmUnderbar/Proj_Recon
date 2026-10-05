@@ -24,6 +24,7 @@ namespace App.Battle.UseCase
     /// 選択中はゲームを停止（IsWavePause=true）し、開始で解除してウェーブ1を始める。
     /// 開始のきっかけは <see cref="IRunStartDataStore.IsSelecting"/> なので、
     /// リスタート（RunResetUseCase）でも同じ導線でセット選択へ戻れる。
+    /// セット選択に入るたびに前のランのチュートリアルメッセージを消し、選択UIを出すときはスロット選択のチュートリアルを出す。
     /// </summary>
     public class RunStartUseCase : IInitializable, IDisposable
     {
@@ -38,6 +39,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly DebugArenaSettings _debugArenaSettings;
+        private readonly ITutorialMessageUseCase _tutorialMessageUseCase;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -53,7 +55,8 @@ namespace App.Battle.UseCase
             IRunStartPresenter runStartPresenter,
             IPlayerStateDataStore playerStateDataStore,
             IPlayerControlPresenter playerControlPresenter,
-            DebugArenaSettings debugArenaSettings
+            DebugArenaSettings debugArenaSettings,
+            ITutorialMessageUseCase tutorialMessageUseCase
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -67,6 +70,7 @@ namespace App.Battle.UseCase
             _playerStateDataStore = playerStateDataStore;
             _playerControlPresenter = playerControlPresenter;
             _debugArenaSettings = debugArenaSettings;
+            _tutorialMessageUseCase = tutorialMessageUseCase;
         }
 
         public void Initialize()
@@ -95,6 +99,10 @@ namespace App.Battle.UseCase
         /// </summary>
         private void OnBeginSelecting()
         {
+            // リスタートで戻ってきたとき、前のラン（結果画面など）のメッセージを持ち越さない
+            _tutorialMessageUseCase.Hide();
+            _runStartDataStore.SetLoadedBuild(false);
+
             // デバッグ用: エディタで選択したアップグレードを最初から所持させる
             ApplyDebugStartUpgrades();
 
@@ -125,6 +133,8 @@ namespace App.Battle.UseCase
 
             // UI表示中だけボタン選択用のハンドレイを出す
             _playerControlPresenter.SetUiRayEnable(true);
+
+            _tutorialMessageUseCase.ShowIfNeeded(TutorialType.SelectSlot);
         }
 
         /// <summary>メインメニューで選ばれたセットを装備する。「使わずに開始」なら何もしない</summary>
@@ -137,6 +147,7 @@ namespace App.Battle.UseCase
             }
 
             PreloadUpgrades(upgradeIds, warnOnMissing: false);
+            _runStartDataStore.SetLoadedBuild(true);
         }
 
         private void OnSlotSelected(int slotIndex)
@@ -159,6 +170,7 @@ namespace App.Battle.UseCase
             }
 
             PreloadUpgrades(_metaProgressionDataStore.GetSlotUpgradeIds(slotIndex), warnOnMissing: false);
+            _runStartDataStore.SetLoadedBuild(true);
         }
 
         /// <summary>

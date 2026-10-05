@@ -6,6 +6,7 @@ using App.Battle.Views;
 using App.Common.Data;
 using App.Common.Interface;
 using App.Common.Presenters;
+using App.Common.UseCase;
 using App.Common.Views;
 using App.Framework.Utilities;
 using App.Battle.DataStore;
@@ -210,7 +211,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<PlayerLifeGaugeUseCase>();
             builder.RegisterEntryPoint<RunStartUseCase>();
             builder.RegisterEntryPoint<StreamerCameraUseCase>();
-            // チュートリアルメッセージの表示手段。表示のきっかけを持つ側が ITutorialMessageUseCase を注入して Show/Hide を呼ぶ
+            // チュートリアルメッセージの表示手段。表示のきっかけを持つ側（ウェーブ開始・ショップ・結果画面・セット選択）が
+            // ITutorialMessageUseCase を注入して ShowIfNeeded/Hide を呼ぶ。頭と手の姿勢は PlayerControlPresenter（IPlayerPosePresenter）から取る
             builder.RegisterEntryPoint<TutorialMessageUseCase>().As<ITutorialMessageUseCase>();
             // ウェーブ開始時に TutorialWaveConfig の割り当てに従ってチュートリアルを出す
             builder.RegisterEntryPoint<TutorialWaveUseCase>();

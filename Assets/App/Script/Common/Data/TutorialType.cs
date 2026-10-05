@@ -9,7 +9,12 @@ namespace App.Common.Data
     {
         /// <summary>ウェーブ1開始時の導入</summary>
         Wave1 = 1,
-        Shop = 2,
-        Wave2 = 3,
+        Wave2 = 2,
+        Wave3 = 3,
+        Wave4 = 4,
+        Shop = 5,
+        GameOver = 6,
+        SelectSlot = 7,
+        OtherBuild = 8
     }
 }

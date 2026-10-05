@@ -1,7 +1,6 @@
-using App.Common.Data;
 using UnityEngine;
 
-namespace App.Battle.Data
+namespace App.Common.Data
 {
     /// <summary>
     /// チュートリアルメッセージの追従先となる姿勢のスナップショット。
