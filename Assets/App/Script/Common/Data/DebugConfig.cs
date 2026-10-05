@@ -33,7 +33,7 @@ namespace App.Common.Data
 #endif
 
 #if !UNITY_EDITOR
-        public static readonly bool IsAllUnLock = false;
+        public static readonly bool IsAllUnLock = true;
 #else
         public static readonly bool IsAllUnLock = EditorPrefs.GetBool(AllUnLockKey, false);
 #endif
