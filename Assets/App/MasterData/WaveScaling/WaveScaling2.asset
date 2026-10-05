@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: WaveScaling2
   m_EditorClassIdentifier: 
   _id: 2
-  _wave: 3
-  _atkBuff: 1.05
-  _hpBuff: 1.15
+  _wave: 2
+  _atkBuff: 1.2
+  _hpBuff: 1.3

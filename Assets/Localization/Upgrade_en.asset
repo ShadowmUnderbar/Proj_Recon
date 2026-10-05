@@ -47,7 +47,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 10454283954380802
-    m_Localized: The bullet gets bigger
+    m_Localized: The bullet gets bigger.
     m_Metadata:
       m_Items: []
   - m_Id: 10454283954380803
@@ -59,7 +59,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 73184814558830592
-    m_Localized: The rate of fire will be improved.
+    m_Localized: The rate of fire is improved.
     m_Metadata:
       m_Items: []
   - m_Id: 73184814604967936
@@ -71,7 +71,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 73184814604967937
-    m_Localized: Maximum HP increases
+    m_Localized: Maximum HP increases.
     m_Metadata:
       m_Items: []
   - m_Id: 73184814604967938
@@ -91,7 +91,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 73184814604967942
-    m_Localized: Consecutive hits raise attack power
+    m_Localized: Consecutive hits <p>raise attack power</p>
     m_Metadata:
       m_Items: []
   - m_Id: 73184814604967943
@@ -103,7 +103,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 73184814604967945
-    m_Localized: Attack power rises when HP is low
+    m_Localized: <p>Attack power rises</p> when <n>HP is low</n>
     m_Metadata:
       m_Items: []
   - m_Id: 73184814604967946
@@ -270,9 +270,9 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 73184814613356574
-    m_Localized: Defeating an enemy with a different form than the last raises your
-      rate of fire, and more so if it differs from the last two. Defeating with the
-      same form resets it.
+    m_Localized: "Defeating an enemy with a different form than the last raises your
+      rate of fire, \nand more so if it differs from the last two.\nDefeating with
+      the same form resets it."
     m_Metadata:
       m_Items: []
   - m_Id: 73184814613356575
@@ -566,6 +566,20 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 73184814613356643
     m_Localized: Waltz is sealed. In exchange, cooldown becomes {value2}x.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76890570466484224
+    m_Localized: Overclock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76890570487455744
+    m_Localized: Blocking hits with dodges stops time
+    m_Metadata:
+      m_Items: []
+  - m_Id: 76890570487455745
+    m_Localized: Gain {value1}s of Overclock each time a dodge blocks a hit. Once
+      it exceeds 3s, enemies and enemy bullets stop for that many seconds. Damage
+      taken meanwhile is applied all at once when it ends.
     m_Metadata:
       m_Items: []
   references:

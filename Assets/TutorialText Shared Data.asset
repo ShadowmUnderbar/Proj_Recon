@@ -27,6 +27,26 @@ MonoBehaviour:
     m_Key: $Wave2
     m_Metadata:
       m_Items: []
+  - m_Id: 3024528787333120
+    m_Key: $Wave3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3024528833470464
+    m_Key: $Wave4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3024528833470465
+    m_Key: $GameOver
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3024528833470466
+    m_Key: $SelectSlot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3024528833470467
+    m_Key: $OtherBuild
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

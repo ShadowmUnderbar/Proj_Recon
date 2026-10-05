@@ -40,17 +40,56 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 4414362050560
-    m_Localized: 'The way you aim the controller significantly changes the nature
-      of the projectiles.
+    m_Localized: 'The way you aim the controller significantly changes the properties
+      of the bullets.
 
-      By separating both reticles, you''ll get the rapid-fire
-      "Waltz Shot,"
+      By separating both reticles, it transforms into a rapid-fire
+      <w>Waltz Shot</w>.
 
-      and by aligning them, you''ll get the single-shot-focused
-      "Merge Shot."
+      It boasts a high rate of fire and is suitable for
+      clearing out weaker enemies.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3024528787333120
+    m_Localized: 'Bringing both hands together transforms it into a single-shot,
+      specialized explosive round, the <m>Merge Shot</m>.
 
-      Each type of projectile has its pros and cons, so try
-      out various tactics!'
+      It works effectively
+      against tough enemies and those with strong defenses.
+
+      Each shot has
+      its pros and cons, so try out various tactics!'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3024528833470464
+    m_Localized: 'You can perform a <bl>Blink</bl> by pressing the A or B button
+      on your right hand while moving.
+
+      If you pass any enemies or projectiles
+      while dodging, you can trigger a counter.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3024528833470465
+    m_Localized: "When the game ends, the upgrades you\u2019ve acquired are saved
+      as a build,\n<p>allowing you to use them in future playthroughs.</p>\nKeep
+      playing and aim to create even more powerful builds."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3024528833470466
+    m_Localized: 'A saved build exists.
+
+      By selecting a slot, you can start
+      the game with that saved build.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3024528833470467
+    m_Localized: 'When saving your build at the end of a game,
+
+      <n>only the
+      upgrades newly acquired during that run are saved.</n>
+
+      Upgrades brought
+      in at the start of the game cannot be included in the save.'
     m_Metadata:
       m_Items: []
   references:

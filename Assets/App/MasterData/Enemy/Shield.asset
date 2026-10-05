@@ -15,9 +15,10 @@ MonoBehaviour:
   _prefabPath: Assets/App/Prefub/Enemy/ShieldEmemy.prefab
   _enemyMasterDataId: SH-001
   _enemyRankType: 2
+  _dropPointOverride: 0
   _damage: 0
   _attackInterval: 3
-  _hp: 20
+  _hp: 25
   _resistanceDirectionType: 1
   _resistanceMultiplier: 0.1
   _weakDirectionType: 2
@@ -27,3 +28,6 @@ MonoBehaviour:
   _battleSpeed: 5
   _bulletSpeed: 0
   _attackDistanceRange: 20
+  _windupTime: 0
+  _activeTime: 0
+  _recoveryTime: 0

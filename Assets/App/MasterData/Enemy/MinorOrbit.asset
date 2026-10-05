@@ -15,9 +15,10 @@ MonoBehaviour:
   _prefabPath: Assets/App/Prefub/Enemy/OrbitEmemy.prefab
   _enemyMasterDataId: O-002
   _enemyRankType: 2
+  _dropPointOverride: 0
   _damage: 1
   _attackInterval: 1.5
-  _hp: 10
+  _hp: 15
   _resistanceDirectionType: 0
   _resistanceMultiplier: 1
   _weakDirectionType: 0
@@ -27,3 +28,6 @@ MonoBehaviour:
   _battleSpeed: 1.5
   _bulletSpeed: 20
   _attackDistanceRange: 15
+  _windupTime: 0
+  _activeTime: 0
+  _recoveryTime: 0

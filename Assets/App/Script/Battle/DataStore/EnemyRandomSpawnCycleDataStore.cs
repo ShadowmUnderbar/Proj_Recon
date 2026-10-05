@@ -44,29 +44,29 @@ namespace App.Battle.DataStore
         private readonly Subject<Unit> _onSpawnIrregularEnemy = new();
         public Observable<Unit> OnSpawnIrregularEnemy => _onSpawnIrregularEnemy;
 
-        private float SpawnDistanceMin => 25f;
-        private float SpawnDistanceMax => 40f;
+        private float SpawnDistanceMin => 35f;
+        private float SpawnDistanceMax => 50f;
 
         // ラン開始時の同時スポーン数。リスタートでここまで戻す
-        private const int InitialCommonSpawnCounts = 2;
+        private const int InitialCommonSpawnCounts = 3;
         private const float InitialMinorSpawnCounts = 1f;
 
         // 大型敵が出るたびに小型敵の同時スポーン数へ掛ける増加率
         private const float MinorSpawnCountGrowthRate = 1.5f;
 
         private float _commonSpawnCycle;
-        private float CommonSpawnInterval => 4f;
+        private float CommonSpawnInterval => 3f;
         private int _commonSpawnCounts = InitialCommonSpawnCounts;
 
-        private float CommonSpawnCountUpInterval => 40f;
+        private float CommonSpawnCountUpInterval => 20f;
         private float _commonSpawnCountUpCycle;
 
         private float _minorSpawnCycle;
-        private float MinorSpawnInterval => 20f;
+        private float MinorSpawnInterval => 15f;
         private float _minorSpawnCounts = InitialMinorSpawnCounts;
 
         private float _majorSpawnCycle;
-        private float MajorSpawnInterval => 50f;
+        private float MajorSpawnInterval => 30f;
 
         public void Tick()
         {

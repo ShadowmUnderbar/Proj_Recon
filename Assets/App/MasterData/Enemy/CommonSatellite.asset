@@ -15,6 +15,7 @@ MonoBehaviour:
   _prefabPath: Assets/App/Prefub/Enemy/SatelliteEmemy.prefab
   _enemyMasterDataId: SA-001
   _enemyRankType: 1
+  _dropPointOverride: 0
   _damage: 1
   _attackInterval: 5
   _hp: 1
@@ -27,3 +28,6 @@ MonoBehaviour:
   _battleSpeed: 1.5
   _bulletSpeed: 10
   _attackDistanceRange: 20
+  _windupTime: 0
+  _activeTime: 0
+  _recoveryTime: 0
