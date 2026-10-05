@@ -25,6 +25,7 @@ namespace App.Battle.UseCase
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
         private readonly IFreezeDataStore _freezeDataStore;
         private readonly ITimeStopDataStore _timeStopDataStore;
+        private readonly ShotLineColorConfig _shotLineColorConfig;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -41,7 +42,8 @@ namespace App.Battle.UseCase
             IShotConflictDataStore shotConflictDataStore,
             IUpgradeSessionDataStore upgradeSessionDataStore,
             IFreezeDataStore freezeDataStore,
-            ITimeStopDataStore timeStopDataStore
+            ITimeStopDataStore timeStopDataStore,
+            ShotLineColorConfig shotLineColorConfig
         )
         {
             _playerSettingDataStore = playerSettingDataStore;
@@ -56,6 +58,7 @@ namespace App.Battle.UseCase
             _upgradeSessionDataStore = upgradeSessionDataStore;
             _freezeDataStore = freezeDataStore;
             _timeStopDataStore = timeStopDataStore;
+            _shotLineColorConfig = shotLineColorConfig;
         }
 
         public void Initialize()
@@ -89,8 +92,8 @@ namespace App.Battle.UseCase
             var dominantHand = DebugConfig.IsVRMode ? _playerSettingDataStore.DominantHand.Value : HandType.Left;
             var nonDominantHand = dominantHand == HandType.Right ? HandType.Left : HandType.Right;
 
-            _playerControlPresenter.SetHandRayColor(dominantHand, ThemeColors.GetRayColor(shotType, rightFocusType));
-            _playerControlPresenter.SetAimRayColor(dominantHand, ThemeColors.GetRayColor(shotType, rightFocusType));
+            _playerControlPresenter.SetHandRayColor(dominantHand, _shotLineColorConfig.GetRayColor(shotType, rightFocusType));
+            _playerControlPresenter.SetAimRayColor(dominantHand, _shotLineColorConfig.GetRayColor(shotType, rightFocusType));
 
             // 二丁拳銃が未解放、またはコンフリクト系で封印されている間は非利き手のレイを消す。
             // 封印はVRモードの発射制限（CanShot）と同条件にする（PCモードは二丁拳銃の概念自体が無い）
@@ -104,8 +107,8 @@ namespace App.Battle.UseCase
             }
 
             _playerControlPresenter.SetHandRayColor(nonDominantHand,
-                ThemeColors.GetRayColor(shotType, leftFocusType));
-            _playerControlPresenter.SetAimRayColor(nonDominantHand, ThemeColors.GetRayColor(shotType, leftFocusType));
+                _shotLineColorConfig.GetRayColor(shotType, leftFocusType));
+            _playerControlPresenter.SetAimRayColor(nonDominantHand, _shotLineColorConfig.GetRayColor(shotType, leftFocusType));
 
             _playerControlPresenter.SetAimEnableRay(nonDominantHand, shotType != ShotType.Merge);
             _playerControlPresenter.SetHandEnableRay(nonDominantHand, shotType != ShotType.Merge);

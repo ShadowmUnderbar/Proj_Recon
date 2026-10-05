@@ -19,6 +19,7 @@ namespace App.Common
         [SerializeField] private WaveScalingDatabase _waveScalingDatabase;
         [SerializeField] private StreamerModeConfig _streamerModeConfig;
         [SerializeField] private EffectTextStyle _effectTextStyle;
+        [SerializeField] private ShotLineColorConfig _shotLineColorConfig;
 
         [SerializeField, Tooltip("注視判定の Store（このプレハブ上のコンポーネント）")]
         private GazeTargetStoreView _gazeTargetStoreView;
@@ -73,6 +74,15 @@ namespace App.Common
             builder.RegisterInstance(_streamerModeConfig);
             // 文言中の色タグの文字色（TutorialLocalizationDataStore・BattleLifetimeScope の UpgradeLocalizationDataStore が利用）
             builder.RegisterInstance(_effectTextStyle);
+            // 照準ラインの色（PlayerShotUseCase が利用。EffectTextStyle の色タグもこの色に連動する）
+            builder.RegisterInstance(_shotLineColorConfig);
+            // 文字色はレイと同じライン色アセットを見ていないと連動しない。片方だけ差し替えた場合に気づけるようにする
+            if (_effectTextStyle != null && _effectTextStyle.ShotLineColorConfig != _shotLineColorConfig)
+            {
+                Debug.LogWarning(
+                    "[CommonLifetimeScope] EffectTextStyle の ShotLineColorConfig がこのスコープのものと異なります。文言の色タグがレイの色と連動しません",
+                    this);
+            }
 
             #endregion
 
