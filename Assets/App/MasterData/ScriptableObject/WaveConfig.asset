@@ -13,5 +13,4 @@ MonoBehaviour:
   m_Name: WaveConfig
   m_EditorClassIdentifier: 
   _waveDurationSeconds: 60
-  _waveEnemyKillCount: 20
   _maxWaveCount: 0
