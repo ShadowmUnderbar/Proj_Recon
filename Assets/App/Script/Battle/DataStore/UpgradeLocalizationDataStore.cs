@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using App.Battle.Data;
+using App.Common.Data;
 using App.Battle.Interface.DataStore;
 using App.Common.Data.MasterData;
 using R3;
@@ -35,11 +36,11 @@ namespace App.Battle.DataStore
         private int _loadGeneration;
         private bool _isDisposed;
 
-        // 強化/弱化効果の文字色（効果値と <p>/<n> タグに使う）
-        private readonly UpgradeDescriptionStyle _descriptionStyle;
+        // 文言中の色タグ（<p>/<n>/<w> など）と効果値の文字色
+        private readonly EffectTextStyle _descriptionStyle;
 
         [Inject]
-        public UpgradeLocalizationDataStore(UpgradeDescriptionStyle descriptionStyle)
+        public UpgradeLocalizationDataStore(EffectTextStyle descriptionStyle)
         {
             _descriptionStyle = descriptionStyle;
         }
@@ -61,7 +62,7 @@ namespace App.Battle.DataStore
             var descriptionTemplate = GetString(UpgradeLocalizationKey.Description(nameKey));
             var description = UpgradeDescriptionFormatter.Format(descriptionTemplate, upgrade, _descriptionStyle);
 
-            // 簡略説明・詳細説明は文言中の <p>/<n> を強化/弱化色に置き換える（タイトル・レベル表記は現状対象外）
+            // 簡略説明・詳細説明は文言中の色タグ（<p>/<n>/<w> など）を色に置き換える（タイトル・レベル表記は現状対象外）
             return new UpgradeLocalizedText(
                 GetString(UpgradeLocalizationKey.Title(nameKey)),
                 EffectTextStyler.ApplyEffectTags(GetString(UpgradeLocalizationKey.SimpleDescription(nameKey)), _descriptionStyle),

@@ -18,6 +18,8 @@ namespace App.Common
         [SerializeField] private BuffDatabase _buffDatabase;
         [SerializeField] private WaveScalingDatabase _waveScalingDatabase;
         [SerializeField] private StreamerModeConfig _streamerModeConfig;
+        [SerializeField] private EffectTextStyle _effectTextStyle;
+        [SerializeField] private ShotLineColorConfig _shotLineColorConfig;
 
         [SerializeField, Tooltip("注視判定の Store（このプレハブ上のコンポーネント）")]
         private GazeTargetStoreView _gazeTargetStoreView;
@@ -70,6 +72,10 @@ namespace App.Common
 
             // 配信用カメラの出力設定。BattleLifetimeScope（子スコープ）からも解決される
             builder.RegisterInstance(_streamerModeConfig);
+            // 文言中の色タグの文字色（TutorialLocalizationDataStore・BattleLifetimeScope の UpgradeLocalizationDataStore が利用）
+            builder.RegisterInstance(_effectTextStyle);
+            // 照準ラインの色（PlayerShotUseCase が利用）
+            builder.RegisterInstance(_shotLineColorConfig);
 
             #endregion
 

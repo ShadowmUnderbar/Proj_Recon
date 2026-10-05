@@ -43,7 +43,6 @@ namespace App.Battle
         [SerializeField] private PointDropConfig _pointDropConfig;
         [SerializeField] private PlayerDeathConfig _playerDeathConfig;
         [SerializeField] private GameClearConfig _gameClearConfig;
-        [SerializeField] private UpgradeDescriptionStyle _upgradeDescriptionStyle;
         [SerializeField] private PlayerBaseParameterConfig _playerBaseParameterConfig;
         [SerializeField] private TutorialWaveConfig _tutorialWaveConfig;
         [SerializeField] private OverclockConfig _overclockConfig;
@@ -343,8 +342,6 @@ namespace App.Battle
             builder.RegisterInstance(_gameClearConfig);
             // プレイヤー基礎パラメータ（体力・射撃倍率・回避）。PlayerState/PlayerBulletParameter/PlayerDodgeParameter の各DataStoreが利用
             builder.RegisterInstance(_playerBaseParameterConfig);
-            // アップグレード詳細説明の効果値の装飾（UpgradeLocalizationDataStore が利用）
-            builder.RegisterInstance(_upgradeDescriptionStyle);
             // ウェーブ開始時のチュートリアル割り当て（TutorialWaveUseCase が利用）
             builder.RegisterInstance(_tutorialWaveConfig);
             // オーバークロックの発動しきい値（OverclockDataStore が利用）
