@@ -19,7 +19,7 @@ MonoBehaviour:
   _basePenetration: 0
   _focusFireRateMagnification: 0.9
   _focusDamageMagnification: 3
-  _waltzDamageMagnification: 0.2
+  _waltzDamageMagnification: 0.4
   _waltzFireRateMagnification: 0.5
   _mergeDamageMagnification: 2.3
   _mergeFireRateMagnification: 1.3
