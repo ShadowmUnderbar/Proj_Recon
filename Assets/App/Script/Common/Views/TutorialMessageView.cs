@@ -12,7 +12,9 @@ namespace App.Common.Views
     /// 縮小・展開の状態は <see cref="TutorialMessageFold"/> に任せる。
     /// 追従先の姿勢は UseCase から <see cref="UpdateAnchor"/> で毎フレーム受け取る。
     ///
-    /// 非利き手に追従している間、視線が当たっていなければ表示上の1行目だけに縮める（続きがあれば末尾を「…」にする）。
+    /// 非利き手に追従している間は手のひら側に固定し、読める面を手のひらの向こうへ向ける。
+    /// 手首を返して手のひらを見た（読める面が頭を向き、かつ視線が当たっている）ときだけ展開し、
+    /// それ以外は表示上の1行目だけに縮める（続きがあれば末尾を「…」にする）。
     /// 縮小時は本文の折り返し幅も狭めて1行目に入る文字数を減らし、ダイアログの横幅もそれに合わせて縮める。
     /// 縮小・展開はダイアログの中央を基準に大きさを補間する
     /// </summary>
@@ -38,8 +40,17 @@ namespace App.Common.Views
         private Vector3 _headOffset = new(0f, -0.15f, 1.2f);
 
         [Header("非利き手追従")]
-        [SerializeField, Tooltip("非利き手追従時のオフセット[m]。指し示す向きへ補正した手のローカル座標（x:右 y:上 z:前）。左手向けの値で、右手のときは x を反転する")]
-        private Vector3 _handOffset = new(-0.1f, 0.2f, 0.1f);
+        [SerializeField, Tooltip("非利き手追従時のオフセット[m]。指し示す向きへ補正した手のローカル座標（x:右 y:上 z:前）。左手向けの値で、右手のときは x を反転する。左手の手のひらは +x 側")]
+        private Vector3 _handOffset = new(0.1f, 0f, 0.1f);
+
+        [SerializeField, Tooltip("非利き手追従時の向き[deg]。指し示す向きへ補正した手のローカル回転（オイラー角）。左手向けの値で、右手のときは鏡写しにする。既定は読める面を手のひらの向こう（-x）へ向け、文字の上を指先側（+z）にする")]
+        private Vector3 _handRotationEuler = new(0f, -90f, -90f);
+
+        [SerializeField, Range(0f, 90f), Tooltip("手のひらを見ているとみなす角度[deg]。頭→ダイアログの向きと、読める面の向きとのなす角がこれ以下なら展開できる")]
+        private float _facingAngle = 45f;
+
+        [SerializeField, Range(0f, 45f), Tooltip("手のひらを見ている状態から外れるときに判定角度へ足す余白[deg]。境界付近の手ぶれで縮小・展開を繰り返さないようにする")]
+        private float _facingExitMargin = 10f;
 
         [Header("追従")]
         [SerializeField, Tooltip("定位置へ追いつく速さ。大きいほど速く、0以下なら補間せず即座に置く")]
@@ -129,8 +140,9 @@ namespace App.Common.Views
             transform.SetPositionAndRotation(pose.position, pose.rotation);
             _root.SetActive(true);
 
-            // 視点の正面にいる間は常に展開する。手元へ移ってからは、見ていなければ縮める
-            var shouldCollapse = _placement.Phase == TutorialMessagePhase.HandFollow && !_gazeTarget.IsGazed.CurrentValue;
+            // 視点の正面にいる間は常に展開する。手元へ移ってからは、手首を返して手のひらを見ているときだけ展開する
+            var isLookingAtPalm = _placement.IsFacingHead && _gazeTarget.IsGazed.CurrentValue;
+            var shouldCollapse = _placement.Phase == TutorialMessagePhase.HandFollow && !isLookingAtPalm;
             _fold.Update(Time.unscaledDeltaTime, shouldCollapse, _foldDuration);
             ApplyFold();
         }
@@ -198,7 +210,9 @@ namespace App.Common.Views
 
         private TutorialMessagePlacementSettings BuildSettings()
         {
-            return new TutorialMessagePlacementSettings(_headFollowDuration, _headOffset, _handOffset, _followSpeed);
+            return new TutorialMessagePlacementSettings(
+                _headFollowDuration, _headOffset, _handOffset, Quaternion.Euler(_handRotationEuler), _facingAngle,
+                _facingExitMargin, _followSpeed);
         }
     }
 }

@@ -172,7 +172,7 @@ MonoBehaviour:
   _bodyText: {fileID: 5894118077521682161}
   _headFollowDuration: 3
   _headOffset: {x: 0, y: -0.15, z: 1.2}
-  _handOffset: {x: -0.1, y: 0.2, z: 0.1}
+  _handOffset: {x: 0.1, y: 0, z: 0.1}
   _followSpeed: 6
   _localScale: 0.001
   _gazeTarget: {fileID: 6433302510134236750}

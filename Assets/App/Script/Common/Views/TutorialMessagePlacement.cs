@@ -5,7 +5,8 @@ namespace App.Common.Views
 {
     /// <summary>
     /// チュートリアルメッセージの配置計算（plain C#、DI 対象外）。
-    /// 表示直後は視点の正面へ追従し、規定時間を過ぎたら非利き手の脇へ移り、以降は常に頭の方を向く。
+    /// 表示直後は視点の正面へ追従し、規定時間を過ぎたら非利き手の手のひら側へ移る。
+    /// 手元では向きも手に固定し、読める面を手のひらの向こうへ向ける（手首を返して手のひらを見ると正対する）。
     /// 手の姿勢が使えない（非VR）間は視点の正面に留まり続ける。
     ///
     /// 目標位置はフェーズごとに毎フレーム決め直し、実際の姿勢はそこへ指数補間で追いつかせる。
@@ -16,6 +17,12 @@ namespace App.Common.Views
     public class TutorialMessagePlacement
     {
         public TutorialMessagePhase Phase { get; private set; } = TutorialMessagePhase.Hidden;
+
+        /// <summary>
+        /// 直近の姿勢で、読める面が頭の方を向いているか（<see cref="TutorialMessagePlacementSettings.FacingAngle"/> 以内）。
+        /// 手元では手首を返して手のひらを見たときだけ true になる
+        /// </summary>
+        public bool IsFacingHead { get; private set; }
 
         /// <summary>表示開始からの経過時間[s]</summary>
         private float _elapsed;
@@ -33,6 +40,7 @@ namespace App.Common.Views
         public void Begin()
         {
             Phase = TutorialMessagePhase.HeadFollow;
+            IsFacingHead = false;
             _elapsed = 0f;
             _isPlaced = false;
         }
@@ -40,6 +48,7 @@ namespace App.Common.Views
         public void End()
         {
             Phase = TutorialMessagePhase.Hidden;
+            IsFacingHead = false;
         }
 
         /// <summary>
@@ -93,6 +102,9 @@ namespace App.Common.Views
             }
 
             _previousAnchorPosition = anchorPosition;
+            // 向いている間は余白ぶん外れにくくし、境界付近の手ぶれで縮小・展開が繰り返されないようにする
+            var facingAngle = IsFacingHead ? settings.FacingAngle + settings.FacingExitMargin : settings.FacingAngle;
+            IsFacingHead = IsFacing(_position, _rotation, anchor.HeadPose.position, facingAngle);
 
             pose = new Pose(_position, _rotation);
             return true;
@@ -107,41 +119,43 @@ namespace App.Common.Views
         }
 
         /// <summary>
-        /// 非利き手の脇。手のローカル座標でオフセットし、常に頭の方を向ける。
-        /// オフセットは左手向けの値として扱い、右手のときは x を反転して鏡写しにする
+        /// 非利き手の手のひら側。位置・向きとも手のローカル座標で決めて手に固定する。
+        /// 設定は左手向けの値として扱い、右手のときは x を反転したオフセットと鏡写しの回転にする
         /// </summary>
         private static Pose GetHandFollowPose(
             in TutorialMessageAnchor anchor, in TutorialMessagePlacementSettings settings)
         {
             var offset = settings.HandOffset;
+            var rotation = settings.HandRotation;
             if (anchor.Hand == HandType.Right)
             {
                 offset.x = -offset.x;
+                rotation = MirrorX(rotation);
             }
 
             var hand = anchor.HandPose;
-            var position = hand.position + hand.rotation * offset;
+            return new Pose(hand.position + hand.rotation * offset, hand.rotation * rotation);
+        }
 
-            return new Pose(position, FaceToward(position, anchor.HeadPose));
+        /// <summary>YZ 平面で鏡写しにした回転（x 軸を反転した座標系での同じ回転）</summary>
+        private static Quaternion MirrorX(Quaternion rotation)
+        {
+            return new Quaternion(rotation.x, -rotation.y, -rotation.z, rotation.w);
         }
 
         /// <summary>
-        /// 頭からメッセージへ向く回転（Canvas の前方が視線と同じ向きになり、正面から読める）。
-        /// 上方向はワールドではなく頭の上方向を使う。手元を見下ろしたときにメッセージがほぼ真下へ来ても、
-        /// 頭の上方向は視線と直交しているため向きが定まり、トラッキングの揺れで回転しない。
-        /// それでも定まらない（頭の真上・真下）ときは頭の向きをそのまま使う
+        /// 頭から見て読める面が向いているか。Canvas は前方が視線と同じ向きのときに正面から読めるため、
+        /// 頭→メッセージの向きと前方とのなす角で判定する。頭と同じ位置にあって向きが定まらないときは向いていない扱い
         /// </summary>
-        private static Quaternion FaceToward(Vector3 position, in Pose head)
+        private static bool IsFacing(Vector3 position, Quaternion rotation, Vector3 headPosition, float maxAngle)
         {
-            var direction = position - head.position;
-            var up = head.rotation * Vector3.up;
-
-            if (Vector3.Cross(direction, up).sqrMagnitude <= VectorConstants.DirectionEpsilon)
+            var direction = position - headPosition;
+            if (direction.sqrMagnitude <= VectorConstants.DirectionEpsilon)
             {
-                return head.rotation;
+                return false;
             }
 
-            return Quaternion.LookRotation(direction, up);
+            return Vector3.Angle(rotation * Vector3.forward, direction) <= maxAngle;
         }
     }
 }
