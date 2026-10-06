@@ -601,6 +601,43 @@ return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToS
         Assert-ProbeValue -Name '[縮小] 視線を外すと再び縮む[px]' -Actual ([double]$recollapsed.height) -Expected ([double]$collapsed.height) -Tolerance 0.5 | Out-Null
         Assert-ProbeValue -Name '[縮小] 視線を外すと横幅も再び縮む[px]' -Actual ([double]$recollapsed.width) -Expected ([double]$collapsed.width) -Tolerance 0.5 | Out-Null
 
+        # 縮小表示のまま隠して出し直す。TMP は非アクティブの間に枠が変わっても内部の枠の大きさを取り込み直さないため、
+        # 取り込み直さないと縮小時の小さい枠のまま自動サイズが走り、文字が最小サイズになって余白が大きく出る
+        $reshowAfterCollapse = Invoke-UnityJson -Snippet @'
+using System.Reflection;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Common.Interface;
+using App.Common.Data;
+using App.Common.Views;
+using TMPro;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var useCase = scope.Container.Resolve<ITutorialMessageUseCase>();
+var view = scope.Container.Resolve<ITutorialMessageView>() as TutorialMessageView;
+var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+var body = (TextMeshProUGUI)typeof(TutorialMessageView).GetField("_bodyText", flags).GetValue(view);
+
+useCase.Hide();
+useCase.Show(TutorialType.Wave1);
+
+var rect = body.rectTransform.rect;
+var marginWidth = (float)typeof(TMP_Text).GetField("m_marginWidth", flags).GetValue(body);
+var marginHeight = (float)typeof(TMP_Text).GetField("m_marginHeight", flags).GetValue(body);
+var margin = body.margin;
+var widthGap = marginWidth - (rect.width - margin.x - margin.z);
+var heightGap = marginHeight - (rect.height - margin.y - margin.w);
+
+return $"{{\"widthGap\":{widthGap},\"heightGap\":{heightGap},\"fontSize\":{body.fontSize},\"min\":{body.fontSizeMin},\"max\":{body.fontSizeMax}}}";
+'@
+
+        Assert-ProbeValue -Name '[再表示] 縮小のまま隠しても TMP の枠の幅は本文の枠と一致[px]' -Actual ([double]$reshowAfterCollapse.widthGap) -Expected 0 -Tolerance 0.5 | Out-Null
+        Assert-ProbeValue -Name '[再表示] 縮小のまま隠しても TMP の枠の高さは本文の枠と一致[px]' -Actual ([double]$reshowAfterCollapse.heightGap) -Expected 0 -Tolerance 0.5 | Out-Null
+        Assert-ProbeTrue -Name '[再表示] 文字が最小サイズまで縮まない（Wave1 は最大サイズで収まる）' `
+            -Condition ([double]$reshowAfterCollapse.fontSize -eq [double]$reshowAfterCollapse.max) `
+            -Detail "(文字サイズ: $($reshowAfterCollapse.fontSize), 範囲 $($reshowAfterCollapse.min)〜$($reshowAfterCollapse.max))" | Out-Null
+
         # 書き換えた判定の設定を元の値へ戻す（再生中の以降の挙動に影響させない）
         $restore = @'
 using VContainer;

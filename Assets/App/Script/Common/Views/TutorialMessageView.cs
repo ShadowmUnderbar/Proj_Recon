@@ -257,6 +257,10 @@ namespace App.Common.Views
         private void SetBodySize(Vector2 size)
         {
             _bodyText.rectTransform.sizeDelta = size;
+
+            // TMP は非表示（非アクティブ）の間に枠が変わっても内部の枠の大きさを取り込み直さず、ForceMeshUpdate でも更新しない。
+            // 縮小表示のまま隠したあとの再表示で、縮小時の小さい枠のまま自動サイズが走って最小サイズになるのを防ぐ
+            _bodyText.ComputeMarginSize();
         }
 
         private TutorialMessagePlacementSettings BuildSettings()
