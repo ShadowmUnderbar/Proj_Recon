@@ -311,10 +311,13 @@ namespace App.Editor
                 EditorUtility.SetDirty(database);
             }
 
+            // 新規作成したアセットにもタグが入るよう、本体の取り込み後にタグを反映する
+            var taggedCount = UpgradeTagDataImporter.Apply(importedAssets, errors);
+
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            var message = $"{importedAssets.Count} 件のアセットをインポートしました。";
+            var message = $"{importedAssets.Count} 件のアセットをインポートしました（タグ設定 {taggedCount} 件）。";
             if (errors.Count > 0)
             {
                 message += $"\n\n警告 ({errors.Count} 件):\n" + string.Join("\n", errors);
