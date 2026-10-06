@@ -15,22 +15,15 @@ namespace App.Common.Views
     /// 非利き手に追従している間は手のひら側に置き、読める面の向きだけを手に固定して手のひらの向こうへ向ける
     /// （面の傾きは頭の上方向に合わせ、文字を水平に保つ）。
     /// 手首を返して手のひらを見た（読める面が頭を向き、かつ視線が当たっている）ときだけ展開し、
-    /// それ以外は表示上の1行目だけに縮める（続きがあれば末尾を「…」にする）。
-    /// 縮小時は本文の折り返し幅も狭めて1行目に入る文字数を減らし、ダイアログの横幅もそれに合わせて縮める。
+    /// それ以外は本文の先頭の数文字（既定3文字）だけに縮め、ダイアログもその文字ぴったりの大きさ（余白なし）にする。
     /// 縮小・展開はダイアログの中央を基準に大きさを補間する
     /// </summary>
     public class TutorialMessageView : MonoBehaviour, ITutorialMessageView
     {
-        /// <summary>
-        /// 縮小時の本文の枠に足す余裕[px]。1行目の高さぴったりだと丸め誤差で1行目まで省略されることがあるため。
-        /// 2行目が入るほどの大きさではないので、1行目だけが残る
-        /// </summary>
-        private const float CollapsedLineTolerance = 1f;
-
         [SerializeField, Tooltip("UI全体のルート（表示切替）")]
         private GameObject _root;
 
-        [SerializeField, Tooltip("本文テキスト。枠は中央基準で、縮小時は幅を狭め、高さを1行目へ縮める")]
+        [SerializeField, Tooltip("本文テキスト。枠は中央基準で、縮小時は先頭の数文字ぴったりの大きさへ縮める")]
         private TextMeshProUGUI _bodyText;
 
         [Header("視点追従")]
@@ -67,8 +60,8 @@ namespace App.Common.Views
         [SerializeField, Tooltip("縮小・展開にかける時間[s]。0以下なら即座に切り替える")]
         private float _foldDuration = 0.15f;
 
-        [SerializeField, Range(0.1f, 1f), Tooltip("縮小時の本文の折り返し幅の割合（展開時に対して）。1行目に入る文字数もおおむねこの割合になり、ダイアログの横幅も合わせて縮む")]
-        private float _collapsedWidthRatio = 0.5f;
+        [SerializeField, Min(1), Tooltip("縮小時に表示する本文の先頭の文字数。ダイアログはこの文字ぴったりの大きさ（余白なし）に縮む")]
+        private int _collapsedCharCount = 3;
 
         private readonly TutorialMessagePlacement _placement = new();
         private readonly TutorialMessageFold _fold = new();
@@ -81,8 +74,19 @@ namespace App.Common.Views
         /// <summary>展開時の本文の枠の大きさ[px]（プレハブでの大きさ）</summary>
         private Vector2 _expandedBodySize;
 
-        /// <summary>縮小時の本文の枠の大きさ[px]。幅は割合から、高さは本文を差し替えるたびに1行目の高さから求め直す</summary>
+        /// <summary>縮小時の本文の枠の大きさ[px]。本文を差し替えるたびに先頭の文字の幅と行の高さから求め直す</summary>
         private Vector2 _collapsedBodySize;
+
+        /// <summary>縮小時に表示する文字数（空白を含む先頭からの数）。表示文字を <see cref="_collapsedCharCount"/> 個含むところまで</summary>
+        private int _collapsedVisibleCount;
+
+        /// <summary>展開時の本文の組み方（プレハブの設定）。縮小時は折り返しなし・左上揃え・はみ出し表示へ切り替え、展開で戻す</summary>
+        private HorizontalAlignmentOptions _expandedAlignment;
+
+        private VerticalAlignmentOptions _expandedVerticalAlignment;
+
+        private bool _expandedWordWrapping;
+        private TextOverflowModes _expandedOverflow;
 
         /// <summary>プレハブで自動サイズが有効か。本文ごとに展開時の枠で文字サイズを決め、以降は固定する</summary>
         private bool _isAutoSizing;
@@ -105,6 +109,10 @@ namespace App.Common.Views
             _expandedSize = _canvasRect.sizeDelta;
             _expandedBodySize = _bodyText.rectTransform.sizeDelta;
             _isAutoSizing = _bodyText.enableAutoSizing;
+            _expandedAlignment = _bodyText.horizontalAlignment;
+            _expandedVerticalAlignment = _bodyText.verticalAlignment;
+            _expandedWordWrapping = _bodyText.enableWordWrapping;
+            _expandedOverflow = _bodyText.overflowMode;
 
             Hide();
         }
@@ -155,13 +163,13 @@ namespace App.Common.Views
         }
 
         /// <summary>
-        /// 展開時の枠で文字サイズを決めて固定し、縮小時の本文の大きさ（狭めた幅で折り返したときの1行目の高さ）を求める。
+        /// 展開時の枠で文字サイズを決めて固定し、縮小時の本文の大きさ（先頭の数文字ぶんの幅と行の高さ）を求める。
         /// 文字サイズを固定するのは、縮小・展開で枠が変わっても自動サイズで文字の大きさが変わらないようにするため
         /// </summary>
         private void MeasureBody()
         {
-            // 測るあいだは展開時の枠にする。次の反映で縮小・展開どちらの枠にも必ず設定し直す
-            SetBodySize(_expandedBodySize);
+            // 測るあいだは展開時の組み方にする。次の反映で縮小・展開どちらにも必ず設定し直す
+            SetBodyLayout(false);
             _isBodyCollapsed = null;
 
             _bodyText.enableAutoSizing = _isAutoSizing;
@@ -170,30 +178,57 @@ namespace App.Common.Views
             _bodyText.enableAutoSizing = false;
             _bodyText.fontSize = fontSize;
 
-            // 1行目の高さは、縮小時の幅で折り返したときの1行目で測る（行に入る文字で高さが変わりうるため）
-            var collapsedWidth = _expandedBodySize.x * _collapsedWidthRatio;
-            SetBodySize(new Vector2(collapsedWidth, _expandedBodySize.y));
+            // 縮小時と同じく折り返さず左揃えで組み、先頭から表示文字を数えて幅を測る（色タグなどは文字に数えない）。
+            // 数えるのは1行目の文字だけ。1行目が規定の文字数に満たなければ、その文字数だけを表示する（枠が1行ぶんの高さのため）
+            _bodyText.enableWordWrapping = false;
+            _bodyText.horizontalAlignment = HorizontalAlignmentOptions.Left;
+            _bodyText.verticalAlignment = VerticalAlignmentOptions.Top;
             _bodyText.ForceMeshUpdate(true);
 
             var textInfo = _bodyText.textInfo;
-            var collapsedHeight = 0f;
+            var left = 0f;
+            var right = 0f;
+            var visibleCount = 0;
+            _collapsedVisibleCount = 0;
+            for (var i = 0; i < textInfo.characterCount && visibleCount < _collapsedCharCount; i++)
+            {
+                var character = textInfo.characterInfo[i];
+                if (character.lineNumber > 0)
+                {
+                    break;
+                }
+
+                if (!character.isVisible)
+                {
+                    continue;
+                }
+
+                if (visibleCount == 0)
+                {
+                    left = character.origin;
+                }
+
+                right = character.xAdvance;
+                visibleCount++;
+                _collapsedVisibleCount = i + 1;
+            }
+
+            var height = 0f;
             if (textInfo.lineCount > 0)
             {
                 var firstLine = textInfo.lineInfo[0];
-                collapsedHeight = firstLine.ascender - firstLine.descender + CollapsedLineTolerance;
+                height = firstLine.ascender - firstLine.descender;
             }
 
-            _collapsedBodySize = new Vector2(collapsedWidth, Mathf.Min(collapsedHeight, _expandedBodySize.y));
-            SetBodySize(_expandedBodySize);
+            _collapsedBodySize = Vector2.Min(new Vector2(right - left, height), _expandedBodySize);
+            SetBodyLayout(false);
         }
 
         /// <summary>縮小の進み具合をダイアログと本文の大きさへ反映する</summary>
         private void ApplyFold()
         {
-            // 本文の周りの余白は縮小しても変えない
-            var bodyPadding = _expandedSize - _expandedBodySize;
-            var collapsedSize = Vector2.Min(_collapsedBodySize + bodyPadding, _expandedSize);
-            _canvasRect.sizeDelta = Vector2.Lerp(_expandedSize, collapsedSize, _fold.Progress);
+            // 縮小しきったときは余白なしで、本文の先頭の文字ぴったりの大きさにする
+            _canvasRect.sizeDelta = Vector2.Lerp(_expandedSize, _collapsedBodySize, _fold.Progress);
 
             if (_isBodyCollapsed == _fold.IsTextCollapsed)
             {
@@ -201,7 +236,22 @@ namespace App.Common.Views
             }
 
             _isBodyCollapsed = _fold.IsTextCollapsed;
-            SetBodySize(_fold.IsTextCollapsed ? _collapsedBodySize : _expandedBodySize);
+            SetBodyLayout(_fold.IsTextCollapsed);
+        }
+
+        /// <summary>
+        /// 本文の枠と組み方を縮小・展開に合わせる。縮小時は折り返さずに左上揃えで組み、先頭の数文字だけを表示する。
+        /// 本文に改行があっても1行目が枠の上端に来るよう上揃えにする（中央揃えだと複数行の塊ごと中央に置かれ、1行目が枠の上へずれる）。
+        /// 枠をはみ出した残りは表示文字数で隠すので、省略記号は付けない
+        /// </summary>
+        private void SetBodyLayout(bool isCollapsed)
+        {
+            SetBodySize(isCollapsed ? _collapsedBodySize : _expandedBodySize);
+            _bodyText.enableWordWrapping = !isCollapsed && _expandedWordWrapping;
+            _bodyText.horizontalAlignment = isCollapsed ? HorizontalAlignmentOptions.Left : _expandedAlignment;
+            _bodyText.verticalAlignment = isCollapsed ? VerticalAlignmentOptions.Top : _expandedVerticalAlignment;
+            _bodyText.overflowMode = isCollapsed ? TextOverflowModes.Overflow : _expandedOverflow;
+            _bodyText.maxVisibleCharacters = isCollapsed ? _collapsedVisibleCount : int.MaxValue;
         }
 
         private void SetBodySize(Vector2 size)

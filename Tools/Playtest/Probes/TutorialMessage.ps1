@@ -4,7 +4,7 @@
 # 目視では「出た・動いた」しか分からないため、
 #   1. 配置計算（TutorialMessagePlacement）の純粋ロジック（フェーズ切替・左右ミラー・スナップ・向きのフォールバック）
 #   2. 実際の表示（視点正面への追従 → 非利き手の手のひら側へ移動し、読める面の向きだけ手に固定 → 差し替え → 非表示）
-#   3. 縮小表示（非利き手追従中、手のひらを見ていなければ狭めた幅で表示上の1行目＋「…」へ縮み、
+#   3. 縮小表示（非利き手追従中、手のひらを見ていなければ本文の先頭3文字ぴったり（余白なし）へ縮み、
 #      読める面が頭を向き、かつ視線が当たったときだけ元の大きさへ戻る）
 # を Transform と設定値の実測で確認する。
 #
@@ -490,7 +490,7 @@ var gaze = (GazeTargetView)typeof(TutorialMessageView).GetField("_gazeTarget", f
 var expandedSize = (Vector2)typeof(TutorialMessageView).GetField("_expandedSize", flags).GetValue(view);
 var expandedBodySize = (Vector2)typeof(TutorialMessageView).GetField("_expandedBodySize", flags).GetValue(view);
 var collapsedBodySize = (Vector2)typeof(TutorialMessageView).GetField("_collapsedBodySize", flags).GetValue(view);
-var widthRatio = (float)typeof(TutorialMessageView).GetField("_collapsedWidthRatio", flags).GetValue(view);
+var charCount = (int)typeof(TutorialMessageView).GetField("_collapsedCharCount", flags).GetValue(view);
 var originalRadius = (float)typeof(GazeTargetView).GetField("_radius", flags).GetValue(gaze);
 var originalEnter = (float)typeof(GazeTargetView).GetField("_enterMarginAngle", flags).GetValue(gaze);
 var originalExit = (float)typeof(GazeTargetView).GetField("_exitMarginAngle", flags).GetValue(gaze);
@@ -515,11 +515,25 @@ var visibleLines = 0;
 for (var i = 0; i < info.lineCount; i++) if (info.lineInfo[i].visibleCharacterCount > 0) visibleLines++;
 var hasEllipsis = false;
 for (var i = 0; i < info.characterCount; i++) if (info.characterInfo[i].isVisible && info.characterInfo[i].character == '…') hasEllipsis = true;
+// 実際に描かれる文字数（表示文字数の上限より前の表示文字）と、それらが本文の枠からはみ出す量[px]
+var renderedChars = 0;
+var renderedText = "";
+var outside = 0f;
+var bodyRect = body.rectTransform.rect;
+for (var i = 0; i < info.characterCount && i < body.maxVisibleCharacters; i++)
+{
+    var c = info.characterInfo[i];
+    if (!c.isVisible) continue;
+    renderedChars++;
+    renderedText += c.character;
+    outside = Mathf.Max(outside, bodyRect.xMin - c.origin, c.xAdvance - bodyRect.xMax,
+        bodyRect.yMin - c.descender, c.ascender - bodyRect.yMax);
+}
 
 var canvasRect = (RectTransform)view.transform;
 var gazeCenterOffset = Vector3.Distance(gaze.transform.position, view.transform.position);
 
-return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToString().ToLower()},\"width\":{canvasRect.sizeDelta.x},\"height\":{canvasRect.sizeDelta.y},\"bodyWidth\":{body.rectTransform.sizeDelta.x},\"bodyHeight\":{body.rectTransform.sizeDelta.y},\"expandedWidth\":{expandedSize.x},\"expandedHeight\":{expandedSize.y},\"expandedBodyWidth\":{expandedBodySize.x},\"expandedBodyHeight\":{expandedBodySize.y},\"collapsedBodyWidth\":{collapsedBodySize.x},\"collapsedBodyHeight\":{collapsedBodySize.y},\"widthRatio\":{widthRatio},\"firstLineChars\":{firstLineChars},\"fontSize\":{body.fontSize},\"autoSizing\":{body.enableAutoSizing.ToString().ToLower()},\"visibleLines\":{visibleLines},\"hasEllipsis\":{hasEllipsis.ToString().ToLower()},\"gazeCenterOffset\":{gazeCenterOffset},\"originalRadius\":{originalRadius},\"originalEnter\":{originalEnter},\"originalExit\":{originalExit},\"originalFacing\":{originalFacing},\"isFacing\":{placement.IsFacingHead.ToString().ToLower()}}}";
+return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToString().ToLower()},\"width\":{canvasRect.sizeDelta.x},\"height\":{canvasRect.sizeDelta.y},\"bodyWidth\":{body.rectTransform.sizeDelta.x},\"bodyHeight\":{body.rectTransform.sizeDelta.y},\"expandedWidth\":{expandedSize.x},\"expandedHeight\":{expandedSize.y},\"expandedBodyWidth\":{expandedBodySize.x},\"expandedBodyHeight\":{expandedBodySize.y},\"collapsedBodyWidth\":{collapsedBodySize.x},\"collapsedBodyHeight\":{collapsedBodySize.y},\"charCount\":{charCount},\"renderedChars\":{renderedChars},\"renderedText\":\"{renderedText}\",\"outside\":{outside},\"firstLineChars\":{firstLineChars},\"fontSize\":{body.fontSize},\"autoSizing\":{body.enableAutoSizing.ToString().ToLower()},\"visibleLines\":{visibleLines},\"hasEllipsis\":{hasEllipsis.ToString().ToLower()},\"gazeCenterOffset\":{gazeCenterOffset},\"originalRadius\":{originalRadius},\"originalEnter\":{originalEnter},\"originalExit\":{originalExit},\"originalFacing\":{originalFacing},\"isFacing\":{placement.IsFacingHead.ToString().ToLower()}}}";
 '@
 
     if ([bool]$setup.isVr) {
@@ -527,22 +541,24 @@ return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToS
         $original = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '0f').Replace('__MARGIN__', '0f').Replace('__FACING__', '180f'))
         Start-Sleep -Milliseconds 2000
         $collapsed = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f').Replace('__FACING__', '-1f'))
-        $padding = [double]$collapsed.expandedHeight - [double]$collapsed.expandedBodyHeight
-        $paddingX = [double]$collapsed.expandedWidth - [double]$collapsed.expandedBodyWidth
 
         Assert-ProbeTrue -Name '[縮小] 手元のダイアログを見ていない' -Condition (-not [bool]$collapsed.isGazed) `
             -Detail "(phase: $($collapsed.phase))" | Out-Null
-        Assert-ProbeValue -Name '[縮小] 見ていなければ高さが1行目＋余白まで縮む[px]' -Actual ([double]$collapsed.height) `
-            -Expected ([double]$collapsed.collapsedBodyHeight + $padding) -Tolerance 0.5 | Out-Null
+        Assert-ProbeValue -Name '[縮小] 見ていなければ高さが1行の高さまで縮む（余白なし）[px]' -Actual ([double]$collapsed.height) `
+            -Expected ([double]$collapsed.collapsedBodyHeight) -Tolerance 0.5 | Out-Null
         Assert-ProbeTrue -Name '[縮小] 縮小時の高さは展開時より小さい' -Condition ([double]$collapsed.height -lt [double]$collapsed.expandedHeight) `
             -Detail "($([math]::Round([double]$collapsed.height, 1))px / 展開 $($collapsed.expandedHeight)px)" | Out-Null
-        Assert-ProbeValue -Name '[縮小] 本文の折り返し幅は展開時×割合[px]' -Actual ([double]$collapsed.bodyWidth) `
-            -Expected ([double]$collapsed.expandedBodyWidth * [double]$collapsed.widthRatio) -Tolerance 0.01 | Out-Null
-        Assert-ProbeValue -Name '[縮小] ダイアログの横幅も本文幅＋余白まで縮む[px]' -Actual ([double]$collapsed.width) `
-            -Expected ([double]$collapsed.collapsedBodyWidth + $paddingX) -Tolerance 0.5 | Out-Null
-        Assert-ProbeTrue -Name '[縮小] 本文は表示上の1行だけ' -Condition ([int]$collapsed.visibleLines -eq 1) `
-            -Detail "(表示行数: $($collapsed.visibleLines))" | Out-Null
-        Assert-ProbeTrue -Name '[縮小] 続きがあるので末尾が「…」' -Condition ([bool]$collapsed.hasEllipsis) | Out-Null
+        Assert-ProbeValue -Name '[縮小] 本文の枠は先頭の文字ぶんの幅[px]' -Actual ([double]$collapsed.bodyWidth) `
+            -Expected ([double]$collapsed.collapsedBodyWidth) -Tolerance 0.01 | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 本文の枠の幅は展開時より十分小さい' -Condition ([double]$collapsed.bodyWidth -gt 0 -and [double]$collapsed.bodyWidth -lt [double]$collapsed.expandedBodyWidth / 4) `
+            -Detail "($([math]::Round([double]$collapsed.bodyWidth, 1))px / 展開 $($collapsed.expandedBodyWidth)px)" | Out-Null
+        Assert-ProbeValue -Name '[縮小] ダイアログの横幅は本文の枠と同じ（余白なし）[px]' -Actual ([double]$collapsed.width) `
+            -Expected ([double]$collapsed.collapsedBodyWidth) -Tolerance 0.5 | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 表示されるのは先頭の3文字だけ' -Condition ([int]$collapsed.renderedChars -eq [int]$collapsed.charCount) `
+            -Detail "(表示 $($collapsed.renderedChars)文字: $($collapsed.renderedText))" | Out-Null
+        # 本文に改行があっても、表示する先頭の文字は本文の枠（＝ダイアログ）の中に収まる
+        Assert-ProbeValue -Name '[縮小] 表示する文字は枠からはみ出さない[px]' -Actual ([math]::Max(0, [double]$collapsed.outside)) -Expected 0 -Tolerance 0.5 | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 省略記号「…」は付けない' -Condition (-not [bool]$collapsed.hasEllipsis) | Out-Null
         Assert-ProbeTrue -Name '[縮小] 文字サイズは固定（自動サイズ無効）' -Condition (-not [bool]$collapsed.autoSizing) `
             -Detail "(文字サイズ: $($collapsed.fontSize))" | Out-Null
         Assert-ProbeValue -Name '[縮小] 判定の中心はダイアログの中心[m]' -Actual ([double]$collapsed.gazeCenterOffset) -Expected 0 -Tolerance 0.001 | Out-Null
@@ -556,11 +572,6 @@ return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToS
             -Detail "(IsGazed: $($expanded.isGazed), IsFacingHead: $($expanded.isFacing))" | Out-Null
         Assert-ProbeValue -Name '[縮小] 見ると元の横幅へ戻る[px]' -Actual ([double]$expanded.width) -Expected ([double]$expanded.expandedWidth) -Tolerance 0.01 | Out-Null
         Assert-ProbeValue -Name '[縮小] 見ると本文の折り返し幅も元に戻る[px]' -Actual ([double]$expanded.bodyWidth) -Expected ([double]$expanded.expandedBodyWidth) -Tolerance 0.01 | Out-Null
-        # 1行目の文字数は折り返し幅の割合とほぼ同じだけ減る（「…」の置き換えと禁則で数文字ずれるため幅を持たせる）
-        $charRatio = [double]$collapsed.firstLineChars / [math]::Max(1, [double]$expanded.firstLineChars)
-        Assert-ProbeTrue -Name '[縮小] 1行目の文字数がおおむね割合ぶんに減る' `
-            -Condition ([math]::Abs($charRatio - [double]$collapsed.widthRatio) -le 0.15) `
-            -Detail "(縮小 $($collapsed.firstLineChars)文字 / 展開 $($expanded.firstLineChars)文字 = $([math]::Round($charRatio, 2)), 割合 $($collapsed.widthRatio))" | Out-Null
         Assert-ProbeValue -Name '[縮小] 見ると元の高さへ戻る[px]' -Actual ([double]$expanded.height) -Expected ([double]$expanded.expandedHeight) -Tolerance 0.01 | Out-Null
         Assert-ProbeValue -Name '[縮小] 見ると本文の枠も元に戻る[px]' -Actual ([double]$expanded.bodyHeight) -Expected ([double]$expanded.expandedBodyHeight) -Tolerance 0.01 | Out-Null
         Assert-ProbeTrue -Name '[縮小] 見ると全文が表示される' -Condition ([int]$expanded.visibleLines -gt 1 -and -not [bool]$expanded.hasEllipsis) `
