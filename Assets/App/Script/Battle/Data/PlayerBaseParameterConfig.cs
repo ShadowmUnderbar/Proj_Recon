@@ -24,7 +24,7 @@ namespace App.Battle.Data
         [SerializeField, Min(0.01f), Tooltip("射撃クールダウンの基礎値（秒）。各種倍率はこの値に乗算する。0にすると毎フレーム発射になる")]
         private float _baseFireRate = 0.3f;
 
-        [SerializeField, Min(0), Tooltip("ノーマル・ワルツの貫通数（突き抜ける敵の数）。0で最初に当たった敵で止まる")]
+        [SerializeField, Min(0), Tooltip("ノーマルショットの貫通数（突き抜ける敵の数）。0で最初に当たった敵で止まる")]
         private int _basePenetration = 1;
 
         [Header("フォーカス")]
@@ -42,6 +42,9 @@ namespace App.Battle.Data
 
         [SerializeField, Min(0f), Tooltip("ワルツの射撃クールダウン倍率")]
         private float _waltzFireRateMagnification = 0.3f;
+
+        [SerializeField, Min(0), Tooltip("ワルツの貫通数（突き抜ける敵の数）。0で最初に当たった敵で止まる")]
+        private int _waltzPenetration = 0;
 
         [Header("マージ")]
         // 利き手のみの1ストリーム基準で、弾ダメージ(8.0)＋爆風ダメージ(8.0)の合計16.0により、
@@ -92,6 +95,7 @@ namespace App.Battle.Data
 
         public float WaltzDamageMagnification => _waltzDamageMagnification;
         public float WaltzFireRateMagnification => _waltzFireRateMagnification;
+        public int WaltzPenetration => _waltzPenetration;
 
         public float MergeDamageMagnification => _mergeDamageMagnification;
         public float MergeFireRateMagnification => _mergeFireRateMagnification;

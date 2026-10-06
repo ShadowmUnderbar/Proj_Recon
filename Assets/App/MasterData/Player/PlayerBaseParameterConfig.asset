@@ -21,6 +21,7 @@ MonoBehaviour:
   _focusDamageMagnification: 3
   _waltzDamageMagnification: 0.4
   _waltzFireRateMagnification: 0.5
+  _waltzPenetration: 0
   _mergeDamageMagnification: 2.3
   _mergeFireRateMagnification: 1.3
   _mergeBulletSpeed: 50

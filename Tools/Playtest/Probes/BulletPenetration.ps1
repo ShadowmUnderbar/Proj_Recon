@@ -1,5 +1,5 @@
 ﻿#
-# プレイヤー弾の貫通数（PlayerBaseParameterConfig の _basePenetration / _mergePenetration）と、
+# プレイヤー弾の貫通数（PlayerBaseParameterConfig の _basePenetration / _waltzPenetration / _mergePenetration）と、
 # フォーカス弾の「フォーカス対象に当たるまで貫通数に関係なく貫通し続ける」仕様を確かめるプローブ。
 #
 # デバッグ対戦（Request-DebugArena）で耐性方向の無い周回型の雑魚（CommonOrbit）を5体出し、
@@ -131,8 +131,8 @@ function ProbeRun {
     Assert-ProbeTrue -Name 'ノーマル(非フォーカス)は2体に当たって止まる' -Condition ($normal.hits -eq '0,1') -Detail "命中=[$($normal.hits)]" | Out-Null
 
     $waltz = Invoke-PenetrationShot -ShotType Waltz -FocusType NotFocus
-    Assert-ProbeValue -Name 'ワルツの貫通数は1（ノーマルと共通）' -Actual $waltz.configPenetration -Expected 1 | Out-Null
-    Assert-ProbeTrue -Name 'ワルツ(非フォーカス)は2体に当たって止まる' -Condition ($waltz.hits -eq '0,1') -Detail "命中=[$($waltz.hits)]" | Out-Null
+    Assert-ProbeValue -Name 'ワルツの貫通数は0' -Actual $waltz.configPenetration -Expected 0 | Out-Null
+    Assert-ProbeTrue -Name 'ワルツ(非フォーカス)は1体目で止まる' -Condition ($waltz.hits -eq '0') -Detail "命中=[$($waltz.hits)]" | Out-Null
 
     $merge = Invoke-PenetrationShot -ShotType Merge -FocusType NotFocus
     Assert-ProbeValue -Name 'マージの貫通数は3' -Actual $merge.configPenetration -Expected 3 | Out-Null
