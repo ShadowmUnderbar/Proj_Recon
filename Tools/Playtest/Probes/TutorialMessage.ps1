@@ -3,8 +3,9 @@
 #
 # 目視では「出た・動いた」しか分からないため、
 #   1. 配置計算（TutorialMessagePlacement）の純粋ロジック（フェーズ切替・左右ミラー・スナップ・向きのフォールバック）
-#   2. 実際の表示（視点正面への追従 → 非利き手の脇への移動 → 常に頭を向く → 差し替え → 非表示）
-#   3. 縮小表示（非利き手追従中に見ていなければ、狭めた幅で表示上の1行目＋「…」へ縮み、見れば元の大きさへ戻る）
+#   2. 実際の表示（視点正面への追従 → 非利き手の手のひら側へ移動し、読める面の向きだけ手に固定 → 差し替え → 非表示）
+#   3. 縮小表示（非利き手追従中、手のひらを見ていなければ本文の先頭の数文字（既定5文字）ぴったり（余白なし）へ縮み、
+#      読める面が頭を向き、かつ視線が当たったときだけ元の大きさへ戻る）
 # を Transform と設定値の実測で確認する。
 #
 # HMD の無いエディタではカメラもコントローラも動かないため、「追従している」ことは
@@ -78,11 +79,15 @@ using App.Common.Data;
 var settings = new TutorialMessagePlacementSettings(
     headFollowDuration: 2f,
     headOffset: new Vector3(0f, -0.1f, 1f),
-    handOffset: new Vector3(-0.2f, 0.3f, 0.1f),
+    handOffset: new Vector3(0.2f, 0.3f, 0.1f),
+    handForward: Vector3.left,
+    facingAngle: 45f,
+    facingExitMargin: 10f,
+    handScale: 0.5f,
     followSpeed: 0f); // 補間なし＝目標へ即座に置く
 
 var head = new Pose(new Vector3(0f, 1.6f, 0f), Quaternion.Euler(0f, 90f, 0f));
-var hand = new Pose(new Vector3(0.5f, 1.0f, 0.5f), Quaternion.identity);
+var hand = new Pose(new Vector3(0.5f, 1.0f, 0.5f), Quaternion.Euler(10f, 20f, 30f));
 
 var placement = new TutorialMessagePlacement();
 var hiddenResult = placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, hand, true), settings, out _);
@@ -97,14 +102,27 @@ var headPhase = placement.Phase;
 var expectedHeadPos = head.position + head.rotation * settings.HeadOffset;
 var headPosError = Vector3.Distance(headPose.position, expectedHeadPos);
 var headRotError = Quaternion.Angle(headPose.rotation, head.rotation);
+var headFacing = placement.IsFacingHead;
+var headScale = placement.Scale;
 
 // 規定時間を過ぎたら非利き手の脇（左手のときはオフセットそのまま）。
 // 経過時間は最初に配置されたフレームの次から数えるため、初回の 1 秒は含まれない
 placement.TryUpdate(2.5f, new TutorialMessageAnchor(head, HandType.Left, hand, true), settings, out var leftPose);
 var leftPhase = placement.Phase;
+var leftScale = placement.Scale;
 var expectedLeftPos = hand.position + hand.rotation * settings.HandOffset;
 var leftPosError = Vector3.Distance(leftPose.position, expectedLeftPos);
-var faceError = Vector3.Angle(leftPose.rotation * Vector3.forward, leftPose.position - head.position);
+// 読める面の向き（前方）だけ手に固定（手の回転×手ローカルの前方）
+var leftForwardError = Vector3.Angle(leftPose.rotation * Vector3.forward, hand.rotation * settings.HandForward);
+// 前方まわりの傾きは頭の上方向に合わせる（上方向＝頭の上方向を前方に直交させたもの）
+var headUp = head.rotation * Vector3.up;
+var leftUpError = Vector3.Angle(leftPose.rotation * Vector3.up, Vector3.ProjectOnPlane(headUp, leftPose.rotation * Vector3.forward));
+// 手首を前方まわりにひねっても（ロール）向きは変わらない＝固定されるのは1軸だけ
+var rolledHand = new Pose(hand.position, Quaternion.AngleAxis(60f, hand.rotation * settings.HandForward) * hand.rotation);
+var rolledSettings = new TutorialMessagePlacementSettings(2f, settings.HeadOffset, Vector3.zero, settings.HandForward, 45f, 10f, 0.5f, 0f);
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, hand, true), rolledSettings, out var unrolledPose);
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, rolledHand, true), rolledSettings, out var rolledPose);
+var rollError = Quaternion.Angle(unrolledPose.rotation, rolledPose.rotation);
 
 // 右手のときは x を反転して鏡写し
 placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Right, hand, true), settings, out var rightPose);
@@ -112,16 +130,45 @@ var mirrored = settings.HandOffset; mirrored.x = -mirrored.x;
 var expectedRightPos = hand.position + hand.rotation * mirrored;
 var rightPosError = Vector3.Distance(rightPose.position, expectedRightPos);
 
+// 鏡写し: 手が無回転なら、左手の前方は手のひらの向こう（-x）、右手は x を反転した +x
+var identityHand = new Pose(hand.position, Quaternion.identity);
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, identityHand, true), settings, out var leftIdentity);
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Right, identityHand, true), settings, out var rightIdentity);
+var palmForwardError = Vector3.Angle(leftIdentity.rotation * Vector3.forward, Vector3.left);
+var mirrorForwardError = Vector3.Angle(rightIdentity.rotation * Vector3.forward, Vector3.right);
+var mirrorUpError = Vector3.Angle(rightIdentity.rotation * Vector3.up, Vector3.ProjectOnPlane(headUp, Vector3.right));
+
+// 前方が頭の上方向と平行で傾きが定まらないときは、指先側を上にする（壊れた回転を返さない）
+var upwardHand = new Pose(hand.position, Quaternion.FromToRotation(settings.HandForward, headUp));
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, upwardHand, true), settings, out var upwardPose);
+var parallelForwardError = Vector3.Angle(upwardPose.rotation * Vector3.forward, headUp);
+var parallelUpError = Vector3.Angle(upwardPose.rotation * Vector3.up, Vector3.ProjectOnPlane(upwardHand.rotation * Vector3.forward, headUp));
+
+// 手のひらを頭へ向ける（読める面の前方が頭→メッセージの向き）と IsFacingHead、手首を 180 度返すと外れる
+var zeroOffset = rolledSettings;
+var front = head.position + head.rotation * Vector3.forward * 0.5f;
+var palmToHead = Quaternion.FromToRotation(settings.HandForward, front - head.position);
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, new Pose(front, palmToHead), true), zeroOffset, out _);
+var palmFacing = placement.IsFacingHead;
+var palmAway = Quaternion.AngleAxis(180f, head.rotation * Vector3.up) * palmToHead;
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, new Pose(front, palmAway), true), zeroOffset, out _);
+var backFacing = placement.IsFacingHead;
+// 向いていない状態からは45度以内で向いている扱いになり、50度では入らない
+Pose Tilt(float angle) => new Pose(front, Quaternion.AngleAxis(angle, head.rotation * Vector3.up) * palmToHead);
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, Tilt(50f), true), zeroOffset, out _);
+var tilt50Facing = placement.IsFacingHead;
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, Tilt(40f), true), zeroOffset, out _);
+var tilt40Facing = placement.IsFacingHead;
+// 向いている状態からは余白（10度）ぶん外れにくい: 50度ではまだ向いている、60度で外れる
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, Tilt(50f), true), zeroOffset, out _);
+var tilt50Staying = placement.IsFacingHead;
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, Tilt(60f), true), zeroOffset, out _);
+var tilt60Facing = placement.IsFacingHead;
+
 // 手が使えない（非VR）間は時間が過ぎても視点の正面に留まる
 placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, hand, false), settings, out var noHandPose);
 var noHandPhase = placement.Phase;
 var noHandPosError = Vector3.Distance(noHandPose.position, expectedHeadPos);
-
-// 真下に来て水平成分が消えたときは頭の向きへフォールバックし、壊れた回転を返さない
-var belowHand = new Pose(head.position + Vector3.down * 0.5f, Quaternion.identity);
-var zeroOffset = new TutorialMessagePlacementSettings(2f, settings.HeadOffset, Vector3.zero, 0f);
-placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, belowHand, true), zeroOffset, out var belowPose);
-var belowRotError = Quaternion.Angle(belowPose.rotation, head.rotation);
 
 // Begin で視点正面フェーズからやり直す
 placement.Begin();
@@ -130,8 +177,9 @@ var restartPhase = placement.Phase;
 
 placement.End();
 var endPhase = placement.Phase;
+var endFacing = placement.IsFacingHead;
 
-return $"{{\"hiddenResult\":{hiddenResult.ToString().ToLower()},\"hiddenPhase\":\"{hiddenPhase}\",\"beginPhase\":\"{beginPhase}\",\"headPhase\":\"{headPhase}\",\"headPosError\":{headPosError},\"headRotError\":{headRotError},\"leftPhase\":\"{leftPhase}\",\"leftPosError\":{leftPosError},\"faceError\":{faceError},\"rightPosError\":{rightPosError},\"noHandPhase\":\"{noHandPhase}\",\"noHandPosError\":{noHandPosError},\"belowRotError\":{belowRotError},\"restartPhase\":\"{restartPhase}\",\"endPhase\":\"{endPhase}\"}}";
+return $"{{\"hiddenResult\":{hiddenResult.ToString().ToLower()},\"hiddenPhase\":\"{hiddenPhase}\",\"beginPhase\":\"{beginPhase}\",\"headPhase\":\"{headPhase}\",\"headPosError\":{headPosError},\"headRotError\":{headRotError},\"leftPhase\":\"{leftPhase}\",\"leftPosError\":{leftPosError},\"leftForwardError\":{leftForwardError},\"leftUpError\":{leftUpError},\"rollError\":{rollError},\"parallelForwardError\":{parallelForwardError},\"parallelUpError\":{parallelUpError},\"rightPosError\":{rightPosError},\"mirrorForwardError\":{mirrorForwardError},\"mirrorUpError\":{mirrorUpError},\"palmForwardError\":{palmForwardError},\"headFacing\":{headFacing.ToString().ToLower()},\"palmFacing\":{palmFacing.ToString().ToLower()},\"backFacing\":{backFacing.ToString().ToLower()},\"tilt40Facing\":{tilt40Facing.ToString().ToLower()},\"tilt50Facing\":{tilt50Facing.ToString().ToLower()},\"tilt50Staying\":{tilt50Staying.ToString().ToLower()},\"tilt60Facing\":{tilt60Facing.ToString().ToLower()},\"noHandPhase\":\"{noHandPhase}\",\"noHandPosError\":{noHandPosError},\"restartPhase\":\"{restartPhase}\",\"endPhase\":\"{endPhase}\",\"endFacing\":{endFacing.ToString().ToLower()},\"headScale\":{headScale},\"leftScale\":{leftScale}}}";
 '@
 
     Assert-ProbeTrue -Name '[計算] 非表示中は姿勢を返さない' -Condition (-not [bool]$logic.hiddenResult) `
@@ -142,13 +190,28 @@ return $"{{\"hiddenResult\":{hiddenResult.ToString().ToLower()},\"hiddenPhase\":
     Assert-ProbeValue -Name '[計算] 視点正面の向き＝頭の向き[deg]' -Actual ([double]$logic.headRotError) -Expected 0 -Tolerance 0.01 | Out-Null
     Assert-ProbeTrue -Name '[計算] 規定時間後は非利き手フェーズになる' -Condition ($logic.leftPhase -eq 'HandFollow') | Out-Null
     Assert-ProbeValue -Name '[計算] 左手の位置＝手＋手ローカルオフセット' -Actual ([double]$logic.leftPosError) -Expected 0 | Out-Null
-    Assert-ProbeValue -Name '[計算] 非利き手フェーズは頭の方を向く[deg]' -Actual ([double]$logic.faceError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 読める面の向き（前方）は手に固定[deg]' -Actual ([double]$logic.leftForwardError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 文字の上は頭の上方向に合わせる[deg]' -Actual ([double]$logic.leftUpError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 手首を前方まわりにひねっても向きは変わらない[deg]' -Actual ([double]$logic.rollError) -Expected 0 -Tolerance 0.01 | Out-Null
     Assert-ProbeValue -Name '[計算] 右手のときは x を反転して配置' -Actual ([double]$logic.rightPosError) -Expected 0 | Out-Null
+    Assert-ProbeValue -Name '[計算] 既定の向き: 左手の読める面は手のひらの向こう（-x）[deg]' -Actual ([double]$logic.palmForwardError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 右手の前方は x を反転した向き（+x）[deg]' -Actual ([double]$logic.mirrorForwardError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 右手も文字の上は頭の上方向[deg]' -Actual ([double]$logic.mirrorUpError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 前方が頭の上方向と平行でも前方は保つ[deg]' -Actual ([double]$logic.parallelForwardError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 平行のときは指先側を上にする[deg]' -Actual ([double]$logic.parallelUpError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeTrue -Name '[計算] 視点正面フェーズは頭の方を向いている' -Condition ([bool]$logic.headFacing) | Out-Null
+    Assert-ProbeValue -Name '[計算] 視点正面の大きさは等倍' -Actual ([double]$logic.headScale) -Expected 1 | Out-Null
+    Assert-ProbeValue -Name '[計算] 手元では設定の倍率（0.5）になる' -Actual ([double]$logic.leftScale) -Expected 0.5 | Out-Null
+    Assert-ProbeTrue -Name '[計算] 手のひらを頭へ向けると IsFacingHead' -Condition ([bool]$logic.palmFacing) | Out-Null
+    Assert-ProbeTrue -Name '[計算] 手首を返して手の甲側を向けると外れる' -Condition (-not [bool]$logic.backFacing) | Out-Null
+    Assert-ProbeTrue -Name '[計算] 判定角度（45度）以内の傾きは向いている扱い' -Condition ([bool]$logic.tilt40Facing -and -not [bool]$logic.tilt50Facing) `
+        -Detail "(40度: $($logic.tilt40Facing), 50度: $($logic.tilt50Facing))" | Out-Null
+    Assert-ProbeTrue -Name '[計算] 向いている間は余白（10度）ぶん外れにくい' -Condition ([bool]$logic.tilt50Staying -and -not [bool]$logic.tilt60Facing) `
+        -Detail "(向いた後の50度: $($logic.tilt50Staying), 60度: $($logic.tilt60Facing))" | Out-Null
     Assert-ProbeTrue -Name '[計算] 手が使えない間は視点正面に留まる' -Condition ($logic.noHandPhase -eq 'HeadFollow') | Out-Null
     Assert-ProbeValue -Name '[計算] 手が使えない間の位置＝視点正面' -Actual ([double]$logic.noHandPosError) -Expected 0 | Out-Null
-    Assert-ProbeValue -Name '[計算] 真下では頭の向きへフォールバック[deg]' -Actual ([double]$logic.belowRotError) -Expected 0 -Tolerance 0.01 | Out-Null
     Assert-ProbeTrue -Name '[計算] 再 Begin で視点正面からやり直す' -Condition ($logic.restartPhase -eq 'HeadFollow') | Out-Null
-    Assert-ProbeTrue -Name '[計算] End で非表示になる' -Condition ($logic.endPhase -eq 'Hidden') | Out-Null
+    Assert-ProbeTrue -Name '[計算] End で非表示になる' -Condition ($logic.endPhase -eq 'Hidden' -and -not [bool]$logic.endFacing) | Out-Null
 
     # --- 1b. 追従の遅延: 頭の移動は即時、向きの変化だけ遅れて追いつく ---
     $lag = Invoke-UnityJson -Snippet @'
@@ -162,6 +225,10 @@ var settings = new TutorialMessagePlacementSettings(
     headFollowDuration: 100f,
     headOffset: new Vector3(0f, -0.1f, 1f),
     handOffset: Vector3.zero,
+    handForward: Vector3.forward,
+    facingAngle: 45f,
+    facingExitMargin: 0f,
+    handScale: 1f,
     followSpeed: 6f);
 var dt = 1f / 90f;
 var hand = new Pose(Vector3.zero, Quaternion.identity);
@@ -190,9 +257,20 @@ for (var i = 0; i < 600; i++)
     placement.TryUpdate(dt, new TutorialMessageAnchor(head, HandType.Left, hand, true), settings, out settled);
 }
 var settledGap = Vector3.Distance(settled.position, turnTarget);
+
+// 大きさも位置と同じ速さで追いつく: 視点正面（等倍）から手元（0.5倍）へ切り替えた直後は途中、時間が経てば倍率に追いつく
+var scaleSettings = new TutorialMessagePlacementSettings(0f, settings.HeadOffset, Vector3.zero, Vector3.left, 45f, 0f, 0.5f, 6f);
+var scalePlacement = new TutorialMessagePlacement();
+scalePlacement.Begin();
+scalePlacement.TryUpdate(dt, new TutorialMessageAnchor(head, HandType.Left, hand, false), scaleSettings, out _);
+var scaleStart = scalePlacement.Scale;
+scalePlacement.TryUpdate(dt, new TutorialMessageAnchor(head, HandType.Left, hand, true), scaleSettings, out _);
+var scaleMid = scalePlacement.Scale;
+for (var i = 0; i < 600; i++) scalePlacement.TryUpdate(dt, new TutorialMessageAnchor(head, HandType.Left, hand, true), scaleSettings, out _);
+var scaleSettled = scalePlacement.Scale;
 var settledRotGap = Quaternion.Angle(settled.rotation, head.rotation);
 
-return $"{{\"moveError\":{moveError},\"turnGap\":{turnGap},\"turnRotGap\":{turnRotGap},\"settledGap\":{settledGap},\"settledRotGap\":{settledRotGap}}}";
+return $"{{\"moveError\":{moveError},\"turnGap\":{turnGap},\"turnRotGap\":{turnRotGap},\"settledGap\":{settledGap},\"settledRotGap\":{settledRotGap},\"scaleStart\":{scaleStart},\"scaleMid\":{scaleMid},\"scaleSettled\":{scaleSettled}}}";
 '@
 
     Assert-ProbeValue -Name '[計算] 頭の移動には遅延なく付いてくる[m]' -Actual ([double]$lag.moveError) -Expected 0 -Tolerance 0.001 | Out-Null
@@ -202,6 +280,10 @@ return $"{{\"moveError\":{moveError},\"turnGap\":{turnGap},\"turnRotGap\":{turnR
         -Detail "(目標との角度: $([math]::Round([double]$lag.turnRotGap, 1))deg)" | Out-Null
     Assert-ProbeValue -Name '[計算] 時間が経てば位置が追いつく[m]' -Actual ([double]$lag.settledGap) -Expected 0 -Tolerance 0.001 | Out-Null
     Assert-ProbeValue -Name '[計算] 時間が経てば向きが追いつく[deg]' -Actual ([double]$lag.settledRotGap) -Expected 0 -Tolerance 0.1 | Out-Null
+    Assert-ProbeTrue -Name '[計算] 手元へ移った直後の大きさは等倍と倍率の途中' `
+        -Condition ([double]$lag.scaleStart -eq 1 -and [double]$lag.scaleMid -lt 1 -and [double]$lag.scaleMid -gt 0.5) `
+        -Detail "(開始 $($lag.scaleStart) → 直後 $([math]::Round([double]$lag.scaleMid, 3)))" | Out-Null
+    Assert-ProbeValue -Name '[計算] 時間が経てば大きさが倍率に追いつく' -Actual ([double]$lag.scaleSettled) -Expected 0.5 -Tolerance 0.001 | Out-Null
 
     # --- 1c. 縮小・展開の状態（TutorialMessageFold）: 縮小は本文を先に、展開は背景が広がりきってから本文を戻す ---
     $fold = Invoke-UnityJson -Snippet @'
@@ -333,16 +415,19 @@ var cam = Camera.main.transform;
 var expected = cam.position + cam.rotation * headOffset;
 var posError = Vector3.Distance(view.transform.position, expected);
 var rotError = Quaternion.Angle(view.transform.rotation, cam.rotation);
+var localScale = (float)typeof(TutorialMessageView).GetField("_localScale", flags).GetValue(view);
+var scaleRatio = view.transform.localScale.x / localScale;
 
-return $"{{\"phase\":\"{view.Phase}\",\"rootActive\":{root.activeInHierarchy.ToString().ToLower()},\"posError\":{posError},\"rotError\":{rotError}}}";
+return $"{{\"phase\":\"{view.Phase}\",\"rootActive\":{root.activeInHierarchy.ToString().ToLower()},\"posError\":{posError},\"rotError\":{rotError},\"scaleRatio\":{scaleRatio}}}";
 '@
 
     Assert-ProbeTrue -Name '表示中はルートがアクティブ' -Condition ([bool]$headFollow.rootActive) | Out-Null
     Assert-ProbeTrue -Name '表示直後は視点正面フェーズのまま' -Condition ($headFollow.phase -eq 'HeadFollow') | Out-Null
     Assert-ProbeValue -Name '視点正面の位置（カメラ＋オフセット）[m]' -Actual ([double]$headFollow.posError) -Expected 0 -Tolerance 0.02 | Out-Null
+    Assert-ProbeValue -Name '視点正面の大きさは等倍' -Actual ([double]$headFollow.scaleRatio) -Expected 1 -Tolerance 0.001 | Out-Null
     Assert-ProbeValue -Name '視点正面の向き（カメラと同じ）[deg]' -Actual ([double]$headFollow.rotError) -Expected 0 -Tolerance 1.0 | Out-Null
 
-    # --- 4. 規定時間後 → 非利き手の脇へ移動し、頭の方を向く ---
+    # --- 4. 規定時間後 → 非利き手の手のひら側へ移動し、読める面の向きだけ手に固定（文字の上は頭の上方向） ---
     Start-Sleep -Milliseconds ([int]([double]$setup.duration * 1000) + 2000)
 
     $handFollow = Invoke-UnityJson -Snippet @'
@@ -361,6 +446,7 @@ var scope = LifetimeScope.Find<BattleLifetimeScope>();
 var view = scope.Container.Resolve<ITutorialMessageView>() as TutorialMessageView;
 var flags = BindingFlags.NonPublic | BindingFlags.Instance;
 var handOffset = (Vector3)typeof(TutorialMessageView).GetField("_handOffset", flags).GetValue(view);
+var handForward = (Vector3)typeof(TutorialMessageView).GetField("_handForward", flags).GetValue(view);
 
 var setting = scope.Container.Resolve<IPlayerSettingDataStore>();
 var control = scope.Container.Resolve<IPlayerControlPresenter>();
@@ -377,12 +463,20 @@ var otherOffset = handOffset;
 if (hand == HandType.Left) otherOffset.x = -otherOffset.x;
 var otherExpected = otherPose.position + otherPose.rotation * PlatformHandRotation.PointingAdjustment * otherOffset;
 
+var localForward = handForward;
+if (hand == HandType.Right) localForward.x = -localForward.x;
+var expectedForward = adjusted * localForward;
+
 var cam = Camera.main.transform;
 var posError = Vector3.Distance(view.transform.position, expected);
 var otherError = Vector3.Distance(view.transform.position, otherExpected);
-var faceError = Vector3.Angle(view.transform.forward, view.transform.position - cam.position);
+var forwardError = Vector3.Angle(view.transform.forward, expectedForward);
+var upError = Vector3.Angle(view.transform.up, Vector3.ProjectOnPlane(cam.up, view.transform.forward));
+var localScale = (float)typeof(TutorialMessageView).GetField("_localScale", flags).GetValue(view);
+var handScale = (float)typeof(TutorialMessageView).GetField("_handScale", flags).GetValue(view);
+var scaleRatio = view.transform.localScale.x / localScale;
 
-return $"{{\"phase\":\"{view.Phase}\",\"hand\":\"{hand}\",\"posError\":{posError},\"otherHandError\":{otherError},\"faceError\":{faceError}}}";
+return $"{{\"phase\":\"{view.Phase}\",\"hand\":\"{hand}\",\"posError\":{posError},\"otherHandError\":{otherError},\"forwardError\":{forwardError},\"upError\":{upError},\"scaleRatio\":{scaleRatio},\"handScale\":{handScale}}}";
 '@
 
     if ([bool]$setup.isVr) {
@@ -391,15 +485,19 @@ return $"{{\"phase\":\"{view.Phase}\",\"hand\":\"{hand}\",\"posError\":{posError
         Assert-ProbeValue -Name '非利き手の位置（手＋オフセット）[m]' -Actual ([double]$handFollow.posError) -Expected 0 -Tolerance 0.02 | Out-Null
         Assert-ProbeTrue -Name '利き手側には置かれていない' -Condition ([double]$handFollow.otherHandError -gt 0.05) `
             -Detail "(利き手側との距離: $([math]::Round([double]$handFollow.otherHandError, 3))m)" | Out-Null
-        Assert-ProbeValue -Name '非利き手フェーズは頭の方を向く[deg]' -Actual ([double]$handFollow.faceError) -Expected 0 -Tolerance 1.0 | Out-Null
+        Assert-ProbeValue -Name '非利き手フェーズの読める面の向き（手に固定）[deg]' -Actual ([double]$handFollow.forwardError) -Expected 0 -Tolerance 1.0 | Out-Null
+        Assert-ProbeValue -Name '非利き手フェーズの文字の上（頭の上方向）[deg]' -Actual ([double]$handFollow.upError) -Expected 0 -Tolerance 1.0 | Out-Null
+        Assert-ProbeValue -Name '非利き手フェーズの大きさは設定の倍率' -Actual ([double]$handFollow.scaleRatio) -Expected ([double]$handFollow.handScale) -Tolerance 0.005 | Out-Null
     }
     else {
         Assert-ProbeTrue -Name '非VRでは規定時間後も視点正面のまま' -Condition ($handFollow.phase -eq 'HeadFollow') | Out-Null
     }
 
-    # --- 4b. 縮小表示: 非利き手追従中に見ていなければ1行目＋「…」へ縮み、見れば元の大きさへ戻る ---
+    # --- 4b. 縮小表示: 非利き手追従中は手のひらを見ていなければ1行目＋「…」へ縮み、見れば元の大きさへ戻る ---
+    # 「手のひらを見ている」＝読める面が頭を向いている（_facingAngle 以内）かつ視線が当たっている。
     # エディタでは HMD もコントローラも動かず、手元のダイアログが頭のすぐ近くに来て判定球の中に入ってしまう。
-    # そのため「見ていない」「見た」は判定の半径・余白角度を一時的に書き換えて作り、最後にプレハブの値へ戻す
+    # そのため視線は判定の半径・余白角度、向きは _facingAngle（180＝常に向いている、0＝向いていない）を
+    # 一時的に書き換えて作り、最後にプレハブの値へ戻す
     $foldSnippet = @'
 using System.Reflection;
 using UnityEngine;
@@ -420,10 +518,11 @@ var gaze = (GazeTargetView)typeof(TutorialMessageView).GetField("_gazeTarget", f
 var expandedSize = (Vector2)typeof(TutorialMessageView).GetField("_expandedSize", flags).GetValue(view);
 var expandedBodySize = (Vector2)typeof(TutorialMessageView).GetField("_expandedBodySize", flags).GetValue(view);
 var collapsedBodySize = (Vector2)typeof(TutorialMessageView).GetField("_collapsedBodySize", flags).GetValue(view);
-var widthRatio = (float)typeof(TutorialMessageView).GetField("_collapsedWidthRatio", flags).GetValue(view);
+var charCount = (int)typeof(TutorialMessageView).GetField("_collapsedCharCount", flags).GetValue(view);
 var originalRadius = (float)typeof(GazeTargetView).GetField("_radius", flags).GetValue(gaze);
 var originalEnter = (float)typeof(GazeTargetView).GetField("_enterMarginAngle", flags).GetValue(gaze);
 var originalExit = (float)typeof(GazeTargetView).GetField("_exitMarginAngle", flags).GetValue(gaze);
+var originalFacing = (float)typeof(TutorialMessageView).GetField("_facingAngle", flags).GetValue(view);
 
 // 負の値は「変更しない」。半径0・余白0なら中心を正確に射抜かない限り当たらない
 var radius = __RADIUS__;
@@ -434,6 +533,9 @@ if (margin >= 0f)
     typeof(GazeTargetView).GetField("_enterMarginAngle", flags).SetValue(gaze, margin);
     typeof(GazeTargetView).GetField("_exitMarginAngle", flags).SetValue(gaze, margin);
 }
+var facing = __FACING__;
+if (facing >= 0f) typeof(TutorialMessageView).GetField("_facingAngle", flags).SetValue(view, facing);
+var placement = (TutorialMessagePlacement)typeof(TutorialMessageView).GetField("_placement", flags).GetValue(view);
 
 var info = body.textInfo;
 var firstLineChars = info.lineCount > 0 ? info.lineInfo[0].visibleCharacterCount : 0;
@@ -441,64 +543,128 @@ var visibleLines = 0;
 for (var i = 0; i < info.lineCount; i++) if (info.lineInfo[i].visibleCharacterCount > 0) visibleLines++;
 var hasEllipsis = false;
 for (var i = 0; i < info.characterCount; i++) if (info.characterInfo[i].isVisible && info.characterInfo[i].character == '…') hasEllipsis = true;
+// 実際に描かれる文字数（表示文字数の上限より前の表示文字）と、それらが本文の枠からはみ出す量[px]
+var renderedChars = 0;
+var renderedText = "";
+var outside = 0f;
+var bodyRect = body.rectTransform.rect;
+for (var i = 0; i < info.characterCount && i < body.maxVisibleCharacters; i++)
+{
+    var c = info.characterInfo[i];
+    if (!c.isVisible) continue;
+    renderedChars++;
+    renderedText += c.character;
+    outside = Mathf.Max(outside, bodyRect.xMin - c.origin, c.xAdvance - bodyRect.xMax,
+        bodyRect.yMin - c.descender, c.ascender - bodyRect.yMax);
+}
 
 var canvasRect = (RectTransform)view.transform;
 var gazeCenterOffset = Vector3.Distance(gaze.transform.position, view.transform.position);
 
-return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToString().ToLower()},\"width\":{canvasRect.sizeDelta.x},\"height\":{canvasRect.sizeDelta.y},\"bodyWidth\":{body.rectTransform.sizeDelta.x},\"bodyHeight\":{body.rectTransform.sizeDelta.y},\"expandedWidth\":{expandedSize.x},\"expandedHeight\":{expandedSize.y},\"expandedBodyWidth\":{expandedBodySize.x},\"expandedBodyHeight\":{expandedBodySize.y},\"collapsedBodyWidth\":{collapsedBodySize.x},\"collapsedBodyHeight\":{collapsedBodySize.y},\"widthRatio\":{widthRatio},\"firstLineChars\":{firstLineChars},\"fontSize\":{body.fontSize},\"autoSizing\":{body.enableAutoSizing.ToString().ToLower()},\"visibleLines\":{visibleLines},\"hasEllipsis\":{hasEllipsis.ToString().ToLower()},\"gazeCenterOffset\":{gazeCenterOffset},\"originalRadius\":{originalRadius},\"originalEnter\":{originalEnter},\"originalExit\":{originalExit}}}";
+return $"{{\"phase\":\"{view.Phase}\",\"isGazed\":{gaze.IsGazed.CurrentValue.ToString().ToLower()},\"width\":{canvasRect.sizeDelta.x},\"height\":{canvasRect.sizeDelta.y},\"bodyWidth\":{body.rectTransform.sizeDelta.x},\"bodyHeight\":{body.rectTransform.sizeDelta.y},\"expandedWidth\":{expandedSize.x},\"expandedHeight\":{expandedSize.y},\"expandedBodyWidth\":{expandedBodySize.x},\"expandedBodyHeight\":{expandedBodySize.y},\"collapsedBodyWidth\":{collapsedBodySize.x},\"collapsedBodyHeight\":{collapsedBodySize.y},\"charCount\":{charCount},\"renderedChars\":{renderedChars},\"renderedText\":\"{renderedText}\",\"outside\":{outside},\"firstLineChars\":{firstLineChars},\"fontSize\":{body.fontSize},\"autoSizing\":{body.enableAutoSizing.ToString().ToLower()},\"visibleLines\":{visibleLines},\"hasEllipsis\":{hasEllipsis.ToString().ToLower()},\"gazeCenterOffset\":{gazeCenterOffset},\"originalRadius\":{originalRadius},\"originalEnter\":{originalEnter},\"originalExit\":{originalExit},\"originalFacing\":{originalFacing},\"isFacing\":{placement.IsFacingHead.ToString().ToLower()}}}";
 '@
 
     if ([bool]$setup.isVr) {
         # 見ていない状態にする → 外れ遅延0.5s＋縮小0.15sを待つ
-        $original = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '0f').Replace('__MARGIN__', '0f'))
+        $original = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '0f').Replace('__MARGIN__', '0f').Replace('__FACING__', '180f'))
         Start-Sleep -Milliseconds 2000
-        $collapsed = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f'))
-        $padding = [double]$collapsed.expandedHeight - [double]$collapsed.expandedBodyHeight
-        $paddingX = [double]$collapsed.expandedWidth - [double]$collapsed.expandedBodyWidth
+        $collapsed = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f').Replace('__FACING__', '-1f'))
 
         Assert-ProbeTrue -Name '[縮小] 手元のダイアログを見ていない' -Condition (-not [bool]$collapsed.isGazed) `
             -Detail "(phase: $($collapsed.phase))" | Out-Null
-        Assert-ProbeValue -Name '[縮小] 見ていなければ高さが1行目＋余白まで縮む[px]' -Actual ([double]$collapsed.height) `
-            -Expected ([double]$collapsed.collapsedBodyHeight + $padding) -Tolerance 0.5 | Out-Null
+        Assert-ProbeValue -Name '[縮小] 見ていなければ高さが1行の高さまで縮む（余白なし）[px]' -Actual ([double]$collapsed.height) `
+            -Expected ([double]$collapsed.collapsedBodyHeight) -Tolerance 0.5 | Out-Null
         Assert-ProbeTrue -Name '[縮小] 縮小時の高さは展開時より小さい' -Condition ([double]$collapsed.height -lt [double]$collapsed.expandedHeight) `
             -Detail "($([math]::Round([double]$collapsed.height, 1))px / 展開 $($collapsed.expandedHeight)px)" | Out-Null
-        Assert-ProbeValue -Name '[縮小] 本文の折り返し幅は展開時×割合[px]' -Actual ([double]$collapsed.bodyWidth) `
-            -Expected ([double]$collapsed.expandedBodyWidth * [double]$collapsed.widthRatio) -Tolerance 0.01 | Out-Null
-        Assert-ProbeValue -Name '[縮小] ダイアログの横幅も本文幅＋余白まで縮む[px]' -Actual ([double]$collapsed.width) `
-            -Expected ([double]$collapsed.collapsedBodyWidth + $paddingX) -Tolerance 0.5 | Out-Null
-        Assert-ProbeTrue -Name '[縮小] 本文は表示上の1行だけ' -Condition ([int]$collapsed.visibleLines -eq 1) `
-            -Detail "(表示行数: $($collapsed.visibleLines))" | Out-Null
-        Assert-ProbeTrue -Name '[縮小] 続きがあるので末尾が「…」' -Condition ([bool]$collapsed.hasEllipsis) | Out-Null
+        Assert-ProbeValue -Name '[縮小] 本文の枠は先頭の文字ぶんの幅[px]' -Actual ([double]$collapsed.bodyWidth) `
+            -Expected ([double]$collapsed.collapsedBodyWidth) -Tolerance 0.01 | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 本文の枠の幅は展開時より十分小さい' -Condition ([double]$collapsed.bodyWidth -gt 0 -and [double]$collapsed.bodyWidth -lt [double]$collapsed.expandedBodyWidth / 4) `
+            -Detail "($([math]::Round([double]$collapsed.bodyWidth, 1))px / 展開 $($collapsed.expandedBodyWidth)px)" | Out-Null
+        Assert-ProbeValue -Name '[縮小] ダイアログの横幅は本文の枠と同じ（余白なし）[px]' -Actual ([double]$collapsed.width) `
+            -Expected ([double]$collapsed.collapsedBodyWidth) -Tolerance 0.5 | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 表示されるのは先頭の規定文字数だけ' -Condition ([int]$collapsed.renderedChars -eq [int]$collapsed.charCount) `
+            -Detail "(表示 $($collapsed.renderedChars)文字: $($collapsed.renderedText))" | Out-Null
+        # 本文に改行があっても、表示する先頭の文字は本文の枠（＝ダイアログ）の中に収まる
+        Assert-ProbeValue -Name '[縮小] 表示する文字は枠からはみ出さない[px]' -Actual ([math]::Max(0, [double]$collapsed.outside)) -Expected 0 -Tolerance 0.5 | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 省略記号「…」は付けない' -Condition (-not [bool]$collapsed.hasEllipsis) | Out-Null
         Assert-ProbeTrue -Name '[縮小] 文字サイズは固定（自動サイズ無効）' -Condition (-not [bool]$collapsed.autoSizing) `
             -Detail "(文字サイズ: $($collapsed.fontSize))" | Out-Null
         Assert-ProbeValue -Name '[縮小] 判定の中心はダイアログの中心[m]' -Actual ([double]$collapsed.gazeCenterOffset) -Expected 0 -Tolerance 0.001 | Out-Null
 
         # 判定半径を広げて「見た」状態にする（頭が判定球の中に入る）。入り遅延0.15s＋展開0.15sを待つ
-        Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '100f').Replace('__MARGIN__', '-1f')) | Out-Null
+        Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '100f').Replace('__MARGIN__', '-1f').Replace('__FACING__', '-1f')) | Out-Null
         Start-Sleep -Milliseconds 1500
-        $expanded = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f'))
+        $expanded = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f').Replace('__FACING__', '-1f'))
 
-        Assert-ProbeTrue -Name '[縮小] 見ると IsGazed になる' -Condition ([bool]$expanded.isGazed) | Out-Null
+        Assert-ProbeTrue -Name '[縮小] 見ると IsGazed になる' -Condition ([bool]$expanded.isGazed -and [bool]$expanded.isFacing) `
+            -Detail "(IsGazed: $($expanded.isGazed), IsFacingHead: $($expanded.isFacing))" | Out-Null
         Assert-ProbeValue -Name '[縮小] 見ると元の横幅へ戻る[px]' -Actual ([double]$expanded.width) -Expected ([double]$expanded.expandedWidth) -Tolerance 0.01 | Out-Null
         Assert-ProbeValue -Name '[縮小] 見ると本文の折り返し幅も元に戻る[px]' -Actual ([double]$expanded.bodyWidth) -Expected ([double]$expanded.expandedBodyWidth) -Tolerance 0.01 | Out-Null
-        # 1行目の文字数は折り返し幅の割合とほぼ同じだけ減る（「…」の置き換えと禁則で数文字ずれるため幅を持たせる）
-        $charRatio = [double]$collapsed.firstLineChars / [math]::Max(1, [double]$expanded.firstLineChars)
-        Assert-ProbeTrue -Name '[縮小] 1行目の文字数がおおむね割合ぶんに減る' `
-            -Condition ([math]::Abs($charRatio - [double]$collapsed.widthRatio) -le 0.15) `
-            -Detail "(縮小 $($collapsed.firstLineChars)文字 / 展開 $($expanded.firstLineChars)文字 = $([math]::Round($charRatio, 2)), 割合 $($collapsed.widthRatio))" | Out-Null
         Assert-ProbeValue -Name '[縮小] 見ると元の高さへ戻る[px]' -Actual ([double]$expanded.height) -Expected ([double]$expanded.expandedHeight) -Tolerance 0.01 | Out-Null
         Assert-ProbeValue -Name '[縮小] 見ると本文の枠も元に戻る[px]' -Actual ([double]$expanded.bodyHeight) -Expected ([double]$expanded.expandedBodyHeight) -Tolerance 0.01 | Out-Null
         Assert-ProbeTrue -Name '[縮小] 見ると全文が表示される' -Condition ([int]$expanded.visibleLines -gt 1 -and -not [bool]$expanded.hasEllipsis) `
             -Detail "(表示行数: $($expanded.visibleLines))" | Out-Null
         Assert-ProbeValue -Name '[縮小] 縮小・展開で文字サイズが変わらない' -Actual ([double]$expanded.fontSize) -Expected ([double]$collapsed.fontSize) -Tolerance 0.001 | Out-Null
 
+        # 視線は当たったまま、手のひらを向けていない状態にする → 縮小0.15s後に縮む
+        Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f').Replace('__FACING__', '0f')) | Out-Null
+        Start-Sleep -Milliseconds 1000
+        $notFacing = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f').Replace('__FACING__', '-1f'))
+
+        Assert-ProbeTrue -Name '[手のひら] 視線は当たっているが手のひらを向けていない' -Condition ([bool]$notFacing.isGazed -and -not [bool]$notFacing.isFacing) `
+            -Detail "(IsGazed: $($notFacing.isGazed), IsFacingHead: $($notFacing.isFacing))" | Out-Null
+        Assert-ProbeValue -Name '[手のひら] 手のひらを向けていなければ縮む[px]' -Actual ([double]$notFacing.height) -Expected ([double]$collapsed.height) -Tolerance 0.5 | Out-Null
+
+        # 手のひらを向け直す → 展開する
+        Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f').Replace('__FACING__', '180f')) | Out-Null
+        Start-Sleep -Milliseconds 1000
+        $refacing = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f').Replace('__FACING__', '-1f'))
+        Assert-ProbeValue -Name '[手のひら] 手のひらを向けて見ると展開する[px]' -Actual ([double]$refacing.height) -Expected ([double]$refacing.expandedHeight) -Tolerance 0.01 | Out-Null
+
         # 再び見ていない状態にする → 外れ遅延0.5s＋縮小0.15s後に再び縮む
-        Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '0f').Replace('__MARGIN__', '-1f')) | Out-Null
+        Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '0f').Replace('__MARGIN__', '-1f').Replace('__FACING__', '-1f')) | Out-Null
         Start-Sleep -Milliseconds 2000
-        $recollapsed = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f'))
+        $recollapsed = Invoke-UnityJson -Snippet ($foldSnippet.Replace('__RADIUS__', '-1f').Replace('__MARGIN__', '-1f').Replace('__FACING__', '-1f'))
 
         Assert-ProbeValue -Name '[縮小] 視線を外すと再び縮む[px]' -Actual ([double]$recollapsed.height) -Expected ([double]$collapsed.height) -Tolerance 0.5 | Out-Null
         Assert-ProbeValue -Name '[縮小] 視線を外すと横幅も再び縮む[px]' -Actual ([double]$recollapsed.width) -Expected ([double]$collapsed.width) -Tolerance 0.5 | Out-Null
+
+        # 縮小表示のまま隠して出し直す。TMP は非アクティブの間に枠が変わっても内部の枠の大きさを取り込み直さないため、
+        # 取り込み直さないと縮小時の小さい枠のまま自動サイズが走り、文字が最小サイズになって余白が大きく出る
+        $reshowAfterCollapse = Invoke-UnityJson -Snippet @'
+using System.Reflection;
+using VContainer;
+using VContainer.Unity;
+using App.Battle;
+using App.Common.Interface;
+using App.Common.Data;
+using App.Common.Views;
+using TMPro;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var useCase = scope.Container.Resolve<ITutorialMessageUseCase>();
+var view = scope.Container.Resolve<ITutorialMessageView>() as TutorialMessageView;
+var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+var body = (TextMeshProUGUI)typeof(TutorialMessageView).GetField("_bodyText", flags).GetValue(view);
+
+useCase.Hide();
+useCase.Show(TutorialType.Wave1);
+
+var rect = body.rectTransform.rect;
+var marginWidth = (float)typeof(TMP_Text).GetField("m_marginWidth", flags).GetValue(body);
+var marginHeight = (float)typeof(TMP_Text).GetField("m_marginHeight", flags).GetValue(body);
+var margin = body.margin;
+var widthGap = marginWidth - (rect.width - margin.x - margin.z);
+var heightGap = marginHeight - (rect.height - margin.y - margin.w);
+
+return $"{{\"widthGap\":{widthGap},\"heightGap\":{heightGap},\"fontSize\":{body.fontSize},\"min\":{body.fontSizeMin},\"max\":{body.fontSizeMax}}}";
+'@
+
+        Assert-ProbeValue -Name '[再表示] 縮小のまま隠しても TMP の枠の幅は本文の枠と一致[px]' -Actual ([double]$reshowAfterCollapse.widthGap) -Expected 0 -Tolerance 0.5 | Out-Null
+        Assert-ProbeValue -Name '[再表示] 縮小のまま隠しても TMP の枠の高さは本文の枠と一致[px]' -Actual ([double]$reshowAfterCollapse.heightGap) -Expected 0 -Tolerance 0.5 | Out-Null
+        Assert-ProbeTrue -Name '[再表示] 文字が最小サイズまで縮まない（Wave1 は最大サイズで収まる）' `
+            -Condition ([double]$reshowAfterCollapse.fontSize -eq [double]$reshowAfterCollapse.max) `
+            -Detail "(文字サイズ: $($reshowAfterCollapse.fontSize), 範囲 $($reshowAfterCollapse.min)〜$($reshowAfterCollapse.max))" | Out-Null
 
         # 書き換えた判定の設定を元の値へ戻す（再生中の以降の挙動に影響させない）
         $restore = @'
@@ -517,9 +683,10 @@ var gaze = (GazeTargetView)typeof(TutorialMessageView).GetField("_gazeTarget", f
 typeof(GazeTargetView).GetField("_radius", flags).SetValue(gaze, __R__f);
 typeof(GazeTargetView).GetField("_enterMarginAngle", flags).SetValue(gaze, __E__f);
 typeof(GazeTargetView).GetField("_exitMarginAngle", flags).SetValue(gaze, __X__f);
+typeof(TutorialMessageView).GetField("_facingAngle", flags).SetValue(view, __F__f);
 return "restored";
 '@
-        Invoke-UnityCode -Snippet ($restore.Replace('__R__', $original.originalRadius).Replace('__E__', $original.originalEnter).Replace('__X__', $original.originalExit)) | Out-Null
+        Invoke-UnityCode -Snippet ($restore.Replace('__R__', $original.originalRadius).Replace('__E__', $original.originalEnter).Replace('__X__', $original.originalExit).Replace('__F__', $original.originalFacing)) | Out-Null
     }
 
     # --- 5. 差し替え → 視点正面からやり直す。非表示 → ルートが消える ---
