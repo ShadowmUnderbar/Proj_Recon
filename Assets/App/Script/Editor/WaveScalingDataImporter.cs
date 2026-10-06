@@ -182,7 +182,7 @@ namespace App.Editor
                     continue;
                 }
 
-                // 負の増加率はウェーブを進むほど敵が弱くなるため、設定ミスとして弾く
+                // 負の倍率はHP・攻撃力の符号が反転するため、設定ミスとして弾く
                 if (atkBuff < 0f || hpBuff < 0f)
                 {
                     errors.Add($"Row{rowNum}: atkBuff / hpBuff は0以上にしてください (実際: {atkBuff} / {hpBuff})");

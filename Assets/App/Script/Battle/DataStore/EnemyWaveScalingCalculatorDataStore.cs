@@ -10,9 +10,9 @@ namespace App.Battle.DataStore
 {
     /// <summary>
     /// ウェーブ進行による敵強化倍率の算出。
-    /// ウェーブ1を等倍とし、1ウェーブ進むごとにそのウェーブ帯の増加率を加算していく（線形）。
-    /// 増加率は WaveScalingData のウェーブ帯テーブルで切り替えられるため、
-    /// 「5ウェーブ目からは伸びを急にする」といった調整をスプレッドシート側で行える。
+    /// WaveScalingData のウェーブ帯テーブルから、現在のウェーブが属する帯の倍率をそのまま使う（階段状）。
+    /// 例: wave=3 の行が 1.2 なら、次の行の開始ウェーブの手前まで ×1.2 になる。
+    /// 「5ウェーブ目からは×1.5」といった調整をスプレッドシート側で行える。
     /// </summary>
     public class EnemyWaveScalingCalculatorDataStore : IEnemyWaveScalingCalculatorDataStore
     {
@@ -69,8 +69,8 @@ namespace App.Battle.DataStore
         }
 
         /// <summary>
-        /// 現在のウェーブまでに進んだ各ウェーブについて、そのウェーブが属する段階の増加率を足し合わせる。
-        /// 段階の切り替わりで倍率が飛ばないよう、段階ごとの区間の長さで加算する
+        /// 現在のウェーブが属する段階（開始ウェーブが現在以下のうち最も後ろの段階）の倍率をそのまま使う。
+        /// 最初の段階より前のウェーブは等倍とする
         /// </summary>
         private void CalculateMultipliers(out double hpMultiplier, out double damageMultiplier)
         {
@@ -79,25 +79,16 @@ namespace App.Battle.DataStore
 
             var currentWave = _waveManagerDataStore.CurrentWave.CurrentValue;
 
-            for (var i = 0; i < _ascendingTiers.Count; i++)
+            foreach (var tier in _ascendingTiers)
             {
-                // ウェーブ1は等倍なので、増加が乗るのはウェーブ2以降
-                var fromWave = Mathf.Max(2, _ascendingTiers[i].Wave);
-
-                // 次の段階の開始ウェーブの手前までがこの段階の担当区間
-                var toWave = i + 1 < _ascendingTiers.Count
-                    ? _ascendingTiers[i + 1].Wave - 1
-                    : currentWave;
-                toWave = Mathf.Min(toWave, currentWave);
-
-                if (toWave < fromWave)
+                // 昇順に並んでいるので、開始ウェーブを超えた時点で以降の段階は対象外
+                if (tier.Wave > currentWave)
                 {
-                    continue;
+                    break;
                 }
 
-                var waveCount = toWave - fromWave + 1;
-                hpMultiplier += (double)_ascendingTiers[i].HpBuff * waveCount;
-                damageMultiplier += (double)_ascendingTiers[i].AtkBuff * waveCount;
+                hpMultiplier = tier.HpBuff;
+                damageMultiplier = tier.AtkBuff;
             }
 
             // 倍率が負になると値が反転するため下限を0で止める
