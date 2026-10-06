@@ -347,7 +347,14 @@ namespace App.Battle.Views.Enemy.Bullet
 
             _hitCount++;
 
-            if (_focusTargetId != default && _hitCount >= BulletData.Penetration)
+            // フォーカス弾は貫通数に関係なく、フォーカス対象に当たるまで貫通し続ける
+            if (BulletData.FocusType == AimFocusType.Focus)
+            {
+                return;
+            }
+
+            // Penetration は「突き抜ける敵の数」。Penetration+1 体目に当たった時点で止める
+            if (_hitCount > BulletData.Penetration)
             {
                 HitAfterProcess().Forget();
             }
