@@ -12,7 +12,8 @@ namespace App.Common.Views
     /// 縮小・展開の状態は <see cref="TutorialMessageFold"/> に任せる。
     /// 追従先の姿勢は UseCase から <see cref="UpdateAnchor"/> で毎フレーム受け取る。
     ///
-    /// 非利き手に追従している間は手のひら側に固定し、読める面を手のひらの向こうへ向ける。
+    /// 非利き手に追従している間は手のひら側に置き、読める面の向きだけを手に固定して手のひらの向こうへ向ける
+    /// （面の傾きは頭の上方向に合わせ、文字を水平に保つ）。
     /// 手首を返して手のひらを見た（読める面が頭を向き、かつ視線が当たっている）ときだけ展開し、
     /// それ以外は表示上の1行目だけに縮める（続きがあれば末尾を「…」にする）。
     /// 縮小時は本文の折り返し幅も狭めて1行目に入る文字数を減らし、ダイアログの横幅もそれに合わせて縮める。
@@ -43,8 +44,8 @@ namespace App.Common.Views
         [SerializeField, Tooltip("非利き手追従時のオフセット[m]。指し示す向きへ補正した手のローカル座標（x:右 y:上 z:前）。左手向けの値で、右手のときは x を反転する。左手の手のひらは +x 側")]
         private Vector3 _handOffset = new(0.1f, 0f, 0.1f);
 
-        [SerializeField, Tooltip("非利き手追従時の向き[deg]。指し示す向きへ補正した手のローカル回転（オイラー角）。左手向けの値で、右手のときは鏡写しにする。既定は読める面を手のひらの向こう（-x）へ向け、文字の上を指先側（+z）にする")]
-        private Vector3 _handRotationEuler = new(0f, -90f, -90f);
+        [SerializeField, Tooltip("非利き手追従時に読める面を向ける方向。指し示す向きへ補正した手のローカル座標で、この軸だけ手に固定し、面の傾きは頭の上方向に合わせる。左手向けの値で、右手のときは x を反転する。既定は手のひらの向こう（-x）")]
+        private Vector3 _handForward = Vector3.left;
 
         [SerializeField, Range(0f, 90f), Tooltip("手のひらを見ているとみなす角度[deg]。頭→ダイアログの向きと、読める面の向きとのなす角がこれ以下なら展開できる")]
         private float _facingAngle = 45f;
@@ -211,7 +212,7 @@ namespace App.Common.Views
         private TutorialMessagePlacementSettings BuildSettings()
         {
             return new TutorialMessagePlacementSettings(
-                _headFollowDuration, _headOffset, _handOffset, Quaternion.Euler(_handRotationEuler), _facingAngle,
+                _headFollowDuration, _headOffset, _handOffset, _handForward, _facingAngle,
                 _facingExitMargin, _followSpeed);
         }
     }

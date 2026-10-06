@@ -21,10 +21,10 @@ namespace App.Common.Views
         public readonly Vector3 HandOffset;
 
         /// <summary>
-        /// 非利き手追従時の向き。指し示す向きへ補正した手のローカル回転で、手に固定する。
-        /// 左手向けの値として扱い、非利き手が右のときは鏡写しにする
+        /// 非利き手追従時に読める面を向ける方向（メッセージの前方）。指し示す向きへ補正した手のローカル座標で、この軸だけ手に固定する。
+        /// 左手向けの値として扱い、非利き手が右のときは x を反転する
         /// </summary>
-        public readonly Quaternion HandRotation;
+        public readonly Vector3 HandForward;
 
         /// <summary>読める面が頭の方を向いているとみなす角度[deg]。視線とメッセージの前方とのなす角がこれ以下なら向いている</summary>
         public readonly float FacingAngle;
@@ -36,13 +36,13 @@ namespace App.Common.Views
         public readonly float FollowSpeed;
 
         public TutorialMessagePlacementSettings(
-            float headFollowDuration, Vector3 headOffset, Vector3 handOffset, Quaternion handRotation,
+            float headFollowDuration, Vector3 headOffset, Vector3 handOffset, Vector3 handForward,
             float facingAngle, float facingExitMargin, float followSpeed)
         {
             HeadFollowDuration = headFollowDuration;
             HeadOffset = headOffset;
             HandOffset = handOffset;
-            HandRotation = handRotation;
+            HandForward = handForward;
             FacingAngle = facingAngle;
             FacingExitMargin = facingExitMargin;
             FollowSpeed = followSpeed;

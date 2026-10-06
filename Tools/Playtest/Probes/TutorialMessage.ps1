@@ -3,7 +3,7 @@
 #
 # 目視では「出た・動いた」しか分からないため、
 #   1. 配置計算（TutorialMessagePlacement）の純粋ロジック（フェーズ切替・左右ミラー・スナップ・向きのフォールバック）
-#   2. 実際の表示（視点正面への追従 → 非利き手の手のひら側へ移動し向きも手に固定 → 差し替え → 非表示）
+#   2. 実際の表示（視点正面への追従 → 非利き手の手のひら側へ移動し、読める面の向きだけ手に固定 → 差し替え → 非表示）
 #   3. 縮小表示（非利き手追従中、手のひらを見ていなければ狭めた幅で表示上の1行目＋「…」へ縮み、
 #      読める面が頭を向き、かつ視線が当たったときだけ元の大きさへ戻る）
 # を Transform と設定値の実測で確認する。
@@ -80,7 +80,7 @@ var settings = new TutorialMessagePlacementSettings(
     headFollowDuration: 2f,
     headOffset: new Vector3(0f, -0.1f, 1f),
     handOffset: new Vector3(0.2f, 0.3f, 0.1f),
-    handRotation: Quaternion.Euler(0f, -90f, -90f),
+    handForward: Vector3.left,
     facingAngle: 45f,
     facingExitMargin: 10f,
     followSpeed: 0f); // 補間なし＝目標へ即座に置く
@@ -109,8 +109,17 @@ placement.TryUpdate(2.5f, new TutorialMessageAnchor(head, HandType.Left, hand, t
 var leftPhase = placement.Phase;
 var expectedLeftPos = hand.position + hand.rotation * settings.HandOffset;
 var leftPosError = Vector3.Distance(leftPose.position, expectedLeftPos);
-// 向きは手に固定（手の回転×手ローカルの回転）。頭の方は向かない
-var leftRotError = Quaternion.Angle(leftPose.rotation, hand.rotation * settings.HandRotation);
+// 読める面の向き（前方）だけ手に固定（手の回転×手ローカルの前方）
+var leftForwardError = Vector3.Angle(leftPose.rotation * Vector3.forward, hand.rotation * settings.HandForward);
+// 前方まわりの傾きは頭の上方向に合わせる（上方向＝頭の上方向を前方に直交させたもの）
+var headUp = head.rotation * Vector3.up;
+var leftUpError = Vector3.Angle(leftPose.rotation * Vector3.up, Vector3.ProjectOnPlane(headUp, leftPose.rotation * Vector3.forward));
+// 手首を前方まわりにひねっても（ロール）向きは変わらない＝固定されるのは1軸だけ
+var rolledHand = new Pose(hand.position, Quaternion.AngleAxis(60f, hand.rotation * settings.HandForward) * hand.rotation);
+var rolledSettings = new TutorialMessagePlacementSettings(2f, settings.HeadOffset, Vector3.zero, settings.HandForward, 45f, 10f, 0f);
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, hand, true), rolledSettings, out var unrolledPose);
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, rolledHand, true), rolledSettings, out var rolledPose);
+var rollError = Quaternion.Angle(unrolledPose.rotation, rolledPose.rotation);
 
 // 右手のときは x を反転して鏡写し
 placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Right, hand, true), settings, out var rightPose);
@@ -118,23 +127,24 @@ var mirrored = settings.HandOffset; mirrored.x = -mirrored.x;
 var expectedRightPos = hand.position + hand.rotation * mirrored;
 var rightPosError = Vector3.Distance(rightPose.position, expectedRightPos);
 
-// 鏡写し: 手が無回転なら、右手の前方・上方は左手のものの x を反転した向きになる
+// 鏡写し: 手が無回転なら、左手の前方は手のひらの向こう（-x）、右手は x を反転した +x
 var identityHand = new Pose(hand.position, Quaternion.identity);
 placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, identityHand, true), settings, out var leftIdentity);
 placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Right, identityHand, true), settings, out var rightIdentity);
-var leftForward = leftIdentity.rotation * Vector3.forward; leftForward.x = -leftForward.x;
-var leftUp = leftIdentity.rotation * Vector3.up; leftUp.x = -leftUp.x;
-var mirrorForwardError = Vector3.Angle(rightIdentity.rotation * Vector3.forward, leftForward);
-var mirrorUpError = Vector3.Angle(rightIdentity.rotation * Vector3.up, leftUp);
-
-// 既定の回転では、左手の読める面は手のひらの向こう（手ローカル -x）を向き、文字の上は指先側（+z）
 var palmForwardError = Vector3.Angle(leftIdentity.rotation * Vector3.forward, Vector3.left);
-var palmUpError = Vector3.Angle(leftIdentity.rotation * Vector3.up, Vector3.forward);
+var mirrorForwardError = Vector3.Angle(rightIdentity.rotation * Vector3.forward, Vector3.right);
+var mirrorUpError = Vector3.Angle(rightIdentity.rotation * Vector3.up, Vector3.ProjectOnPlane(headUp, Vector3.right));
+
+// 前方が頭の上方向と平行で傾きが定まらないときは、指先側を上にする（壊れた回転を返さない）
+var upwardHand = new Pose(hand.position, Quaternion.FromToRotation(settings.HandForward, headUp));
+placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, upwardHand, true), settings, out var upwardPose);
+var parallelForwardError = Vector3.Angle(upwardPose.rotation * Vector3.forward, headUp);
+var parallelUpError = Vector3.Angle(upwardPose.rotation * Vector3.up, Vector3.ProjectOnPlane(upwardHand.rotation * Vector3.forward, headUp));
 
 // 手のひらを頭へ向ける（読める面の前方が頭→メッセージの向き）と IsFacingHead、手首を 180 度返すと外れる
-var zeroOffset = new TutorialMessagePlacementSettings(2f, settings.HeadOffset, Vector3.zero, settings.HandRotation, 45f, 10f, 0f);
+var zeroOffset = rolledSettings;
 var front = head.position + head.rotation * Vector3.forward * 0.5f;
-var palmToHead = Quaternion.LookRotation(front - head.position) * Quaternion.Inverse(settings.HandRotation);
+var palmToHead = Quaternion.FromToRotation(settings.HandForward, front - head.position);
 placement.TryUpdate(0.1f, new TutorialMessageAnchor(head, HandType.Left, new Pose(front, palmToHead), true), zeroOffset, out _);
 var palmFacing = placement.IsFacingHead;
 var palmAway = Quaternion.AngleAxis(180f, head.rotation * Vector3.up) * palmToHead;
@@ -166,7 +176,7 @@ placement.End();
 var endPhase = placement.Phase;
 var endFacing = placement.IsFacingHead;
 
-return $"{{\"hiddenResult\":{hiddenResult.ToString().ToLower()},\"hiddenPhase\":\"{hiddenPhase}\",\"beginPhase\":\"{beginPhase}\",\"headPhase\":\"{headPhase}\",\"headPosError\":{headPosError},\"headRotError\":{headRotError},\"leftPhase\":\"{leftPhase}\",\"leftPosError\":{leftPosError},\"leftRotError\":{leftRotError},\"rightPosError\":{rightPosError},\"mirrorForwardError\":{mirrorForwardError},\"mirrorUpError\":{mirrorUpError},\"palmForwardError\":{palmForwardError},\"palmUpError\":{palmUpError},\"headFacing\":{headFacing.ToString().ToLower()},\"palmFacing\":{palmFacing.ToString().ToLower()},\"backFacing\":{backFacing.ToString().ToLower()},\"tilt40Facing\":{tilt40Facing.ToString().ToLower()},\"tilt50Facing\":{tilt50Facing.ToString().ToLower()},\"tilt50Staying\":{tilt50Staying.ToString().ToLower()},\"tilt60Facing\":{tilt60Facing.ToString().ToLower()},\"noHandPhase\":\"{noHandPhase}\",\"noHandPosError\":{noHandPosError},\"restartPhase\":\"{restartPhase}\",\"endPhase\":\"{endPhase}\",\"endFacing\":{endFacing.ToString().ToLower()}}}";
+return $"{{\"hiddenResult\":{hiddenResult.ToString().ToLower()},\"hiddenPhase\":\"{hiddenPhase}\",\"beginPhase\":\"{beginPhase}\",\"headPhase\":\"{headPhase}\",\"headPosError\":{headPosError},\"headRotError\":{headRotError},\"leftPhase\":\"{leftPhase}\",\"leftPosError\":{leftPosError},\"leftForwardError\":{leftForwardError},\"leftUpError\":{leftUpError},\"rollError\":{rollError},\"parallelForwardError\":{parallelForwardError},\"parallelUpError\":{parallelUpError},\"rightPosError\":{rightPosError},\"mirrorForwardError\":{mirrorForwardError},\"mirrorUpError\":{mirrorUpError},\"palmForwardError\":{palmForwardError},\"headFacing\":{headFacing.ToString().ToLower()},\"palmFacing\":{palmFacing.ToString().ToLower()},\"backFacing\":{backFacing.ToString().ToLower()},\"tilt40Facing\":{tilt40Facing.ToString().ToLower()},\"tilt50Facing\":{tilt50Facing.ToString().ToLower()},\"tilt50Staying\":{tilt50Staying.ToString().ToLower()},\"tilt60Facing\":{tilt60Facing.ToString().ToLower()},\"noHandPhase\":\"{noHandPhase}\",\"noHandPosError\":{noHandPosError},\"restartPhase\":\"{restartPhase}\",\"endPhase\":\"{endPhase}\",\"endFacing\":{endFacing.ToString().ToLower()}}}";
 '@
 
     Assert-ProbeTrue -Name '[計算] 非表示中は姿勢を返さない' -Condition (-not [bool]$logic.hiddenResult) `
@@ -177,12 +187,15 @@ return $"{{\"hiddenResult\":{hiddenResult.ToString().ToLower()},\"hiddenPhase\":
     Assert-ProbeValue -Name '[計算] 視点正面の向き＝頭の向き[deg]' -Actual ([double]$logic.headRotError) -Expected 0 -Tolerance 0.01 | Out-Null
     Assert-ProbeTrue -Name '[計算] 規定時間後は非利き手フェーズになる' -Condition ($logic.leftPhase -eq 'HandFollow') | Out-Null
     Assert-ProbeValue -Name '[計算] 左手の位置＝手＋手ローカルオフセット' -Actual ([double]$logic.leftPosError) -Expected 0 | Out-Null
-    Assert-ProbeValue -Name '[計算] 非利き手フェーズの向きは手に固定[deg]' -Actual ([double]$logic.leftRotError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 読める面の向き（前方）は手に固定[deg]' -Actual ([double]$logic.leftForwardError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 文字の上は頭の上方向に合わせる[deg]' -Actual ([double]$logic.leftUpError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 手首を前方まわりにひねっても向きは変わらない[deg]' -Actual ([double]$logic.rollError) -Expected 0 -Tolerance 0.01 | Out-Null
     Assert-ProbeValue -Name '[計算] 右手のときは x を反転して配置' -Actual ([double]$logic.rightPosError) -Expected 0 | Out-Null
-    Assert-ProbeValue -Name '[計算] 右手の前方は左手の鏡写し[deg]' -Actual ([double]$logic.mirrorForwardError) -Expected 0 -Tolerance 0.01 | Out-Null
-    Assert-ProbeValue -Name '[計算] 右手の上方は左手の鏡写し[deg]' -Actual ([double]$logic.mirrorUpError) -Expected 0 -Tolerance 0.01 | Out-Null
-    Assert-ProbeValue -Name '[計算] 既定の向き: 読める面は手のひらの向こう（-x）[deg]' -Actual ([double]$logic.palmForwardError) -Expected 0 -Tolerance 0.01 | Out-Null
-    Assert-ProbeValue -Name '[計算] 既定の向き: 文字の上は指先側（+z）[deg]' -Actual ([double]$logic.palmUpError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 既定の向き: 左手の読める面は手のひらの向こう（-x）[deg]' -Actual ([double]$logic.palmForwardError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 右手の前方は x を反転した向き（+x）[deg]' -Actual ([double]$logic.mirrorForwardError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 右手も文字の上は頭の上方向[deg]' -Actual ([double]$logic.mirrorUpError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 前方が頭の上方向と平行でも前方は保つ[deg]' -Actual ([double]$logic.parallelForwardError) -Expected 0 -Tolerance 0.01 | Out-Null
+    Assert-ProbeValue -Name '[計算] 平行のときは指先側を上にする[deg]' -Actual ([double]$logic.parallelUpError) -Expected 0 -Tolerance 0.01 | Out-Null
     Assert-ProbeTrue -Name '[計算] 視点正面フェーズは頭の方を向いている' -Condition ([bool]$logic.headFacing) | Out-Null
     Assert-ProbeTrue -Name '[計算] 手のひらを頭へ向けると IsFacingHead' -Condition ([bool]$logic.palmFacing) | Out-Null
     Assert-ProbeTrue -Name '[計算] 手首を返して手の甲側を向けると外れる' -Condition (-not [bool]$logic.backFacing) | Out-Null
@@ -207,7 +220,7 @@ var settings = new TutorialMessagePlacementSettings(
     headFollowDuration: 100f,
     headOffset: new Vector3(0f, -0.1f, 1f),
     handOffset: Vector3.zero,
-    handRotation: Quaternion.identity,
+    handForward: Vector3.forward,
     facingAngle: 45f,
     facingExitMargin: 0f,
     followSpeed: 6f);
@@ -390,7 +403,7 @@ return $"{{\"phase\":\"{view.Phase}\",\"rootActive\":{root.activeInHierarchy.ToS
     Assert-ProbeValue -Name '視点正面の位置（カメラ＋オフセット）[m]' -Actual ([double]$headFollow.posError) -Expected 0 -Tolerance 0.02 | Out-Null
     Assert-ProbeValue -Name '視点正面の向き（カメラと同じ）[deg]' -Actual ([double]$headFollow.rotError) -Expected 0 -Tolerance 1.0 | Out-Null
 
-    # --- 4. 規定時間後 → 非利き手の手のひら側へ移動し、向きも手に固定する ---
+    # --- 4. 規定時間後 → 非利き手の手のひら側へ移動し、読める面の向きだけ手に固定（文字の上は頭の上方向） ---
     Start-Sleep -Milliseconds ([int]([double]$setup.duration * 1000) + 2000)
 
     $handFollow = Invoke-UnityJson -Snippet @'
@@ -409,7 +422,7 @@ var scope = LifetimeScope.Find<BattleLifetimeScope>();
 var view = scope.Container.Resolve<ITutorialMessageView>() as TutorialMessageView;
 var flags = BindingFlags.NonPublic | BindingFlags.Instance;
 var handOffset = (Vector3)typeof(TutorialMessageView).GetField("_handOffset", flags).GetValue(view);
-var handEuler = (Vector3)typeof(TutorialMessageView).GetField("_handRotationEuler", flags).GetValue(view);
+var handForward = (Vector3)typeof(TutorialMessageView).GetField("_handForward", flags).GetValue(view);
 
 var setting = scope.Container.Resolve<IPlayerSettingDataStore>();
 var control = scope.Container.Resolve<IPlayerControlPresenter>();
@@ -426,15 +439,17 @@ var otherOffset = handOffset;
 if (hand == HandType.Left) otherOffset.x = -otherOffset.x;
 var otherExpected = otherPose.position + otherPose.rotation * PlatformHandRotation.PointingAdjustment * otherOffset;
 
-var local = Quaternion.Euler(handEuler);
-if (hand == HandType.Right) local = new Quaternion(local.x, -local.y, -local.z, local.w);
-var expectedRotation = adjusted * local;
+var localForward = handForward;
+if (hand == HandType.Right) localForward.x = -localForward.x;
+var expectedForward = adjusted * localForward;
 
+var cam = Camera.main.transform;
 var posError = Vector3.Distance(view.transform.position, expected);
 var otherError = Vector3.Distance(view.transform.position, otherExpected);
-var rotError = Quaternion.Angle(view.transform.rotation, expectedRotation);
+var forwardError = Vector3.Angle(view.transform.forward, expectedForward);
+var upError = Vector3.Angle(view.transform.up, Vector3.ProjectOnPlane(cam.up, view.transform.forward));
 
-return $"{{\"phase\":\"{view.Phase}\",\"hand\":\"{hand}\",\"posError\":{posError},\"otherHandError\":{otherError},\"rotError\":{rotError}}}";
+return $"{{\"phase\":\"{view.Phase}\",\"hand\":\"{hand}\",\"posError\":{posError},\"otherHandError\":{otherError},\"forwardError\":{forwardError},\"upError\":{upError}}}";
 '@
 
     if ([bool]$setup.isVr) {
@@ -443,7 +458,8 @@ return $"{{\"phase\":\"{view.Phase}\",\"hand\":\"{hand}\",\"posError\":{posError
         Assert-ProbeValue -Name '非利き手の位置（手＋オフセット）[m]' -Actual ([double]$handFollow.posError) -Expected 0 -Tolerance 0.02 | Out-Null
         Assert-ProbeTrue -Name '利き手側には置かれていない' -Condition ([double]$handFollow.otherHandError -gt 0.05) `
             -Detail "(利き手側との距離: $([math]::Round([double]$handFollow.otherHandError, 3))m)" | Out-Null
-        Assert-ProbeValue -Name '非利き手フェーズの向き（手＋手ローカル回転）[deg]' -Actual ([double]$handFollow.rotError) -Expected 0 -Tolerance 1.0 | Out-Null
+        Assert-ProbeValue -Name '非利き手フェーズの読める面の向き（手に固定）[deg]' -Actual ([double]$handFollow.forwardError) -Expected 0 -Tolerance 1.0 | Out-Null
+        Assert-ProbeValue -Name '非利き手フェーズの文字の上（頭の上方向）[deg]' -Actual ([double]$handFollow.upError) -Expected 0 -Tolerance 1.0 | Out-Null
     }
     else {
         Assert-ProbeTrue -Name '非VRでは規定時間後も視点正面のまま' -Condition ($handFollow.phase -eq 'HeadFollow') | Out-Null

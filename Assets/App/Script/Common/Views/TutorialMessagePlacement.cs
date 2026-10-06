@@ -6,7 +6,8 @@ namespace App.Common.Views
     /// <summary>
     /// チュートリアルメッセージの配置計算（plain C#、DI 対象外）。
     /// 表示直後は視点の正面へ追従し、規定時間を過ぎたら非利き手の手のひら側へ移る。
-    /// 手元では向きも手に固定し、読める面を手のひらの向こうへ向ける（手首を返して手のひらを見ると正対する）。
+    /// 手元では読める面の向き（前方）だけを手に固定して手のひらの向こうへ向け（手首を返して手のひらを見ると正対する）、
+    /// 前方まわりの傾きは頭の上方向に合わせて文字を水平に保つ。
     /// 手の姿勢が使えない（非VR）間は視点の正面に留まり続ける。
     ///
     /// 目標位置はフェーズごとに毎フレーム決め直し、実際の姿勢はそこへ指数補間で追いつかせる。
@@ -119,28 +120,31 @@ namespace App.Common.Views
         }
 
         /// <summary>
-        /// 非利き手の手のひら側。位置・向きとも手のローカル座標で決めて手に固定する。
-        /// 設定は左手向けの値として扱い、右手のときは x を反転したオフセットと鏡写しの回転にする
+        /// 非利き手の手のひら側。位置と読める面の向き（前方）は手のローカル座標で決めて手に固定する。
+        /// 前方まわりの傾きだけは手に従わず、上方向を頭の上方向に合わせる（手首をひねっても文字が傾かない）。
+        /// 前方が頭の上方向とほぼ平行で傾きが定まらないときは、指先側を上にする。
+        /// 設定は左手向けの値として扱い、右手のときはオフセットと前方の x を反転して鏡写しにする
         /// </summary>
         private static Pose GetHandFollowPose(
             in TutorialMessageAnchor anchor, in TutorialMessagePlacementSettings settings)
         {
             var offset = settings.HandOffset;
-            var rotation = settings.HandRotation;
+            var localForward = settings.HandForward;
             if (anchor.Hand == HandType.Right)
             {
                 offset.x = -offset.x;
-                rotation = MirrorX(rotation);
+                localForward.x = -localForward.x;
             }
 
             var hand = anchor.HandPose;
-            return new Pose(hand.position + hand.rotation * offset, hand.rotation * rotation);
-        }
+            var forward = hand.rotation * localForward;
+            var up = anchor.HeadPose.rotation * Vector3.up;
+            if (Vector3.Cross(forward, up).sqrMagnitude <= VectorConstants.DirectionEpsilon)
+            {
+                up = hand.rotation * Vector3.forward;
+            }
 
-        /// <summary>YZ 平面で鏡写しにした回転（x 軸を反転した座標系での同じ回転）</summary>
-        private static Quaternion MirrorX(Quaternion rotation)
-        {
-            return new Quaternion(rotation.x, -rotation.y, -rotation.z, rotation.w);
+            return new Pose(hand.position + hand.rotation * offset, Quaternion.LookRotation(forward, up));
         }
 
         /// <summary>
