@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using App.Battle.Data;
 using App.Common.Data;
 using App.Common.Data.MasterData;
@@ -27,6 +28,9 @@ namespace App.Battle.Views
 
         [SerializeField, Tooltip("購入コストの表記")]
         private TextMeshPro _costText;
+
+        [SerializeField, Tooltip("タグの表示（収まらないときは横に流れる。ローカライズ: TagText テーブル）")]
+        private UpgradeTagTickerView _tagTicker;
 
         [SerializeField, Tooltip("掴み判定に使うコライダー")]
         private Collider _collider;
@@ -106,6 +110,15 @@ namespace App.Battle.Views
             SetTextIfAssigned(_levelText, text.LevelLabel);
             SetTextIfAssigned(_simpleDescriptionText, text.SimpleDescription);
             SetTextIfAssigned(_descriptionText, text.Description);
+        }
+
+        /// <summary>タグの表示名を反映する（タグなしのアップグレードは空）</summary>
+        public void SetTags(IReadOnlyList<string> tagNames)
+        {
+            if (_tagTicker != null)
+            {
+                _tagTicker.SetTags(tagNames);
+            }
         }
 
         /// <summary>定位置へ向けて補間で戻す</summary>
