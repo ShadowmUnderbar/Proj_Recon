@@ -45,6 +45,11 @@ namespace App.Common
             // チュートリアル文言（Localization の TutorialText テーブル）。メインメニュー・バトル双方で使うため常駐
             builder.RegisterEntryPoint<TutorialLocalizationDataStore>()
                 .As<ITutorialLocalizationDataStore>();
+            // アップグレードのタグ名（Localization の TagText テーブル）と所持タグの集計。ショップ以外の画面からも使えるよう常駐
+            builder.RegisterEntryPoint<TagLocalizationDataStore>()
+                .As<ITagLocalizationDataStore>();
+            builder.Register<UpgradeTagRankingDataStore>(Lifetime.Singleton)
+                .As<IUpgradeTagRankingDataStore>();
             builder.RegisterEntryPoint<GameInputDataStore>()
                 .As<IGameInputDataStore>();
 
