@@ -15,7 +15,7 @@ MonoBehaviour:
   _id: 7
   _nameKey: $BullseyeBuffL2
   _conditionType: 6
-  _conditionValue: 3
+  _conditionValue: 1
   _duration: 0
   _effectType: 1
   _effectValue: 1.5
