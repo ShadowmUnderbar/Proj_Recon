@@ -24,8 +24,8 @@ namespace App.Battle.Data
         [SerializeField, Min(0.01f), Tooltip("射撃クールダウンの基礎値（秒）。各種倍率はこの値に乗算する。0にすると毎フレーム発射になる")]
         private float _baseFireRate = 0.3f;
 
-        [SerializeField, Min(0), Tooltip("貫通数の基礎値")]
-        private int _basePenetration = 0;
+        [SerializeField, Min(0), Tooltip("ノーマルショットの貫通数（突き抜ける敵の数）。0で最初に当たった敵で止まる")]
+        private int _basePenetration = 1;
 
         [Header("フォーカス")]
         [SerializeField, Min(0f), Tooltip("フォーカス時の射撃クールダウン倍率")]
@@ -43,6 +43,9 @@ namespace App.Battle.Data
         [SerializeField, Min(0f), Tooltip("ワルツの射撃クールダウン倍率")]
         private float _waltzFireRateMagnification = 0.3f;
 
+        [SerializeField, Min(0), Tooltip("ワルツの貫通数（突き抜ける敵の数）。0で最初に当たった敵で止まる")]
+        private int _waltzPenetration = 0;
+
         [Header("マージ")]
         // 利き手のみの1ストリーム基準で、弾ダメージ(8.0)＋爆風ダメージ(8.0)の合計16.0により、
         // 両手発射のノーマルショット（26.7DPS）の約1.33倍（35.6DPS）になる。
@@ -55,6 +58,9 @@ namespace App.Battle.Data
 
         [SerializeField, Min(0f), Tooltip("マージ弾の飛翔速度（m/s）。他フォームは即着弾")]
         private float _mergeBulletSpeed = 40f;
+
+        [SerializeField, Min(0), Tooltip("マージ弾の貫通数（突き抜ける敵の数）。0で最初に当たった敵で止まる")]
+        private int _mergePenetration = 3;
 
         [SerializeField, Min(0f), Tooltip("マージ弾の爆風半径の基礎値")]
         private float _mergeExplosiveScale = 2f;
@@ -89,10 +95,12 @@ namespace App.Battle.Data
 
         public float WaltzDamageMagnification => _waltzDamageMagnification;
         public float WaltzFireRateMagnification => _waltzFireRateMagnification;
+        public int WaltzPenetration => _waltzPenetration;
 
         public float MergeDamageMagnification => _mergeDamageMagnification;
         public float MergeFireRateMagnification => _mergeFireRateMagnification;
         public float MergeBulletSpeed => _mergeBulletSpeed;
+        public int MergePenetration => _mergePenetration;
         public float MergeExplosiveScale => _mergeExplosiveScale;
         public float MergeExplosiveDamageRate => _mergeExplosiveDamageRate;
 
