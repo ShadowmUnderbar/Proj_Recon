@@ -61,7 +61,7 @@ namespace App.Battle.DataStore
         private const float MinorSpawnCountGrowthRate = 1.5f;
 
         private float _commonSpawnCycle;
-        private float CommonSpawnInterval => 3f;
+        private float CommonSpawnInterval => 3.5f;
         private int _commonSpawnCounts = InitialCommonSpawnCounts;
 
         private float CommonSpawnCountUpInterval => 20f;

@@ -18,7 +18,7 @@ MonoBehaviour:
   _dropPointOverride: 0
   _damage: 5
   _attackInterval: 4.5
-  _hp: 150
+  _hp: 300
   _resistanceDirectionType: 0
   _resistanceMultiplier: 1
   _weakDirectionType: 0
