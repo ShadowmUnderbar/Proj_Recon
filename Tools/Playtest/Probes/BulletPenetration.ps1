@@ -9,7 +9,7 @@
 #     （被弾ダメージには最低保証1があり、ダメージを極小にしただけでは低HPの雑魚が倒れる）
 #   - 貫通数 N の弾は手前から N+1 体に当たって止まる（貫通数＝突き抜ける敵の数）
 #   - フォーカス弾は貫通数を超えてもフォーカス対象に当たるまで貫通し、対象に当たったら止まる
-#   - ブルズアイ（PenetrationCount 条件バフ）の倍率が「貫通した数」で段階的に上がる（1体目は常に1.0倍）
+#   - ブルズアイ（UpgradeType.Bullseye）の倍率が「貫通した数」で上がる（1体目は常に1.0倍・最高レベルの Value1 のみ）
 # 敵を動かしてから撃つまでを同じスニペット内で行う（即着弾は Spawn の中で同期的に判定される）。
 #
 
@@ -151,36 +151,40 @@ function ProbeRun {
 }
 
 function Invoke-BullseyeCheck {
-    # ブルズアイ（PenetrationCount 条件バフ）の倍率。貫通した数（＝何体目か - 1）を ConditionValue で割った段数ぶん
-    # (EffectValue - 1) を加算する。期待値は CSV と同じ値（間隔・倍率）からここで独立に計算する。
-    # バフはレベルごとに単独で付ける（ResetRun で付け直す。最後にも外して後片付けする）
+    # ブルズアイ（UpgradeType.Bullseye）の倍率。1体貫通するごとに (Value1 - 1) を加算し、1体目は常に1.0倍。
+    # レベルは累積せず所持中の最高レベルの Value1 だけを使うので、L1→L2→L3 の順に獲得して毎回読む。
+    # 期待値は UpgradeData.csv と同じ値からここで独立に計算する（CSV を変えたらここも直す）
     $levels = @(
-        @{ Name = 'L1'; Interval = 1; Effect = 1.3 },
-        @{ Name = 'L2'; Interval = 1; Effect = 1.5 },
-        @{ Name = 'L3'; Interval = 1; Effect = 1.5 }
+        @{ Level = 0; Value1 = 1.0 },  # 未所持
+        @{ Level = 1; Value1 = 1.3 },
+        @{ Level = 2; Value1 = 1.5 },
+        @{ Level = 3; Value1 = 1.5 }
     )
 
     foreach ($level in $levels) {
         $body = @'
-var buffs = scope.Container.Resolve<IBuffStateDataStore>();
-var resettable = (IRunResettable)buffs;
-var master = UnityEditor.AssetDatabase.LoadAssetAtPath<App.Common.Data.MasterData.BuffMasterData>("Assets/App/MasterData/Buff/BullseyeBuff__LEVEL__.asset");
+var session = scope.Container.Resolve<IUpgradeSessionDataStore>();
+var db = scope.Container.Resolve<App.Common.Data.Database.UpgradeDatabase>();
+var bullseye = scope.Container.Resolve<IBullseyeDataStore>();
 
-resettable.ResetRun();
-buffs.AddBuff(master);
-var values = string.Join(",", Enumerable.Range(1, 4).Select(i => buffs.CalcPenetrationMultiply(i).ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)));
-resettable.ResetRun();
+var level = __LEVEL__;
+if (level > 0)
+{
+    // 付与の副作用は無いタイプなので、セッションへの追加だけで効果計算に反映される
+    session.AddUpgrade(db.UpgradeMasterData.First(u => u.UpgradeType == UpgradeType.Bullseye && u.Level == level));
+}
+var values = string.Join(",", Enumerable.Range(1, 4).Select(i => bullseye.GetDamageMultiplier(i).ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)));
 
 return $"{{\"values\":\"{values}\"}}";
 '@
-        $result = Invoke-BossSnippet -Body $body.Replace('__LEVEL__', $level.Name)
+        $result = Invoke-BossSnippet -Body $body.Replace('__LEVEL__', "$($level.Level)")
         $actual = $result.values -split ','
-        Write-Host "  ブルズアイ$($level.Name) 1〜4体目の倍率: [$($result.values)]"
+        $label = if ($level.Level -eq 0) { '未所持' } else { "L$($level.Level)" }
+        Write-Host "  ブルズアイ $label 1〜4体目の倍率: [$($result.values)]"
 
         for ($index = 1; $index -le 4; $index++) {
-            $stack = [math]::Floor(($index - 1) / $level.Interval)
-            $expected = 1 + $stack * ($level.Effect - 1)
-            Assert-ProbeValue -Name "ブルズアイ$($level.Name): $index 体目の倍率" `
+            $expected = 1 + ($index - 1) * ($level.Value1 - 1)
+            Assert-ProbeValue -Name "ブルズアイ $label : $index 体目の倍率" `
                 -Actual ([double]::Parse($actual[$index - 1], [System.Globalization.CultureInfo]::InvariantCulture)) `
                 -Expected $expected | Out-Null
         }
