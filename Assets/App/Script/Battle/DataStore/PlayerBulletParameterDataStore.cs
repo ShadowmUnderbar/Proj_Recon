@@ -175,7 +175,9 @@ namespace App.Battle.DataStore
                 FocusType = focusType,
                 Speed = shotType == ShotType.Merge ? _baseParameter.MergeBulletSpeed : 0, //プレイヤーは即着弾
                 Damage = damage,
-                Penetration = _baseParameter.BasePenetration,
+                Penetration = shotType == ShotType.Merge
+                    ? _baseParameter.MergePenetration
+                    : _baseParameter.BasePenetration,
                 Explosive = GetBulletExplosive(shotType, focusType),
                 ExplosiveDamage = GetBulletExplosiveDamage(shotType, damage)
             };
