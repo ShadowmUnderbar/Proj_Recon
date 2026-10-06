@@ -29,5 +29,5 @@ MonoBehaviour:
   _bulletSpeed: 12
   _attackDistanceRange: 25
   _windupTime: 0.6
-  _activeTime: 8
+  _activeTime: 1.5
   _recoveryTime: 0.6
