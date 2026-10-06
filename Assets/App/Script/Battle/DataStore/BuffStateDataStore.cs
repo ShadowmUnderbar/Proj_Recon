@@ -277,28 +277,6 @@ namespace App.Battle.DataStore
             return result;
         }
 
-        public float CalcPenetrationMultiply(int penetrationIndex)
-        {
-            var result = 1f;
-            foreach (var state in _buffStates)
-            {
-                if (state.Master.ConditionType != BuffConditionType.PenetrationCount)
-                {
-                    continue;
-                }
-
-                // ConditionValue体貫通するごとに(EffectValue - 1)を加算した倍率を掛ける。
-                // 貫通した数（＝何体目か - 1）で数えるため、1体目は常に1.0倍
-                // 例: 間隔1・倍率1.3なら 1体目=1.0倍, 2体目=1.3倍, 3体目=1.6倍
-                //     間隔3・倍率1.3なら 1〜3体目=1.0倍, 4〜6体目=1.3倍
-                var interval = Mathf.Max(1, Mathf.RoundToInt(state.Master.ConditionValue));
-                var stackCount = (penetrationIndex - 1) / interval;
-                result *= 1f + stackCount * (state.Master.EffectValue - 1f);
-            }
-
-            return result;
-        }
-
         public void ResetRun()
         {
             _buffStates.Clear();

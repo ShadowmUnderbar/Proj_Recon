@@ -32,7 +32,7 @@ namespace App.Battle.Data
 
         /// <summary>
         /// この命中が同一弾内で何体目のヒットか（1始まり）。
-        /// 貫通しない攻撃は常に1。PenetrationCount条件バフのダメージ倍率計算に使う。
+        /// 貫通しない攻撃は常に1。ブルズアイのダメージ倍率計算に使う。
         /// </summary>
         public int PenetrationIndex { get; set; }
 

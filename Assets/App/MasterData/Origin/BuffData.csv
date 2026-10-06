@@ -4,9 +4,6 @@
 3,$MultitaskingBuffL1,5,0.1,0,2,1.2
 4,$MultitaskingBuffL2,5,0.1,0,2,1.4
 5,$MultitaskingBuffL3,5,0.1,0,2,1.8
-6,$BullseyeBuffL1,6,1,0,1,1.3
-7,$BullseyeBuffL2,6,1,0,1,1.5
-8,$BullseyeBuffL3,6,1,0,1,1.5
 9,$RageBuffL1,7,1,0,1,1.2
 10,$RageBuffL2,7,1.5,0,1,1.2
 11,$RageBuffL3,7,2,0,1,1.2
