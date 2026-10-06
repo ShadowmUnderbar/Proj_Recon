@@ -20,6 +20,9 @@ namespace App.Battle.Interface.DataStore
         Observable<int> OnEnemyDamaged { get; }
         List<EnemyData> Enemies { get; }
 
+        /// <summary>生存中の敵の数（撃破演出中の敵は含めない）。毎フレーム参照してもアロケーションしない</summary>
+        int AliveEnemyCount { get; }
+
         bool TryGetEnemyMasterData(string enemyCode, out EnemyMasterData enemyMasterData);
 
         bool TryGetRandomEnemyMasterData(EnemyRankType rankType, UnlockCoreSkillType unlockCoreSkillType,

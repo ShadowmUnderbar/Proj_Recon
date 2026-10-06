@@ -14,19 +14,25 @@ namespace App.Battle.DataStore
         private readonly IOverclockDataStore _overclockDataStore;
         private readonly IBossWaveDataStore _bossWaveDataStore;
         private readonly DebugArenaSettings _debugArenaSettings;
+        private readonly IEnemyDataStore _enemyDataStore;
+        private readonly EnemySpawnConfig _enemySpawnConfig;
 
         [Inject]
         public EnemyRandomSpawnCycleDataStore(
             IWaveManagerDataStore waveManagerDataStore,
             IOverclockDataStore overclockDataStore,
             IBossWaveDataStore bossWaveDataStore,
-            DebugArenaSettings debugArenaSettings
+            DebugArenaSettings debugArenaSettings,
+            IEnemyDataStore enemyDataStore,
+            EnemySpawnConfig enemySpawnConfig
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
             _overclockDataStore = overclockDataStore;
             _bossWaveDataStore = bossWaveDataStore;
             _debugArenaSettings = debugArenaSettings;
+            _enemyDataStore = enemyDataStore;
+            _enemySpawnConfig = enemySpawnConfig;
         }
 
         private readonly Subject<int> _onSpawnCommonEnemy = new();
@@ -118,6 +124,21 @@ namespace App.Battle.DataStore
                 _majorSpawnCycle = 0f;
                 _minorSpawnCounts *= MinorSpawnCountGrowthRate;
                 _onSpawnMajorEnemy.OnNext(Unit.Default);
+            }
+
+            ReplenishToMinimumCount();
+        }
+
+        /// <summary>
+        /// 生存数が最低数を下回っていれば、不足分のコモンを即時にスポーンさせる。
+        /// 周期スポーンの後に判定するので、同じフレームの周期スポーンで足りていれば補充しない
+        /// </summary>
+        private void ReplenishToMinimumCount()
+        {
+            var shortage = _enemySpawnConfig.MinimumAliveEnemyCount - _enemyDataStore.AliveEnemyCount;
+            if (shortage > 0)
+            {
+                _onSpawnCommonEnemy.OnNext(shortage);
             }
         }
 

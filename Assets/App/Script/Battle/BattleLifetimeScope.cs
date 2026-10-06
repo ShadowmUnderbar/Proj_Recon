@@ -52,6 +52,7 @@ namespace App.Battle
         [SerializeField] private BossWaveConfig _bossWaveConfig;
         [SerializeField] private BossLifeGaugeStoreView _bossLifeGaugeStoreView;
         [SerializeField] private BossLifeGaugeConfig _bossLifeGaugeConfig;
+        [SerializeField] private EnemySpawnConfig _enemySpawnConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -356,6 +357,8 @@ namespace App.Battle
             builder.RegisterInstance(_bossWaveConfig);
             // ボスの体力ゲージの色・大きさ（BossLifeGaugeStoreView が利用）
             builder.RegisterInstance(_bossLifeGaugeConfig);
+            // 雑魚の最低生存数（EnemyRandomSpawnCycleDataStore が利用）
+            builder.RegisterInstance(_enemySpawnConfig);
 
             #endregion
         }

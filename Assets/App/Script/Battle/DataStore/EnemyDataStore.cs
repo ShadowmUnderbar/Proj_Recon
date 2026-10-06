@@ -39,6 +39,23 @@ namespace App.Battle.DataStore
 
         public List<EnemyData> Enemies => _spawnEnemyDataList.Values.ToList();
 
+        public int AliveEnemyCount
+        {
+            get
+            {
+                var count = 0;
+                foreach (var enemy in _spawnEnemyDataList.Values)
+                {
+                    if (!enemy.IsDead)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+        }
+
         private List<string> _onceSpawnedEnemyCodes = new();
 
         [Inject]
