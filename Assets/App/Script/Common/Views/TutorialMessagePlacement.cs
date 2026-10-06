@@ -25,6 +25,12 @@ namespace App.Common.Views
         /// </summary>
         public bool IsFacingHead { get; private set; }
 
+        /// <summary>
+        /// 直近の大きさの倍率（視点追従時を 1 とする）。手元では <see cref="TutorialMessagePlacementSettings.HandScale"/> へ、
+        /// 位置・向きと同じ速さで追いつく
+        /// </summary>
+        public float Scale { get; private set; } = 1f;
+
         /// <summary>表示開始からの経過時間[s]</summary>
         private float _elapsed;
 
@@ -80,11 +86,13 @@ namespace App.Common.Views
             var isHandFollow = Phase == TutorialMessagePhase.HandFollow;
             var target = isHandFollow ? GetHandFollowPose(anchor, settings) : GetHeadFollowPose(anchor, settings);
             var anchorPosition = isHandFollow ? anchor.HandPose.position : anchor.HeadPose.position;
+            var targetScale = isHandFollow ? settings.HandScale : 1f;
 
             if (!_isPlaced || settings.FollowSpeed <= 0f)
             {
                 _position = target.position;
                 _rotation = target.rotation;
+                Scale = targetScale;
                 _isPlaced = true;
             }
             else
@@ -100,6 +108,7 @@ namespace App.Common.Views
                 var t = 1f - Mathf.Exp(-settings.FollowSpeed * deltaTime);
                 _position = Vector3.Lerp(_position, target.position, t);
                 _rotation = Quaternion.Slerp(_rotation, target.rotation, t);
+                Scale = Mathf.Lerp(Scale, targetScale, t);
             }
 
             _previousAnchorPosition = anchorPosition;

@@ -32,12 +32,15 @@ namespace App.Common.Views
         /// <summary>向いている状態から外れるときに <see cref="FacingAngle"/> へ足す余白[deg]。境界での手ぶれによるちらつきを防ぐ</summary>
         public readonly float FacingExitMargin;
 
+        /// <summary>非利き手追従時の大きさの倍率（視点追従時を 1 とする）</summary>
+        public readonly float HandScale;
+
         /// <summary>定位置へ追いつく速さ。大きいほど速く、0以下なら補間せず即座に置く</summary>
         public readonly float FollowSpeed;
 
         public TutorialMessagePlacementSettings(
             float headFollowDuration, Vector3 headOffset, Vector3 handOffset, Vector3 handForward,
-            float facingAngle, float facingExitMargin, float followSpeed)
+            float facingAngle, float facingExitMargin, float handScale, float followSpeed)
         {
             HeadFollowDuration = headFollowDuration;
             HeadOffset = headOffset;
@@ -45,6 +48,7 @@ namespace App.Common.Views
             HandForward = handForward;
             FacingAngle = facingAngle;
             FacingExitMargin = facingExitMargin;
+            HandScale = handScale;
             FollowSpeed = followSpeed;
         }
     }

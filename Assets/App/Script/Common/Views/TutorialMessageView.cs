@@ -15,7 +15,8 @@ namespace App.Common.Views
     /// 非利き手に追従している間は手のひら側に置き、読める面の向きだけを手に固定して手のひらの向こうへ向ける
     /// （面の傾きは頭の上方向に合わせ、文字を水平に保つ）。
     /// 手首を返して手のひらを見た（読める面が頭を向き、かつ視線が当たっている）ときだけ展開し、
-    /// それ以外は本文の先頭の数文字（既定3文字）だけに縮め、ダイアログもその文字ぴったりの大きさ（余白なし）にする。
+    /// それ以外は本文の先頭の数文字（既定5文字）だけに縮め、ダイアログもその文字ぴったりの大きさ（余白なし）にする。
+    /// 手元にある間はダイアログ全体を小さくする（既定 0.5 倍）。
     /// 縮小・展開はダイアログの中央を基準に大きさを補間する
     /// </summary>
     public class TutorialMessageView : MonoBehaviour, ITutorialMessageView
@@ -46,6 +47,9 @@ namespace App.Common.Views
         [SerializeField, Range(0f, 45f), Tooltip("手のひらを見ている状態から外れるときに判定角度へ足す余白[deg]。境界付近の手ぶれで縮小・展開を繰り返さないようにする")]
         private float _facingExitMargin = 10f;
 
+        [SerializeField, Range(0.1f, 1f), Tooltip("非利き手追従時の大きさの倍率（視点追従時を 1 とする）。手元へ移るときに位置と同じ速さで縮む")]
+        private float _handScale = 0.5f;
+
         [Header("追従")]
         [SerializeField, Tooltip("定位置へ追いつく速さ。大きいほど速く、0以下なら補間せず即座に置く")]
         private float _followSpeed = 6f;
@@ -61,7 +65,7 @@ namespace App.Common.Views
         private float _foldDuration = 0.15f;
 
         [SerializeField, Min(1), Tooltip("縮小時に表示する本文の先頭の文字数。ダイアログはこの文字ぴったりの大きさ（余白なし）に縮む")]
-        private int _collapsedCharCount = 3;
+        private int _collapsedCharCount = 5;
 
         private readonly TutorialMessagePlacement _placement = new();
         private readonly TutorialMessageFold _fold = new();
@@ -122,7 +126,6 @@ namespace App.Common.Views
             _fold.Reset();
             SetText(text);
             _placement.Begin();
-            transform.localScale = Vector3.one * _localScale;
 
             // 姿勢は次の UpdateAnchor で決まり、そこで表示される。
             // 非表示から出すときは配置されるまで隠れたまま、表示中の差し替えなら消えずに新しい位置へ移る
@@ -147,6 +150,7 @@ namespace App.Common.Views
             }
 
             transform.SetPositionAndRotation(pose.position, pose.rotation);
+            transform.localScale = Vector3.one * (_localScale * _placement.Scale);
             _root.SetActive(true);
 
             // 視点の正面にいる間は常に展開する。手元へ移ってからは、手首を返して手のひらを見ているときだけ展開する
@@ -267,7 +271,7 @@ namespace App.Common.Views
         {
             return new TutorialMessagePlacementSettings(
                 _headFollowDuration, _headOffset, _handOffset, _handForward, _facingAngle,
-                _facingExitMargin, _followSpeed);
+                _facingExitMargin, _handScale, _followSpeed);
         }
     }
 }
