@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using App.Battle.Data;
+using App.Common.Data;
 using App.Common.Data.MasterData;
 using R3;
 
@@ -32,6 +33,15 @@ namespace App.Battle.Interface
         /// Open の後に呼ぶ。ロケール切替などで文言が変わったときも呼び直される
         /// </summary>
         void SetUpgradeText(int index, in UpgradeLocalizedText text);
+
+        /// <summary>
+        /// 指定インデックスの候補にタグの表示名を反映する（3Dカードのみ。ボタン表示では出さない）。
+        /// Open の後に呼ぶ。ロケール切替でタグ名が変わったときも呼び直される
+        /// </summary>
+        void SetUpgradeTags(int index, IReadOnlyList<string> tagNames);
+
+        /// <summary>所持アップグレードのタグ上位（件数の多い順・件数つき）を表示する</summary>
+        void SetOwnedTagRanking(IReadOnlyList<LocalizedUpgradeTagCount> ranking);
 
         /// <summary>
         /// 3Dカードの掴み・確定判定に使う片手ぶんの入力を渡す（VRのみ。それ以外では無視される）

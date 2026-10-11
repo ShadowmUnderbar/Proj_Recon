@@ -28,6 +28,9 @@ namespace App.Battle.UseCase
         // 目利きによる加算後の上限。ShopView.prefab のボタン数（4列×3行のグリッド）と一致させること
         private const int MaxUpgradeChoiceCount = 12;
 
+        // 所持アップグレードのタグ上位として表示する件数
+        private const int OwnedTagRankingCount = 5;
+
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IUpgradeLotteryDataStore _upgradeLotteryDataStore;
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
@@ -38,6 +41,8 @@ namespace App.Battle.UseCase
         private readonly IPlayerControlPresenter _playerControlPresenter;
         private readonly IGameInputDataStore _gameInputDataStore;
         private readonly IUpgradeLocalizationDataStore _upgradeLocalizationDataStore;
+        private readonly ITagLocalizationDataStore _tagLocalizationDataStore;
+        private readonly IUpgradeTagRankingDataStore _upgradeTagRankingDataStore;
         private readonly ITutorialMessageUseCase _tutorialMessageUseCase;
         private readonly DebugArenaSettings _debugArenaSettings;
 
@@ -61,6 +66,8 @@ namespace App.Battle.UseCase
             IPlayerControlPresenter playerControlPresenter,
             IGameInputDataStore gameInputDataStore,
             IUpgradeLocalizationDataStore upgradeLocalizationDataStore,
+            ITagLocalizationDataStore tagLocalizationDataStore,
+            IUpgradeTagRankingDataStore upgradeTagRankingDataStore,
             ITutorialMessageUseCase tutorialMessageUseCase,
             DebugArenaSettings debugArenaSettings
         )
@@ -75,6 +82,8 @@ namespace App.Battle.UseCase
             _playerControlPresenter = playerControlPresenter;
             _gameInputDataStore = gameInputDataStore;
             _upgradeLocalizationDataStore = upgradeLocalizationDataStore;
+            _tagLocalizationDataStore = tagLocalizationDataStore;
+            _upgradeTagRankingDataStore = upgradeTagRankingDataStore;
             _tutorialMessageUseCase = tutorialMessageUseCase;
             _debugArenaSettings = debugArenaSettings;
         }
@@ -109,6 +118,17 @@ namespace App.Battle.UseCase
             _upgradeLocalizationDataStore.OnTableChanged
                 .Subscribe(_ => OnLocalizationChanged())
                 .AddTo(_disposable);
+
+            // タグ名の表は別テーブルなので、読込完了・ロケール切替でカードのタグと所持タグ上位を差し替える
+            _tagLocalizationDataStore.OnTableChanged
+                .Subscribe(_ => OnTagLocalizationChanged())
+                .AddTo(_disposable);
+
+            // 購入で所持アップグレードが増えたら所持タグ上位を数え直す
+            _upgradeSessionDataStore.OnChanged
+                .Where(_ => _isShopOpen)
+                .Subscribe(_ => RefreshOwnedTagRanking())
+                .AddTo(_disposable);
         }
 
         private void OpenShop()
@@ -120,6 +140,8 @@ namespace App.Battle.UseCase
             _isShopOpen = true;
 
             RefreshUpgradeTexts();
+            RefreshUpgradeTags();
+            RefreshOwnedTagRanking();
 
             // ショップ中はグラブ・トリガーをカード操作に使うため、フォーカスの切り替えは止める
             _gameInputDataStore.SetFocusInputEnable(false);
@@ -182,6 +204,58 @@ namespace App.Battle.UseCase
 
                 _shopPresenter.SetUpgradeText(i, _upgradeLocalizationDataStore.GetText(_currentCandidates[i]));
             }
+        }
+
+        private void OnTagLocalizationChanged()
+        {
+            // 閉じている間は反映先が無い（次に開いたときに最新の名前で入る）
+            if (!_isShopOpen)
+            {
+                return;
+            }
+
+            RefreshUpgradeTags();
+            RefreshOwnedTagRanking();
+        }
+
+        /// <summary>
+        /// 候補ごとのタグの表示名をViewへ反映する。並びはマスターデータ（UpgradeTagData シート）の順
+        /// </summary>
+        private void RefreshUpgradeTags()
+        {
+            for (var i = 0; i < _currentCandidates.Count; i++)
+            {
+                // 購入済み（null）の枠はカードごと消えているため触らない
+                if (_currentCandidates[i] == null)
+                {
+                    continue;
+                }
+
+                var tags = _currentCandidates[i].Tags;
+                var tagNames = new string[tags.Count];
+                for (var t = 0; t < tags.Count; t++)
+                {
+                    tagNames[t] = _tagLocalizationDataStore.GetName(tags[t]);
+                }
+
+                _shopPresenter.SetUpgradeTags(i, tagNames);
+            }
+        }
+
+        /// <summary>所持アップグレードのタグを件数の多い順に数え、上位を名前つきでViewへ反映する</summary>
+        private void RefreshOwnedTagRanking()
+        {
+            var ranking = _upgradeTagRankingDataStore.GetTopTags(
+                _upgradeSessionDataStore.AppliedUpgrades, OwnedTagRankingCount);
+
+            var entries = new LocalizedUpgradeTagCount[ranking.Count];
+            for (var i = 0; i < ranking.Count; i++)
+            {
+                entries[i] = new LocalizedUpgradeTagCount(
+                    _tagLocalizationDataStore.GetName(ranking[i].Tag), ranking[i].Count);
+            }
+
+            _shopPresenter.SetOwnedTagRanking(entries);
         }
 
         private void OnCurrentPointChanged()

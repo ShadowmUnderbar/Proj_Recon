@@ -205,6 +205,19 @@ namespace App.Battle.Views
             }
         }
 
+        /// <summary>指定インデックスのカードに、タグの表示名を反映する（購入済みで消えたカードは無視）</summary>
+        public void SetTags(int index, IReadOnlyList<string> tagNames)
+        {
+            foreach (var card in _cards)
+            {
+                if (card.Index == index)
+                {
+                    card.SetTags(tagNames);
+                    return;
+                }
+            }
+        }
+
         /// <summary>片手ぶんの入力を受け取る。判定・移動は LateUpdate でまとめて行う</summary>
         public void UpdateHandInput(in ShopHandInput input)
         {

@@ -95,6 +95,15 @@ namespace App.Editor
                     new Vector3(0f, -CardHeight * 0.1f, CardThickness * 0.8f),
                     0.012f);
 
+                // タグはカード下部に1行で並べ、収まらないときは UpgradeTagTickerView が横に流す
+                var tagText = CreateText(
+                    "TagText",
+                    root.transform,
+                    new Vector2(CardWidth * 0.9f, CardHeight * 0.1f),
+                    new Vector3(0f, -CardHeight * 0.28f, CardThickness * 0.8f),
+                    0.012f);
+                var tagTicker = tagText.gameObject.AddComponent<UpgradeTagTickerView>();
+
                 // 購入コストはカードの一番下。買えるかどうかを真っ先に見る情報なので独立して置く
                 var costText = CreateText(
                     "CostText",
@@ -117,6 +126,7 @@ namespace App.Editor
                 AssignCardViewReferences(
                     cardView, collider, frame, nameText, levelText, descriptionText, costText);
                 AssignGripAnchors(cardView, rightGripAnchor, leftGripAnchor);
+                AssignTagTicker(cardView, tagTicker, tagText);
 
                 var saved = PrefabUtility.SaveAsPrefabAsset(root, CardPrefabPath);
                 return saved != null ? saved.GetComponent<UpgradeCardView>() : null;
@@ -145,6 +155,17 @@ namespace App.Editor
             serialized.FindProperty("_descriptionText").objectReferenceValue = descriptionText;
             serialized.FindProperty("_costText").objectReferenceValue = costText;
             serialized.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static void AssignTagTicker(UpgradeCardView cardView, UpgradeTagTickerView tagTicker, TextMeshPro tagText)
+        {
+            var tickerSerialized = new SerializedObject(tagTicker);
+            tickerSerialized.FindProperty("_text").objectReferenceValue = tagText;
+            tickerSerialized.ApplyModifiedPropertiesWithoutUndo();
+
+            var cardSerialized = new SerializedObject(cardView);
+            cardSerialized.FindProperty("_tagTicker").objectReferenceValue = tagTicker;
+            cardSerialized.ApplyModifiedPropertiesWithoutUndo();
         }
 
         private static void AssignGripAnchors(UpgradeCardView cardView, Transform right, Transform left)

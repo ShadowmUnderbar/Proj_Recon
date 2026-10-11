@@ -1,0 +1,131 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: TagText_en
+  m_EditorClassIdentifier: 
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 22015d8650f9fd548b3f47fbb652b4c2, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 5691367424
+    m_Localized: Barrier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5741699072
+    m_Localized: Rage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5741699073
+    m_Localized: Virus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5741699074
+    m_Localized: OverClock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5741699075
+    m_Localized: Stun
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5741699076
+    m_Localized: NormalShot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087680
+    m_Localized: WaltzShot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087681
+    m_Localized: MergeShot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087682
+    m_Localized: Focus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087683
+    m_Localized: UnFocus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087684
+    m_Localized: Blink
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087685
+    m_Localized: Risk
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087686
+    m_Localized: CacheUp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087687
+    m_Localized: Node
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087688
+    m_Localized: Hurt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087689
+    m_Localized: Spawn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087690
+    m_Localized: Gaze
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087691
+    m_Localized: Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087692
+    m_Localized: Revival
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087693
+    m_Localized: Joke
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087694
+    m_Localized: Summon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087695
+    m_Localized: Penetration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087696
+    m_Localized: Critical
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087697
+    m_Localized: WaltzConflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087698
+    m_Localized: MergeConflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087699
+    m_Localized: FocusConflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087700
+    m_Localized: AkimboConflict
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

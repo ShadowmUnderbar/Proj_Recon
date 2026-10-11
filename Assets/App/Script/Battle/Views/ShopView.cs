@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Common.Data;
@@ -35,6 +36,9 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("所持ポイントの表示")]
         private Text _currentPointLabel;
 
+        [SerializeField, Tooltip("所持アップグレードのタグ上位の表示（任意）")]
+        private Text _ownedTagRankingLabel;
+
         [SerializeField, Tooltip("アップグレード候補を並べる3Dカードのボード")]
         private UpgradeCardBoardView _upgradeCardBoardView;
 
@@ -52,6 +56,8 @@ namespace App.Battle.Views
 
         /// <summary>フォールバックのボタン表示で文言と併記するため、候補ごとの購入コストを覚えておく</summary>
         private readonly List<int> _buttonCosts = new();
+
+        private readonly StringBuilder _rankingBuilder = new();
 
         private void Awake()
         {
@@ -178,6 +184,37 @@ namespace App.Battle.Views
             }
 
             _currentPointLabel.text = $"所持ポイント: {currentPoint} P";
+        }
+
+        public void SetUpgradeTags(int index, IReadOnlyList<string> tagNames)
+        {
+            // ボタン表示はラベルが1つしかなく、名前とコストで埋まるためタグは出さない
+            if (_isCardMode)
+            {
+                _upgradeCardBoardView.SetTags(index, tagNames);
+            }
+        }
+
+        public void SetOwnedTagRanking(IReadOnlyList<LocalizedUpgradeTagCount> ranking)
+        {
+            if (_ownedTagRankingLabel == null)
+            {
+                return;
+            }
+
+            _rankingBuilder.Clear();
+            _rankingBuilder.Append("所持タグ");
+            if (ranking.Count == 0)
+            {
+                _rankingBuilder.Append("\nなし");
+            }
+
+            foreach (var entry in ranking)
+            {
+                _rankingBuilder.Append('\n').Append(entry.Name).Append(" ×").Append(entry.Count);
+            }
+
+            _ownedTagRankingLabel.text = _rankingBuilder.ToString();
         }
 
         public void SetPurchasable(int index, bool isPurchasable)

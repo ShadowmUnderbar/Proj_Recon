@@ -1,0 +1,136 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: TagText Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: TagText
+  m_TableCollectionNameGuidString: 22015d8650f9fd548b3f47fbb652b4c2
+  m_Entries:
+  - m_Id: 5691367424
+    m_Key: $Barrier
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5741699072
+    m_Key: $Rage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5741699073
+    m_Key: $Virus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5741699074
+    m_Key: $OverClock
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5741699075
+    m_Key: $Stun
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5741699076
+    m_Key: $NormalShot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087680
+    m_Key: $WaltzShot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087681
+    m_Key: $MergeShot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087682
+    m_Key: $Focus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087683
+    m_Key: $UnFocus
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087684
+    m_Key: $Blink
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087685
+    m_Key: $Risk
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087686
+    m_Key: $CacheUp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087687
+    m_Key: $Node
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087688
+    m_Key: $Hurt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087689
+    m_Key: $Spawn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087690
+    m_Key: $Gaze
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087691
+    m_Key: $Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087692
+    m_Key: $Revival
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087693
+    m_Key: $Joke
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087694
+    m_Key: $Summon
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087695
+    m_Key: $Penetration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087696
+    m_Key: $Critical
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087697
+    m_Key: $WaltzConflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087698
+    m_Key: $MergeConflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087699
+    m_Key: $FocusConflict
+    m_Metadata:
+      m_Items: []
+  - m_Id: 5750087700
+    m_Key: $AkimboConflict
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 691065195882348546
+  references:
+    version: 2
+    RefIds:
+    - rid: 691065195882348546
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1791300942313

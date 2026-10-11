@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface;
+using App.Common.Data;
 using App.Common.Data.MasterData;
 using R3;
 using VContainer;
@@ -45,6 +46,16 @@ namespace App.Battle.Presenters
         public void SetUpgradeText(int index, in UpgradeLocalizedText text)
         {
             _shopView.SetUpgradeText(index, text);
+        }
+
+        public void SetUpgradeTags(int index, IReadOnlyList<string> tagNames)
+        {
+            _shopView.SetUpgradeTags(index, tagNames);
+        }
+
+        public void SetOwnedTagRanking(IReadOnlyList<LocalizedUpgradeTagCount> ranking)
+        {
+            _shopView.SetOwnedTagRanking(ranking);
         }
 
         public void UpdateHandInput(in ShopHandInput input)

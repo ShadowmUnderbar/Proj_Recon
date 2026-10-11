@@ -6,7 +6,8 @@
         "UnityEditor.TestRunner",
         "App.Battle.Data",
         "App.Battle.DataStore",
-        "App.Battle.Views"
+        "App.Battle.Views",
+        "App.Common.Data"
     ],
     "includePlatforms": [
         "Editor"

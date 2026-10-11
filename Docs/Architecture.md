@@ -336,6 +336,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `UpgradeEffectSimpleCalculatorDataStore` | `UpgradeType` ごとの単純倍率（`CalcMultiply`） |
 | `AcquiredUpgradeListBuilder` | 結果画面の獲得アップグレード一覧（獲得順に「・名前-レベル」を半角スペースで並べる。旧 Text は全角スペースで折り返さない） |
 | `UpgradeLotteryDataStore` / `UpgradeLocalizationDataStore` / `UpgradeDescriptionFormatter` / `EffectTextStyler` / `UpgradeLocalizationKey` | 抽選・ローカライズ・説明文の整形 |
+| （共通）`TagLocalizationDataStore` / `UpgradeTagRankingDataStore` / `UpgradeTagRanking` | アップグレードのタグ（表示専用）。タグ名は Localization の `TagText` テーブル（キーは `$`＋`UpgradeTag` の名前）。所持タグ上位は ID の一覧から数える（レベル違いは1件・件数順・同数は定義順）ので、ショップ以外（セット選択・ポーズ等）からも使える。マスターデータは `UpgradeTagData` シート（NameKey とタグの縦持ち）→ `UpgradeTagDataImporter` で各レベルの `UpgradeMasterData.Tags` へ |
 | `BuffStateDataStore` | 取得済みバフの発動条件進行と残り時間 |
 | 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |
 
