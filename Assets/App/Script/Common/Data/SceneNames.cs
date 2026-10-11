@@ -6,6 +6,9 @@ namespace App.Common.Data
     /// </summary>
     public static class SceneNames
     {
+        /// <summary>起動シーン。共通の初期化を済ませてからメインメニューへ進む（Build Settings の先頭）</summary>
+        public const string Boot = "Boot";
+
         /// <summary>タイトル・オプション・永続強化を扱うメインメニュー</summary>
         public const string MainMenu = "MainMenu";
 

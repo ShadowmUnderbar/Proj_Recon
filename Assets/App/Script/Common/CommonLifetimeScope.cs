@@ -52,7 +52,8 @@ namespace App.Common
 
             #region UseCase
 
-            builder.RegisterEntryPoint<XRInitUseCase>();
+            // 起動シーン（BootLifetimeScope）が XR の準備完了を待つため、インターフェースでも解決できるようにする
+            builder.RegisterEntryPoint<XRInitUseCase>().As<IXRInitUseCase>();
 
             // ストリーマーモードのディスプレイ出力切り替え（ミラー表示の抑制）
             builder.RegisterEntryPoint<StreamerDisplayUseCase>();
