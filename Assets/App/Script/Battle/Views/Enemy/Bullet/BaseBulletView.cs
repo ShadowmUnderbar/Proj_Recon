@@ -325,7 +325,7 @@ namespace App.Battle.Views.Enemy.Bullet
 
             _hitTargetIds.Add(hitBox.Id);
 
-            // 同一弾内で何体目のヒットか（1始まり）。PenetrationCount条件バフの倍率計算に使う。
+            // 同一弾内で何体目のヒットか（1始まり）。ブルズアイの倍率計算に使う。
             // エイム状態とフォーカス対象一致はキリングコールの条件判定に使う
             // isProjectile: 弾の直撃であることを伝える（回避時跳ね返し攻撃の接触弾カウントに使う）
             // projectileId: この弾を一意に識別するId（同じ弾を重複カウントしないために使う）
@@ -347,7 +347,14 @@ namespace App.Battle.Views.Enemy.Bullet
 
             _hitCount++;
 
-            if (_focusTargetId != default && _hitCount >= BulletData.Penetration)
+            // フォーカス弾は貫通数に関係なく、フォーカス対象に当たるまで貫通し続ける
+            if (BulletData.FocusType == AimFocusType.Focus)
+            {
+                return;
+            }
+
+            // Penetration は「突き抜ける敵の数」。Penetration+1 体目に当たった時点で止める
+            if (_hitCount > BulletData.Penetration)
             {
                 HitAfterProcess().Forget();
             }

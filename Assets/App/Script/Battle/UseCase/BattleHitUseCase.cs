@@ -19,7 +19,7 @@ namespace App.Battle.UseCase
         private readonly IBattleHitPresenter _battleHitPresenter;
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
-        private readonly IBuffStateDataStore _buffStateDataStore;
+        private readonly IBullseyeDataStore _bullseyeDataStore;
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IHealOnKillDataStore _healOnKillDataStore;
         private readonly IAvalancheDataStore _avalancheDataStore;
@@ -39,7 +39,7 @@ namespace App.Battle.UseCase
             IBattleHitPresenter battleHitPresenter,
             IEnemyPresenter enemyPresenter,
             IWaveManagerDataStore waveManagerDataStore,
-            IBuffStateDataStore buffStateDataStore,
+            IBullseyeDataStore bullseyeDataStore,
             IPlayerStateDataStore playerStateDataStore,
             IHealOnKillDataStore healOnKillDataStore,
             IAvalancheDataStore avalancheDataStore,
@@ -52,7 +52,7 @@ namespace App.Battle.UseCase
             _battleHitPresenter = battleHitPresenter;
             _enemyPresenter = enemyPresenter;
             _waveManagerDataStore = waveManagerDataStore;
-            _buffStateDataStore = buffStateDataStore;
+            _bullseyeDataStore = bullseyeDataStore;
             _playerStateDataStore = playerStateDataStore;
             _healOnKillDataStore = healOnKillDataStore;
             _avalancheDataStore = avalancheDataStore;
@@ -80,8 +80,8 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            // 貫通ヒット数に応じたダメージ倍率（PenetrationCount条件バフ）を適用する
-            hitData.Damage *= _buffStateDataStore.CalcPenetrationMultiply(hitData.PenetrationIndex);
+            // 貫通ヒット数に応じたダメージ倍率（ブルズアイ）を適用する
+            hitData.Damage *= _bullseyeDataStore.GetDamageMultiplier(hitData.PenetrationIndex);
 
             // ガン飛ばし: 視界中央に捉えている敵は受ける最終ダメージが増加する
             hitData.Damage *= _meanMugDataStore.GetDamageMultiplier(hitData.DamagedId);

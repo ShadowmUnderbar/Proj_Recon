@@ -40,4 +40,5 @@ public enum UpgradeType
     MergeConflict = 36, // マージコンフリクト
     WaltzConflict = 37, // ワルツコンフリクト
     Overclock = 38, // オーバークロック
+    Bullseye = 39, // ブルズアイ
 }

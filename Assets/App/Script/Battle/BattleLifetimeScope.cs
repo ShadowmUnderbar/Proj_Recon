@@ -122,6 +122,8 @@ namespace App.Battle
                 .As<IMedusaDataStore>();
             builder.Register<MeanMugDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IMeanMugDataStore>();
+            builder.Register<BullseyeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IBullseyeDataStore>();
             builder.Register<DependencyNodeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IDependencyNodeDataStore>();
             builder.Register<DamageNodeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
