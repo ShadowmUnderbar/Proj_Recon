@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using App.Common.Data;
 using App.Common.Interface;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -10,27 +11,30 @@ using VContainer.Unity;
 namespace App.Boot
 {
     /// <summary>
-    /// 起動時の共通初期化を順に待ち、終わったらメインメニューへ遷移する。
+    /// 起動時の共通初期化を順に待ち、終わったら遷移先（通常はメインメニュー）へ遷移する。
     ///
     /// セーブデータの読み込みや入力・マスターデータは常駐スコープの生成時に済んでいる。
     /// ここでは非同期で終わるもの（Addressables のカタログ、Localization、XR）を待ち、
-    /// メインメニューが「まだ準備できていない」状態で始まらないようにする。
+    /// 次のシーンが「まだ準備できていない」状態で始まらないようにする。
     ///
-    /// どれかが失敗しても起動を止めない（エラーを出してメインメニューへ進む）。
+    /// どれかが失敗しても起動を止めない（エラーを出して次のシーンへ進む）。
     /// 起動シーンで止まると実機では復帰手段がないため。
     /// </summary>
     public class BootUseCase : IAsyncStartable
     {
-        // XR の起動を待つ上限。ヘッドセット未接続などで終わらない場合でもメインメニューへ進む
+        // XR の起動を待つ上限。ヘッドセット未接続などで終わらない場合でも次のシーンへ進む
         private static readonly TimeSpan XRInitTimeout = TimeSpan.FromSeconds(10);
 
         private readonly IXRInitUseCase _xrInitUseCase;
         private readonly ISceneTransitionUseCase _sceneTransitionUseCase;
+        private readonly BootDestination _destination;
 
-        public BootUseCase(IXRInitUseCase xrInitUseCase, ISceneTransitionUseCase sceneTransitionUseCase)
+        public BootUseCase(IXRInitUseCase xrInitUseCase, ISceneTransitionUseCase sceneTransitionUseCase,
+            BootDestination destination)
         {
             _xrInitUseCase = xrInitUseCase;
             _sceneTransitionUseCase = sceneTransitionUseCase;
+            _destination = destination;
         }
 
         public async UniTask StartAsync(CancellationToken cancellation)
@@ -39,9 +43,13 @@ namespace App.Boot
             await InitializeLocalization(cancellation);
             await WaitXRInitialized(cancellation);
 
-            if (!_sceneTransitionUseCase.LoadMainMenu())
+            var started = _destination == BootDestination.Battle
+                ? _sceneTransitionUseCase.LoadBattle()
+                : _sceneTransitionUseCase.LoadMainMenu();
+
+            if (!started)
             {
-                Debug.LogError("[BootUseCase] メインメニューへ遷移できませんでした。Build Settings を確認してください");
+                Debug.LogError($"[BootUseCase] {_destination} へ遷移できませんでした。Build Settings を確認してください");
             }
         }
 
@@ -93,7 +101,7 @@ namespace App.Boot
 
             if (isTimeout)
             {
-                Debug.LogWarning("[BootUseCase] XR の起動が時間内に終わらなかったため、待たずにメインメニューへ進みます");
+                Debug.LogWarning("[BootUseCase] XR の起動が時間内に終わらなかったため、待たずに次のシーンへ進みます");
             }
         }
     }
