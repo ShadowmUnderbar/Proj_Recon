@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _width: 4
   _length: 40
-  _telegraphSeconds: 0.7
+  _telegraphSeconds: 1.2
   _strikeSeconds: 0.15
   _recoverySeconds: 0.25
   _repeatCount: 3
