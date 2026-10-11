@@ -13,6 +13,7 @@
 //   node sheets-cli.mjs rename-sheet <旧シート名> <新シート名>
 //   node sheets-cli.mjs delete-columns <シート名> <列A1>[:<列A1>]  （例: X:Z）
 //   node sheets-cli.mjs delete-rows <シート名> <行番号>[:<行番号>]  （例: 104:106 / 単一なら 104）
+//   node sheets-cli.mjs set-dropdown <シート名> <列A1> "<参照シート>!<範囲>"  （例: B "UpgradeTag!C5:C"。Row2以降の列全体に設定）
 //   ※ 全コマンド共通: --spreadsheet <ID> で config.json 以外のスプレッドシートを対象にできる
 //
 // シート構成の前提（GASエクスポータ UpgradeDataExporter.gs と対応）:
@@ -259,6 +260,43 @@ async function cmdRenameSheet(sheets, spreadsheetId, args) {
     console.log(`シート名変更完了: ${oldName} → ${newName}`);
 }
 
+// set-dropdown: データシートの列（Row2以降）に、参照範囲の値から選ぶプルダウンを設定する。
+// 範囲外の値は入力を拒否する（enum の要素名の打ち間違いを防ぐ）。既存の入力規則は上書きされる
+async function cmdSetDropdown(sheets, spreadsheetId, args) {
+    const [sheetName, columnA1, sourceRange] = args;
+    if (!sheetName || !columnA1 || !sourceRange || !sourceRange.includes('!')) {
+        fail('使い方: set-dropdown <シート名> <列A1> "<参照シート>!<範囲>"（例: set-dropdown UpgradeTagData B "UpgradeTag!C5:C"）');
+    }
+    const res = await sheets.spreadsheets.get({ spreadsheetId });
+    const sheet = res.data.sheets.find(s => s.properties.title === sheetName);
+    if (!sheet) fail(`シート "${sheetName}" が見つかりません。`);
+    const columnIndex = a1ToColumn(columnA1);
+    if (columnIndex < 0) fail(`列の指定が不正です: "${columnA1}"（例: B）`);
+
+    await sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+            requests: [{
+                setDataValidation: {
+                    range: {
+                        sheetId: sheet.properties.sheetId,
+                        startRowIndex: 1, // Row1 はスキーマ定義行なので除く
+                        endRowIndex: sheet.properties.gridProperties.rowCount,
+                        startColumnIndex: columnIndex,
+                        endColumnIndex: columnIndex + 1,
+                    },
+                    rule: {
+                        condition: { type: 'ONE_OF_RANGE', values: [{ userEnteredValue: `=${sourceRange}` }] },
+                        strict: true,
+                        showCustomUi: true,
+                    },
+                },
+            }],
+        },
+    });
+    console.log(`プルダウン設定完了: ${sheetName}!${columnA1}2:${columnA1} ← ${sourceRange}`);
+}
+
 // delete-columns: 列を削除（例: "X" 単一、"X:Z" 範囲）
 async function cmdDeleteColumns(sheets, spreadsheetId, args) {
     const [sheetName, colRange] = args;
@@ -366,6 +404,7 @@ async function main() {
         'rename-sheet': cmdRenameSheet,
         'delete-columns': cmdDeleteColumns,
         'delete-rows': cmdDeleteRows,
+        'set-dropdown': cmdSetDropdown,
     };
 
     if (!command || !commands[command]) {

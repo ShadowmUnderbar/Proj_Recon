@@ -10,10 +10,12 @@ function onOpen() {
     .addItem('UpgradeData CSVエクスポート', 'exportUpgradeCsv')
     .addItem('BuffData CSVエクスポート', 'exportBuffCsv')
     .addItem('WaveScalingData CSVエクスポート', 'exportWaveScalingCsv')
+    .addItem('UpgradeTagData CSVエクスポート', 'exportUpgradeTagCsv')
     .addSeparator()
     .addItem('UpgradeType Enum C#エクスポート', 'exportUpgradeTypeEnumCs')
     .addItem('BuffConditionType Enum C#エクスポート', 'exportBuffConditionTypeEnumCs')
     .addItem('BuffEffectType Enum C#エクスポート', 'exportBuffEffectTypeEnumCs')
+    .addItem('UpgradeTag Enum C#エクスポート', 'exportUpgradeTagEnumCs')
     .addToUi();
 }
 
@@ -36,6 +38,13 @@ function exportBuffConditionTypeEnumCs() {
  */
 function exportBuffEffectTypeEnumCs() {
   exportEnumCs('BuffEffectType');
+}
+
+/**
+ * UpgradeTagシートをC# enumファイルとしてエクスポート（ラッパー）
+ */
+function exportUpgradeTagEnumCs() {
+  exportEnumCs('UpgradeTag');
 }
 
 /**
@@ -131,6 +140,14 @@ function exportBuffCsv() {
  */
 function exportWaveScalingCsv() {
   exportDataCsv('WaveScalingData');
+}
+
+/**
+ * UpgradeTagDataシートをCSVとしてエクスポート（ラッパー）
+ * 1行=アップグレード1件とタグ1件の組（縦持ち）。Tag列は enum の要素名で書く
+ */
+function exportUpgradeTagCsv() {
+  exportDataCsv('UpgradeTagData');
 }
 
 /**
@@ -254,9 +271,10 @@ function validateEnumValues(dataRows, schema, ss) {
       return;
     }
 
-    // A列から有効値一覧を取得
-    const refValues = refSheet.getRange('A:A').getValues()
-      .flat()
+    // A列（数値）とC列（要素名）から有効値一覧を取得。Unity側は Enum.TryParse なのでどちらで書いても取り込める
+    // 4行目より上はスキーマ・見出し行のため除外する
+    const refValues = refSheet.getRange('A4:C').getValues()
+      .flatMap(row => [row[0], row[2]])
       .map(v => String(v).trim())
       .filter(v => v !== '');
 

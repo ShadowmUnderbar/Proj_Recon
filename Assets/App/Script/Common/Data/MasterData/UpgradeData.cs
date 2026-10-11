@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
@@ -54,6 +56,11 @@ namespace App.Common.Data.MasterData
         [Space]
         [SerializeField, ReadOnlyAttribute] private string _buffId;
         public string BuffId => _buffId;
+
+        // 表示用のタグ（UpgradeTagData シートの並び順）。レベル違いのアセットには同じタグが入る
+        [Space]
+        [SerializeField, ReadOnlyAttribute] private UpgradeTag[] _tags = Array.Empty<UpgradeTag>();
+        public IReadOnlyList<UpgradeTag> Tags => _tags ?? Array.Empty<UpgradeTag>();
 
         public UpgradeMasterData(
             string id,

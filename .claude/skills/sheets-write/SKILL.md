@@ -32,6 +32,7 @@ node sheets-cli.mjs add-enum UpgradeType 9 "バフ付与" GrantBuff  # enumシ�
 node sheets-cli.mjs rename-sheet ConditionType BuffConditionType # シート名変更
 node sheets-cli.mjs delete-columns UpgradeData X:Z               # 列削除（単一なら "X"）
 node sheets-cli.mjs delete-rows UpgradeData 104:106              # 行削除（単一なら "104"。行番号はシート表示と同じ1始まり）
+node sheets-cli.mjs set-dropdown UpgradeTagData B "UpgradeTag!C5:C"  # 列（Row2以降）に参照範囲から選ぶプルダウンを設定（範囲外の手入力は拒否）
 node sheets-cli.mjs get Upgrade --spreadsheet <ID>               # 全コマンド共通: config.json 以外のスプレッドシートを対象にする
 ```
 
@@ -49,6 +50,7 @@ node sheets-cli.mjs get Upgrade --spreadsheet <ID>               # 全コマン�
 ## シート構成の約束事（GASエクスポータと対応）
 
 - **データシート**（UpgradeData等）: Row1=スキーマ定義行。各セルは「変数名,型」形式（例: `id,int` / `UpgradeType,ref@UpgradeType`）。`ref@シート名` はエクスポート時にそのenumシートの値でバリデーションされる。Row2以降がデータで、**A列が空の行で終端**（途中に空行を作らないこと）
+- **プルダウン**: `UpgradeTagData` の Tag 列は `UpgradeTag!C5:C`（要素名。4行目の None は除く）のプルダウン。enum の要素名で書く列を新設したら `set-dropdown` で同じように設定する。入力規則が拒否するのは手入力だけで、API（`set` / `append-rows`）からの書き込みは素通りする点に注意
 - **enumシート**（UpgradeType等）: **4行目から** A列=数値、B列=日本語コメント、C列=要素名。こちらも**A列が空で終端**
 - エクスポート処理の実体はリポジトリ内 `Tools/GAS/UpgradeDataExporter.gs`（スプレッドシートへは手動コピペで反映する運用）
 
