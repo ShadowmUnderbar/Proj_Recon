@@ -19,38 +19,12 @@
 $Global:ProbeTutorialScreenRestartButtonPath = 'BattleLifetimeScope/GameOverView(Clone)/GameOverCanvas/Panel/RestartButton'
 
 function ProbePrepare {
-    # 開いているシーンを切り替えず、再生開始時だけ Battle シーンを使う（TutorialMessage プローブと同じ）
-    $Global:ProbeSavedPlayModeStartScene = Invoke-UnityCode -Snippet @'
-using UnityEditor;
-using UnityEditor.SceneManagement;
-
-var saved = EditorSceneManager.playModeStartScene != null
-    ? AssetDatabase.GetAssetPath(EditorSceneManager.playModeStartScene)
-    : string.Empty;
-EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/Scenes/Battle.unity");
-
-return saved;
-'@
-    Write-Host "再生開始シーンを Battle に設定しました（退避: [$Global:ProbeSavedPlayModeStartScene]）"
+    # 開いているシーンを切り替えず、Boot で初期化してから Battle を再生する（PlaytestCommon.ps1）
+    Request-BootToBattle
 }
 
 function ProbeCleanup {
-    $saved = $Global:ProbeSavedPlayModeStartScene
-    $escaped = $saved -replace '\\', '\\' -replace '"', '\"'
-
-    Invoke-UnityCode -Snippet @"
-using UnityEditor;
-using UnityEditor.SceneManagement;
-
-var path = "$escaped";
-EditorSceneManager.playModeStartScene = string.IsNullOrEmpty(path)
-    ? null
-    : AssetDatabase.LoadAssetAtPath<SceneAsset>(path);
-
-return "restored";
-"@ | Out-Null
-
-    Write-Host "再生開始シーンを戻しました: [$saved]"
+    Clear-BootToBattle
 }
 
 # 表示中のチュートリアルの種類・配置フェーズ・閲覧回数を読む。__SCOPE__ はシーンの LifetimeScope 型

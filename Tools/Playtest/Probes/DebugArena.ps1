@@ -1,7 +1,7 @@
 ﻿#
 # デバッグ対戦（App/デバッグ: 敵と対戦 / DebugArenaLauncher）の入口を確かめるプローブ。
 #
-# 再生前に DebugArenaLauncher.Prepare で BossGroup_TickTock との対戦を予約し、Battle シーンを再生する。
+# 再生前に DebugArenaLauncher.Prepare で BossGroup_TickTock との対戦を予約し、Boot → Battle で再生する。
 #   - 予約は組み立て時に1回だけ取り出され（EditorPrefs から消える）、DebugArenaSettings が有効になる
 #   - セット選択を出さずにすぐ始まり、プレイヤーは BossWaveConfig のプレイヤー位置、ボスグループが出る
 #   - 指定したウェーブ（ボスウェーブの番号）から始まり、ボスの体力はそのウェーブの倍率。ボスウェーブとしては扱わない（ボスが重ねて出ない）

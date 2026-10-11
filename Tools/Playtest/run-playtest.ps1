@@ -30,7 +30,7 @@ $reachedWave = 1
 $success = $true
 $gameOver = $false
 
-$savedStartScene = Enter-BattlePlayModeStartScene
+Request-BootToBattle
 try {
     Invoke-Uloop -Command 'control-play-mode' -Params @{ action = 'Play' } | Out-Null
     Start-Sleep -Seconds 5
@@ -88,7 +88,7 @@ try {
     }
 } finally {
     Invoke-Uloop -Command 'control-play-mode' -Params @{ action = 'Stop' } | Out-Null
-    Exit-BattlePlayModeStartScene -Saved $savedStartScene
+    Clear-BootToBattle
 }
 
 $reportPath = Write-PlaytestReport -Scenario $Scenario -TargetWaves $Waves -ReachedWave $reachedWave -Success $success -GameOver $gameOver -Errors $errorsFound
