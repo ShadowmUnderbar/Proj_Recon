@@ -245,6 +245,40 @@ function Invoke-UnityJson {
     return (Invoke-UnityCode -Snippet $Snippet) | ConvertFrom-Json
 }
 
+function Enter-BattlePlayModeStartScene {
+    # 通常の再生は起動シーン（Boot）→ メインメニューから始まる（BootPlayModeStarter）。
+    # テストラン・プローブはバトルを直接観測するので、再生開始シーンを Battle にする。戻り値は退避した元のシーン
+    $saved = Invoke-UnityCode -Snippet @'
+using UnityEditor;
+using UnityEditor.SceneManagement;
+
+var saved = EditorSceneManager.playModeStartScene != null
+    ? AssetDatabase.GetAssetPath(EditorSceneManager.playModeStartScene)
+    : string.Empty;
+EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/Scenes/Battle.unity");
+
+return saved;
+'@
+    Write-Host "再生開始シーンを Battle に設定しました（退避: [$saved]）"
+    return $saved
+}
+
+function Exit-BattlePlayModeStartScene {
+    param([string]$Saved)
+    $escaped = $Saved -replace '\\', '\\' -replace '"', '\"'
+    Invoke-UnityCode -Snippet @"
+using UnityEditor;
+using UnityEditor.SceneManagement;
+
+var path = "$escaped";
+EditorSceneManager.playModeStartScene = string.IsNullOrEmpty(path)
+    ? null
+    : AssetDatabase.LoadAssetAtPath<SceneAsset>(path);
+return "ok";
+"@ | Out-Null
+    Write-Host "再生開始シーンを戻しました: [$Saved]"
+}
+
 $Global:ProbeChecks = @()
 
 function Reset-ProbeChecks {

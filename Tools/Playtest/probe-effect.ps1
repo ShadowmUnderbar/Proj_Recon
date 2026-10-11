@@ -30,6 +30,8 @@ $success = $true
 $errorsFound = @()
 $prepared = $false
 
+# プローブ側（ProbePrepare）が再生開始シーンを差し替える場合も、入れ子で退避・復元されるので両立する
+$savedStartScene = Enter-BattlePlayModeStartScene
 try {
     # Play前の仕込み（設定フラグの有効化など）。Play中に変えても間に合わない設定はここで行う
     if ($hasPrepare) {
@@ -84,6 +86,8 @@ try {
             $success = $false
         }
     }
+
+    Exit-BattlePlayModeStartScene -Saved $savedStartScene
 }
 
 $checks = @($Global:ProbeChecks)
