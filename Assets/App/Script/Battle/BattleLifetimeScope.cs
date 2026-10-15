@@ -101,9 +101,11 @@ namespace App.Battle
                 .As<IAvalancheDataStore>();
             builder.Register<PlayerBulletParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBulletParameterDataStore>();
-            // 召喚した味方（出現・体力・撃破）
+            // 召喚した味方（出現・体力・撃破）とサモンタレットのクールダウン
             builder.Register<AllyDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IAllyDataStore>();
+            builder.Register<SummonTurretDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ISummonTurretDataStore>();
             builder.Register<PlayerDodgeParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerDodgeParameterDataStore>();
             builder.Register<DodgeCounterAttackDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -212,8 +214,9 @@ namespace App.Battle
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
-            // 召喚した味方の出現・被弾・攻撃・停止・消去
+            // 召喚した味方の出現・被弾・攻撃・停止・消去と、サモンタレットの召喚
             builder.RegisterEntryPoint<AllyUseCase>();
+            builder.RegisterEntryPoint<SummonTurretUseCase>();
             // ランの結果画面（スロット保存・リスタート・メインメニュー）。ゲームオーバーとクリアで共用する
             builder.RegisterEntryPoint<RunResultUseCase>().AsSelf();
             builder.RegisterEntryPoint<GameOverUseCase>();

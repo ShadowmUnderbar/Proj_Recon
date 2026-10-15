@@ -1,14 +1,17 @@
+using System;
 using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
 using App.Common.Interface;
+using R3;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
 namespace App.Battle.DataStore
 {
-    public class PlayerBulletParameterDataStore : IPlayerBulletParameterDataStore, IRunResettable, ITickable
+    public class PlayerBulletParameterDataStore : IPlayerBulletParameterDataStore, IRunResettable, ITickable,
+        IDisposable
     {
         private readonly IPlayerSettingDataStore _playerSettingDataStore;
         private readonly ICoreSkillUnlockDataStore _coreSkillUnlockDataStore;
@@ -20,6 +23,9 @@ namespace App.Battle.DataStore
         private readonly IShotConflictDataStore _shotConflictDataStore;
         private readonly IFreezeDataStore _freezeDataStore;
         private readonly PlayerBaseParameterConfig _baseParameter;
+
+        private readonly Subject<(HandType handType, ShotType shotType)> _onShot = new();
+        public Observable<(HandType handType, ShotType shotType)> OnShot => _onShot;
 
         private float _leftShotCoolDown;
         private float _rightShotCoolDown;
@@ -112,6 +118,8 @@ namespace App.Battle.DataStore
             {
                 _rightShotCoolDown = coolDown;
             }
+
+            _onShot.OnNext((handType, shotType));
         }
 
         public bool CanShot(HandType handType, ShotType shotType)
@@ -252,6 +260,11 @@ namespace App.Battle.DataStore
             }
 
             return bulletDamage * _baseParameter.MergeExplosiveDamageRate;
+        }
+
+        public void Dispose()
+        {
+            _onShot.Dispose();
         }
     }
 }
