@@ -35,5 +35,16 @@ namespace App.Battle.Interface.DataStore
         /// </summary>
         float CalcDamageTakenMultiply();
 
+        /// <summary>
+        /// レイジが発動中か（所持しているレイジのいずれかが効果時間内か）。未所持なら false。
+        /// レイジの発動を条件にするアップグレードはここで判定する
+        /// </summary>
+        bool IsRageActive { get; }
+
+        /// <summary>
+        /// 発動中のレイジの効果時間を延長する。発動していないレイジは延長しない（新たに発動させない）
+        /// </summary>
+        /// <param name="seconds">延長する秒数</param>
+        void ExtendRage(float seconds);
     }
 }

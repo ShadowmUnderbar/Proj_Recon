@@ -42,6 +42,9 @@ namespace App.Battle.DataStore
             // KillWithDifferentForm条件: 2つ前の撃破フォーム（null=未撃破）
             public ShotType? PreviousKillShotType;
 
+            // レイジか。被弾で効果時間が延びる条件（OnDamaged）を持つバフをレイジとして扱う
+            public bool IsRage => Master.ConditionType == BuffConditionType.OnDamaged;
+
             public bool IsActive => Master.ConditionType switch
             {
                 BuffConditionType.HitCount => RemainingTime > 0f,
@@ -275,6 +278,36 @@ namespace App.Battle.DataStore
             }
 
             return result;
+        }
+
+        public bool IsRageActive
+        {
+            get
+            {
+                foreach (var state in _buffStates)
+                {
+                    if (state.IsRage && state.IsActive)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        public void ExtendRage(float seconds)
+        {
+            foreach (var state in _buffStates)
+            {
+                // 発動していないレイジは延長しない（延長で新たに発動させない）
+                if (!state.IsRage || !state.IsActive)
+                {
+                    continue;
+                }
+
+                state.RemainingTime += seconds;
+            }
         }
 
         public void ResetRun()
