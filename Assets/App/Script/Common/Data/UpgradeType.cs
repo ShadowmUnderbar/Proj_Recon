@@ -44,4 +44,5 @@ public enum UpgradeType
     SummonTurret = 40, // サモンタレット
     SummonDrone = 41, // サモンドローン
     Sociopath = 42, // ソシオパス
+    Grit = 43, // 食いしばり
 }

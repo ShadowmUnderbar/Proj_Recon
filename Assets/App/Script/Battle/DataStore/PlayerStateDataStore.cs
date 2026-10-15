@@ -12,6 +12,7 @@ namespace App.Battle.DataStore
     {
         private readonly IPlayerBarrierDataStore _playerBarrierDataStore;
         private readonly IBuffStateDataStore _buffStateDataStore;
+        private readonly IGritDataStore _gritDataStore;
         private readonly IEmergencyNodeDataStore _emergencyNodeDataStore;
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly PlayerBaseParameterConfig _baseParameter;
@@ -24,6 +25,7 @@ namespace App.Battle.DataStore
         public PlayerStateDataStore(
             IPlayerBarrierDataStore playerBarrierDataStore,
             IBuffStateDataStore buffStateDataStore,
+            IGritDataStore gritDataStore,
             IEmergencyNodeDataStore emergencyNodeDataStore,
             IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
             PlayerBaseParameterConfig baseParameter,
@@ -32,6 +34,7 @@ namespace App.Battle.DataStore
         {
             _playerBarrierDataStore = playerBarrierDataStore;
             _buffStateDataStore = buffStateDataStore;
+            _gritDataStore = gritDataStore;
             _emergencyNodeDataStore = emergencyNodeDataStore;
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
             _baseParameter = baseParameter;
@@ -121,8 +124,14 @@ namespace App.Battle.DataStore
             // デバッグ対戦の無敵中は HP を減らさない（バリアの吸収・被弾の通知は通常どおり行う）
             if (!_playerBarrierDataStore.TryAbsorb(damage) && !_debugArenaSettings.IsPlayerInvincible)
             {
-                // 致死ダメージはエマージェンシー・ノードで無効化を試みる（依存ノードを1つ消費して全回復）
-                if (damage >= Health.Value && _emergencyNodeDataStore.TryActivate(out var healRatio))
+                // 致死ダメージはまず食いしばりで耐えるのを試みる（ウェーブごとの回数制。依存ノードを消費しないため先に使う）
+                var isFatal = damage >= Health.Value && Health.Value > 0f;
+                if (isFatal && _gritDataStore.TryActivate(out var gritHealth))
+                {
+                    Health.Value = Mathf.Min(MaxHealth.Value, gritHealth);
+                }
+                // 次にエマージェンシー・ノードで無効化を試みる（依存ノードを1つ消費して全回復）
+                else if (isFatal && _emergencyNodeDataStore.TryActivate(out var healRatio))
                 {
                     Health.Value = Mathf.Min(MaxHealth.Value, MaxHealth.Value * healRatio);
                 }

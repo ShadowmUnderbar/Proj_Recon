@@ -315,6 +315,9 @@ namespace App.Battle.DataStore
 
         public bool IsRageActive => _rageRemainingTime > 0f;
 
+        // Tickで0をわずかに下回ることがあるので0で止める
+        public float RageRemainingTime => Mathf.Max(_rageRemainingTime, 0f);
+
         public void GainRage(float seconds, BuffMasterData rageWhenNotOwned)
         {
             if (_ownedRages.Count == 0)
