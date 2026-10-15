@@ -30,6 +30,8 @@ $success = $true
 $errorsFound = @()
 $prepared = $false
 
+# Boot で初期化してから Battle を再生する。プローブ側（ProbePrepare）で重ねて予約しても問題ない
+Request-BootToBattle
 try {
     # Play前の仕込み（設定フラグの有効化など）。Play中に変えても間に合わない設定はここで行う
     if ($hasPrepare) {
@@ -84,6 +86,8 @@ try {
             $success = $false
         }
     }
+
+    Clear-BootToBattle
 }
 
 $checks = @($Global:ProbeChecks)

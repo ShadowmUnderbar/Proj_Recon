@@ -26,6 +26,9 @@ namespace App.Common.Data
         /// <summary>デバッグ用「敵と対戦」の予約内容（DebugArenaRequestのJSON）。次のバトルの組み立てで1回だけ使う</summary>
         public static string DebugArenaRequestKey => "DebugArenaRequest";
 
+        /// <summary>デバッグ用「起動シーンの遷移先」の予約（BootDestination の名前）。次の起動で1回だけ使う</summary>
+        public static string BootDestinationKey => "BootDestination";
+
 #if !UNITY_EDITOR
         public static readonly bool IsVRMode = true;
 #else
@@ -83,6 +86,24 @@ namespace App.Common.Data
             var json = EditorPrefs.GetString(DebugArenaRequestKey, string.Empty);
             EditorPrefs.DeleteKey(DebugArenaRequestKey);
             return string.IsNullOrEmpty(json) ? null : json;
+        }
+#endif
+
+#if !UNITY_EDITOR
+        // 製品ビルドは常にメインメニューから始める
+        public static BootDestination ConsumeBootDestination() => BootDestination.MainMenu;
+#else
+        /// <summary>
+        /// 起動シーンの遷移先の予約を取り出して消す。予約が無ければ MainMenu。
+        /// 1回で消すので、次の通常の再生はメインメニューから始まる
+        /// </summary>
+        public static BootDestination ConsumeBootDestination()
+        {
+            var name = EditorPrefs.GetString(BootDestinationKey, string.Empty);
+            EditorPrefs.DeleteKey(BootDestinationKey);
+            return Enum.TryParse<BootDestination>(name, out var destination)
+                ? destination
+                : BootDestination.MainMenu;
         }
 #endif
     }

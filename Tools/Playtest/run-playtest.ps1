@@ -24,15 +24,17 @@ Write-Host "=== Playtest run: scenario=$Scenario, targetWaves=$Waves ==="
 
 Invoke-Uloop -Command 'compile' -Params @{ 'wait-for-domain-reload' = 'true' } | Out-Null
 Invoke-Uloop -Command 'clear-console' | Out-Null
-Invoke-Uloop -Command 'control-play-mode' -Params @{ action = 'Play' } | Out-Null
-Start-Sleep -Seconds 5
 
 $errorsFound = @()
 $reachedWave = 1
 $success = $true
 $gameOver = $false
 
+Request-BootToBattle
 try {
+    Invoke-Uloop -Command 'control-play-mode' -Params @{ action = 'Play' } | Out-Null
+    Start-Sleep -Seconds 5
+
     for ($i = 0; $i -lt $MaxIterations; $i++) {
         $wave = Get-WaveState
         $reachedWave = $wave.currentWave
@@ -86,6 +88,7 @@ try {
     }
 } finally {
     Invoke-Uloop -Command 'control-play-mode' -Params @{ action = 'Stop' } | Out-Null
+    Clear-BootToBattle
 }
 
 $reportPath = Write-PlaytestReport -Scenario $Scenario -TargetWaves $Waves -ReachedWave $reachedWave -Success $success -GameOver $gameOver -Errors $errorsFound

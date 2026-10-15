@@ -1,6 +1,6 @@
 ﻿#
 # ボス系プローブ（BossWave / BossTickTock）の共通処理。各プローブの先頭で dot-source する。
-#   - 再生開始シーンを Battle にする／戻す。あわせて開始時アップグレード（デバッグ設定）を空にする／戻す
+#   - Boot → Battle での再生を予約する／片付ける。あわせて開始時アップグレード（デバッグ設定）を空にする／戻す
 #   - BossWaveConfig のボスグループを一時的に差し替える／戻す（ボスウェーブに出るボスを検証対象に合わせる）
 #   - デバッグ対戦（任意のボスグループ・敵とだけ戦う）を予約する（Request-DebugArena）
 #   - C# スニペットの共通の前置き（コンテナ解決・台本の進行のリフレクション）
@@ -10,19 +10,8 @@
 $Global:BossProbeWaveConfigPath = 'Assets/App/MasterData/Boss/BossWaveConfig.asset'
 
 function Enter-BossProbeScene {
-    # 開いているシーンを切り替えず、再生開始時だけ Battle シーンを使う（TutorialMessage プローブと同じ）
-    $Global:ProbeSavedPlayModeStartScene = Invoke-UnityCode -Snippet @'
-using UnityEditor;
-using UnityEditor.SceneManagement;
-
-var saved = EditorSceneManager.playModeStartScene != null
-    ? AssetDatabase.GetAssetPath(EditorSceneManager.playModeStartScene)
-    : string.Empty;
-EditorSceneManager.playModeStartScene = AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/Scenes/Battle.unity");
-
-return saved;
-'@
-    Write-Host "再生開始シーンを Battle に設定しました（退避: [$Global:ProbeSavedPlayModeStartScene]）"
+    # 開いているシーンを切り替えず、Boot で初期化してから Battle を再生する（PlaytestCommon.ps1）
+    Request-BootToBattle
 
     # 開始時アップグレード（デバッグ設定）にメデューサ（Boss ランクをスタン）やスネークアイズ（減速）が入っていると、
     # 注視の向きしだいでボスの行動が打ち切られ・遅れ、判定が揺れる。実行中だけ空にする
@@ -37,22 +26,7 @@ return saved;
 }
 
 function Exit-BossProbeScene {
-    $saved = $Global:ProbeSavedPlayModeStartScene
-    $escaped = $saved -replace '\\', '\\' -replace '"', '\"'
-
-    Invoke-UnityCode -Snippet @"
-using UnityEditor;
-using UnityEditor.SceneManagement;
-
-var path = "$escaped";
-EditorSceneManager.playModeStartScene = string.IsNullOrEmpty(path)
-    ? null
-    : AssetDatabase.LoadAssetAtPath<SceneAsset>(path);
-
-return "restored";
-"@ | Out-Null
-
-    Write-Host "再生開始シーンを戻しました: [$saved]"
+    Clear-BootToBattle
 
     $savedUpgrades = $Global:ProbeSavedStartUpgradeIds
     Invoke-UnityCode -Snippet @"
@@ -65,9 +39,9 @@ return "restored";
 }
 
 function Request-DebugArena {
-    # デバッグ対戦（App/デバッグ: 敵と対戦）を予約し、再生開始シーンを Battle にする。再生前（エディット時）に呼ぶこと。
-    # 予約は次の再生の組み立てで1回だけ使われ、再生の終了時に DebugArenaLauncher が再生開始シーンと残った予約を片付ける。
-    # Enter-BossProbeScene のあとに呼ぶ（そちらが元の再生開始シーンを退避・復元する）
+    # デバッグ対戦（App/デバッグ: 敵と対戦）を予約し、Boot → Battle で再生するようにする。再生前（エディット時）に呼ぶこと。
+    # 予約は次の再生の組み立てで1回だけ使われ、再生の終了時に DebugArenaLauncher / BootPlayModeStarter が残った予約と再生開始シーンを片付ける。
+    # Enter-BossProbeScene のあとに呼ぶ
     param(
         [string]$BossGroupPath = '',
         [string]$EnemyCode = '',

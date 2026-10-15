@@ -45,6 +45,7 @@ Views  →  Presenters  →  UseCase  →  DataStore  →  Data
 ```
 VContainerSettings.RootLifetimeScope = CommonLifetimeScope.prefab  ← DontDestroyOnLoad で常駐
         │
+        ├── Boot.unity     : BootLifetimeScope    （親 = Common）← Build Settings 先頭
         ├── MainMenu.unity : MainMenuLifetimeScope（親 = Common）
         └── Battle.unity   : BattleLifetimeScope （親 = Common）
 ```
@@ -52,6 +53,7 @@ VContainerSettings.RootLifetimeScope = CommonLifetimeScope.prefab  ← DontDestr
 | スコープ | ファイル | 持ち物 |
 |---|---|---|
 | `CommonLifetimeScope` | `Common/CommonLifetimeScope.cs`（プレハブ `Prefub/CommonLifetimeScope.prefab`） | セーブデータ・設定・入力・マスターデータ DB・シーン遷移・XR 初期化・配信表示切替 |
+| `BootLifetimeScope` | `Boot/BootLifetimeScope.cs` | `BootUseCase` のみ。Addressables・Localization の初期化と XR 起動（`IXRInitUseCase.IsInitialized`）を待ってから遷移する。遷移先は通常 MainMenu、エディタの「Battle から再生」（自動テスト・デバッグ対戦）のときだけ Battle（`DebugConfig.ConsumeBootDestination` で1回だけ取り出す）。失敗・タイムアウトでも止めずに進む |
 | `MainMenuLifetimeScope` | `MainMenu/MainMenuLifetimeScope.cs` | メニュー UI／部屋移動／オプションの UseCase・Presenter・View（シーン配置物を `RegisterComponentInHierarchy`） |
 | `BattleLifetimeScope` | `Battle/BattleLifetimeScope.cs` | バトルの全 DataStore・UseCase・Presenter・View（プレハブ生成）・Config |
 
@@ -62,8 +64,9 @@ VContainerSettings.RootLifetimeScope = CommonLifetimeScope.prefab  ← DontDestr
 ### 1.3 起動〜遷移フロー
 
 ```
-起動（Build Settings 先頭 = MainMenu）
+起動（Build Settings 先頭 = Boot）
   → CommonLifetimeScope 生成: SaveDataStore.Load → 各 DataStore が値を反映、XRInitUseCase が XR 起動
+  → BootLifetimeScope: BootUseCase が Addressables / Localization の初期化・XR 起動の完了を待つ → ISceneTransitionUseCase.LoadMainMenu()
   → MainMenuLifetimeScope: START ボタン → MainMenuUseCase がセット選択 UI（RunStartView）を出す
        → スロット選択／使わずに開始 → RunLoadoutDataStore（常駐）に選択を積む → ISceneTransitionUseCase.LoadBattle()
   → BattleLifetimeScope: RunStartUseCase が RunLoadoutDataStore の選択を装備（1回で消費）してすぐウェーブ1 開始
@@ -461,7 +464,9 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | `Tools/マスターデータ/*` | シート出力ファイルの取り込み（1.5） |
 | `Tools/MainMenu/…` / `Tools/Upgrade/…` | 部屋・カードプレースホルダの生成 |
 | `Editor/AppVRModeMenu.cs` / `StartUpgradeDebugWindow.cs` | `DebugConfig` の EditorPrefs（VR モード／全解放／開始時アップグレード）を切り替える |
-| `App/デバッグ: 敵と対戦`（`Editor/DebugArenaWindow.cs` / `DebugArenaLauncher.cs`） | 通常のプレイとは別の入口。任意のボスグループ・敵（Boss ランク以外）を選んで Battle シーンを再生し、セット選択・ウェーブ進行・周期スポーンを止めてその相手とだけ戦う（デバッグ対戦）。ウェーブ番号（敵の HP・攻撃力の倍率に使う。ボスウェーブの番号でもボスウェーブにはしない）・倒したら出し直す・プレイヤー無敵（HP を減らさず被弾の通知は流す）を選べる。予約は EditorPrefs `DebugArenaRequest` に置き、`BattleLifetimeScope` が組み立て時に1回だけ取り出す（リスタートは同じ相手で続き、再生の終了で残りの予約と再生開始シーンを片付ける）。止める箇所は `RunStartUseCase`（選択を飛ばす）・`WaveManagerUseCase`（進めない）・`EnemyRandomSpawnCycleDataStore`（湧かせない）・`BossWaveDataStore`（ボスウェーブにしない）・`TutorialWaveUseCase`（チュートリアルを出さない＝既読にしない）・`PlayerStateDataStore`（無敵）が `DebugArenaSettings` を見る。開始ウェーブは `WaveManagerDataStore` が `DebugArenaSettings.StartWave` で決める（リスタートも同じ番号へ戻す）。プローブからは `Request-DebugArena`（`BossProbeCommon.ps1`） |
+| `App/デバッグ: 敵と対戦`（`Editor/DebugArenaWindow.cs` / `DebugArenaLauncher.cs`） | 通常のプレイとは別の入口。任意のボスグループ・敵（Boss ランク以外）を選んで Boot → Battle で再生し、セット選択・ウェーブ進行・周期スポーンを止めてその相手とだけ戦う（デバッグ対戦）。ウェーブ番号（敵の HP・攻撃力の倍率に使う。ボスウェーブの番号でもボスウェーブにはしない）・倒したら出し直す・プレイヤー無敵（HP を減らさず被弾の通知は流す）を選べる。予約は EditorPrefs `DebugArenaRequest` に置き、`BattleLifetimeScope` が組み立て時に1回だけ取り出す（リスタートは同じ相手で続き、再生の終了で残りの予約と再生開始シーンを片付ける）。止める箇所は `RunStartUseCase`（選択を飛ばす）・`WaveManagerUseCase`（進めない）・`EnemyRandomSpawnCycleDataStore`（湧かせない）・`BossWaveDataStore`（ボスウェーブにしない）・`TutorialWaveUseCase`（チュートリアルを出さない＝既読にしない）・`PlayerStateDataStore`（無敵）が `DebugArenaSettings` を見る。開始ウェーブは `WaveManagerDataStore` が `DebugArenaSettings.StartWave` で決める（リスタートも同じ番号へ戻す）。プローブからは `Request-DebugArena`（`BossProbeCommon.ps1`） |
+| `Tools/Boot/Boot シーンから再生`（`Editor/BootPlayModeStarter.cs`） | 既定 ON。エディタの再生を、開いているシーンにかかわらず Boot → MainMenu から始める（`playModeStartScene` が未設定のときだけ Boot を入れる）。シーン単体で再生したいときは OFF にする |
+| `Tools/Boot/Battle から再生`（同上 `PlayBattle` / `PrepareBattle`） | Boot で初期化してから Battle を始める。自動テスト（`Request-BootToBattle`）・デバッグ対戦もこれを使う。遷移先の予約は EditorPrefs `BootDestination`、再生の終了で予約と再生開始シーンを片付ける |
 | `GameInputDataStore.Debug*` | `Shift+U` でショップを開く等のデバッグ入力（エディタのみ） |
 | uLoop MCP | Claude からのコンパイル・PlayMode・ログ取得 |
 | `Assets/App/Tests/EditMode`（`App.Tests.EditMode`） | EditMode の単体テスト（Unity Test Framework）。シーンを使わない plain C# のロジック（いまはボスの台本ランナー `BossPatternRunner` と行動段階 `BossActionPhaseMachine`）を数秒で確かめる。`uloop run-tests --test-mode EditMode` で回す |

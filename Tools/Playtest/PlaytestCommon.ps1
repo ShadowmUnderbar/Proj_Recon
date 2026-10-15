@@ -245,6 +245,29 @@ function Invoke-UnityJson {
     return (Invoke-UnityCode -Snippet $Snippet) | ConvertFrom-Json
 }
 
+function Request-BootToBattle {
+    # 通常の再生は起動シーン（Boot）→ メインメニューから始まる（BootPlayModeStarter）。
+    # テストラン・プローブはバトルを観測するので、Boot で初期化してから Battle へ進むよう予約する。再生前（エディット時）に呼ぶこと。
+    # 何度呼んでもよい（元の再生開始シーンは最初の1回だけ退避される）
+    $result = Invoke-UnityCode -Snippet @'
+return App.Editor.BootPlayModeStarter.PrepareBattle() ? "ok" : "failed";
+'@
+    if ($result -ne 'ok') {
+        throw "Boot → Battle の予約に失敗しました（Assets/Scenes/Boot.unity を確認してください）"
+    }
+    Write-Host "Boot → Battle で再生するよう予約しました"
+}
+
+function Clear-BootToBattle {
+    # Request-BootToBattle の予約を取り消し、再生開始シーンを元に戻す。
+    # 再生の終了時にも BootPlayModeStarter が自動で片付けるが、再生を始められなかったときのために呼ぶ
+    Invoke-UnityCode -Snippet @'
+App.Editor.BootPlayModeStarter.CancelPrepared();
+return "ok";
+'@ | Out-Null
+    Write-Host "Boot → Battle の予約を片付けました"
+}
+
 $Global:ProbeChecks = @()
 
 function Reset-ProbeChecks {
