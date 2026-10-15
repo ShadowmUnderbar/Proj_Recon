@@ -42,4 +42,5 @@ public enum UpgradeType
     Overclock = 38, // オーバークロック
     Bullseye = 39, // ブルズアイ
     SummonTurret = 40, // サモンタレット
+    SummonDrone = 41, // サモンドローン
 }
