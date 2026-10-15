@@ -81,7 +81,8 @@ namespace App.Battle.Views.Enemy.Bullet
         // 寿命・着弾後の待機を進めないか
         private bool IsTimeHold => IsPause || _isOverclockHold;
 
-        private bool IsPlayerBullet => _attackerId == PlayerConstants.PlayerId;
+        // プレイヤー側（プレイヤー・召喚した味方）の弾か。撃ち手の Id ではなく、弾がすり抜けるレイヤーで見る
+        private bool IsPlayerSideBullet => ((1 << _shooterLayer.Value) & LayerConstants.Player) != 0;
         protected BulletData BulletData { get; private set; }
         private int _hitCount = 0;
         private int _focusTargetId = 0;
@@ -151,12 +152,12 @@ namespace App.Battle.Views.Enemy.Bullet
 
         /// <summary>
         /// オーバークロックの開始・終了を反映する。
-        /// 敵弾はその場で止め、自弾は飛ばし続ける。どちらも寿命とトレイルを止めて軌跡を残す。
+        /// 敵弾はその場で止め、プレイヤー側の弾（自弾・味方の弾）は飛ばし続ける。どちらも寿命とトレイルを止めて軌跡を残す。
         /// </summary>
         public void SetOverclock(bool isActive)
         {
             _isOverclockHold = isActive;
-            _isOverclockPause = isActive && !IsPlayerBullet;
+            _isOverclockPause = isActive && !IsPlayerSideBullet;
 
             if (_trailRenderer == null)
             {

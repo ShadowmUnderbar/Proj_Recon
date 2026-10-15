@@ -3,6 +3,7 @@ using App.Battle.Interface;
 using App.Battle.Presenters;
 using App.Battle.UseCase;
 using App.Battle.Views;
+using App.Battle.Views.Ally;
 using App.Common.Data;
 using App.Common.Interface;
 using App.Common.Presenters;
@@ -53,6 +54,8 @@ namespace App.Battle
         [SerializeField] private BossLifeGaugeStoreView _bossLifeGaugeStoreView;
         [SerializeField] private BossLifeGaugeConfig _bossLifeGaugeConfig;
         [SerializeField] private EnemySpawnConfig _enemySpawnConfig;
+        [SerializeField] private AllyStoreView _allyStoreView;
+        [SerializeField] private AllyConfig _allyConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -98,6 +101,9 @@ namespace App.Battle
                 .As<IAvalancheDataStore>();
             builder.Register<PlayerBulletParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBulletParameterDataStore>();
+            // 召喚した味方（出現・体力・撃破）
+            builder.Register<AllyDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IAllyDataStore>();
             builder.Register<PlayerDodgeParameterDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerDodgeParameterDataStore>();
             builder.Register<DodgeCounterAttackDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -206,6 +212,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
+            // 召喚した味方の出現・被弾・攻撃・停止・消去
+            builder.RegisterEntryPoint<AllyUseCase>();
             // ランの結果画面（スロット保存・リスタート・メインメニュー）。ゲームオーバーとクリアで共用する
             builder.RegisterEntryPoint<RunResultUseCase>().AsSelf();
             builder.RegisterEntryPoint<GameOverUseCase>();
@@ -245,6 +253,8 @@ namespace App.Battle
                 .As<IStreamerCameraPresenter>();
             builder.Register<PointParticlePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPointParticlePresenter>();
+            builder.Register<AllyPresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IAllyPresenter>();
             builder.Register<TutorialMessagePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ITutorialMessagePresenter>();
 
@@ -299,6 +309,10 @@ namespace App.Battle
             builder.Register<SimpleObjectFactory<IPlayerTopDownAimView, PlayerTopDownAimView>>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<IPlayerTopDownAimView>>()
                 .WithParameter("prefab", _playerTopDownAimView);
+
+            // 召喚した味方の生成・破棄。敵 AI が狙う味方を探す窓口（IAllyTargetProvider）も兼ねる
+            builder.RegisterComponentInNewPrefab(_allyStoreView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces();
 
             // 注視判定を LateUpdate で回すため、new ではなくプレハブから GameObject として生成する
             builder.RegisterComponentInNewPrefab(_enemyStoreView, Lifetime.Singleton).UnderTransform(transform)
@@ -361,6 +375,8 @@ namespace App.Battle
             builder.RegisterInstance(_bossLifeGaugeConfig);
             // 雑魚の最低生存数（EnemyRandomSpawnCycleDataStore が利用）
             builder.RegisterInstance(_enemySpawnConfig);
+            // 召喚する味方の種類ごとの体力・攻撃間隔・射程（AllyDataStore が利用）
+            builder.RegisterInstance(_allyConfig);
 
             #endregion
         }

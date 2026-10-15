@@ -83,6 +83,16 @@ namespace App.Battle.Views
             EnemyAI.SetPlayerTransform(playerTransform);
         }
 
+        public void SetAllyTargetProvider(IAllyTargetProvider allyTargetProvider)
+        {
+            if (EnemyAI == null)
+            {
+                return;
+            }
+
+            EnemyAI.SetAllyTargetProvider(allyTargetProvider);
+        }
+
         public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)
         {
             if (EnemyAI == null)

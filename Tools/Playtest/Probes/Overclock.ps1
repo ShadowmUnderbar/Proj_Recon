@@ -156,11 +156,15 @@ if (pin == null) throw new System.Exception("PlayerCameraPinView が見つかり
 var flags = BindingFlags.Instance | BindingFlags.NonPublic;
 var trailField = typeof(BaseBulletView).GetField("_trailRenderer", flags);
 
-// 敵弾に見立てた弾（撃ち手が敵Id）を発動前に出しておく。プレイヤーから離れた高所を横へ飛ばす
+// 敵弾に見立てた弾（撃ち手が敵Id）を発動前に出しておく。プレイヤーから離れた高所を横へ飛ばす。
+// 敵弾かどうかは撃ち手のレイヤー（_shooterLayer）で見るため、敵弾と同じ Enemy レイヤーにしておく
 var prefab = (PlayerBulletView)typeof(BattleLifetimeScope).GetField("_playerBulletView", flags).GetValue(scope);
 var basePos = player.Position.Value + new Vector3(0f, 8f, 0f);
 var enemyBullet = UnityEngine.Object.Instantiate(prefab);
 enemyBullet.name = "ProbeEnemyBullet";
+var shooterLayerField = typeof(BaseBulletView).GetField("_shooterLayer", flags);
+var enemyLayer = new App.Framework.Layer { Value = LayerMask.NameToLayer("Enemy") };
+shooterLayerField.SetValue(enemyBullet, enemyLayer);
 enemyBullet.Spawn(12345, new Pose(basePos, Quaternion.LookRotation(Vector3.right)), new BulletData { Speed = 4f }, -1);
 var originalTrailTime = ((TrailRenderer)trailField.GetValue(enemyBullet)).time;
 

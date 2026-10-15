@@ -42,7 +42,7 @@ namespace App.Battle.Views.Enemy.AI
                 return;
             }
 
-            SetAgentDestination(PlayerTransform.position);
+            SetAgentDestination(TargetTransform.position);
         }
 
         protected override void OnUpdateBattleState()
@@ -64,7 +64,7 @@ namespace App.Battle.Views.Enemy.AI
                 return;
             }
 
-            transform.LookAt(PlayerTransform.position, Vector3.up);
+            transform.LookAt(TargetTransform.position, Vector3.up);
             transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
 
             // 索敵内だが射程外なら、プレイヤーへ向かって射程に入る地点まで近づく
@@ -81,11 +81,11 @@ namespace App.Battle.Views.Enemy.AI
         /// </summary>
         private void ApproachToAttackRange()
         {
-            var toSelf = transform.position - PlayerTransform.position;
+            var toSelf = transform.position - TargetTransform.position;
             toSelf.y = 0f;
 
             var stopDistance = Mathf.Max(0f, EnemyData.AttackDistanceRange - ApproachMargin);
-            var destination = PlayerTransform.position + toSelf.normalized * stopDistance;
+            var destination = TargetTransform.position + toSelf.normalized * stopDistance;
 
             SetAgentDestination(destination);
         }
@@ -94,9 +94,9 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.Attack();
 
-            var dirAway = (transform.position - PlayerTransform.position).normalized +
+            var dirAway = (transform.position - TargetTransform.position).normalized +
                           transform.right * Random.Range(-RandomMoveRange, RandomMoveRange);
-            var candidate = PlayerTransform.position + dirAway * EscapeDistance;
+            var candidate = TargetTransform.position + dirAway * EscapeDistance;
 
             SetAgentDestination(candidate);
         }

@@ -31,10 +31,31 @@ namespace App.Battle.Interface.EnemyAI
         protected EnemyData EnemyData;
         protected NavMeshAgent Agent;
         protected Transform PlayerTransform;
+
+        // 狙える味方の検索手段（召喚した味方）。未設定なら常にプレイヤーを狙う
+        private IAllyTargetProvider _allyTargetProvider;
+
+        // 選んでいる狙う相手。味方が破棄されると Unity の null になり、次のフレームで選び直す
+        private Transform _targetTransform;
+
+        // 次に狙う相手を選び直すまでの秒数
+        private float _retargetTimer;
+
+        // 狙う相手を選び直す間隔[秒]。毎フレーム全味方と距離を比べないよう間引く
+        private const float RetargetInterval = 0.5f;
+
+        /// <summary>
+        /// 狙う相手。プレイヤーと狙える味方のうち近い方。
+        /// 移動・攻撃・向きはこちらを使い、プレイヤーとの位置関係そのものが意味を持つ行動（照準の妨害・ボスの配置）だけ PlayerTransform を使う
+        /// </summary>
+        protected Transform TargetTransform => _targetTransform != null ? _targetTransform : PlayerTransform;
+
+        /// <summary>味方を狙うか。プレイヤーとの位置関係で動く AI（盾・ボス）は false にしてプレイヤーだけを狙う</summary>
+        protected virtual bool CanTargetAllies => true;
         protected Vector3 PlayerAimDirection1;
         protected Vector3 PlayerAimDirection2;
         protected ReactiveProperty<EnemyAIState> State { get; } = new(EnemyAIState.None);
-        protected float DistanceSqr => Vector3.SqrMagnitude(transform.position - PlayerTransform.position);
+        protected float DistanceSqr => Vector3.SqrMagnitude(transform.position - TargetTransform.position);
         protected float LastAttackTime;
 
         protected virtual void Awake()
@@ -125,6 +146,8 @@ namespace App.Battle.Interface.EnemyAI
             {
                 return;
             }
+
+            UpdateTarget();
 
             // スタン中は行動・行動抽選を一切行わない（死亡演出だけは進める）
             if (IsStun && State.Value != EnemyAIState.Dead)
@@ -218,6 +241,43 @@ namespace App.Battle.Interface.EnemyAI
         public void SetPlayerTransform(Transform playerTransform)
         {
             PlayerTransform = playerTransform;
+        }
+
+        public void SetAllyTargetProvider(IAllyTargetProvider allyTargetProvider)
+        {
+            _allyTargetProvider = allyTargetProvider;
+        }
+
+        /// <summary>
+        /// 一定間隔で、プレイヤーと狙える味方のうち近い方を狙う相手に選び直す。
+        /// 狙っていた味方が消えたら間隔を待たずに選び直す
+        /// </summary>
+        private void UpdateTarget()
+        {
+            _retargetTimer -= Time.deltaTime;
+            if (_retargetTimer > 0f && _targetTransform != null)
+            {
+                return;
+            }
+
+            _retargetTimer = RetargetInterval;
+            _targetTransform = PlayerTransform;
+
+            if (!CanTargetAllies || _allyTargetProvider == null || PlayerTransform == null)
+            {
+                return;
+            }
+
+            if (!_allyTargetProvider.TryGetNearestTarget(transform.position, out var ally, out var allySqrDistance))
+            {
+                return;
+            }
+
+            var playerSqrDistance = Vector3.SqrMagnitude(transform.position - PlayerTransform.position);
+            if (allySqrDistance < playerSqrDistance)
+            {
+                _targetTransform = ally;
+            }
         }
 
         public void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2)
