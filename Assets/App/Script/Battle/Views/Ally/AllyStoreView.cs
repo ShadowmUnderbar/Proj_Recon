@@ -29,11 +29,15 @@ namespace App.Battle.Views.Ally
         private float _spawnSampleDistance = 3f;
 
         private ISimpleObjectFactory<IBulletView> _bulletFactory;
+        private IBattlePlayerView _playerView;
 
         private readonly Dictionary<int, AllyViewBase> _allies = new();
 
         // 敵に狙われる味方（狙われない味方は含めない）
         private readonly List<AllyViewBase> _targetableAllies = new();
+
+        // 並ぶ位置の配り直しの作業用
+        private readonly List<AllyViewBase> _formationBuffer = new();
 
         private readonly Subject<(int allyId, float damage)> _onAllyDamaged = new();
         public Observable<(int allyId, float damage)> OnAllyDamaged => _onAllyDamaged;
@@ -46,10 +50,17 @@ namespace App.Battle.Views.Ally
 
         private bool _isPause;
 
+        // プレイヤーの向いている水平方向。後から出た味方にも渡すため持っておく
+        private Vector3 _playerForward;
+
         [Inject]
-        public void Construct(ISimpleObjectFactory<IBulletView> bulletFactory)
+        public void Construct(
+            ISimpleObjectFactory<IBulletView> bulletFactory,
+            IBattlePlayerView playerView
+        )
         {
             _bulletFactory = bulletFactory;
+            _playerView = playerView;
         }
 
         public void Spawn(AllyData allyData)
@@ -71,8 +82,9 @@ namespace App.Battle.Views.Ally
                 ? Quaternion.LookRotation(allyData.Forward)
                 : Quaternion.identity;
             var view = Instantiate(prefab, hit.position, rotation);
-            view.Init(allyData, _bulletFactory);
+            view.Init(allyData, _bulletFactory, _playerView?.PlayerTransform);
             view.SetPause(_isPause);
+            view.SetPlayerForward(_playerForward);
 
             var allyId = allyData.Id;
             view.OnShotRequested
@@ -86,6 +98,30 @@ namespace App.Battle.Views.Ally
             if (allyData.IsTargetable)
             {
                 _targetableAllies.Add(view);
+            }
+
+            RefreshFormation(allyData.AllyType);
+        }
+
+        /// <summary>
+        /// 同じ種類の味方に、出現順の番号と数を配り直す（並ぶ位置を詰めて、重ならないようにする）。
+        /// Id は出現ごとに1ずつ減るので、Id の降順が出現順
+        /// </summary>
+        private void RefreshFormation(AllyType allyType)
+        {
+            _formationBuffer.Clear();
+            foreach (var pair in _allies)
+            {
+                if (pair.Value != null && pair.Value.AllyType == allyType)
+                {
+                    _formationBuffer.Add(pair.Value);
+                }
+            }
+
+            _formationBuffer.Sort((a, b) => b.Id.CompareTo(a.Id));
+            for (var i = 0; i < _formationBuffer.Count; i++)
+            {
+                _formationBuffer[i].SetFormation(i, _formationBuffer.Count);
             }
         }
 
@@ -123,6 +159,7 @@ namespace App.Battle.Views.Ally
             if (view != null)
             {
                 Destroy(view.gameObject);
+                RefreshFormation(view.AllyType);
             }
         }
 
@@ -145,6 +182,19 @@ namespace App.Battle.Views.Ally
                 if (view != null)
                 {
                     view.SetPause(isPause);
+                }
+            }
+        }
+
+        public void SetPlayerForward(Vector3 forward)
+        {
+            _playerForward = forward;
+
+            foreach (var view in _allies.Values)
+            {
+                if (view != null)
+                {
+                    view.SetPlayerForward(forward);
                 }
             }
         }

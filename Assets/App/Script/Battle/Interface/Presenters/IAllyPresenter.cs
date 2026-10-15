@@ -1,6 +1,7 @@
 using App.Battle.Data;
 using App.Common.Data;
 using R3;
+using UnityEngine;
 
 namespace App.Battle.Interface
 {
@@ -14,5 +15,6 @@ namespace App.Battle.Interface
         void UnSpawn(int allyId);
         void Shot(int allyId, BulletData bulletData);
         void SetPause(bool isPause);
+        void SetPlayerForward(Vector3 forward);
     }
 }

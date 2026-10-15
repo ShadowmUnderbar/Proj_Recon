@@ -53,16 +53,36 @@ namespace App.Battle.DataStore
                 return false;
             }
 
+            if (entry.MaxCount > 0 && CountAllies(allyType) >= entry.MaxCount)
+            {
+                allyData = null;
+                return false;
+            }
+
             // プレイヤーの最大HP（PlayerStateDataStore.RefreshMaxHealth）と同じ倍率。
             // アップグレードはショップでしか増えず、味方はウェーブ終了で消えるため、出現時の値で固定してよい
             var maxHp = entry.MaxHp * _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.Health);
 
             forward.y = 0f;
             allyData = new AllyData(_nextAllyId--, allyType, position, forward.normalized, maxHp, entry.AttackInterval,
-                entry.AttackRange, entry.TurnSpeed, entry.IsTargetable);
+                entry.AttackRange, entry.TurnSpeed, entry.MoveSpeed, entry.IsTargetable);
             _allies.Add(allyData.Id, allyData);
             _onAllySpawned.OnNext(allyData);
             return true;
+        }
+
+        private int CountAllies(AllyType allyType)
+        {
+            var count = 0;
+            foreach (var ally in _allies.Values)
+            {
+                if (ally.AllyType == allyType)
+                {
+                    count++;
+                }
+            }
+
+            return count;
         }
 
         public bool TryGetAllyData(int allyId, out AllyData allyData)

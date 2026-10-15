@@ -2,6 +2,7 @@ using App.Battle.Data;
 using App.Battle.Interface;
 using App.Common.Data;
 using R3;
+using UnityEngine;
 using VContainer;
 
 namespace App.Battle.Presenters
@@ -38,6 +39,11 @@ namespace App.Battle.Presenters
         public void SetPause(bool isPause)
         {
             _allyStoreView.SetPause(isPause);
+        }
+
+        public void SetPlayerForward(Vector3 forward)
+        {
+            _allyStoreView.SetPlayerForward(forward);
         }
     }
 }

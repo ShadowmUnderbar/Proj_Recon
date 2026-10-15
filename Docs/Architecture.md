@@ -250,7 +250,9 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 |---|---|
 | `AllyStoreView` | 味方の生成（要求位置の近くの NavMesh 上、要求された向き）・破棄、被弾と攻撃要求の集約。`IAllyTargetProvider` として敵 AI に「狙える味方のうち最も近いもの」を返す。種類→プレハブの表を持つ（`Prefub/Battle/AllyStoreView.prefab`） |
 | `AllyViewBase` | 味方1体の基底。被弾受け（`AllyDamageReceiverView`）の束ねと、攻撃の手順（`RequestShot` → UseCase が弾データを返す → `FireBullet` でプレイヤー弾のプレハブを撃ち手=味方Idで撃つ）。狙われない味方は被弾受けのコライダーを切る |
-| `AllyTurretView` | サモンタレット（`Prefub/Ally/AllyTurret.prefab`）。動かず、射程内で最も近い敵（0.25秒ごとに探し直す）へ旋回速度（`AllyConfig` の度/秒）で砲身を回し、向きの差が射撃角度（プレハブの `_fireAngle`、既定5度）以内になったら攻撃間隔ごとに撃つ。敵探しは `AllyEnemySearcher`（plain C#） |
+| `AllyGunViewBase` | 銃を持つ味方の基底。射程内で最も近い敵（0.25秒ごとに探し直す）へ旋回速度（`AllyConfig` の度/秒）で砲身を回し、向きの差が射撃角度（プレハブの `_fireAngle`、既定5度）以内になったら攻撃間隔ごとに撃つ。移動は派生の `UpdateMovement`。敵探しは `AllyEnemySearcher`（plain C#） |
+| `AllyTurretView` | サモンタレット（`Prefub/Ally/AllyTurret.prefab`）。動かない `AllyGunViewBase` |
+| `AllyDroneView` | サモンドローン（`Prefub/Ally/AllyDrone.prefab`）。プレイヤーの後ろ側（射撃の向きの反対）に、胴の高さ（既定1.4m＝敵の水平な弾が当たる高さ）で浮かんで追従する。扇（既定120度）をドローンの数で等分して出現順に並ぶ（番号は `AllyStoreView` が配る）。追従の最高速度は `AllyConfig` の移動速度。プレイヤーのルートは回転しないので、向きは `AllyUseCase` が `IPlayerAimDataStore.CenterAimDirection` を配る |
 | `AllyDamageReceiverView` | 味方の `IHitBoxView`（`HitBoxType.Ally`）。敵の近接・敵弾を受けてダメージを流す。コライダーは Player レイヤー（プレイヤーの弾は撃ち手と同じレイヤーをすり抜けるため、味方に当たらない。味方の弾もプレイヤー・他の味方をすり抜ける） |
 
 **UI・演出**
@@ -309,6 +311,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `DebugArenaUseCase` | デバッグ対戦（5章）のときだけ動く。ラン開始で残った敵を消してプレイヤーを `BossWaveConfig.PlayerPosition` へ移し、`DebugArenaSettings` のボスグループ（`BossOrigin` に出す）か敵（`BossOrigin` 付近に指定数）を出す。全員いなくなったら秒数のあとで出し直す（ポーズ・フリーズ中は待ちを進めない）。出現に失敗した・誰も撃破されずに全員消えた（読み込み失敗など）ときは出し直さない | DebugArena, Enemy, BossGroup, PlayerState |
 | `WaveManagerUseCase` / `ShopUseCase` / `RunStartUseCase` / `GameOverUseCase` / `GameClearUseCase` / `RunResultUseCase` / `RunResetUseCase` | 3.2 参照 | |
 | `AllyUseCase` | 味方の出現・消去を View へ、被弾を `AllyDataStore.Damage` へ。攻撃要求にはプレイヤーのノーマルショット（非フォーカス）の弾データを返す（命中はプレイヤーの弾と同じ `BattleHitUseCase` を通るので強化・バフ・クリティカルが乗る）。フリーズ・時止め・ラン終了で止め、ウェーブ間ポーズ（ウェーブの終わり・リスタート）で全員消す。オーバークロック中は止めない | Ally, PlayerBulletParameter, WaveManager, Freeze, TimeStop, GameState |
+| `SummonDroneUseCase` | 敵の撃破（`OnEnemyDead`、誰の撃破でも）を `SummonDroneDataStore` に数え、規定数に達したらプレイヤーの位置へドローンを出す | SummonDrone, Ally, Enemy, PlayerState |
 | `SummonTurretUseCase` | マージショット（`PlayerBulletParameterDataStore.OnShot`）で、その手の照準位置へ、その手のエイム方向（プレイヤー→照準位置。`IPlayerAimDataStore.*AimDirection` は逆向きなので使わない）を向けてタレットを出す。出せたときだけクールダウンを始め、ウェーブ間ポーズ（ウェーブの終わり）で解消する | SummonTurret, Ally, PlayerAim |
 | `UpgradeSideEffectApplier` | アップグレード付与の副作用（バフ起動・バリア満タン）。Shop と RunStart の共通処理 | BuffState, PlayerBarrier |
 | `StreamerCameraUseCase` | ウェーブ進行・ボス・マルチキルで配信カメラの演出をトリガー | StreamerCamera, Enemy |
@@ -354,8 +357,8 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `UpgradeLotteryDataStore` / `UpgradeLocalizationDataStore` / `UpgradeDescriptionFormatter` / `EffectTextStyler` / `UpgradeLocalizationKey` | 抽選・ローカライズ・説明文の整形 |
 | （共通）`TagLocalizationDataStore` / `UpgradeTagRankingDataStore` / `UpgradeTagRanking` | アップグレードのタグ（表示専用）。タグ名は Localization の `TagText` テーブル（キーは `$`＋`UpgradeTag` の名前）。所持タグ上位は ID の一覧から数える（レベル違いは1件・件数順・同数は定義順）ので、ショップ以外（セット選択・ポーズ等）からも使える。マスターデータは `UpgradeTagData` シート（NameKey とタグの縦持ち）→ `UpgradeTagDataImporter` で各レベルの `UpgradeMasterData.Tags` へ |
 | `BuffStateDataStore` | 取得済みバフの発動条件進行と残り時間 |
-| `AllyDataStore` | 召喚した味方のデータ（種類・体力・攻撃間隔・射程・狙われるか）。Id は敵・プレイヤーと重ならない負の値（-100 から）。種類ごとの値は `AllyConfig`。最大体力は基礎値にプレイヤーの体力アップ（`CalcMultiply(Health)`）と同じ倍率を掛けた値（出現時に固定）。体力0・一括消去・出現失敗で `OnAllyRemoved` |
-| 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack`, `SummonTurret` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |
+| `AllyDataStore` | 召喚した味方のデータ（種類・体力・攻撃間隔・射程・旋回速度・移動速度・狙われるか）。同じ種類が `AllyConfig` の最大数（0なら上限なし）に達していれば出さない。Id は敵・プレイヤーと重ならない負の値（-100 から）。種類ごとの値は `AllyConfig`。最大体力は基礎値にプレイヤーの体力アップ（`CalcMultiply(Health)`）と同じ倍率を掛けた値（出現時に固定）。体力0・一括消去・出現失敗で `OnAllyRemoved` |
+| 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack`, `SummonTurret`, `SummonDrone` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |
 
 **ポイント・配信**
 
@@ -415,6 +418,11 @@ AllyTurretView(射程内の最寄りの敵) → OnShotRequested → AllyUseCase(
  → PlayerBulletView(撃ち手=味方Id) → 以降は【射撃】と同じ
 敵 AI(TargetTransform=プレイヤーと味方の近い方) → 近接・敵弾 → AllyDamageReceiverView → AllyUseCase → AllyDataStore.Damage → 0で消える
 ウェーブ間ポーズ → AllyUseCase → AllyDataStore.RemoveAll
+
+【召喚した味方（サモンドローン）】
+EnemyDataStore.OnEnemyDead → SummonDroneUseCase → SummonDroneDataStore.NotifyKill(Value1 体ごとに Value2 体。撃破数はウェーブをまたいで持ち越す)
+ → AllyDataStore.TrySpawn(プレイヤーの位置) → 以降はタレットと同じ
+AllyUseCase.Tick(射撃の向き) → AllyStoreView.SetPlayerForward → AllyDroneView(後ろ側の扇の自分の番号の位置へ SmoothDamp)
 
 【オーバークロック】
 回避中の被弾 → PlayerHitUseCase → PlayerDodgeParameterDataStore.NotifyDamageBlocked → OnDamagedDuringDodge
