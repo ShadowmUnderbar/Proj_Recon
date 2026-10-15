@@ -542,7 +542,6 @@ MonoBehaviour:
   _followDistance: 1.6
   _slotSpreadAngle: 120
   _followSmoothTime: 0.25
-  _maxFollowSpeed: 20
 --- !u!114 &6909038904848035653
 MonoBehaviour:
   m_ObjectHideFlags: 0

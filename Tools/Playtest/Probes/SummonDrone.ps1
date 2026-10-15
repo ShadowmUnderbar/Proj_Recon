@@ -3,8 +3,8 @@
 #
 # デバッグ対戦（Request-DebugArena）で周回型の雑魚（O-001）を出し、次を見る。
 #   - 未所持では撃破してもドローンが出ず、撃破数も数えない
-#   - L1（40体ごとに1体）: 39体目までは出ず、40体目の撃破でプレイヤーの近くに1体出る・撃破数が0に戻る
-#   - L3（30体ごとに2体）: 30体目の撃破で2体出る（最高レベルの Value1 / Value2）
+#   - L1（Value1 体ごとに1体）: Value1-1 体目までは出ず、Value1 体目の撃破でプレイヤーの近くに1体出る・撃破数が0に戻る
+#   - L3: 最高レベルの Value1 体目の撃破で Value2 体出る（値はアップグレードのデータから読む）
 #   - 複数のドローンは扇に等分して重ならずに並ぶ・同時に出せる数は AllyConfig の最大数まで
 #   - ドローンはプレイヤーの後ろ上方（射撃の向きの反対側・設定の高さと距離）に浮かび、プレイヤーが動くと付いてくる
 #   - ドローンのコライダーは Player レイヤーのトリガー（プレイヤーの移動・射撃を阻害しない）。プレイヤーの弾はすり抜ける
@@ -102,7 +102,10 @@ return $"{{\"drones\":{Drones().Count},\"kills\":{summonDrone.KillCount}}}";
     $r = Invoke-DroneKillSnippet -Body @'
 if (enemies.Enemies.Count(e => e.Hp > 0f) < 2) return "{\"error\":\"敵が足りません\"}";
 AddDrone(1);
-killCountProp.SetValue(summonDrone, 38);
+// 必要撃破数（Value1）はアップグレードのデータから読む（調整で変わるため決め打ちしない）
+var l1 = db.UpgradeMasterData.First(u => u.UpgradeType == UpgradeType.SummonDrone && u.Level == 1);
+var required = Mathf.RoundToInt(l1.Value1.value);
+killCountProp.SetValue(summonDrone, required - 2);
 KillOneEnemy();
 var after39 = Drones().Count;
 var kills39 = summonDrone.KillCount;
@@ -110,17 +113,24 @@ KillOneEnemy();
 var drones = Drones();
 var drone = drones.FirstOrDefault();
 var flat = drone != null ? drone.transform.position - player.Position.Value : Vector3.zero; flat.y = 0f;
-var maxHp = drone != null && allies.TryGetAllyData(drone.Id, out var ad) ? ad.MaxHp : -1f;
+AllyData ad = null;
+var hasData = drone != null && allies.TryGetAllyData(drone.Id, out ad);
+var maxHp = hasData ? ad.MaxHp : -1f;
+var moveSpeed = hasData ? ad.MoveSpeed : -1f;
 allyConfig.TryGetEntry(AllyType.Drone, out var entry);
 var col = drone != null ? drone.GetComponent<Collider>() : null;
-return $"{{\"after39\":{after39},\"kills39\":{kills39},\"drones\":{drones.Count},\"kills\":{summonDrone.KillCount},\"spawnDist\":{F(flat.magnitude)},\"maxHp\":{F(maxHp)},\"configHp\":{F(entry.MaxHp)},\"isTrigger\":{(col != null && col.isTrigger).ToString().ToLower()},\"layer\":{(drone != null ? drone.gameObject.layer : -1)}}}";
+return $"{{\"required\":{required},\"after39\":{after39},\"kills39\":{kills39},\"drones\":{drones.Count},\"kills\":{summonDrone.KillCount},\"spawnDist\":{F(flat.magnitude)},\"maxHp\":{F(maxHp)},\"configHp\":{F(entry.MaxHp)},\"moveSpeed\":{F(moveSpeed)},\"configMoveSpeed\":{F(entry.MoveSpeed)},\"isTrigger\":{(col != null && col.isTrigger).ToString().ToLower()},\"layer\":{(drone != null ? drone.gameObject.layer : -1)}}}";
 '@
-    Assert-ProbeValue -Name 'L1: 39体目の撃破ではまだ出ない' -Actual $r.after39 -Expected 0 | Out-Null
-    Assert-ProbeValue -Name 'L1: 39体目までは撃破数を数えている' -Actual $r.kills39 -Expected 39 | Out-Null
-    Assert-ProbeValue -Name 'L1: 40体目の撃破でドローンが1体出る' -Actual $r.drones -Expected 1 | Out-Null
+    $req = [int]$r.required
+    Write-Host "  L1 の必要撃破数（Value1）: $req"
+    Assert-ProbeValue -Name "L1: $($req - 1)体目の撃破ではまだ出ない" -Actual $r.after39 -Expected 0 | Out-Null
+    Assert-ProbeValue -Name "L1: $($req - 1)体目までは撃破数を数えている" -Actual $r.kills39 -Expected ($req - 1) | Out-Null
+    Assert-ProbeValue -Name "L1: $($req)体目の撃破でドローンが1体出る" -Actual $r.drones -Expected 1 | Out-Null
     Assert-ProbeValue -Name 'L1: 召喚したら撃破数が0に戻る' -Actual $r.kills -Expected 0 | Out-Null
     Assert-ProbeTrue -Name 'ドローンはプレイヤーの近く（水平3m以内）に出る' -Condition ($r.spawnDist -le 3) -Detail "距離=$($r.spawnDist)" | Out-Null
     Assert-ProbeValue -Name 'ドローンの最大体力は AllyConfig の値' -Actual $r.maxHp -Expected $r.configHp | Out-Null
+    Assert-ProbeValue -Name 'ドローンの移動速度は AllyConfig の値' -Actual $r.moveSpeed -Expected $r.configMoveSpeed | Out-Null
+    Assert-ProbeTrue -Name 'ドローンの移動速度は0より大きい（0だと追従しない）' -Condition ($r.moveSpeed -gt 0) | Out-Null
     Assert-ProbeTrue -Name 'ドローンのコライダーはトリガー（プレイヤーの移動を阻害しない）' -Condition $r.isTrigger | Out-Null
     Assert-ProbeValue -Name 'ドローンは Player レイヤー（プレイヤーの弾がすり抜ける）' -Actual $r.layer -Expected 3 | Out-Null
 
@@ -190,7 +200,8 @@ return $"{{\"hp\":{F(ed.Hp)}}}";
 '@
     $r = Invoke-DroneKillSnippet -Body $setup
     $hpBefore = $r.hp
-    Start-Sleep -Seconds 2
+    # 旋回（AllyConfig の度/秒）で向き直ってから攻撃間隔を待つので、遅い設定でも撃てるだけ待つ
+    Start-Sleep -Seconds 4
     $r = Invoke-DroneSnippet -Body @'
 var enemyId = (int)AppDomain.CurrentDomain.GetData("drone.enemyId");
 var hp = enemies.TryGetEnemyData(enemyId, out var ed) ? ed.Hp : -1f;
@@ -203,12 +214,14 @@ return $"{{\"hp\":{F(hp)}}}";
     $r = Invoke-DroneKillSnippet -Body @'
 if (enemies.Enemies.Count(e => e.Hp > 0f) < 1) return "{\"error\":\"敵がいません\"}";
 AddDrone(3);
+// 最高レベル（L3）の Value1 / Value2 で数える
+var l3 = db.UpgradeMasterData.First(u => u.UpgradeType == UpgradeType.SummonDrone && u.Level == 3);
 var before = Drones().Count;
-killCountProp.SetValue(summonDrone, 29);
+killCountProp.SetValue(summonDrone, Mathf.RoundToInt(l3.Value1.value) - 1);
 KillOneEnemy();
-return $"{{\"before\":{before},\"after\":{Drones().Count},\"kills\":{summonDrone.KillCount}}}";
+return $"{{\"before\":{before},\"after\":{Drones().Count},\"kills\":{summonDrone.KillCount},\"count\":{Mathf.RoundToInt(l3.Value2.value)}}}";
 '@
-    Assert-ProbeValue -Name 'L1とL3を所持: 30体目の撃破で2体出る（最高レベルの Value1=30 / Value2=2）' -Actual ($r.after - $r.before) -Expected 2 | Out-Null
+    Assert-ProbeValue -Name 'L1とL3を所持: 最高レベルの Value1 体目の撃破で Value2 体出る' -Actual ($r.after - $r.before) -Expected $r.count | Out-Null
     Assert-ProbeValue -Name 'L1とL3を所持: 召喚したら撃破数が0に戻る' -Actual $r.kills -Expected 0 | Out-Null
 
     # --- 複数のドローンは扇に等分して並び、重ならない ---

@@ -21,9 +21,6 @@ namespace App.Battle.Views.Ally
         [SerializeField, Min(0.01f), Tooltip("追従の遅れ[秒]。小さいほどきびきび付いてくる")]
         private float _followSmoothTime = 0.25f;
 
-        [SerializeField, Min(0f), Tooltip("追従の最高速度[m/秒]")]
-        private float _maxFollowSpeed = 20f;
-
         private Vector3 _followVelocity;
 
         protected override void UpdateMovement()
@@ -34,7 +31,7 @@ namespace App.Battle.Views.Ally
             }
 
             transform.position = Vector3.SmoothDamp(transform.position, GetFollowPosition(), ref _followVelocity,
-                _followSmoothTime, _maxFollowSpeed);
+                _followSmoothTime, AllyData.MoveSpeed);
         }
 
         /// <summary>

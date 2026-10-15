@@ -8,7 +8,7 @@ namespace App.Battle.Data
     public class AllyData
     {
         public AllyData(int id, AllyType allyType, Vector3 position, Vector3 forward, float maxHp, float attackInterval,
-            float attackRange, float turnSpeed, bool isTargetable)
+            float attackRange, float turnSpeed, float moveSpeed, bool isTargetable)
         {
             Id = id;
             AllyType = allyType;
@@ -19,6 +19,7 @@ namespace App.Battle.Data
             AttackInterval = attackInterval;
             AttackRange = attackRange;
             TurnSpeed = turnSpeed;
+            MoveSpeed = moveSpeed;
             IsTargetable = isTargetable;
         }
 
@@ -40,6 +41,9 @@ namespace App.Battle.Data
 
         /// <summary>狙う敵へ向き直る速さ[度/秒]。0なら即座に向く</summary>
         public float TurnSpeed { get; }
+
+        /// <summary>移動の最高速度[m/秒]。動かない味方は使わない</summary>
+        public float MoveSpeed { get; }
 
         public bool IsTargetable { get; }
     }

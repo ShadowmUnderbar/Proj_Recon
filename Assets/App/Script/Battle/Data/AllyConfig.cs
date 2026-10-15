@@ -27,6 +27,9 @@ namespace App.Battle.Data
             [SerializeField, Min(0f), Tooltip("狙う敵へ向き直る速さ[度/秒]。0なら即座に向く")]
             private float _turnSpeed = 15f;
 
+            [SerializeField, Min(0f), Tooltip("移動の最高速度[m/秒]。動かない味方（タレット）は使わない")]
+            private float _moveSpeed;
+
             [SerializeField, Min(0), Tooltip("同時に出せる最大数。0なら上限なし。上限に達している間は召喚しない")]
             private int _maxCount;
 
@@ -38,6 +41,7 @@ namespace App.Battle.Data
             public float AttackInterval => _attackInterval;
             public float AttackRange => _attackRange;
             public float TurnSpeed => _turnSpeed;
+            public float MoveSpeed => _moveSpeed;
             public int MaxCount => _maxCount;
             public bool IsTargetable => _isTargetable;
         }

@@ -252,7 +252,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `AllyViewBase` | 味方1体の基底。被弾受け（`AllyDamageReceiverView`）の束ねと、攻撃の手順（`RequestShot` → UseCase が弾データを返す → `FireBullet` でプレイヤー弾のプレハブを撃ち手=味方Idで撃つ）。狙われない味方は被弾受けのコライダーを切る |
 | `AllyGunViewBase` | 銃を持つ味方の基底。射程内で最も近い敵（0.25秒ごとに探し直す）へ旋回速度（`AllyConfig` の度/秒）で砲身を回し、向きの差が射撃角度（プレハブの `_fireAngle`、既定5度）以内になったら攻撃間隔ごとに撃つ。移動は派生の `UpdateMovement`。敵探しは `AllyEnemySearcher`（plain C#） |
 | `AllyTurretView` | サモンタレット（`Prefub/Ally/AllyTurret.prefab`）。動かない `AllyGunViewBase` |
-| `AllyDroneView` | サモンドローン（`Prefub/Ally/AllyDrone.prefab`）。プレイヤーの後ろ側（射撃の向きの反対）に、胴の高さ（既定1.4m＝敵の水平な弾が当たる高さ）で浮かんで追従する。扇（既定120度）をドローンの数で等分して出現順に並ぶ（番号は `AllyStoreView` が配る）。プレイヤーのルートは回転しないので、向きは `AllyUseCase` が `IPlayerAimDataStore.CenterAimDirection` を配る |
+| `AllyDroneView` | サモンドローン（`Prefub/Ally/AllyDrone.prefab`）。プレイヤーの後ろ側（射撃の向きの反対）に、胴の高さ（既定1.4m＝敵の水平な弾が当たる高さ）で浮かんで追従する。扇（既定120度）をドローンの数で等分して出現順に並ぶ（番号は `AllyStoreView` が配る）。追従の最高速度は `AllyConfig` の移動速度。プレイヤーのルートは回転しないので、向きは `AllyUseCase` が `IPlayerAimDataStore.CenterAimDirection` を配る |
 | `AllyDamageReceiverView` | 味方の `IHitBoxView`（`HitBoxType.Ally`）。敵の近接・敵弾を受けてダメージを流す。コライダーは Player レイヤー（プレイヤーの弾は撃ち手と同じレイヤーをすり抜けるため、味方に当たらない。味方の弾もプレイヤー・他の味方をすり抜ける） |
 
 **UI・演出**
@@ -357,7 +357,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `UpgradeLotteryDataStore` / `UpgradeLocalizationDataStore` / `UpgradeDescriptionFormatter` / `EffectTextStyler` / `UpgradeLocalizationKey` | 抽選・ローカライズ・説明文の整形 |
 | （共通）`TagLocalizationDataStore` / `UpgradeTagRankingDataStore` / `UpgradeTagRanking` | アップグレードのタグ（表示専用）。タグ名は Localization の `TagText` テーブル（キーは `$`＋`UpgradeTag` の名前）。所持タグ上位は ID の一覧から数える（レベル違いは1件・件数順・同数は定義順）ので、ショップ以外（セット選択・ポーズ等）からも使える。マスターデータは `UpgradeTagData` シート（NameKey とタグの縦持ち）→ `UpgradeTagDataImporter` で各レベルの `UpgradeMasterData.Tags` へ |
 | `BuffStateDataStore` | 取得済みバフの発動条件進行と残り時間 |
-| `AllyDataStore` | 召喚した味方のデータ（種類・体力・攻撃間隔・射程・旋回速度・狙われるか）。同じ種類が `AllyConfig` の最大数（0なら上限なし）に達していれば出さない。Id は敵・プレイヤーと重ならない負の値（-100 から）。種類ごとの値は `AllyConfig`。最大体力は基礎値にプレイヤーの体力アップ（`CalcMultiply(Health)`）と同じ倍率を掛けた値（出現時に固定）。体力0・一括消去・出現失敗で `OnAllyRemoved` |
+| `AllyDataStore` | 召喚した味方のデータ（種類・体力・攻撃間隔・射程・旋回速度・移動速度・狙われるか）。同じ種類が `AllyConfig` の最大数（0なら上限なし）に達していれば出さない。Id は敵・プレイヤーと重ならない負の値（-100 から）。種類ごとの値は `AllyConfig`。最大体力は基礎値にプレイヤーの体力アップ（`CalcMultiply(Health)`）と同じ倍率を掛けた値（出現時に固定）。体力0・一括消去・出現失敗で `OnAllyRemoved` |
 | 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack`, `SummonTurret`, `SummonDrone` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |
 
 **ポイント・配信**
