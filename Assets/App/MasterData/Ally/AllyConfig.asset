@@ -22,10 +22,10 @@ MonoBehaviour:
     _maxCount: 0
     _isTargetable: 1
   - _allyType: 2
-    _maxHp: 30
-    _attackInterval: 0.5
-    _attackRange: 20
-    _turnSpeed: 360
+    _maxHp: 10
+    _attackInterval: 1
+    _attackRange: 10
+    _turnSpeed: 90
     _moveSpeed: 20
     _maxCount: 6
     _isTargetable: 1
