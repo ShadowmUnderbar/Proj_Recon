@@ -42,9 +42,10 @@ namespace App.Battle.Interface.DataStore
         bool IsRageActive { get; }
 
         /// <summary>
-        /// 発動中のレイジの効果時間を延長する。発動していないレイジは延長しない（新たに発動させない）
+        /// 所持しているレイジの効果時間を得る。発動中なら残り時間に足し、発動していなければその秒数で発動させる。
+        /// レイジ未所持なら何もしない
         /// </summary>
-        /// <param name="seconds">延長する秒数</param>
-        void ExtendRage(float seconds);
+        /// <param name="seconds">得る秒数</param>
+        void GainRage(float seconds);
     }
 }

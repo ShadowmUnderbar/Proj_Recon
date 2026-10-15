@@ -312,7 +312,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `WaveManagerUseCase` / `ShopUseCase` / `RunStartUseCase` / `GameOverUseCase` / `GameClearUseCase` / `RunResultUseCase` / `RunResetUseCase` | 3.2 参照 | |
 | `AllyUseCase` | 味方の出現・消去を View へ、被弾を `AllyDataStore.Damage` へ。攻撃要求にはプレイヤーのノーマルショット（非フォーカス）の弾データを返す（命中はプレイヤーの弾と同じ `BattleHitUseCase` を通るので強化・バフ・クリティカルが乗る）。フリーズ・時止め・ラン終了で止め、ウェーブ間ポーズ（ウェーブの終わり・リスタート）で全員消す。オーバークロック中は止めない | Ally, PlayerBulletParameter, WaveManager, Freeze, TimeStop, GameState |
 | `SummonDroneUseCase` | 敵の撃破（`OnEnemyDead`、誰の撃破でも）を `SummonDroneDataStore` に数え、規定数に達したらプレイヤーの位置へドローンを出す | SummonDrone, Ally, Enemy, PlayerState |
-| `SociopathUseCase` | 敵の撃破（`OnEnemyDead`、誰の撃破でも）を `SociopathDataStore` へ通知し、レイジ発動中ならレイジの効果時間を延ばす | Sociopath, Enemy |
+| `SociopathUseCase` | 敵の撃破（`OnEnemyDead`、誰の撃破でも）を `SociopathDataStore` へ通知し、レイジを得る（すでに発動中なら倍の時間） | Sociopath, Enemy |
 | `SummonTurretUseCase` | マージショット（`PlayerBulletParameterDataStore.OnShot`）で、その手の照準位置へ、その手のエイム方向（プレイヤー→照準位置。`IPlayerAimDataStore.*AimDirection` は逆向きなので使わない）を向けてタレットを出す。出せたときだけクールダウンを始め、ウェーブ間ポーズ（ウェーブの終わり）で解消する | SummonTurret, Ally, PlayerAim |
 | `UpgradeSideEffectApplier` | アップグレード付与の副作用（バフ起動・バリア満タン）。Shop と RunStart の共通処理 | BuffState, PlayerBarrier |
 | `StreamerCameraUseCase` | ウェーブ進行・ボス・マルチキルで配信カメラの演出をトリガー | StreamerCamera, Enemy |
@@ -357,7 +357,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `AcquiredUpgradeListBuilder` | 結果画面の獲得アップグレード一覧（獲得順に「・名前-レベル」を半角スペースで並べる。旧 Text は全角スペースで折り返さない） |
 | `UpgradeLotteryDataStore` / `UpgradeLocalizationDataStore` / `UpgradeDescriptionFormatter` / `EffectTextStyler` / `UpgradeLocalizationKey` | 抽選・ローカライズ・説明文の整形 |
 | （共通）`TagLocalizationDataStore` / `UpgradeTagRankingDataStore` / `UpgradeTagRanking` | アップグレードのタグ（表示専用）。タグ名は Localization の `TagText` テーブル（キーは `$`＋`UpgradeTag` の名前）。所持タグ上位は ID の一覧から数える（レベル違いは1件・件数順・同数は定義順）ので、ショップ以外（セット選択・ポーズ等）からも使える。マスターデータは `UpgradeTagData` シート（NameKey とタグの縦持ち）→ `UpgradeTagDataImporter` で各レベルの `UpgradeMasterData.Tags` へ |
-| `BuffStateDataStore` | 取得済みバフの発動条件進行と残り時間。レイジ（被弾で効果時間が延びる `OnDamaged` 条件のバフ）の発動中判定 `IsRageActive` と延長 `ExtendRage` を持つ。**レイジの発動を条件にするアップグレードはこれを使う** |
+| `BuffStateDataStore` | 取得済みバフの発動条件進行と残り時間。レイジ（被弾で効果時間が延びる `OnDamaged` 条件のバフ）の発動中判定 `IsRageActive` と獲得 `GainRage` を持つ。**レイジの発動を条件にするアップグレードはこれを使う** |
 | `AllyDataStore` | 召喚した味方のデータ（種類・体力・攻撃間隔・射程・旋回速度・移動速度・狙われるか）。同じ種類が `AllyConfig` の最大数（0なら上限なし）に達していれば出さない。Id は敵・プレイヤーと重ならない負の値（-100 から）。種類ごとの値は `AllyConfig`。最大体力は基礎値にプレイヤーの体力アップ（`CalcMultiply(Health)`）と同じ倍率を掛けた値（出現時に固定）。体力0・一括消去・出現失敗で `OnAllyRemoved` |
 | 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack`, `SummonTurret`, `SummonDrone`, `Sociopath` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |
 
@@ -425,9 +425,9 @@ EnemyDataStore.OnEnemyDead → SummonDroneUseCase → SummonDroneDataStore.Notif
  → AllyDataStore.TrySpawn(プレイヤーの位置) → 以降はタレットと同じ
 AllyUseCase.Tick(射撃の向き) → AllyStoreView.SetPlayerForward → AllyDroneView(後ろ側の扇の自分の番号の位置へ SmoothDamp)
 
-【レイジの延長（ソシオパス）】
+【レイジの獲得（ソシオパス）】
 EnemyDataStore.OnEnemyDead → SociopathUseCase → SociopathDataStore.NotifyKill
- → BuffStateDataStore.IsRageActive が true のときだけ ExtendRage(最高レベルの Value1 秒。発動していないレイジは発動させない)
+ → BuffStateDataStore.GainRage(最高レベルの Value1 秒。獲得前に IsRageActive が true なら Value1 × Value2 秒。発動していないレイジは0から発動する)
 
 【オーバークロック】
 回避中の被弾 → PlayerHitUseCase → PlayerDodgeParameterDataStore.NotifyDamageBlocked → OnDamagedDuringDodge

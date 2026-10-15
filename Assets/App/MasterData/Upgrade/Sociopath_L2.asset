@@ -20,8 +20,8 @@ MonoBehaviour:
   _cost: 153
   _value1: 1
   _value1ParameterType: 1
-  _value2: 0
-  _value2ParameterType: 0
+  _value2: 2
+  _value2ParameterType: 1
   _value3: 0
   _value3ParameterType: 0
   _value4: 0

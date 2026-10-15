@@ -5,9 +5,9 @@ using VContainer;
 namespace App.Battle.DataStore
 {
     /// <summary>
-    /// ソシオパス: レイジ発動中に敵を撃破すると、レイジの効果時間を Value1 秒延ばす。
-    /// レイジが発動していなければ何もしない（撃破でレイジを新たに発動させない）。
-    /// レベルは累積せず、所持中の最高レベルのみを採用する
+    /// ソシオパス: 敵を撃破すると、レイジを Value1 秒得る（発動していなければ発動する）。
+    /// すでにレイジが発動中なら Value1 × Value2 秒を得る。
+    /// レベルは累積せず、所持中の最高レベルのみを採用する。レイジ未所持なら効果はない
     /// </summary>
     public class SociopathDataStore : ISociopathDataStore
     {
@@ -32,13 +32,14 @@ namespace App.Battle.DataStore
                 return 0f;
             }
 
-            if (!_buffStateDataStore.IsRageActive)
+            // 発動中かは獲得前に判定する（獲得で発動した直後を「発動中」と数えない）
+            var seconds = Mathf.Max(0f, upgrade.Value1.value);
+            if (_buffStateDataStore.IsRageActive)
             {
-                return 0f;
+                seconds *= Mathf.Max(0f, upgrade.Value2.value);
             }
 
-            var seconds = Mathf.Max(0f, upgrade.Value1.value);
-            _buffStateDataStore.ExtendRage(seconds);
+            _buffStateDataStore.GainRage(seconds);
             return seconds;
         }
     }

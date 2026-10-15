@@ -218,7 +218,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
-            // ソシオパス（レイジ発動中の撃破でレイジを延長）
+            // ソシオパス（撃破でレイジを得る。発動中なら倍）
             builder.RegisterEntryPoint<SociopathUseCase>();
             // 召喚した味方の出現・被弾・攻撃・停止・消去と、サモンタレット・サモンドローンの召喚
             builder.RegisterEntryPoint<AllyUseCase>();

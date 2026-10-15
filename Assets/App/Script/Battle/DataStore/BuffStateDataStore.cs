@@ -296,17 +296,17 @@ namespace App.Battle.DataStore
             }
         }
 
-        public void ExtendRage(float seconds)
+        public void GainRage(float seconds)
         {
             foreach (var state in _buffStates)
             {
-                // 発動していないレイジは延長しない（延長で新たに発動させない）
-                if (!state.IsRage || !state.IsActive)
+                if (!state.IsRage)
                 {
                     continue;
                 }
 
-                state.RemainingTime += seconds;
+                // 発動中なら残り時間に足し、切れていれば（Tickで0をわずかに下回ることがある）0から発動させる
+                state.RemainingTime = Mathf.Max(state.RemainingTime, 0f) + seconds;
             }
         }
 
