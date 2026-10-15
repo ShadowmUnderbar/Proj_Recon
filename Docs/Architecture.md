@@ -239,9 +239,19 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `BossLifeGaugeStoreView` | ボスごとの足元の体力ゲージを生成・破棄する。ゲージ本体はプレイヤーの `PlayerLifeGaugeView`（半円・CurvedWorld 対応のシェーダ）をそのまま複製し、バリアの弧は隠す。色（体力・低HP・空き部分）と大きさは `BossLifeGaugeConfig` で決め、ゲージごとに MaterialPropertyBlock で上書きする（マテリアルはプレイヤーと共有のまま） |
 | `Enemy/AI/Boss/BossLineStrikeView` | ボスの帯状の攻撃の予兆・攻撃の表示。長さ方向に刻んだ帯のメッシュを生成し（`HideFlags.DontSave`、バウンズを下へ広げる）、`CurvedWorldUnlit` の頂点ごとモードで地面に沿わせる。ボスの拡大率・回転の影響を受けないよう単独のオブジェクトとして置く |
 | `Enemy/AI/Boss/BossTickTock` | 体力を共有する二人組ボス「TickTock」用。台本の配置（`CrossFormation` / `DiagonalFormation`）でプレイヤーの上下左右（ワールド軸）の一定距離へ、台本の `MoveSeconds` 秒（時止め中）を掛けて、プレイヤーを中心に回りこみながら距離を詰める（離す）ように移動する（角度は近い側の回り方、距離は起点から配置先へ、どちらも一定の速さ。0なら瞬間移動）。以後はプレイヤーがどう動いても位置関係と距離が崩れないよう、経路探索（`SetDestination`）ではなく毎フレーム配置先へ直接追従する（`BossAIBase.FollowTo`＝`NavMeshAgent.Move`、NavMesh の縁で止まる）。行動（弾幕）中は配置の方向へ一定距離を保ったままプレイヤーと並ぶ位置（横のずれなし）を追い、移動方向と直交する向き（プレイヤーの側）へ一定間隔で撃つ。弾幕の長さは `ActiveTime`。行動1（帯の攻撃、発狂フェイズ）はその場に留まり、プレイヤーの側へ伸びる帯を予兆として出し、予兆が明けた瞬間に `OverlapBox` で帯の中のプレイヤー（`HitBoxType.Player`）へ1回当てる。帯の攻撃（行動1・2）を終えたら次の配置の指定までプレイヤーを追わずに攻撃した位置に留まり、次の配置はその位置から回りこむ。行動2（帯の連続攻撃）は同じ帯を予兆1回のあと同じ向き・位置のまま予兆なしで `RepeatCount` 回、`RepeatInterval` 間隔で当てる（×字の配置で使う）。行動3（回りこみ連射）は命令された向き（`BossTurnDirection`）へプレイヤーを中心に90度回りこみながらプレイヤーへ向けて連射し、撃った弾は `SetPause(true)` で止めておく（時止めの解除で `BulletStoreView` が一括で動かす）。行動4（回りこみ）は回りこむだけで撃たない。どちらも台本の `TimeStopOrbit` で使い、回りこみ終えたら回りこんだ先の配置（`BossFormationSlot.Turn90`）につき直す。回りこみの秒数・連射の間隔は Inspector の値。範囲・秒数・回数・ダメージ・色は `BossLineStrikeConfig`。行動ごとの秒数は `BossAIBase.GetActionDurations` で上書きする |
-| `Enemy/Bullet/BaseBulletView, StraightBullet, HomingBullet` | 敵弾（`_shooterLayer` は `Framework.Layer`）。`PointParticle` レイヤーを除外して判定 |
+| `Enemy/Bullet/BaseBulletView, StraightBullet, HomingBullet` | 敵弾（`_shooterLayer` は `Framework.Layer`）。`PointParticle` レイヤーを除外して判定。撃ち手と同じレイヤーはすり抜ける。オーバークロックで止めるかは `_shooterLayer` が Player か（プレイヤー側の弾）で決める |
+| `EnemyAIBase` の狙う相手 | 通常の敵は `TargetTransform`（プレイヤーと狙える味方のうち近い方、0.5秒ごとに選び直す。味方は `IAllyTargetProvider` で探す）を追い・撃つ。盾（プレイヤーの照準を妨害）とボス（台本の配置がプレイヤー基準）は `CanTargetAllies=false` でプレイヤーだけを狙う |
 | `HitBoxView` / `HitBoxStoreView` | ヒットボックス。`OnHit` で `HitData` を作って流す。耐性方向で貫通可否を返す |
 | `BulletStoreView` / `BulletTracerView` / `CounterTracerView` / `BlitzEffectView` | 弾の一括管理・曳光弾・カウンター演出・ブリッツ演出。`TracerFreezeState` でフリーズ中に停止 |
+
+**召喚した味方（`Views/Ally`）**
+
+| クラス | 責務 |
+|---|---|
+| `AllyStoreView` | 味方の生成（要求位置の近くの NavMesh 上）・破棄、被弾と攻撃要求の集約。`IAllyTargetProvider` として敵 AI に「狙える味方のうち最も近いもの」を返す。種類→プレハブの表を持つ（`Prefub/Battle/AllyStoreView.prefab`） |
+| `AllyViewBase` | 味方1体の基底。被弾受け（`AllyDamageReceiverView`）の束ねと、攻撃の手順（`RequestShot` → UseCase が弾データを返す → `FireBullet` でプレイヤー弾のプレハブを撃ち手=味方Idで撃つ）。狙われない味方は被弾受けのコライダーを切る |
+| `AllyTurretView` | サモンタレット（`Prefub/Ally/AllyTurret.prefab`）。動かず、攻撃間隔ごとに射程内で最も近い敵へ砲身を向けて撃つ。敵探しは `AllyEnemySearcher`（plain C#） |
+| `AllyDamageReceiverView` | 味方の `IHitBoxView`（`HitBoxType.Ally`）。敵の近接・敵弾を受けてダメージを流す。コライダーは Player レイヤー（プレイヤーの弾は撃ち手と同じレイヤーをすり抜けるため、味方に当たらない。味方の弾もプレイヤー・他の味方をすり抜ける） |
 
 **UI・演出**
 
@@ -267,6 +277,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `ShopPresenter` / `GameOverPresenter` | 各 UI View | |
 | （共通）`RunStartPresenter` | `IRunStartView`（`Common/Presenters`） | |
 | `PlayerLifeGaugePresenter` / `PointParticlePresenter` / `StreamerCameraPresenter` | 各 View | |
+| `AllyPresenter` | `IAllyStoreView` | 味方の生成・破棄・射撃・停止、被弾と攻撃要求の通知 |
 | （共通）`TutorialMessagePresenter` | `ITutorialMessageView`（`Common/Presenters`） | |
 
 ### 3.5 UseCase（`Battle/UseCase`）
@@ -297,6 +308,8 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `BossWaveUseCase` | ボスウェーブ開始時に残った敵の消去・プレイヤーの移動・ボスの出現（3.2 参照） | BossWave, Enemy, PlayerState |
 | `DebugArenaUseCase` | デバッグ対戦（5章）のときだけ動く。ラン開始で残った敵を消してプレイヤーを `BossWaveConfig.PlayerPosition` へ移し、`DebugArenaSettings` のボスグループ（`BossOrigin` に出す）か敵（`BossOrigin` 付近に指定数）を出す。全員いなくなったら秒数のあとで出し直す（ポーズ・フリーズ中は待ちを進めない）。出現に失敗した・誰も撃破されずに全員消えた（読み込み失敗など）ときは出し直さない | DebugArena, Enemy, BossGroup, PlayerState |
 | `WaveManagerUseCase` / `ShopUseCase` / `RunStartUseCase` / `GameOverUseCase` / `GameClearUseCase` / `RunResultUseCase` / `RunResetUseCase` | 3.2 参照 | |
+| `AllyUseCase` | 味方の出現・消去を View へ、被弾を `AllyDataStore.Damage` へ。攻撃要求にはプレイヤーのノーマルショット（非フォーカス）の弾データを返す（命中はプレイヤーの弾と同じ `BattleHitUseCase` を通るので強化・バフ・クリティカルが乗る）。フリーズ・時止め・ラン終了で止め、ウェーブ間ポーズ（ウェーブの終わり・リスタート）で全員消す。オーバークロック中は止めない | Ally, PlayerBulletParameter, WaveManager, Freeze, TimeStop, GameState |
+| `SummonTurretUseCase` | マージショット（`PlayerBulletParameterDataStore.OnShot`）で、その手の照準位置へタレットを出す。出せたときだけクールダウンを始める | SummonTurret, Ally, PlayerAim |
 | `UpgradeSideEffectApplier` | アップグレード付与の副作用（バフ起動・バリア満タン）。Shop と RunStart の共通処理 | BuffState, PlayerBarrier |
 | `StreamerCameraUseCase` | ウェーブ進行・ボス・マルチキルで配信カメラの演出をトリガー | StreamerCamera, Enemy |
 | （共通）`TutorialMessageUseCase` | 4.2 参照。表示のきっかけはウェーブ開始（`TutorialWaveUseCase`）・ショップ（`ShopUseCase`）・結果画面（`RunResultUseCase`、ゲームオーバー・クリア共通）・セット選択（`RunStartUseCase`） | |
@@ -341,7 +354,8 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `UpgradeLotteryDataStore` / `UpgradeLocalizationDataStore` / `UpgradeDescriptionFormatter` / `EffectTextStyler` / `UpgradeLocalizationKey` | 抽選・ローカライズ・説明文の整形 |
 | （共通）`TagLocalizationDataStore` / `UpgradeTagRankingDataStore` / `UpgradeTagRanking` | アップグレードのタグ（表示専用）。タグ名は Localization の `TagText` テーブル（キーは `$`＋`UpgradeTag` の名前）。所持タグ上位は ID の一覧から数える（レベル違いは1件・件数順・同数は定義順）ので、ショップ以外（セット選択・ポーズ等）からも使える。マスターデータは `UpgradeTagData` シート（NameKey とタグの縦持ち）→ `UpgradeTagDataImporter` で各レベルの `UpgradeMasterData.Tags` へ |
 | `BuffStateDataStore` | 取得済みバフの発動条件進行と残り時間 |
-| 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |
+| `AllyDataStore` | 召喚した味方のデータ（種類・体力・攻撃間隔・射程・狙われるか）。Id は敵・プレイヤーと重ならない負の値（-100 から）。種類ごとの値は `AllyConfig`。体力0・一括消去・出現失敗で `OnAllyRemoved` |
+| 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack`, `SummonTurret` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |
 
 **ポイント・配信**
 
@@ -354,11 +368,11 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 
 | 種別 | クラス |
 |---|---|
-| ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle`, `BossWaveConfig`（ボスウェーブの番号・出すボスグループ・プレイヤー/ボスの位置、`MasterData/Boss`）, `BossLifeGaugeConfig`（ボスの体力ゲージの色・大きさ、`MasterData/Boss`。既定は紫）, `BossLineStrikeConfig`（ボスの帯の攻撃の幅・長さ・予兆/攻撃/硬直の秒数・連続攻撃の回数と間隔・ダメージ倍率・色、`MasterData/Boss`）, `BossGroupConfig`（ボスのメンバー・行動台本 `BossPatternStep[]`・体力共有、`MasterData/Boss`。`BossGroup_TwinShooter`＝交代と同時行動の確認用、`BossGroup_TickTock`＝体力共有の二人組）, `SepiaToneConfig`（セピアの色味。輝度1の色と輝度0＝黒の色の2点を結ぶので、黒い部分にも色が付く。`MasterData/SepiaTone`）, `SepiaTonePreset`（演出ごとの対象グループ・強さ・フェード秒数。オーバークロック用は `MasterData/Overclock/OverclockSepiaTonePreset`、時止め用は `MasterData/TimeStop/TimeStopSepiaTonePreset`）, `TimeStopConfig`（時止めの演出。セピア調プリセット、`MasterData/TimeStop`） |
+| ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle`, `BossWaveConfig`（ボスウェーブの番号・出すボスグループ・プレイヤー/ボスの位置、`MasterData/Boss`）, `BossLifeGaugeConfig`（ボスの体力ゲージの色・大きさ、`MasterData/Boss`。既定は紫）, `BossLineStrikeConfig`（ボスの帯の攻撃の幅・長さ・予兆/攻撃/硬直の秒数・連続攻撃の回数と間隔・ダメージ倍率・色、`MasterData/Boss`）, `BossGroupConfig`（ボスのメンバー・行動台本 `BossPatternStep[]`・体力共有、`MasterData/Boss`。`BossGroup_TwinShooter`＝交代と同時行動の確認用、`BossGroup_TickTock`＝体力共有の二人組）, `SepiaToneConfig`（セピアの色味。輝度1の色と輝度0＝黒の色の2点を結ぶので、黒い部分にも色が付く。`MasterData/SepiaTone`）, `SepiaTonePreset`（演出ごとの対象グループ・強さ・フェード秒数。オーバークロック用は `MasterData/Overclock/OverclockSepiaTonePreset`、時止め用は `MasterData/TimeStop/TimeStopSepiaTonePreset`）, `TimeStopConfig`（時止めの演出。セピア調プリセット、`MasterData/TimeStop`）, `AllyConfig`（召喚する味方の種類ごとの体力・攻撃間隔・射程・狙われるか、`MasterData/Ally`。タレットは体力60・0.5秒・15m の仮の値） |
 | デバッグ設定（組み立て時に `DebugConfig` から作って注入） | `EnemyGazeDebugSettings`, `DebugArenaSettings`（デバッグ対戦の相手・出し直し・無敵。予約が無ければ `Disabled`。`Common/Data/DebugArenaRequest` が予約の中身） |
 | 定数 | `PlayerConstants.PlayerId`（**今回新設**）, `ThemeColors`, `SepiaToneRenderingLayer`（セピア調のグループと renderingLayerMask のビットの対応） |
-| POCO / struct | `EnemyData`, `HitData`, `BossMemberStatus`, `BossDirectorCommand`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `UpgradeLocalizedText` |
-| enum | `EnemyAIState`, `BossActionPhase`, `BossPatternStepType`, `BossFormationSlot`（プレイヤーの上下左右、ワールド軸）, `SepiaToneGroup`（Flags）, `HitBoxType`, `StreamerCameraShotType` |
+| POCO / struct | `EnemyData`, `AllyData`, `HitData`, `BossMemberStatus`, `BossDirectorCommand`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `UpgradeLocalizedText` |
+| enum | `AllyType`, `EnemyAIState`, `BossActionPhase`, `BossPatternStepType`, `BossFormationSlot`（プレイヤーの上下左右、ワールド軸）, `SepiaToneGroup`（Flags）, `HitBoxType`, `StreamerCameraShotType` |
 
 ### 3.8 主要データフロー
 
@@ -391,6 +405,16 @@ BossGroupUseCase.Tick → BossGroupDataStore.Tick → BossDirectorCommand → En
 【回避 → 跳ね返し】
 IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
  → DodgeCounterAttackUseCase → DodgeCounterAttackDataStore(対象・ダメージ算出) → FreezeDataStore → ダメージ適用
+
+【召喚した味方（サモンタレット）】
+PlayerShotUseCase → PlayerBulletParameterDataStore.SetCoolDownTime → OnShot(手, Merge)
+ → SummonTurretUseCase(SummonTurretDataStore.CanSummon) → AllyDataStore.TrySpawn → OnAllySpawned
+ → AllyUseCase → AllyPresenter.Spawn → AllyStoreView(NavMesh 上へ置く。置けなければ OnAllySpawnFailed → データを消す)
+ → 出せたら SummonTurretDataStore.StartCoolDown(Value1 秒)
+AllyTurretView(射程内の最寄りの敵) → OnShotRequested → AllyUseCase(ノーマルショットの弾データ) → AllyTurretView.Shot
+ → PlayerBulletView(撃ち手=味方Id) → 以降は【射撃】と同じ
+敵 AI(TargetTransform=プレイヤーと味方の近い方) → 近接・敵弾 → AllyDamageReceiverView → AllyUseCase → AllyDataStore.Damage → 0で消える
+ウェーブ間ポーズ → AllyUseCase → AllyDataStore.RemoveAll
 
 【オーバークロック】
 回避中の被弾 → PlayerHitUseCase → PlayerDodgeParameterDataStore.NotifyDamageBlocked → OnDamagedDuringDodge
@@ -445,7 +469,7 @@ IsDodge → PlayerDodgeUseCase(直線移動, 接触記録) → OnDodgeEnd
 | Database（ScriptableObject） | `EnemyDatabase`, `EnemySpawnDatabase`, `UpgradeDatabase`, `BuffDatabase`, `WaveScalingDatabase` |
 | MasterData（ScriptableObject、シート由来） | `EnemyMasterData`, `UpgradeMasterData`, `BuffMasterData`, `WaveScalingMasterData` |
 | Config（ScriptableObject） | `WaveConfig`, `StreamerModeConfig`, `CurvedWorldConfig`, `EnemyHitFeedbackConfig` |
-| 定数・設定 | `DebugConfig`（EditorPrefs）, `SceneNames`, `LayerConstants`（`Default` / `Enemy` / `PointParticle`、名前から引く）, `TagConstants`, `GameParamData`, `PlayerSettingRange`, `VectorConstants`（`DirectionEpsilon`、各 View の方向判定で共用） |
+| 定数・設定 | `DebugConfig`（EditorPrefs）, `SceneNames`, `LayerConstants`（`Default` / `Player` / `Enemy` / `PointParticle`、名前から引く）, `TagConstants`, `GameParamData`, `PlayerSettingRange`, `VectorConstants`（`DirectionEpsilon`、各 View の方向判定で共用） |
 | セーブ | `SaveData`, `UpgradeSetSlot` |
 | チュートリアル | `TutorialType`（種類。セーブに数値で記録）, `TutorialMessageAnchor`（追従先の姿勢）, `TutorialMessagePhase`（配置フェーズ） |
 | enum | `AimFocusType`, `ShotType`, `HandType`, `LocomotionType`, `PlatformType`, `EnemyRankType`, `HitDirectionType`, `UpgradeType`, `BuffConditionType`, `BuffEffectType`, `ParameterType`, `PlayerUnlockType`, `UnlockCoreSkillType` |
