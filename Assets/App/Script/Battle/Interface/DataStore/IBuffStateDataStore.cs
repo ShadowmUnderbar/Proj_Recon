@@ -36,16 +36,18 @@ namespace App.Battle.Interface.DataStore
         float CalcDamageTakenMultiply();
 
         /// <summary>
-        /// レイジが発動中か（所持しているレイジのいずれかが効果時間内か）。未所持なら false。
+        /// レイジが発動中か（所持しているレイジ、またはアップグレード無しで与えられたレイジのいずれかが効果時間内か）。
         /// レイジの発動を条件にするアップグレードはここで判定する
         /// </summary>
         bool IsRageActive { get; }
 
         /// <summary>
-        /// 所持しているレイジの効果時間を得る。発動中なら残り時間に足し、発動していなければその秒数で発動させる。
-        /// レイジ未所持なら何もしない
+        /// レイジの効果時間を得る。発動中なら残り時間に足し、発動していなければその秒数で発動させる。
+        /// レイジ未所持なら rageWhenNotOwned のレイジを、被弾では延びない状態で発動させる
+        /// （のちにレイジを取得すると、残り時間を引き継いで通常のレイジに置き換わる）
         /// </summary>
         /// <param name="seconds">得る秒数</param>
-        void GainRage(float seconds);
+        /// <param name="rageWhenNotOwned">レイジ未所持のときに発動させるレイジのバフ。null なら未所持では何もしない</param>
+        void GainRage(float seconds, BuffMasterData rageWhenNotOwned);
     }
 }

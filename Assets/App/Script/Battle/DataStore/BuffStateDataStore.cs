@@ -42,8 +42,10 @@ namespace App.Battle.DataStore
             // KillWithDifferentForm条件: 2つ前の撃破フォーム（null=未撃破）
             public ShotType? PreviousKillShotType;
 
-            // レイジか。被弾で効果時間が延びる条件（OnDamaged）を持つバフをレイジとして扱う
-            public bool IsRage => Master.ConditionType == BuffConditionType.OnDamaged;
+            public bool IsRage => IsRageBuff(Master);
+
+            // レイジのアップグレードを持たずに与えられたレイジか（ソシオパス等）。被弾では延びない
+            public bool IsGrantedOnly;
 
             public bool IsActive => Master.ConditionType switch
             {
@@ -66,6 +68,9 @@ namespace App.Battle.DataStore
                 _ => Master.EffectValue
             };
         }
+
+        // レイジか。被弾で効果時間が延びる条件（OnDamaged）を持つバフをレイジとして扱う
+        private static bool IsRageBuff(BuffMasterData buff) => buff.ConditionType == BuffConditionType.OnDamaged;
 
         // 被ダメージ軽減率の上限（軽減しきってダメージが完全に無効化されるのを防ぐ）
         private const float MaxDamageReductionRate = 0.9f;
@@ -101,12 +106,24 @@ namespace App.Battle.DataStore
 
         public void AddBuff(BuffMasterData buffData)
         {
-            if (_buffStates.Any(state => state.Master.Id == buffData.Id))
+            var state = new BuffState { Master = buffData };
+
+            // レイジを取得したら、アップグレード無しで与えられていたレイジは置き換える（残り時間は引き継ぐ）
+            if (state.IsRage)
+            {
+                var granted = _buffStates.FirstOrDefault(s => s.IsGrantedOnly);
+                if (granted != null)
+                {
+                    // 切れていれば（Tickで0をわずかに下回ることがある）0として引き継ぐ
+                    state.RemainingTime = Mathf.Max(granted.RemainingTime, 0f);
+                    _buffStates.Remove(granted);
+                }
+            }
+
+            if (_buffStates.Any(s => s.Master.Id == buffData.Id))
             {
                 return;
             }
-
-            var state = new BuffState { Master = buffData };
 
             // 取得時点のHP割合で条件を初期判定する
             if (buffData.ConditionType == BuffConditionType.HpBelow)
@@ -200,7 +217,7 @@ namespace App.Battle.DataStore
         {
             foreach (var state in _buffStates)
             {
-                if (state.Master.ConditionType != BuffConditionType.OnDamaged)
+                if (state.Master.ConditionType != BuffConditionType.OnDamaged || state.IsGrantedOnly)
                 {
                     continue;
                 }
@@ -296,8 +313,9 @@ namespace App.Battle.DataStore
             }
         }
 
-        public void GainRage(float seconds)
+        public void GainRage(float seconds, BuffMasterData rageWhenNotOwned)
         {
+            var hasRage = false;
             foreach (var state in _buffStates)
             {
                 if (!state.IsRage)
@@ -307,7 +325,28 @@ namespace App.Battle.DataStore
 
                 // 発動中なら残り時間に足し、切れていれば（Tickで0をわずかに下回ることがある）0から発動させる
                 state.RemainingTime = Mathf.Max(state.RemainingTime, 0f) + seconds;
+                hasRage = true;
             }
+
+            if (hasRage || rageWhenNotOwned == null)
+            {
+                return;
+            }
+
+            // レイジ以外のバフを渡されると、レイジと見なされないまま獲得のたびに状態が増え続けるので受け付けない
+            if (!IsRageBuff(rageWhenNotOwned))
+            {
+                Debug.LogWarning($"[BuffStateDataStore] レイジではないバフ \"{rageWhenNotOwned.Id}\" をレイジとして発動しようとしました");
+                return;
+            }
+
+            // レイジ未所持: 指定のレイジを被弾では延びない状態で発動させる
+            _buffStates.Add(new BuffState
+            {
+                Master = rageWhenNotOwned,
+                IsGrantedOnly = true,
+                RemainingTime = seconds
+            });
         }
 
         public void ResetRun()

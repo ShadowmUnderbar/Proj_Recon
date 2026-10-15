@@ -2,11 +2,11 @@
 # ソシオパス（SociopathDataStore / SociopathUseCase）と、レイジの判定・獲得（IBuffStateDataStore.IsRageActive / GainRage）を確かめるプローブ。
 #
 # デバッグ対戦（Request-DebugArena）で周回型の雑魚（O-001）を出し、次を見る。
-#   - レイジ未所持なら IsRageActive は false
-#   - レイジは被弾で発動し、IsRageActive が true になる。効果時間を0にすると false に戻る
-#   - ソシオパス未所持では、撃破してもレイジを得ない
-#   - ソシオパス L1 所持・レイジ非発動中の撃破で、レイジを Value1 秒得て発動する（残り時間が0をわずかに下回っていても0から数える）
-#   - ソシオパス L1 所持・レイジ発動中の撃破で、Value1 × Value2 秒を得る
+#   - レイジもソシオパスも未所持なら IsRageActive は false、撃破してもレイジは発生しない
+#   - レイジ未所持・ソシオパス L1 所持: 撃破で BuffId のレイジが Value1 秒発動する。このレイジは被弾では延びない。
+#     発動中の撃破では Value1 × Value2 秒を得る
+#   - その後レイジを取得すると、アップグレード無しのレイジは残り時間を引き継いで通常のレイジに置き換わり、被弾で延びる
+#   - レイジ所持・非発動中の撃破で Value1 秒得て発動（残り時間が0をわずかに下回っていても0から数える）、発動中なら Value1 × Value2 秒
 #   - L1 と L3 を所持していれば最高レベル（L3）の値だけを使う（累積しない）
 #   - レイジを複数レベル所持しているとき、どれかが発動中なら倍の秒数をすべてのレイジが得る
 # 撃破は実際の経路（EnemyDataStore.Damage → OnEnemyDead → SociopathUseCase）を通す。
@@ -43,6 +43,16 @@ var statesField = typeof(App.Battle.DataStore.BuffStateDataStore).GetField("_buf
 var stateType = typeof(App.Battle.DataStore.BuffStateDataStore).GetNestedType("BuffState", BindingFlags.NonPublic);
 var masterField = stateType.GetField("Master");
 var remainingField = stateType.GetField("RemainingTime");
+var grantedField = stateType.GetField("IsGrantedOnly");
+
+bool IsGranted(string nameKey)
+{
+    foreach (var s in RageStates())
+    {
+        if (((App.Common.Data.MasterData.BuffMasterData)masterField.GetValue(s)).NameKey == nameKey) return (bool)grantedField.GetValue(s);
+    }
+    return false;
+}
 
 List<object> RageStates()
 {
@@ -117,51 +127,70 @@ function Assert-Near {
 function ProbeRun {
     Start-Sleep -Seconds 2
 
-    # --- レイジ未所持 ---
-    $r = Invoke-SociopathSnippet -Body @'
-return $"{{\"active\":{buffs.IsRageActive.ToString().ToLower()},\"count\":{RageStates().Count}}}";
+    # --- レイジもソシオパスも未所持 ---
+    $r = Invoke-SociopathKillSnippet -Body @'
+var before = buffs.IsRageActive;
+if (!KillOneEnemy()) return "{\"error\":\"敵がいません\"}";
+return $"{{\"active\":{before.ToString().ToLower()},\"count\":{RageStates().Count}}}";
 '@
     Assert-ProbeValue -Name 'レイジ未所持では IsRageActive が false' -Actual $r.active -Expected $false | Out-Null
+    Assert-ProbeValue -Name 'ソシオパス未所持では撃破してもレイジは発生しない' -Actual $r.count -Expected 0 | Out-Null
 
-    # --- レイジ L1 所持・被弾で発動 ---
-    $r = Invoke-SociopathSnippet -Body @'
-AddRage(1);
-var before = buffs.IsRageActive;
-buffs.NotifyDamageTaken(3f);
-var after = buffs.IsRageActive;
-var remaining = Remaining("$RageBuffL1");
-SetRemaining("$RageBuffL1", 0f);
-return $"{{\"before\":{before.ToString().ToLower()},\"after\":{after.ToString().ToLower()},\"remaining\":{F(remaining)},\"reset\":{buffs.IsRageActive.ToString().ToLower()}}}";
-'@
-    Assert-ProbeValue -Name 'レイジ所持・被弾前は IsRageActive が false' -Actual $r.before -Expected $false | Out-Null
-    Assert-ProbeValue -Name '被弾でレイジが発動し IsRageActive が true' -Actual $r.after -Expected $true | Out-Null
-    Assert-ProbeTrue -Name '被弾でレイジの効果時間が入る' -Condition ($r.remaining -gt 0) -Detail "残り=$($r.remaining)" | Out-Null
-    Assert-ProbeValue -Name '効果時間が切れると IsRageActive が false に戻る' -Actual $r.reset -Expected $false | Out-Null
-
-    # --- ソシオパス未所持ではレイジを得ない ---
-    $r = Invoke-SociopathKillSnippet -Body @'
-SetRemaining("$RageBuffL1", 3f);
-if (!KillOneEnemy()) return "{\"error\":\"敵がいません\"}";
-return $"{{\"remaining\":{F(Remaining("$RageBuffL1"))}}}";
-'@
-    Assert-Near -Name 'ソシオパス未所持では撃破してもレイジを得ない' -Actual $r.remaining -Expected 3
-
-    # --- ソシオパス L1 所持・レイジ非発動中 ---
+    # --- レイジ未所持・ソシオパス L1 所持 ---
     $r = Invoke-SociopathKillSnippet -Body @'
 session.AddUpgrade(Sociopath(1));
-// Tick で0をわずかに下回った状態を再現する
-SetRemaining("$RageBuffL1", -0.02f);
 if (!KillOneEnemy()) return "{\"error\":\"敵がいません\"}";
 var l1 = Sociopath(1);
-return $"{{\"remaining\":{F(Remaining("$RageBuffL1"))},\"active\":{buffs.IsRageActive.ToString().ToLower()},\"value1\":{F(l1.Value1.value)},\"value2\":{F(l1.Value2.value)}}}";
+buffDb.TryGetBuffMasterData(l1.BuffId, out var rageBuff);
+var key = rageBuff.NameKey;
+var first = Remaining(key);
+var count = RageStates().Count;
+var granted = IsGranted(key);
+var active = buffs.IsRageActive;
+buffs.NotifyDamageTaken(3f);
+var afterDamage = Remaining(key);
+if (!KillOneEnemy()) return "{\"error\":\"敵がいません\"}";
+return $"{{\"key\":\"{key}\",\"first\":{F(first)},\"count\":{count},\"granted\":{granted.ToString().ToLower()},\"active\":{active.ToString().ToLower()},\"afterDamage\":{F(afterDamage)},\"second\":{F(Remaining(key))},\"value1\":{F(l1.Value1.value)},\"value2\":{F(l1.Value2.value)}}}";
 '@
-    Write-Host "  L1: Value1=$($r.value1) 秒 / Value2=$($r.value2) 倍"
-    Assert-Near -Name 'L1: レイジ非発動中の撃破でレイジを Value1 秒得る' -Actual $r.remaining -Expected $r.value1
-    Assert-ProbeValue -Name 'L1: レイジ非発動中の撃破でレイジが発動する' -Actual $r.active -Expected $true | Out-Null
+    Write-Host "  L1: Value1=$($r.value1) 秒 / Value2=$($r.value2) 倍 / 未所持で発動するレイジ=$($r.key)"
+    Assert-ProbeValue -Name 'レイジ未所持: 撃破でレイジが1つ発動する' -Actual $r.count -Expected 1 | Out-Null
+    Assert-ProbeValue -Name 'レイジ未所持: 発動したレイジはアップグレード無しの扱い' -Actual $r.granted -Expected $true | Out-Null
+    Assert-ProbeValue -Name 'レイジ未所持: IsRageActive が true になる' -Actual $r.active -Expected $true | Out-Null
+    Assert-Near -Name 'レイジ未所持: 非発動中の撃破で Value1 秒得る' -Actual $r.first -Expected $r.value1
+    Assert-Near -Name 'レイジ未所持: アップグレード無しのレイジは被弾では延びない' -Actual $r.afterDamage -Expected $r.value1
+    Assert-Near -Name 'レイジ未所持: 発動中の撃破で Value1 × Value2 秒を足す' -Actual $r.second -Expected ($r.value1 + $r.value1 * $r.value2)
     $l1Value1 = $r.value1
     $l1Value2 = $r.value2
 
-    # --- ソシオパス L1 所持・レイジ発動中 ---
+    # --- その後レイジを取得: 置き換わって被弾で延びる ---
+    $r = Invoke-SociopathSnippet -Body @'
+// スニペットの間に時間が進むので、置き換え直前の残り時間をここで決める
+SetRemaining("$RageBuffL1", 2.5f);
+AddRage(1);
+var carried = Remaining("$RageBuffL1");
+var count = RageStates().Count;
+var granted = IsGranted("$RageBuffL1");
+buffs.NotifyDamageTaken(3f);
+return $"{{\"carried\":{F(carried)},\"count\":{count},\"granted\":{granted.ToString().ToLower()},\"afterDamage\":{F(Remaining("$RageBuffL1"))}}}";
+'@
+    Assert-ProbeValue -Name 'レイジ取得: アップグレード無しのレイジは置き換わって1つのまま' -Actual $r.count -Expected 1 | Out-Null
+    Assert-ProbeValue -Name 'レイジ取得: 通常のレイジになる' -Actual $r.granted -Expected $false | Out-Null
+    Assert-Near -Name 'レイジ取得: 残り時間を引き継ぐ' -Actual $r.carried -Expected 2.5
+    Assert-Near -Name 'レイジ取得: 被弾で延びる（ダメージ3 × L1 の倍率1）' -Actual $r.afterDamage -Expected (2.5 + 3)
+
+    # --- レイジ所持・非発動中 ---
+    $r = Invoke-SociopathKillSnippet -Body @'
+// Tick で0をわずかに下回った状態を再現する
+SetRemaining("$RageBuffL1", -0.02f);
+var before = buffs.IsRageActive;
+if (!KillOneEnemy()) return "{\"error\":\"敵がいません\"}";
+return $"{{\"before\":{before.ToString().ToLower()},\"remaining\":{F(Remaining("$RageBuffL1"))},\"active\":{buffs.IsRageActive.ToString().ToLower()}}}";
+'@
+    Assert-ProbeValue -Name '効果時間が切れると IsRageActive が false に戻る' -Actual $r.before -Expected $false | Out-Null
+    Assert-Near -Name 'L1: レイジ非発動中の撃破でレイジを Value1 秒得る' -Actual $r.remaining -Expected $l1Value1
+    Assert-ProbeValue -Name 'L1: レイジ非発動中の撃破でレイジが発動する' -Actual $r.active -Expected $true | Out-Null
+
+    # --- レイジ所持・発動中 ---
     $r = Invoke-SociopathKillSnippet -Body @'
 SetRemaining("$RageBuffL1", 3f);
 if (!KillOneEnemy()) return "{\"error\":\"敵がいません\"}";

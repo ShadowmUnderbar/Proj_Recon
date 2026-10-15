@@ -1,4 +1,6 @@
 using App.Battle.Interface.DataStore;
+using App.Common.Data.Database;
+using App.Common.Data.MasterData;
 using UnityEngine;
 using VContainer;
 
@@ -7,21 +9,25 @@ namespace App.Battle.DataStore
     /// <summary>
     /// ソシオパス: 敵を撃破すると、レイジを Value1 秒得る（発動していなければ発動する）。
     /// すでにレイジが発動中なら Value1 × Value2 秒を得る。
-    /// レベルは累積せず、所持中の最高レベルのみを採用する。レイジ未所持なら効果はない
+    /// レイジ未所持でも、BuffId のレイジを被弾では延びない状態で発動させる。
+    /// レベルは累積せず、所持中の最高レベルのみを採用する
     /// </summary>
     public class SociopathDataStore : ISociopathDataStore
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly IBuffStateDataStore _buffStateDataStore;
+        private readonly BuffDatabase _buffDatabase;
 
         [Inject]
         public SociopathDataStore(
             IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
-            IBuffStateDataStore buffStateDataStore
+            IBuffStateDataStore buffStateDataStore,
+            BuffDatabase buffDatabase
         )
         {
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
             _buffStateDataStore = buffStateDataStore;
+            _buffDatabase = buffDatabase;
         }
 
         public float NotifyKill()
@@ -39,8 +45,20 @@ namespace App.Battle.DataStore
                 seconds *= Mathf.Max(0f, upgrade.Value2.value);
             }
 
-            _buffStateDataStore.GainRage(seconds);
+            _buffStateDataStore.GainRage(seconds, GetRageWhenNotOwned(upgrade));
             return seconds;
+        }
+
+        // レイジ未所持のときに発動させるレイジ（ソシオパス行の BuffId）
+        private BuffMasterData GetRageWhenNotOwned(UpgradeMasterData upgrade)
+        {
+            if (_buffDatabase.TryGetBuffMasterData(upgrade.BuffId, out var buff))
+            {
+                return buff;
+            }
+
+            Debug.LogWarning($"[SociopathDataStore] BuffId \"{upgrade.BuffId}\" が BuffDatabase に見つかりません (Upgrade: {upgrade.Id})");
+            return null;
         }
     }
 }
