@@ -42,6 +42,11 @@ namespace App.Battle.Interface.DataStore
         bool IsRageActive { get; }
 
         /// <summary>
+        /// レイジの残り効果時間（秒）。発動していなければ0
+        /// </summary>
+        float RageRemainingTime { get; }
+
+        /// <summary>
         /// レイジの効果時間を得る。発動中なら残り時間に足し、発動していなければその秒数で発動させる。
         /// レイジ未所持なら rageWhenNotOwned のバフの効果で発動させる（レイジのアップグレードの効果である「被弾で延びる」は付かない）
         /// </summary>

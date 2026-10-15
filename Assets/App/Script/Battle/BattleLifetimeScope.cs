@@ -144,6 +144,8 @@ namespace App.Battle
                 .As<ICareNodeDataStore>();
             builder.Register<EmergencyNodeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IEmergencyNodeDataStore>();
+            builder.Register<GritDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IGritDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
