@@ -309,7 +309,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `DebugArenaUseCase` | デバッグ対戦（5章）のときだけ動く。ラン開始で残った敵を消してプレイヤーを `BossWaveConfig.PlayerPosition` へ移し、`DebugArenaSettings` のボスグループ（`BossOrigin` に出す）か敵（`BossOrigin` 付近に指定数）を出す。全員いなくなったら秒数のあとで出し直す（ポーズ・フリーズ中は待ちを進めない）。出現に失敗した・誰も撃破されずに全員消えた（読み込み失敗など）ときは出し直さない | DebugArena, Enemy, BossGroup, PlayerState |
 | `WaveManagerUseCase` / `ShopUseCase` / `RunStartUseCase` / `GameOverUseCase` / `GameClearUseCase` / `RunResultUseCase` / `RunResetUseCase` | 3.2 参照 | |
 | `AllyUseCase` | 味方の出現・消去を View へ、被弾を `AllyDataStore.Damage` へ。攻撃要求にはプレイヤーのノーマルショット（非フォーカス）の弾データを返す（命中はプレイヤーの弾と同じ `BattleHitUseCase` を通るので強化・バフ・クリティカルが乗る）。フリーズ・時止め・ラン終了で止め、ウェーブ間ポーズ（ウェーブの終わり・リスタート）で全員消す。オーバークロック中は止めない | Ally, PlayerBulletParameter, WaveManager, Freeze, TimeStop, GameState |
-| `SummonTurretUseCase` | マージショット（`PlayerBulletParameterDataStore.OnShot`）で、その手の照準位置へ、その手のエイム方向（プレイヤー→照準位置。`IPlayerAimDataStore.*AimDirection` は逆向きなので使わない）を向けてタレットを出す。出せたときだけクールダウンを始める | SummonTurret, Ally, PlayerAim |
+| `SummonTurretUseCase` | マージショット（`PlayerBulletParameterDataStore.OnShot`）で、その手の照準位置へ、その手のエイム方向（プレイヤー→照準位置。`IPlayerAimDataStore.*AimDirection` は逆向きなので使わない）を向けてタレットを出す。出せたときだけクールダウンを始め、ウェーブ間ポーズ（ウェーブの終わり）で解消する | SummonTurret, Ally, PlayerAim |
 | `UpgradeSideEffectApplier` | アップグレード付与の副作用（バフ起動・バリア満タン）。Shop と RunStart の共通処理 | BuffState, PlayerBarrier |
 | `StreamerCameraUseCase` | ウェーブ進行・ボス・マルチキルで配信カメラの演出をトリガー | StreamerCamera, Enemy |
 | （共通）`TutorialMessageUseCase` | 4.2 参照。表示のきっかけはウェーブ開始（`TutorialWaveUseCase`）・ショップ（`ShopUseCase`）・結果画面（`RunResultUseCase`、ゲームオーバー・クリア共通）・セット選択（`RunStartUseCase`） | |

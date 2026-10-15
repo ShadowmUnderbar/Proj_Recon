@@ -9,7 +9,7 @@
 #   - 敵 AI はプレイヤーより近いタレットを狙い、盾・ボスは狙わない（盾はここでは見ない）
 #   - プレイヤーの弾はタレットをすり抜ける
 #   - 敵の攻撃でタレットの体力が減り、0で消える・最大体力にプレイヤーの体力アップと同じ倍率が掛かる
-#   - フリーズ中はタレットが止まる・ウェーブ間ポーズで全員消える
+#   - フリーズ中はタレットが止まる・ウェーブ間ポーズで全員消え、クールダウンも解消される
 # マージショットは IPlayerBulletParameterDataStore.SetCoolDownTime（実際の射撃でも呼ばれる、OnShot の発火元）で起こす。
 # 照準位置は PlayerAimUseCase が毎フレーム上書きするため、同じスニペット内で SetAimPosition してから撃つ。
 #
@@ -341,14 +341,20 @@ return $"{{\"base\":{F(entry.MaxHp)},\"without\":{F(withoutUpgrade.MaxHp)},\"wit
 // 撃破の検証で0体になっているので、もう1体出しておく
 allies.TrySpawn(AllyType.Turret, AimPoint(), Vector3.zero, out _);
 var before = storeAllies.Count;
+// クールダウン中にしておき、ウェーブ間ポーズで解消されるかを見る
+typeof(App.Battle.DataStore.SummonTurretDataStore).GetProperty("RemainingCoolDown").SetValue(summon, 60f);
+var cdBefore = summon.RemainingCoolDown;
 wave.SetWavePause(true);
 var after = storeAllies.Count;
+var cdAfter = summon.RemainingCoolDown;
 var dataLeft = 0;
 for (var id = -100; id > -120; id--) if (allies.TryGetAllyData(id, out _)) dataLeft++;
 wave.SetWavePause(false);
-return $"{{\"before\":{before},\"after\":{after},\"dataLeft\":{dataLeft}}}";
+return $"{{\"before\":{before},\"after\":{after},\"dataLeft\":{dataLeft},\"cdBefore\":{F(cdBefore)},\"cdAfter\":{F(cdAfter)}}}";
 '@
     Assert-ProbeTrue -Name 'ウェーブ間ポーズの前にタレットが残っている' -Condition ($r.before -ge 1) -Detail "数=$($r.before)" | Out-Null
     Assert-ProbeValue -Name 'ウェーブ間ポーズでタレットが全員消える（ビュー）' -Actual $r.after -Expected 0 | Out-Null
     Assert-ProbeValue -Name 'ウェーブ間ポーズでタレットが全員消える（データ）' -Actual $r.dataLeft -Expected 0 | Out-Null
+    Assert-ProbeValue -Name 'ウェーブ間ポーズの前はクールダウン中' -Actual $r.cdBefore -Expected 60 | Out-Null
+    Assert-ProbeValue -Name 'ウェーブ間ポーズ（ウェーブ終了）でクールダウンが解消される' -Actual $r.cdAfter -Expected 0 | Out-Null
 }

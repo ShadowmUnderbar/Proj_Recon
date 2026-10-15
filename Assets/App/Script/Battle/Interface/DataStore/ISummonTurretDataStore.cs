@@ -16,5 +16,8 @@ namespace App.Battle.Interface.DataStore
         /// 置ける場所が無く出せなかったときは呼ばない（クールダウンを消費しない）
         /// </summary>
         void StartCoolDown();
+
+        /// <summary>クールダウンを解消し、次のマージショットですぐ召喚できるようにする（ウェーブ終了時）</summary>
+        void ResetCoolDown();
     }
 }

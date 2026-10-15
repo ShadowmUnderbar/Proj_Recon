@@ -96,7 +96,7 @@ Googleスプレッドシート（正本）
 | `Fixation` | `UpgradeLotteryDataStore.DrawUpgrades`（取得済みと同じ `NameKey` の候補の抽選重みを `1 + Value1` 倍にする。`CalcMax` で最高レベルのみ採用） |
 | `Bullseye` | `BullseyeDataStore` → `BattleHitUseCase.OnHit`（Value1=1体貫通するごとに加算する倍率（1.3なら 2体目1.3倍・3体目1.6倍、1体目は常に1.0倍）。`TryGetHighestLevelUpgrade` で最高レベルのみ採用。何体目かは `HitData.PenetrationIndex`。以前は GrantBuff＋`PenetrationCount` 条件バフだったが、レベルが掛け算で重なるため専用タイプへ移した。検証は `playtest-run` の `BulletPenetration` プローブ） |
 | `Overclock` | `OverclockUseCase` → `OverclockDataStore`（Value1=回避中の被弾無効化1回あたりの獲得秒数。`TryGetHighestLevelUpgrade` で最高レベルのみ採用。発動しきい値は `OverclockConfig` の SO。発動中の停止は `FreezeUseCase`・`BulletStoreView.SetOverclock`・`PlayerCameraPinView`、時間停止は各 DataStore が `IOverclockDataStore.IsActive` を見る。検証は `playtest-run` の `Overclock` プローブ） |
-| `SummonTurret` | `SummonTurretUseCase` → `SummonTurretDataStore` / `AllyDataStore`（マージショット時、その手の照準位置へタレットを召喚。Value1=クールダウン秒。`TryGetHighestLevelUpgrade` で最高レベルのみ採用。置ける場所が無く出せなかったときはクールダウンを消費しない。検証は `playtest-run` の `SummonTurret` プローブ） |
+| `SummonTurret` | `SummonTurretUseCase` → `SummonTurretDataStore` / `AllyDataStore`（マージショット時、その手の照準位置へタレットを召喚。Value1=クールダウン秒。`TryGetHighestLevelUpgrade` で最高レベルのみ採用。置ける場所が無く出せなかったときはクールダウンを消費しない。ウェーブ終了（ウェーブ間ポーズ）でクールダウンを解消する。検証は `playtest-run` の `SummonTurret` プローブ） |
 
 > 📌 **召喚系（味方）の共通基盤**: 味方は `AllyDataStore.TrySpawn(AllyType, 位置)` で出す（`AllyConfig` に種類ごとの体力・攻撃間隔・射程・狙われるか、`AllyStoreView.prefab` に種類→プレハブ）。攻撃はプレイヤーのノーマルショット（非フォーカス）と同じ弾データで、命中は `BattleHitUseCase` を通るので強化・バフ・クリティカルが乗る。最大体力は `AllyConfig` の基礎値にプレイヤーの体力アップ（`CalcMultiply(Health)`）と同じ倍率を掛けた値（出現時に固定）。敵はプレイヤーと味方の近い方を狙い（盾・ボスは除く）、味方はウェーブ間ポーズで全員消える。新しい味方は `AllyType` に値を足し、`AllyViewBase` の派生（いつ・どこを撃つか）とプレハブ、`AllyConfig` の行、`AllyStoreView` の表を足す。召喚のきっかけはアップグレードごとの UseCase に書く
 

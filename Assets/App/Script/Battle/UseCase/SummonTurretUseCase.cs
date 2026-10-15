@@ -9,7 +9,8 @@ using VContainer.Unity;
 namespace App.Battle.UseCase
 {
     /// <summary>
-    /// サモンタレット: マージショットを撃ったとき、その手で狙っていた位置へタレットを召喚する
+    /// サモンタレット: マージショットを撃ったとき、その手で狙っていた位置へタレットを召喚する。
+    /// ウェーブが終わる（ウェーブ間ポーズに入る）とクールダウンを解消する
     /// </summary>
     public class SummonTurretUseCase : IInitializable, IDisposable
     {
@@ -18,6 +19,7 @@ namespace App.Battle.UseCase
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly ISummonTurretDataStore _summonTurretDataStore;
         private readonly IAllyDataStore _allyDataStore;
+        private readonly IWaveManagerDataStore _waveManagerDataStore;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -27,7 +29,8 @@ namespace App.Battle.UseCase
             IPlayerAimDataStore playerAimDataStore,
             IPlayerStateDataStore playerStateDataStore,
             ISummonTurretDataStore summonTurretDataStore,
-            IAllyDataStore allyDataStore
+            IAllyDataStore allyDataStore,
+            IWaveManagerDataStore waveManagerDataStore
         )
         {
             _playerBulletParameterDataStore = playerBulletParameterDataStore;
@@ -35,6 +38,7 @@ namespace App.Battle.UseCase
             _playerStateDataStore = playerStateDataStore;
             _summonTurretDataStore = summonTurretDataStore;
             _allyDataStore = allyDataStore;
+            _waveManagerDataStore = waveManagerDataStore;
         }
 
         public void Initialize()
@@ -42,6 +46,12 @@ namespace App.Battle.UseCase
             _playerBulletParameterDataStore.OnShot
                 .Where(x => x.shotType == ShotType.Merge)
                 .Subscribe(x => OnMergeShot(x.handType))
+                .AddTo(_disposables);
+
+            // ウェーブの終わり（ショップ・ボス撃破）でタレットは消えるので、クールダウンも持ち越さない
+            _waveManagerDataStore.IsWavePause
+                .Where(isPause => isPause)
+                .Subscribe(_ => _summonTurretDataStore.ResetCoolDown())
                 .AddTo(_disposables);
         }
 

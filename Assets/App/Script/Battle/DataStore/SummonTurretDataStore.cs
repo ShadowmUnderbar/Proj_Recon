@@ -8,7 +8,7 @@ namespace App.Battle.DataStore
     /// <summary>
     /// サモンタレットの実行時状態（召喚のクールダウン）。
     /// Value1 = クールダウン秒数。レベルは累積せず、所持中の最高レベルのみを採用する。
-    /// ラン開始直後は最初のマージショットですぐ召喚できる
+    /// ラン開始直後とウェーブ終了後は、最初のマージショットですぐ召喚できる
     /// </summary>
     public class SummonTurretDataStore : ISummonTurretDataStore, IRunResettable, ITickable
     {
@@ -63,9 +63,14 @@ namespace App.Battle.DataStore
             RemainingCoolDown = upgrade.Value1.value;
         }
 
-        public void ResetRun()
+        public void ResetCoolDown()
         {
             RemainingCoolDown = 0f;
+        }
+
+        public void ResetRun()
+        {
+            ResetCoolDown();
         }
     }
 }
