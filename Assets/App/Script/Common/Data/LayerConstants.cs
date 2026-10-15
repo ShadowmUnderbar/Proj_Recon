@@ -11,6 +11,9 @@ namespace App.Common.Data
         /// <summary>地形（Default レイヤー）。回避先・跳ね返し攻撃の遮蔽判定に使う</summary>
         public static readonly int Default = ToMask("Default");
 
+        /// <summary>プレイヤーと召喚した味方。プレイヤー側の弾はこのレイヤーをすり抜ける</summary>
+        public static readonly int Player = ToMask("Player");
+
         /// <summary>敵本体とヒットボックス</summary>
         public static readonly int Enemy = ToMask("Enemy");
 

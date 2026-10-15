@@ -42,6 +42,9 @@ namespace App.Battle.Views.Enemy.AI.Boss
         protected override bool IsMovementBlocked =>
             base.IsMovementBlocked || _isHold || (_stopMovingWhileActing && IsActing);
 
+        // ボスは台本の配置・攻撃がプレイヤーとの位置関係で決まるため、味方は狙わない
+        protected override bool CanTargetAllies => false;
+
         public override void Init(EnemyData enemyData, int enemyId)
         {
             base.Init(enemyData, enemyId);

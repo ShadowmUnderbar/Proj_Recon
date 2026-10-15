@@ -41,4 +41,5 @@ public enum UpgradeType
     WaltzConflict = 37, // ワルツコンフリクト
     Overclock = 38, // オーバークロック
     Bullseye = 39, // ブルズアイ
+    SummonTurret = 40, // サモンタレット
 }

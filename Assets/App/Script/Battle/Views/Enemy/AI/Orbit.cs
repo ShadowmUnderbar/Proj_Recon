@@ -35,7 +35,7 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.IdleState();
 
-            SetAgentDestination(PlayerTransform.position);
+            SetAgentDestination(TargetTransform.position);
         }
 
         protected override void BattleState()
@@ -47,7 +47,7 @@ namespace App.Battle.Views.Enemy.AI
                 return;
             }
 
-            transform.LookAt(PlayerTransform.position, Vector3.up);
+            transform.LookAt(TargetTransform.position, Vector3.up);
             transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
 
             var targetPos = transform.right * EnemyData.BattleSpeed * (_isRotateRight ? 1 : -1) * 10f;

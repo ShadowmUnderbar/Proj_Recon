@@ -7,6 +7,9 @@ namespace App.Battle.Views.Enemy.AI
     {
         private Vector3 _moveTargetPosition;
 
+        // プレイヤーの照準の先に回りこんで妨害する AI のため、味方は狙わない
+        protected override bool CanTargetAllies => false;
+
         private Vector3 _aimTargetPosition1;
         private Vector3 _aimTargetPosition2;
 

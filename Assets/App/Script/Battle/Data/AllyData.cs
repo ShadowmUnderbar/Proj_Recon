@@ -1,0 +1,46 @@
+using UnityEngine;
+
+namespace App.Battle.Data
+{
+    /// <summary>
+    /// 召喚した味方1体の実行時データ
+    /// </summary>
+    public class AllyData
+    {
+        public AllyData(int id, AllyType allyType, Vector3 position, Vector3 forward, float maxHp, float attackInterval,
+            float attackRange, float turnSpeed, bool isTargetable)
+        {
+            Id = id;
+            AllyType = allyType;
+            Position = position;
+            Forward = forward;
+            MaxHp = maxHp;
+            Hp = maxHp;
+            AttackInterval = attackInterval;
+            AttackRange = attackRange;
+            TurnSpeed = turnSpeed;
+            IsTargetable = isTargetable;
+        }
+
+        /// <summary>味方のId。敵（0以上）・プレイヤー（1）と重ならないよう負の値を使う</summary>
+        public int Id { get; }
+
+        public AllyType AllyType { get; }
+
+        /// <summary>出現を要求した位置。実際の位置は View が NavMesh 上へ寄せる</summary>
+        public Vector3 Position { get; }
+
+        /// <summary>出現時に向ける水平方向。ゼロなら向きを指定しない（ワールドの +Z）</summary>
+        public Vector3 Forward { get; }
+
+        public float MaxHp { get; }
+        public float Hp { get; set; }
+        public float AttackInterval { get; }
+        public float AttackRange { get; }
+
+        /// <summary>狙う敵へ向き直る速さ[度/秒]。0なら即座に向く</summary>
+        public float TurnSpeed { get; }
+
+        public bool IsTargetable { get; }
+    }
+}

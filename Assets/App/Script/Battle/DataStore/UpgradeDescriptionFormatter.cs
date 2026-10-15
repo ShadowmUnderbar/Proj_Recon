@@ -106,6 +106,9 @@ namespace App.Battle.DataStore
 
             // Value1=1体貫通するごとに加算する倍率（1.3→30%）
             { UpgradeType.Bullseye, MultiplierDeltaValue1 },
+
+            // Value1=タレット召喚のクールダウン秒数
+            { UpgradeType.SummonTurret, new[] { ValueFormat.Raw } },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む

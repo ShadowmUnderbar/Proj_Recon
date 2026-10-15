@@ -189,6 +189,8 @@ MonoBehaviour:
   _bossLifeGaugeStoreView: {fileID: 9098238497290529744, guid: 14a317ddbe4e990429b3c053974c589e, type: 3}
   _bossLifeGaugeConfig: {fileID: 11400000, guid: 2e6923bd89b677149a966bdca22498b4, type: 2}
   _enemySpawnConfig: {fileID: 11400000, guid: ac2edac33dce57a41b32e9c440f8d849, type: 2}
+  _allyStoreView: {fileID: 2829043756037600273, guid: ae5116e0bb8cc7947b6d39e8773e508c, type: 3}
+  _allyConfig: {fileID: 11400000, guid: 19c976fed2f565e459232385806ad130, type: 2}
 --- !u!4 &175168502
 Transform:
   m_ObjectHideFlags: 0

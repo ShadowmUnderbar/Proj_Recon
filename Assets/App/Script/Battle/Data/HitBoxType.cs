@@ -10,6 +10,9 @@ namespace App.Battle.Data
         None,
         Player,
         Enemy,
-        Object
+        Object,
+
+        // 召喚した味方の被弾受け
+        Ally
     }
 }

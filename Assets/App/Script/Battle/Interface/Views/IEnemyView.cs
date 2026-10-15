@@ -16,6 +16,10 @@ namespace App.Battle.Interface
         void Destroy();
         UniTask Dead();
         void SetPlayerTransform(Transform playerTransform);
+
+        /// <summary>狙える味方の検索手段を渡す（プレイヤーより近い味方がいればそちらを狙う）</summary>
+        void SetAllyTargetProvider(IAllyTargetProvider allyTargetProvider);
+
         void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2);
         void SetPause(bool isPause);
 
