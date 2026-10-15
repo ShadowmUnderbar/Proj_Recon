@@ -112,6 +112,9 @@ namespace App.Battle.DataStore
 
             // Value1=召喚に必要な撃破数 / Value2=1回に召喚する数
             { UpgradeType.SummonDrone, new[] { ValueFormat.Raw, ValueFormat.Raw } },
+
+            // Value1=撃破1体あたりに得るレイジの秒数 / Value2=レイジ発動中に掛ける倍率
+            { UpgradeType.Sociopath, new[] { ValueFormat.Raw, ValueFormat.Raw } },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む

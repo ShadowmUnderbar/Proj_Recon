@@ -43,4 +43,5 @@ public enum UpgradeType
     Bullseye = 39, // ブルズアイ
     SummonTurret = 40, // サモンタレット
     SummonDrone = 41, // サモンドローン
+    Sociopath = 42, // ソシオパス
 }

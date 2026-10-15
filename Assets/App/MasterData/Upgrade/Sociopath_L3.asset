@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
-  m_Name: Rage_L2
+  m_Name: Sociopath_L3
   m_EditorClassIdentifier: 
-  _id: 27
-  _nameKey: $Rage
-  _upgradeType: 9
+  _id: 122
+  _nameKey: $Sociopath
+  _upgradeType: 42
   _playerUnlockType: 0
-  _level: 2
-  _cost: 153
-  _value1: 0
-  _value1ParameterType: 0
-  _value2: 0
-  _value2ParameterType: 0
+  _level: 3
+  _cost: 272
+  _value1: 2
+  _value1ParameterType: 1
+  _value2: 2
+  _value2ParameterType: 1
   _value3: 0
   _value3ParameterType: 0
   _value4: 0
   _value4ParameterType: 0
   _value5: 0
   _value5ParameterType: 0
-  _buffId: 10
-  _tags: 020000000f000000
+  _buffId: 9
+  _tags: 02000000
