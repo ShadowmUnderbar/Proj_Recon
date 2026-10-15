@@ -5,7 +5,7 @@
 #   - 未所持ではマージショットでタレットが出ない
 #   - 所持していればマージショットで照準位置へタレットが出る（NavMesh 上・照準位置の近く）・クールダウンは Value1 秒
 #   - クールダウン中は出ない・ノーマルショットでは出ない・置ける場所が無ければ出ずクールダウンも消費しない・レベルを重ねると最高レベルの Value1 になる
-#   - タレットが射程内の敵を撃ってダメージを与える
+#   - タレットは旋回速度（AllyConfig、15度/秒）で砲身を向け、向き切るまで撃たない・向き切ったら射程内の敵を撃つ
 #   - 敵 AI はプレイヤーより近いタレットを狙い、盾・ボスは狙わない（盾はここでは見ない）
 #   - プレイヤーの弾はタレットをすり抜ける
 #   - 敵の攻撃でタレットの体力が減り、0で消える
@@ -154,28 +154,57 @@ return $"{{\"count\":{storeAllies.Count},\"cd\":{F(summon.RemainingCoolDown)}}}"
     Assert-ProbeValue -Name 'L1とL3を所持: クールダウン明けのマージショットで2体目が出る' -Actual $r.count -Expected 2 | Out-Null
     Assert-ProbeValue -Name 'L1とL3を所持: クールダウンは最高レベルの Value1=60秒' -Actual $r.cd -Expected 60 -Tolerance 0.1 | Out-Null
 
-    # --- タレットが敵を撃つ・敵が近いタレットを狙う ---
+    # --- 旋回速度・向き切るまで撃たない・敵を撃つ・敵が近いタレットを狙う ---
+    # 1体のタレットと1体の敵だけにし、敵はスタンで止める（動くと向きの変化が旋回速度だけで決まらない）
     $r = Invoke-SummonSnippet -Body @'
 var turret = FirstAllyView();
-var enemyAi = UnityEngine.Object.FindObjectsOfType<App.Battle.Interface.EnemyAI.EnemyAIBase>().FirstOrDefault();
-if (turret == null || enemyAi == null) return "{\"error\":\"タレットか敵がいません\"}";
-// 敵をタレットのすぐ横（プレイヤーより明らかに近い位置）へ置く
-enemyAi.WarpTo(turret.transform.position + turret.transform.forward * 3f);
+var enemyAis = UnityEngine.Object.FindObjectsOfType<App.Battle.Interface.EnemyAI.EnemyAIBase>().Where(e => !(e is BossAIBase)).ToList();
+if (turret == null || enemyAis.Count == 0) return "{\"error\":\"タレットか敵がいません\"}";
+
+var otherAllyIds = new List<int>();
+foreach (System.Collections.DictionaryEntry e in storeAllies) if ((int)e.Key != turret.Id) otherAllyIds.Add((int)e.Key);
+foreach (var id in otherAllyIds) allies.Remove(id);
+
+var enemyAi = enemyAis[0];
+foreach (var other in enemyAis.Skip(1))
+{
+    enemies.RemoveEnemyData(other.EnemyId);
+    presenter.UnSpawn(other.EnemyId);
+}
+presenter.SetStun(enemyAi.EnemyId, true);
+
+// 砲身の真横（90度）に置く。15度/秒なら向き切るまで6秒かかる
+var head = (Transform)typeof(App.Battle.Views.Ally.AllyTurretView).GetField("_head", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(turret);
+var side = head.right; side.y = 0f; side.Normalize();
+enemyAi.WarpTo(turret.transform.position + side * 3f);
 Physics.SyncTransforms();
 enemies.TryGetEnemyData(enemyAi.EnemyId, out var ed);
 ed.MaxHp = 100000f;
 ed.Hp = 100000f;
+allies.TryGetAllyData(turret.Id, out var ad);
+var turnSpeed = ad.TurnSpeed;
+
 AppDomain.CurrentDomain.SetData("summon.enemyId", enemyAi.EnemyId);
 AppDomain.CurrentDomain.SetData("summon.turretPos", turret.transform.position);
-return $"{{\"enemyId\":{enemyAi.EnemyId},\"hp\":{F(ed.Hp)}}}";
+AppDomain.CurrentDomain.SetData("summon.yaw", head.eulerAngles.y);
+AppDomain.CurrentDomain.SetData("summon.time", Time.time);
+return $"{{\"enemyId\":{enemyAi.EnemyId},\"hp\":{F(ed.Hp)},\"turnSpeed\":{F(turnSpeed)},\"others\":{otherAllyIds.Count}}}";
 '@
     if ($r.error) { throw $r.error }
     $hpBefore = $r.hp
-    Start-Sleep -Seconds 2
+    $turnSpeed = [double]$r.turnSpeed
+    Assert-ProbeValue -Name 'タレットの旋回速度は AllyConfig の15度/秒' -Actual $turnSpeed -Expected 15 | Out-Null
+    Start-Sleep -Seconds 1
 
     $r = Invoke-SummonSnippet -Body @'
 var enemyId = (int)AppDomain.CurrentDomain.GetData("summon.enemyId");
 var turretPos = (Vector3)AppDomain.CurrentDomain.GetData("summon.turretPos");
+var yaw0 = (float)AppDomain.CurrentDomain.GetData("summon.yaw");
+var time0 = (float)AppDomain.CurrentDomain.GetData("summon.time");
+var turret = FirstAllyView();
+var head = (Transform)typeof(App.Battle.Views.Ally.AllyTurretView).GetField("_head", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(turret);
+var turned = Mathf.Abs(Mathf.DeltaAngle(yaw0, head.eulerAngles.y));
+var elapsed = Time.time - time0;
 var enemyAi = UnityEngine.Object.FindObjectsOfType<App.Battle.Interface.EnemyAI.EnemyAIBase>().FirstOrDefault(e => e.EnemyId == enemyId);
 var hp = enemies.TryGetEnemyData(enemyId, out var ed) ? ed.Hp : -1f;
 var targetProp = typeof(App.Battle.Interface.EnemyAI.EnemyAIBase).GetProperty("TargetTransform", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -183,11 +212,28 @@ var target = enemyAi != null ? (Transform)targetProp.GetValue(enemyAi) : null;
 var targetsAlly = target != null && target.GetComponent<App.Battle.Views.Ally.AllyViewBase>() != null;
 var playerDist = enemyAi != null ? Vector3.Distance(enemyAi.transform.position, playerView.PlayerTransform.position) : -1f;
 var turretDist = enemyAi != null ? Vector3.Distance(enemyAi.transform.position, turretPos) : -1f;
-return $"{{\"hp\":{F(hp)},\"targetsAlly\":{targetsAlly.ToString().ToLower()},\"playerDist\":{F(playerDist)},\"turretDist\":{F(turretDist)}}}";
+
+// 次の段階: 砲身の正面へ置き直す（向きの差が射撃角度以内なので撃ち始める）
+var front = head.forward; front.y = 0f; front.Normalize();
+enemyAi.WarpTo(turretPos + front * 3f);
+Physics.SyncTransforms();
+
+return $"{{\"turned\":{F(turned)},\"elapsed\":{F(elapsed)},\"hp\":{F(hp)},\"targetsAlly\":{targetsAlly.ToString().ToLower()},\"playerDist\":{F(playerDist)},\"turretDist\":{F(turretDist)}}}";
 '@
-    Write-Host "  敵HP $hpBefore → $($r.hp) / 敵→プレイヤー $($r.playerDist)m / 敵→タレット $($r.turretDist)m"
-    Assert-ProbeTrue -Name 'タレットが射程内の敵を撃ってダメージを与える' -Condition ($r.hp -lt $hpBefore) -Detail "HP $hpBefore → $($r.hp)" | Out-Null
+    $rate = [double]$r.turned / [double]$r.elapsed
+    Write-Host "  旋回: $($r.turned)度 / $($r.elapsed)秒 = $([Math]::Round($rate, 2))度/秒 / 敵HP $hpBefore → $($r.hp)"
+    Assert-ProbeValue -Name '砲身は旋回速度で向き直る（度/秒）' -Actual $rate -Expected $turnSpeed -Tolerance 1.5 | Out-Null
+    Assert-ProbeValue -Name '向き直っている途中（射撃角度の外）は撃たない' -Actual $r.hp -Expected $hpBefore | Out-Null
     Assert-ProbeTrue -Name '敵はプレイヤーより近いタレットを狙う' -Condition ($r.targetsAlly -or ($r.turretDist -ge $r.playerDist)) -Detail "敵→タレット $($r.turretDist)m / 敵→プレイヤー $($r.playerDist)m / 狙い=味方:$($r.targetsAlly)" | Out-Null
+
+    Start-Sleep -Milliseconds 1500
+    $r = Invoke-SummonSnippet -Body @'
+var enemyId = (int)AppDomain.CurrentDomain.GetData("summon.enemyId");
+var hp = enemies.TryGetEnemyData(enemyId, out var ed) ? ed.Hp : -1f;
+presenter.SetStun(enemyId, false);
+return $"{{\"hp\":{F(hp)}}}";
+'@
+    Assert-ProbeTrue -Name '向き切ったら射程内の敵を撃ってダメージを与える' -Condition (($r.hp -ge 0) -and ($r.hp -lt $hpBefore)) -Detail "HP $hpBefore → $($r.hp)" | Out-Null
 
     # --- プレイヤーの弾はタレットをすり抜ける ---
     $r = Invoke-SummonSnippet -Body @'
@@ -254,6 +300,8 @@ return $"{{\"destroyed\":{(dead == null).ToString().ToLower()}}}";
 
     # --- ウェーブ間ポーズで全員消える ---
     $r = Invoke-SummonSnippet -Body @'
+// 撃破の検証で0体になっているので、もう1体出しておく
+allies.TrySpawn(AllyType.Turret, AimPoint(), out _);
 var before = storeAllies.Count;
 wave.SetWavePause(true);
 var after = storeAllies.Count;

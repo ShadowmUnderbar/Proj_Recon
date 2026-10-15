@@ -6,7 +6,7 @@ using UnityEngine;
 namespace App.Battle.Views.Ally
 {
     /// <summary>
-    /// 味方が狙う敵を探す（plain C#）。範囲内の敵のヒットボックスのうち最も近いものの中心を返す。
+    /// 味方が狙う敵を探す（plain C#）。範囲内の敵のヒットボックスのうち中心が最も近いものを返す。
     /// 判定バッファは使い回すため、1体の味方につき1つ持つ
     /// </summary>
     public class AllyEnemySearcher
@@ -18,15 +18,14 @@ namespace App.Battle.Views.Ally
             _buffer = new Collider[bufferSize];
         }
 
-        public bool TryFindNearest(Vector3 origin, float range, out Vector3 targetPosition)
+        public bool TryFindNearest(Vector3 origin, float range, out Collider target)
         {
-            targetPosition = default;
+            target = null;
 
             var count = Physics.OverlapSphereNonAlloc(origin, range, _buffer, LayerConstants.Enemy,
                 QueryTriggerInteraction.Collide);
 
             var nearestSqrDistance = float.MaxValue;
-            var isFound = false;
 
             for (var i = 0; i < count; i++)
             {
@@ -44,11 +43,10 @@ namespace App.Battle.Views.Ally
                 }
 
                 nearestSqrDistance = sqrDistance;
-                targetPosition = center;
-                isFound = true;
+                target = col;
             }
 
-            return isFound;
+            return target != null;
         }
     }
 }

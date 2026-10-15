@@ -24,6 +24,9 @@ namespace App.Battle.Data
             [SerializeField, Min(0f), Tooltip("この距離[m]以内の敵を狙う")]
             private float _attackRange = 15f;
 
+            [SerializeField, Min(0f), Tooltip("狙う敵へ向き直る速さ[度/秒]。0なら即座に向く")]
+            private float _turnSpeed = 15f;
+
             [SerializeField, Tooltip("敵に狙われるか。false なら敵は狙わず、敵の攻撃も当たらない")]
             private bool _isTargetable = true;
 
@@ -31,6 +34,7 @@ namespace App.Battle.Data
             public float MaxHp => _maxHp;
             public float AttackInterval => _attackInterval;
             public float AttackRange => _attackRange;
+            public float TurnSpeed => _turnSpeed;
             public bool IsTargetable => _isTargetable;
         }
 

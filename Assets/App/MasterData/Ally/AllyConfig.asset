@@ -17,4 +17,5 @@ MonoBehaviour:
     _maxHp: 60
     _attackInterval: 0.5
     _attackRange: 15
+    _turnSpeed: 15
     _isTargetable: 1

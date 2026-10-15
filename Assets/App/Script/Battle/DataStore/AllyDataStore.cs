@@ -48,7 +48,7 @@ namespace App.Battle.DataStore
             }
 
             allyData = new AllyData(_nextAllyId--, allyType, position, entry.MaxHp, entry.AttackInterval,
-                entry.AttackRange, entry.IsTargetable);
+                entry.AttackRange, entry.TurnSpeed, entry.IsTargetable);
             _allies.Add(allyData.Id, allyData);
             _onAllySpawned.OnNext(allyData);
             return true;
