@@ -16,6 +16,6 @@ MonoBehaviour:
   - _allyType: 1
     _maxHp: 60
     _attackInterval: 0.5
-    _attackRange: 15
-    _turnSpeed: 15
+    _attackRange: 40
+    _turnSpeed: 20
     _isTargetable: 1
