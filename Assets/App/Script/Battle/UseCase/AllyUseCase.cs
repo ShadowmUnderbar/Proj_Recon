@@ -3,6 +3,7 @@ using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
 using R3;
+using UnityEngine;
 using VContainer;
 using VContainer.Unity;
 
@@ -13,11 +14,12 @@ namespace App.Battle.UseCase
     /// 味方の攻撃はプレイヤーのノーマルショット（非フォーカス）と同じ弾データで撃ち、
     /// 命中もプレイヤーの弾と同じ経路（BattleHitUseCase）を通すため、強化・バフ・クリティカルがそのまま乗る
     /// </summary>
-    public class AllyUseCase : IInitializable, IDisposable
+    public class AllyUseCase : IInitializable, ITickable, IDisposable
     {
         private readonly IAllyDataStore _allyDataStore;
         private readonly IAllyPresenter _allyPresenter;
         private readonly IPlayerBulletParameterDataStore _playerBulletParameterDataStore;
+        private readonly IPlayerAimDataStore _playerAimDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IFreezeDataStore _freezeDataStore;
         private readonly ITimeStopDataStore _timeStopDataStore;
@@ -25,11 +27,18 @@ namespace App.Battle.UseCase
 
         private readonly CompositeDisposable _disposables = new();
 
+        // 味方へ最後に配った射撃の向き。ほぼ変わらないフレームは配らない
+        private Vector3 _lastPlayerForward;
+
+        // 射撃の向きを配り直す最小の角度差[度]
+        private const float PlayerForwardResendAngle = 1f;
+
         [Inject]
         public AllyUseCase(
             IAllyDataStore allyDataStore,
             IAllyPresenter allyPresenter,
             IPlayerBulletParameterDataStore playerBulletParameterDataStore,
+            IPlayerAimDataStore playerAimDataStore,
             IWaveManagerDataStore waveManagerDataStore,
             IFreezeDataStore freezeDataStore,
             ITimeStopDataStore timeStopDataStore,
@@ -39,6 +48,7 @@ namespace App.Battle.UseCase
             _allyDataStore = allyDataStore;
             _allyPresenter = allyPresenter;
             _playerBulletParameterDataStore = playerBulletParameterDataStore;
+            _playerAimDataStore = playerAimDataStore;
             _waveManagerDataStore = waveManagerDataStore;
             _freezeDataStore = freezeDataStore;
             _timeStopDataStore = timeStopDataStore;
@@ -84,6 +94,27 @@ namespace App.Battle.UseCase
                 .DistinctUntilChanged()
                 .Subscribe(_allyPresenter.SetPause)
                 .AddTo(_disposables);
+        }
+
+        public void Tick()
+        {
+            // 追従する味方がプレイヤーの後ろ側（射線の外）に並べるよう、射撃の向きを渡す。
+            // 両手が正反対で向きが決まらないとき（zero）は前の向きのままにする
+            var forward = _playerAimDataStore.CenterAimDirection;
+            if (forward.sqrMagnitude <= 0f)
+            {
+                return;
+            }
+
+            // まだ一度も配っていない（zero との角度は0になる）ときは必ず配る
+            var isFirst = _lastPlayerForward.sqrMagnitude <= 0f;
+            if (!isFirst && Vector3.Angle(forward, _lastPlayerForward) < PlayerForwardResendAngle)
+            {
+                return;
+            }
+
+            _lastPlayerForward = forward;
+            _allyPresenter.SetPlayerForward(forward);
         }
 
         private void OnShotRequested(int allyId)

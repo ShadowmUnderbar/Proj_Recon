@@ -1,6 +1,7 @@
 using App.Battle.Data;
 using App.Common.Data;
 using R3;
+using UnityEngine;
 
 namespace App.Battle.Interface
 {
@@ -27,5 +28,8 @@ namespace App.Battle.Interface
 
         /// <summary>移動・攻撃を止める／再開する</summary>
         void SetPause(bool isPause);
+
+        /// <summary>プレイヤーの向いている水平方向（追従する味方がプレイヤーの後ろ側に並ぶのに使う）</summary>
+        void SetPlayerForward(Vector3 forward);
     }
 }

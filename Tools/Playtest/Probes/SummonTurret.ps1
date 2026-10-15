@@ -110,7 +110,7 @@ var layer = view != null ? view.gameObject.layer : -1;
 var aimForward = target - player.Position.Value; aimForward.y = 0f;
 var turretForward = view != null ? view.transform.forward : Vector3.zero; turretForward.y = 0f;
 var facingAngle = Vector3.Angle(aimForward, turretForward);
-var headField = typeof(App.Battle.Views.Ally.AllyTurretView).GetField("_head", BindingFlags.NonPublic | BindingFlags.Instance);
+var headField = typeof(App.Battle.Views.Ally.AllyGunViewBase).GetField("_head", BindingFlags.NonPublic | BindingFlags.Instance);
 var headForward = view != null ? ((Transform)headField.GetValue(view)).forward : Vector3.zero; headForward.y = 0f;
 var headAngle = Vector3.Angle(aimForward, headForward);
 var id = view != null ? view.Id : 0;
@@ -186,7 +186,7 @@ foreach (var other in enemyAis.Skip(1))
 presenter.SetStun(enemyAi.EnemyId, true);
 
 // 砲身の真横（90度）に置く。15度/秒なら向き切るまで6秒かかる
-var head = (Transform)typeof(App.Battle.Views.Ally.AllyTurretView).GetField("_head", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(turret);
+var head = (Transform)typeof(App.Battle.Views.Ally.AllyGunViewBase).GetField("_head", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(turret);
 var side = head.right; side.y = 0f; side.Normalize();
 enemyAi.WarpTo(turret.transform.position + side * 3f);
 Physics.SyncTransforms();
@@ -224,7 +224,7 @@ var turretPos = (Vector3)AppDomain.CurrentDomain.GetData("summon.turretPos");
 var yaw0 = (float)AppDomain.CurrentDomain.GetData("summon.yaw");
 var time0 = (float)AppDomain.CurrentDomain.GetData("summon.time");
 var turret = FirstAllyView();
-var head = (Transform)typeof(App.Battle.Views.Ally.AllyTurretView).GetField("_head", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(turret);
+var head = (Transform)typeof(App.Battle.Views.Ally.AllyGunViewBase).GetField("_head", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(turret);
 var turned = Mathf.Abs(Mathf.DeltaAngle(yaw0, head.eulerAngles.y));
 var elapsed = Time.time - time0;
 var enemyAi = UnityEngine.Object.FindObjectsOfType<App.Battle.Interface.EnemyAI.EnemyAIBase>().FirstOrDefault(e => e.EnemyId == enemyId);

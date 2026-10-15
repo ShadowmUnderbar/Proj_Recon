@@ -17,7 +17,7 @@ namespace App.Battle.Interface.DataStore
         Observable<int> OnAllyRemoved { get; }
 
         /// <summary>
-        /// 味方を出す。種類のパラメータが <see cref="AllyConfig"/> に無ければ出さずに false を返す
+        /// 味方を出す。種類のパラメータが <see cref="AllyConfig"/> に無い、または同じ種類が最大数に達していれば出さずに false を返す
         /// </summary>
         /// <param name="forward">出現時に向ける方向（水平成分だけ使う）。ゼロなら向きを指定しない</param>
         bool TrySpawn(AllyType allyType, Vector3 position, Vector3 forward, out AllyData allyData);

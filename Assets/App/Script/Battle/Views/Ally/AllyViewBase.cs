@@ -34,13 +34,29 @@ namespace App.Battle.Views.Ally
 
         protected AllyData AllyData { get; private set; }
 
+        public AllyType AllyType => AllyData?.AllyType ?? AllyType.None;
+
         protected bool IsPause { get; private set; }
 
-        public virtual void Init(AllyData allyData, ISimpleObjectFactory<IBulletView> bulletFactory)
+        /// <summary>プレイヤーの Transform（追従する味方が使う）</summary>
+        protected Transform PlayerTransform { get; private set; }
+
+        /// <summary>プレイヤーの向いている水平方向（射撃の向き）。まだ受け取っていなければ zero</summary>
+        protected Vector3 PlayerForward { get; private set; }
+
+        /// <summary>同じ種類の味方の中で何番目か（0始まり、出現順）。並ぶ位置を決めるのに使う</summary>
+        protected int FormationIndex { get; private set; }
+
+        /// <summary>同じ種類の味方の数</summary>
+        protected int FormationCount { get; private set; } = 1;
+
+        public virtual void Init(AllyData allyData, ISimpleObjectFactory<IBulletView> bulletFactory,
+            Transform playerTransform)
         {
             Id = allyData.Id;
             AllyData = allyData;
             _bulletFactory = bulletFactory;
+            PlayerTransform = playerTransform;
 
             foreach (var receiver in _damageReceivers)
             {
@@ -66,6 +82,17 @@ namespace App.Battle.Views.Ally
         public void SetPause(bool isPause)
         {
             IsPause = isPause;
+        }
+
+        public void SetPlayerForward(Vector3 forward)
+        {
+            PlayerForward = forward;
+        }
+
+        public void SetFormation(int index, int count)
+        {
+            FormationIndex = index;
+            FormationCount = count;
         }
 
         /// <summary>要求に応じて渡された弾データで撃つ</summary>
