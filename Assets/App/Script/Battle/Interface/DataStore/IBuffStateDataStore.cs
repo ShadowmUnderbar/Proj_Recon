@@ -17,7 +17,7 @@ namespace App.Battle.Interface.DataStore
         /// <param name="shotType">撃破の決め手となった射撃フォーム。射撃以外の撃破は null（履歴を更新しない）</param>
         void NotifyKill(ShotType? shotType);
 
-        /// <summary>被弾したことを通知する（OnDamaged条件の効果時間を被弾ダメージ量×レベル倍率だけ延長）</summary>
+        /// <summary>被弾したことを通知する（レイジ所持なら、レイジの効果時間を被弾ダメージ量×最高レベルの倍率だけ得る）</summary>
         /// <param name="damage">被弾したダメージ量</param>
         void NotifyDamageTaken(float damage);
 
@@ -36,18 +36,17 @@ namespace App.Battle.Interface.DataStore
         float CalcDamageTakenMultiply();
 
         /// <summary>
-        /// レイジが発動中か（所持しているレイジ、またはアップグレード無しで与えられたレイジのいずれかが効果時間内か）。
+        /// レイジが発動中か（レイジの効果時間内か）。レイジは何レベル持っていても、獲得元が何でも1つの状態。
         /// レイジの発動を条件にするアップグレードはここで判定する
         /// </summary>
         bool IsRageActive { get; }
 
         /// <summary>
         /// レイジの効果時間を得る。発動中なら残り時間に足し、発動していなければその秒数で発動させる。
-        /// レイジ未所持なら rageWhenNotOwned のレイジを、被弾では延びない状態で発動させる
-        /// （のちにレイジを取得すると、残り時間を引き継いで通常のレイジに置き換わる）
+        /// レイジ未所持なら rageWhenNotOwned のバフの効果で発動させる（レイジのアップグレードの効果である「被弾で延びる」は付かない）
         /// </summary>
         /// <param name="seconds">得る秒数</param>
-        /// <param name="rageWhenNotOwned">レイジ未所持のときに発動させるレイジのバフ。null なら未所持では何もしない</param>
+        /// <param name="rageWhenNotOwned">レイジ未所持のときに効果に使うレイジのバフ。レイジ所持中は使わない</param>
         void GainRage(float seconds, BuffMasterData rageWhenNotOwned);
     }
 }

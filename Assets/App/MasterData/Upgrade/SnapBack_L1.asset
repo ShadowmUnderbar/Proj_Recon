@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eede4fecf6d66be4b8c62c968ad65b48, type: 3}
-  m_Name: Rage_L1
+  m_Name: SnapBack_L1
   m_EditorClassIdentifier: 
   _id: 26
-  _nameKey: $Rage
+  _nameKey: $SnapBack
   _upgradeType: 9
   _playerUnlockType: 0
   _level: 1

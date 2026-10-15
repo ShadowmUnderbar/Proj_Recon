@@ -2,8 +2,8 @@
 $LowHealthAttackUp,Risk
 $ExcessiveIntimidation,UnFocus
 $Bullseye,Penetration
-$Rage,Rage
-$Rage,Hurt
+$SnapBack,Rage
+$SnapBack,Hurt
 $Barrier,Barrier
 $NormalDamageUp,NormalShot
 $WaltzDamageUp,WaltzShot

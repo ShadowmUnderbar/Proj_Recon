@@ -37,7 +37,7 @@ return "restored";
 
 function ProbeRun {
     # --- 1. 所持アップグレードを仕込んでからショップを開く ---
-    # レイジ Lv1・Lv2（レイジ/被ダメ）、アドレナリン Lv1（被ダメ）、メデューサ Lv1（注視/スタン）
+    # 逆ギレ Lv1・Lv2（レイジ/被ダメ）、アドレナリン Lv1（被ダメ）、メデューサ Lv1（注視/スタン）
     $opened = Invoke-UnityJson -Snippet @'
 using System.Linq;
 using System.Reflection;
@@ -53,7 +53,7 @@ var session = scope.Container.Resolve<IUpgradeSessionDataStore>();
 var database = scope.Container.Resolve<UpgradeDatabase>();
 var ownedBefore = session.AppliedUpgrades.Count;
 
-foreach (var assetName in new[] { "Rage_L1", "Rage_L2", "Adrenalin_L1", "Medusa_L1" })
+foreach (var assetName in new[] { "SnapBack_L1", "SnapBack_L2", "Adrenalin_L1", "Medusa_L1" })
 {
     session.AddUpgrade(database.UpgradeMasterData.First(d => d.name == assetName));
 }
