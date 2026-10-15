@@ -15,6 +15,7 @@ namespace App.Battle.UseCase
     {
         private readonly IPlayerBulletParameterDataStore _playerBulletParameterDataStore;
         private readonly IPlayerAimDataStore _playerAimDataStore;
+        private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly ISummonTurretDataStore _summonTurretDataStore;
         private readonly IAllyDataStore _allyDataStore;
 
@@ -24,12 +25,14 @@ namespace App.Battle.UseCase
         public SummonTurretUseCase(
             IPlayerBulletParameterDataStore playerBulletParameterDataStore,
             IPlayerAimDataStore playerAimDataStore,
+            IPlayerStateDataStore playerStateDataStore,
             ISummonTurretDataStore summonTurretDataStore,
             IAllyDataStore allyDataStore
         )
         {
             _playerBulletParameterDataStore = playerBulletParameterDataStore;
             _playerAimDataStore = playerAimDataStore;
+            _playerStateDataStore = playerStateDataStore;
             _summonTurretDataStore = summonTurretDataStore;
             _allyDataStore = allyDataStore;
         }
@@ -53,7 +56,11 @@ namespace App.Battle.UseCase
                 ? _playerAimDataStore.LeftAimPosition
                 : _playerAimDataStore.RightAimPosition;
 
-            if (!_allyDataStore.TrySpawn(AllyType.Turret, aimPosition, out var allyData))
+            // 撃った手（マージは利き手）のエイム方向＝プレイヤーから照準位置への向きに合わせて置く。
+            // IPlayerAimDataStore の *AimDirection は照準位置→プレイヤーの向きなので使わない
+            var aimForward = aimPosition - _playerStateDataStore.Position.Value;
+
+            if (!_allyDataStore.TrySpawn(AllyType.Turret, aimPosition, aimForward, out var allyData))
             {
                 return;
             }

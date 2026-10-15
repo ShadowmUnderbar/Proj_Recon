@@ -67,7 +67,10 @@ namespace App.Battle.Views.Ally
                 return;
             }
 
-            var view = Instantiate(prefab, hit.position, Quaternion.identity);
+            var rotation = allyData.Forward.sqrMagnitude > 0f
+                ? Quaternion.LookRotation(allyData.Forward)
+                : Quaternion.identity;
+            var view = Instantiate(prefab, hit.position, rotation);
             view.Init(allyData, _bulletFactory);
             view.SetPause(_isPause);
 

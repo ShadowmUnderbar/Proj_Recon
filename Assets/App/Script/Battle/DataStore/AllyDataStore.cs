@@ -38,7 +38,7 @@ namespace App.Battle.DataStore
             _allyConfig = allyConfig;
         }
 
-        public bool TrySpawn(AllyType allyType, Vector3 position, out AllyData allyData)
+        public bool TrySpawn(AllyType allyType, Vector3 position, Vector3 forward, out AllyData allyData)
         {
             if (_allyConfig == null || !_allyConfig.TryGetEntry(allyType, out var entry))
             {
@@ -47,7 +47,8 @@ namespace App.Battle.DataStore
                 return false;
             }
 
-            allyData = new AllyData(_nextAllyId--, allyType, position, entry.MaxHp, entry.AttackInterval,
+            forward.y = 0f;
+            allyData = new AllyData(_nextAllyId--, allyType, position, forward.normalized, entry.MaxHp, entry.AttackInterval,
                 entry.AttackRange, entry.TurnSpeed, entry.IsTargetable);
             _allies.Add(allyData.Id, allyData);
             _onAllySpawned.OnNext(allyData);

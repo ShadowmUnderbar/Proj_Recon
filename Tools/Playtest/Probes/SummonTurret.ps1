@@ -3,9 +3,9 @@
 #
 # デバッグ対戦（Request-DebugArena）で周回型の雑魚（O-001）を出し、次を見る。
 #   - 未所持ではマージショットでタレットが出ない
-#   - 所持していればマージショットで照準位置へタレットが出る（NavMesh 上・照準位置の近く）・クールダウンは Value1 秒
+#   - 所持していればマージショットで照準位置へタレットが出る（NavMesh 上・照準位置の近く・撃った手のエイム方向を向く）・クールダウンは Value1 秒
 #   - クールダウン中は出ない・ノーマルショットでは出ない・置ける場所が無ければ出ずクールダウンも消費しない・レベルを重ねると最高レベルの Value1 になる
-#   - タレットは旋回速度（AllyConfig、15度/秒）で砲身を向け、向き切るまで撃たない・向き切ったら射程内の敵を撃つ
+#   - タレットは旋回速度（AllyConfig）で砲身を向け、向き切るまで撃たない・向き切ったら射程内の敵を撃つ
 #   - 敵 AI はプレイヤーより近いタレットを狙い、盾・ボスは狙わない（盾はここでは見ない）
 #   - プレイヤーの弾はタレットをすり抜ける
 #   - 敵の攻撃でタレットの体力が減り、0で消える
@@ -95,7 +95,9 @@ return $"{{\"count\":{storeAllies.Count},\"cd\":{F(summon.RemainingCoolDown)}}}"
     Assert-ProbeValue -Name '未所持ではマージショットでタレットが出ない' -Actual $r.count -Expected 0 | Out-Null
 
     # --- L1 を所持してマージショット ---
+    # 射程の設定しだいではタレットが検証の途中で敵を全滅させるため、出す前に敵の体力を上げておく
     $r = Invoke-SummonSnippet -Body @'
+foreach (var e in enemies.Enemies) { e.MaxHp = 100000f; e.Hp = 100000f; }
 AddSummon(1);
 var target = AimPoint();
 Shot(App.Common.Data.ShotType.Merge, target);
@@ -104,11 +106,18 @@ var pos = view != null ? view.transform.position : Vector3.zero;
 var flat = pos - target; flat.y = 0f;
 var onNavMesh = UnityEngine.AI.NavMesh.SamplePosition(pos, out _, 0.1f, UnityEngine.AI.NavMesh.AllAreas);
 var layer = view != null ? view.gameObject.layer : -1;
+// 向きは撃った手のエイム方向（プレイヤー→照準位置の水平方向）と同じ
+var aimForward = target - player.Position.Value; aimForward.y = 0f;
+var turretForward = view != null ? view.transform.forward : Vector3.zero; turretForward.y = 0f;
+var facingAngle = Vector3.Angle(aimForward, turretForward);
+var headField = typeof(App.Battle.Views.Ally.AllyTurretView).GetField("_head", BindingFlags.NonPublic | BindingFlags.Instance);
+var headForward = view != null ? ((Transform)headField.GetValue(view)).forward : Vector3.zero; headForward.y = 0f;
+var headAngle = Vector3.Angle(aimForward, headForward);
 var id = view != null ? view.Id : 0;
 var hasData = allies.TryGetAllyData(id, out var data);
 // 検証中に敵の攻撃で倒れないよう体力を上げておく（体力の減り方は後で確かめる）
 if (hasData) data.Hp = 100000f;
-return $"{{\"count\":{storeAllies.Count},\"cd\":{F(summon.RemainingCoolDown)},\"dist\":{F(flat.magnitude)},\"onNavMesh\":{onNavMesh.ToString().ToLower()},\"layer\":{layer},\"id\":{id},\"hasData\":{hasData.ToString().ToLower()}}}";
+return $"{{\"count\":{storeAllies.Count},\"cd\":{F(summon.RemainingCoolDown)},\"dist\":{F(flat.magnitude)},\"onNavMesh\":{onNavMesh.ToString().ToLower()},\"layer\":{layer},\"id\":{id},\"hasData\":{hasData.ToString().ToLower()},\"facingAngle\":{F(facingAngle)},\"headAngle\":{F(headAngle)}}}";
 '@
     Assert-ProbeValue -Name 'L1: マージショットでタレットが1体出る' -Actual $r.count -Expected 1 | Out-Null
     Assert-ProbeValue -Name 'L1: クールダウンは Value1=120秒' -Actual $r.cd -Expected 120 -Tolerance 0.1 | Out-Null
@@ -116,6 +125,8 @@ return $"{{\"count\":{storeAllies.Count},\"cd\":{F(summon.RemainingCoolDown)},\"
     Assert-ProbeTrue -Name 'タレットは NavMesh 上に置かれる' -Condition $r.onNavMesh | Out-Null
     Assert-ProbeValue -Name 'タレットは Player レイヤー（プレイヤーの弾がすり抜ける）' -Actual $r.layer -Expected 3 | Out-Null
     Assert-ProbeTrue -Name '味方のIdは負の値でデータと対応する' -Condition (($r.id -lt 0) -and $r.hasData) -Detail "Id=$($r.id)" | Out-Null
+    Assert-ProbeValue -Name 'タレットは撃った手のエイム方向を向いて出る（本体）' -Actual $r.facingAngle -Expected 0 -Tolerance 1 | Out-Null
+    Assert-ProbeValue -Name 'タレットは撃った手のエイム方向を向いて出る（砲身）' -Actual $r.headAngle -Expected 0 -Tolerance 1 | Out-Null
     $turretId = $r.id
 
     # --- クールダウン中・ノーマルショット ---
@@ -155,8 +166,9 @@ return $"{{\"count\":{storeAllies.Count},\"cd\":{F(summon.RemainingCoolDown)}}}"
     Assert-ProbeValue -Name 'L1とL3を所持: クールダウンは最高レベルの Value1=60秒' -Actual $r.cd -Expected 60 -Tolerance 0.1 | Out-Null
 
     # --- 旋回速度・向き切るまで撃たない・敵を撃つ・敵が近いタレットを狙う ---
-    # 1体のタレットと1体の敵だけにし、敵はスタンで止める（動くと向きの変化が旋回速度だけで決まらない）
-    $r = Invoke-SummonSnippet -Body @'
+    # 1体のタレットと1体の敵だけにし、敵はスタンで止める（動くと向きの変化が旋回速度だけで決まらない）。
+    # 真横（90度）に置くので、旋回速度が 90度/秒 を超える設定だと1秒の待ちの間に向き切ってしまう
+    $setupBody = @'
 var turret = FirstAllyView();
 var enemyAis = UnityEngine.Object.FindObjectsOfType<App.Battle.Interface.EnemyAI.EnemyAIBase>().Where(e => !(e is BossAIBase)).ToList();
 if (turret == null || enemyAis.Count == 0) return "{\"error\":\"タレットか敵がいません\"}";
@@ -183,17 +195,27 @@ ed.MaxHp = 100000f;
 ed.Hp = 100000f;
 allies.TryGetAllyData(turret.Id, out var ad);
 var turnSpeed = ad.TurnSpeed;
+var allyConfig = scope.Container.Resolve<AllyConfig>();
+allyConfig.TryGetEntry(AllyType.Turret, out var turretEntry);
+var configTurnSpeed = turretEntry.TurnSpeed;
 
 AppDomain.CurrentDomain.SetData("summon.enemyId", enemyAi.EnemyId);
 AppDomain.CurrentDomain.SetData("summon.turretPos", turret.transform.position);
 AppDomain.CurrentDomain.SetData("summon.yaw", head.eulerAngles.y);
 AppDomain.CurrentDomain.SetData("summon.time", Time.time);
-return $"{{\"enemyId\":{enemyAi.EnemyId},\"hp\":{F(ed.Hp)},\"turnSpeed\":{F(turnSpeed)},\"others\":{otherAllyIds.Count}}}";
+return $"{{\"enemyId\":{enemyAi.EnemyId},\"hp\":{F(ed.Hp)},\"turnSpeed\":{F(turnSpeed)},\"configTurnSpeed\":{F(configTurnSpeed)},\"others\":{otherAllyIds.Count}}}";
 '@
+    # 敵がいない（出し直しの待ち中）ときは少し待って取り直す
+    for ($try = 0; $try -lt 5; $try++) {
+        $r = Invoke-SummonSnippet -Body $setupBody
+        if (-not $r.error) { break }
+        Start-Sleep -Milliseconds 1500
+    }
     if ($r.error) { throw $r.error }
     $hpBefore = $r.hp
     $turnSpeed = [double]$r.turnSpeed
-    Assert-ProbeValue -Name 'タレットの旋回速度は AllyConfig の15度/秒' -Actual $turnSpeed -Expected 15 | Out-Null
+    Assert-ProbeValue -Name 'タレットの旋回速度は AllyConfig の値' -Actual $turnSpeed -Expected ([double]$r.configTurnSpeed) | Out-Null
+    Assert-ProbeTrue -Name '旋回速度は0より大きい（即座に向く設定では旋回の検証にならない）' -Condition ($turnSpeed -gt 0) | Out-Null
     Start-Sleep -Seconds 1
 
     $r = Invoke-SummonSnippet -Body @'
@@ -301,7 +323,7 @@ return $"{{\"destroyed\":{(dead == null).ToString().ToLower()}}}";
     # --- ウェーブ間ポーズで全員消える ---
     $r = Invoke-SummonSnippet -Body @'
 // 撃破の検証で0体になっているので、もう1体出しておく
-allies.TrySpawn(AllyType.Turret, AimPoint(), out _);
+allies.TrySpawn(AllyType.Turret, AimPoint(), Vector3.zero, out _);
 var before = storeAllies.Count;
 wave.SetWavePause(true);
 var after = storeAllies.Count;

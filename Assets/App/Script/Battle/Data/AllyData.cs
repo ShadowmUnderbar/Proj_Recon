@@ -7,12 +7,13 @@ namespace App.Battle.Data
     /// </summary>
     public class AllyData
     {
-        public AllyData(int id, AllyType allyType, Vector3 position, float maxHp, float attackInterval,
+        public AllyData(int id, AllyType allyType, Vector3 position, Vector3 forward, float maxHp, float attackInterval,
             float attackRange, float turnSpeed, bool isTargetable)
         {
             Id = id;
             AllyType = allyType;
             Position = position;
+            Forward = forward;
             MaxHp = maxHp;
             Hp = maxHp;
             AttackInterval = attackInterval;
@@ -28,6 +29,9 @@ namespace App.Battle.Data
 
         /// <summary>出現を要求した位置。実際の位置は View が NavMesh 上へ寄せる</summary>
         public Vector3 Position { get; }
+
+        /// <summary>出現時に向ける水平方向。ゼロなら向きを指定しない（ワールドの +Z）</summary>
+        public Vector3 Forward { get; }
 
         public float MaxHp { get; }
         public float Hp { get; set; }

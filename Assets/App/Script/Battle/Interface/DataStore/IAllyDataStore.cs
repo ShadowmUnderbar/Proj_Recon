@@ -19,7 +19,8 @@ namespace App.Battle.Interface.DataStore
         /// <summary>
         /// 味方を出す。種類のパラメータが <see cref="AllyConfig"/> に無ければ出さずに false を返す
         /// </summary>
-        bool TrySpawn(AllyType allyType, Vector3 position, out AllyData allyData);
+        /// <param name="forward">出現時に向ける方向（水平成分だけ使う）。ゼロなら向きを指定しない</param>
+        bool TrySpawn(AllyType allyType, Vector3 position, Vector3 forward, out AllyData allyData);
 
         bool TryGetAllyData(int allyId, out AllyData allyData);
 
