@@ -354,7 +354,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `UpgradeLotteryDataStore` / `UpgradeLocalizationDataStore` / `UpgradeDescriptionFormatter` / `EffectTextStyler` / `UpgradeLocalizationKey` | 抽選・ローカライズ・説明文の整形 |
 | （共通）`TagLocalizationDataStore` / `UpgradeTagRankingDataStore` / `UpgradeTagRanking` | アップグレードのタグ（表示専用）。タグ名は Localization の `TagText` テーブル（キーは `$`＋`UpgradeTag` の名前）。所持タグ上位は ID の一覧から数える（レベル違いは1件・件数順・同数は定義順）ので、ショップ以外（セット選択・ポーズ等）からも使える。マスターデータは `UpgradeTagData` シート（NameKey とタグの縦持ち）→ `UpgradeTagDataImporter` で各レベルの `UpgradeMasterData.Tags` へ |
 | `BuffStateDataStore` | 取得済みバフの発動条件進行と残り時間 |
-| `AllyDataStore` | 召喚した味方のデータ（種類・体力・攻撃間隔・射程・狙われるか）。Id は敵・プレイヤーと重ならない負の値（-100 から）。種類ごとの値は `AllyConfig`。体力0・一括消去・出現失敗で `OnAllyRemoved` |
+| `AllyDataStore` | 召喚した味方のデータ（種類・体力・攻撃間隔・射程・狙われるか）。Id は敵・プレイヤーと重ならない負の値（-100 から）。種類ごとの値は `AllyConfig`。最大体力は基礎値にプレイヤーの体力アップ（`CalcMultiply(Health)`）と同じ倍率を掛けた値（出現時に固定）。体力0・一括消去・出現失敗で `OnAllyRemoved` |
 | 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack`, `SummonTurret` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |
 
 **ポイント・配信**

@@ -9,7 +9,8 @@ using VContainer;
 namespace App.Battle.DataStore
 {
     /// <summary>
-    /// 召喚した味方の実行時データ。種類ごとの体力・攻撃間隔などは <see cref="AllyConfig"/> から決める
+    /// 召喚した味方の実行時データ。種類ごとの体力・攻撃間隔などは <see cref="AllyConfig"/> から決める。
+    /// 最大体力にはプレイヤーの体力アップ（UpgradeType.Health）と同じ倍率を掛ける
     /// </summary>
     public class AllyDataStore : IAllyDataStore, IRunResettable, IDisposable
     {
@@ -18,6 +19,7 @@ namespace App.Battle.DataStore
         private const int FirstAllyId = -100;
 
         private readonly AllyConfig _allyConfig;
+        private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
 
         private readonly Dictionary<int, AllyData> _allies = new();
 
@@ -33,9 +35,13 @@ namespace App.Battle.DataStore
         private int _nextAllyId = FirstAllyId;
 
         [Inject]
-        public AllyDataStore(AllyConfig allyConfig)
+        public AllyDataStore(
+            AllyConfig allyConfig,
+            IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore
+        )
         {
             _allyConfig = allyConfig;
+            _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
         }
 
         public bool TrySpawn(AllyType allyType, Vector3 position, Vector3 forward, out AllyData allyData)
@@ -47,8 +53,12 @@ namespace App.Battle.DataStore
                 return false;
             }
 
+            // プレイヤーの最大HP（PlayerStateDataStore.RefreshMaxHealth）と同じ倍率。
+            // アップグレードはショップでしか増えず、味方はウェーブ終了で消えるため、出現時の値で固定してよい
+            var maxHp = entry.MaxHp * _upgradeEffectSimpleCalculatorDataStore.CalcMultiply(UpgradeType.Health);
+
             forward.y = 0f;
-            allyData = new AllyData(_nextAllyId--, allyType, position, forward.normalized, entry.MaxHp, entry.AttackInterval,
+            allyData = new AllyData(_nextAllyId--, allyType, position, forward.normalized, maxHp, entry.AttackInterval,
                 entry.AttackRange, entry.TurnSpeed, entry.IsTargetable);
             _allies.Add(allyData.Id, allyData);
             _onAllySpawned.OnNext(allyData);

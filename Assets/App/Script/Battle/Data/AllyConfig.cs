@@ -15,7 +15,7 @@ namespace App.Battle.Data
         {
             [SerializeField] private AllyType _allyType;
 
-            [SerializeField, Min(1f), Tooltip("最大体力。0になると撃破されて消える")]
+            [SerializeField, Min(1f), Tooltip("基礎の最大体力。プレイヤーの体力アップと同じ倍率が掛かる。0になると撃破されて消える")]
             private float _maxHp = 100f;
 
             [SerializeField, Min(0.05f), Tooltip("攻撃の間隔[秒]")]

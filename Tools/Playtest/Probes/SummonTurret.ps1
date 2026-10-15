@@ -8,7 +8,7 @@
 #   - タレットは旋回速度（AllyConfig）で砲身を向け、向き切るまで撃たない・向き切ったら射程内の敵を撃つ
 #   - 敵 AI はプレイヤーより近いタレットを狙い、盾・ボスは狙わない（盾はここでは見ない）
 #   - プレイヤーの弾はタレットをすり抜ける
-#   - 敵の攻撃でタレットの体力が減り、0で消える
+#   - 敵の攻撃でタレットの体力が減り、0で消える・最大体力にプレイヤーの体力アップと同じ倍率が掛かる
 #   - フリーズ中はタレットが止まる・ウェーブ間ポーズで全員消える
 # マージショットは IPlayerBulletParameterDataStore.SetCoolDownTime（実際の射撃でも呼ばれる、OnShot の発火元）で起こす。
 # 照準位置は PlayerAimUseCase が毎フレーム上書きするため、同じスニペット内で SetAimPosition してから撃つ。
@@ -319,6 +319,22 @@ var dead = (UnityEngine.Object)AppDomain.CurrentDomain.GetData("summon.deadTurre
 return $"{{\"destroyed\":{(dead == null).ToString().ToLower()}}}";
 '@
     Assert-ProbeTrue -Name '撃破されたタレットの GameObject が破棄される' -Condition $r.destroyed | Out-Null
+
+    # --- 最大体力はプレイヤーの体力アップと同じ倍率が掛かる ---
+    # 体力アップ Lv1 の Value1（UpgradeData.csv の $Health Lv1 = 1.5）。CSV を変えたらここも直す
+    $healthLv1Multiplier = 1.5
+    $r = Invoke-SummonSnippet -Body @'
+var allyConfig = scope.Container.Resolve<AllyConfig>();
+allyConfig.TryGetEntry(AllyType.Turret, out var entry);
+allies.TrySpawn(AllyType.Turret, AimPoint(), Vector3.zero, out var withoutUpgrade);
+session.AddUpgrade(db.UpgradeMasterData.First(u => u.UpgradeType == UpgradeType.Health && u.Level == 1));
+allies.TrySpawn(AllyType.Turret, AimPoint(), Vector3.zero, out var withUpgrade);
+var playerMax = player.MaxHealth.Value;
+return $"{{\"base\":{F(entry.MaxHp)},\"without\":{F(withoutUpgrade.MaxHp)},\"with\":{F(withUpgrade.MaxHp)},\"withHp\":{F(withUpgrade.Hp)}}}";
+'@
+    Assert-ProbeValue -Name '体力アップなしのタレットの最大体力は AllyConfig の基礎値' -Actual $r.without -Expected $r.base | Out-Null
+    Assert-ProbeValue -Name '体力アップ Lv1 で最大体力が基礎値×1.5' -Actual $r.with -Expected ($r.base * $healthLv1Multiplier) | Out-Null
+    Assert-ProbeValue -Name '出現時の体力は最大体力で満タン' -Actual $r.withHp -Expected $r.with | Out-Null
 
     # --- ウェーブ間ポーズで全員消える ---
     $r = Invoke-SummonSnippet -Body @'
