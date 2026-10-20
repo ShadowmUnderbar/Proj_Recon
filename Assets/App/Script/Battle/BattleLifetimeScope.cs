@@ -150,6 +150,8 @@ namespace App.Battle
                 .As<IGritDataStore>();
             builder.Register<TenacityDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ITenacityDataStore>();
+            builder.Register<VampireDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IVampireDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()

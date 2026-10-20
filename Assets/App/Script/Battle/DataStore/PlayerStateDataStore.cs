@@ -163,7 +163,8 @@ namespace App.Battle.DataStore
 
         public void Heal(float amount)
         {
-            if (amount <= 0f)
+            // 体力0（敗北済み）からは回復させない（ゲームオーバー演出中の撃破時回復などで生き返らないように）
+            if (amount <= 0f || Health.Value <= 0f)
             {
                 return;
             }

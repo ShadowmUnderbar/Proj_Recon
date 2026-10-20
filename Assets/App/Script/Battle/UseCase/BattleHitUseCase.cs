@@ -22,6 +22,7 @@ namespace App.Battle.UseCase
         private readonly IBullseyeDataStore _bullseyeDataStore;
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IHealOnKillDataStore _healOnKillDataStore;
+        private readonly IVampireDataStore _vampireDataStore;
         private readonly IAvalancheDataStore _avalancheDataStore;
         private readonly IMeanMugDataStore _meanMugDataStore;
         private readonly ICriticalHitDataStore _criticalHitDataStore;
@@ -42,6 +43,7 @@ namespace App.Battle.UseCase
             IBullseyeDataStore bullseyeDataStore,
             IPlayerStateDataStore playerStateDataStore,
             IHealOnKillDataStore healOnKillDataStore,
+            IVampireDataStore vampireDataStore,
             IAvalancheDataStore avalancheDataStore,
             IMeanMugDataStore meanMugDataStore,
             ICriticalHitDataStore criticalHitDataStore,
@@ -55,6 +57,7 @@ namespace App.Battle.UseCase
             _bullseyeDataStore = bullseyeDataStore;
             _playerStateDataStore = playerStateDataStore;
             _healOnKillDataStore = healOnKillDataStore;
+            _vampireDataStore = vampireDataStore;
             _avalancheDataStore = avalancheDataStore;
             _meanMugDataStore = meanMugDataStore;
             _criticalHitDataStore = criticalHitDataStore;
@@ -148,13 +151,16 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            // 撃破時回復（ジャイアントキリング）: 撃破した敵のランクに応じてプレイヤーを回復する。
+            // 撃破時回復: ヴァンパイア（ランクを問わず一定量）とジャイアントキリング（撃破した敵のランクに応じた量）。
+            // 体力の書き換えが1回で済むよう合計してから回復する。
             // 死亡演出の await より前に、敵データがまだ存在するうちに処理する。
+            var healAmount = _vampireDataStore.GetHealAmount();
             if (_enemyDataStore.TryGetEnemyMasterData(enemyData.EnemyMasterDataId, out var deadEnemyMasterData))
             {
-                var healAmount = _healOnKillDataStore.GetHealAmount(deadEnemyMasterData.EnemyRankType);
-                _playerStateDataStore.Heal(healAmount);
+                healAmount += _healOnKillDataStore.GetHealAmount(deadEnemyMasterData.EnemyRankType);
             }
+
+            _playerStateDataStore.Heal(healAmount);
 
             await _enemyPresenter.Dead(enemyId);
 

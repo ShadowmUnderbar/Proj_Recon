@@ -47,4 +47,5 @@ public enum UpgradeType
     Grit = 43, // 食いしばり
     AngerManagement = 44, // アンガーマネジメント
     Tenacity = 46, // 執念
+    Vampire = 47, // ヴァンパイア
 }
