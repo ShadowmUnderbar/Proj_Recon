@@ -124,6 +124,9 @@ namespace App.Battle.DataStore
 
             // Value1=ウイルスの威力 / Value2=ウイルスの効果時間（秒）
             { UpgradeType.Dokuga, new[] { ValueFormat.Raw, ValueFormat.Raw } },
+
+            // Value1=受けたダメージに対する回復割合 / Value2=レイジ発動中の回復割合
+            { UpgradeType.Tenacity, new[] { ValueFormat.Percent, ValueFormat.Percent } },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む
