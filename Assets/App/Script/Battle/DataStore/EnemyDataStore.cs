@@ -242,19 +242,30 @@ namespace App.Battle.DataStore
 
             var damage = hitData.Damage;
 
-            if (masterData.WeakDirectionType == hitData.HitDirectionType)
+            if (hitData.IsFixedDamage)
             {
-                damage *= masterData.WeaknessMultiplier;
+                // 固定ダメージ（ウイルス等）は方向倍率・最低保証を掛けない。0以下なら当たっていない扱い
+                if (damage <= 0f)
+                {
+                    return;
+                }
             }
-            else if (masterData.ResistanceDirectionType == hitData.HitDirectionType)
+            else
             {
-                damage *= masterData.ResistanceMultiplier;
-            }
+                if (masterData.WeakDirectionType == hitData.HitDirectionType)
+                {
+                    damage *= masterData.WeaknessMultiplier;
+                }
+                else if (masterData.ResistanceDirectionType == hitData.HitDirectionType)
+                {
+                    damage *= masterData.ResistanceMultiplier;
+                }
 
-            //ダメージの最低保証は1
-            if (damage <= 1f)
-            {
-                damage = 1;
+                //ダメージの最低保証は1
+                if (damage <= 1f)
+                {
+                    damage = 1;
+                }
             }
 
             var hasShared = _sharedHealthByEnemyId.TryGetValue(hitData.DamagedId, out var shared);
