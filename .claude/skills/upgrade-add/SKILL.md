@@ -277,6 +277,7 @@ GitHub Issue（`.github/ISSUE_TEMPLATE/add-upgrade.yml` のフォーム）で送
   ```
   なお `ImportData(false)` でも AssetDatabase 更新で応答が返らずタイムアウト表示になることがあるが、**インポート自体は完了している**（`git status` で `Upgrade/*.asset`・`UpgradeDatabase.asset` の生成/更新を確認できる）。
 - **スプレッドシートの列構成はCSVと違う**。`UpgradeData`/`BuffData` シートには CSV に無い人間用の列（`開発名称`、および UpgradeData では enum の表示名を入れる補助列）があり、GAS エクスポートで除外される。`sheets-write` の `append-rows` は**シートの全列順に値を並べる**必要があり、CSV の列順で渡すと列ずれする。既存行（例: 既存の GrantBuff 行）を `get` で読んでテンプレにし、補助列は空欄でよい。詳細は [`sheets-write`](../sheets-write/SKILL.md) を参照。
+- **`UpgradeType.cs` を変えたら、コンパイルが終わってからインポートする**。インポーターは CSV の `UpgradeType` 列を**いまコンパイル済みの enum** で解釈し、未定義の値の行は警告だけ出して読み飛ばす（アセットも作らず `UpgradeDatabase` からも外れる）。ブランチの切り替えやマージで enum が変わった直後にインポートすると、新しいタイプの行だけが黙って消える（毒牙のマージ時に2回起きた）。インポート後は `UpgradeDatabase.asset` に新しいアセットの guid があるかを確認する
 - **Play Mode 遷移直後はドメインリロードで uLoop が一時的に応答しない**。`control-play-mode --action Play` の直後に execute-dynamic-code を撃つと「Domain Reload in progress」で失敗する。数秒待ってリトライするか、シーン非依存のロジック検証は **Edit モードで完結**させる（例: `BuffStateDataStore` は素の C# クラスなので `new` して `NotifyHit`/`CalcMultiply` を直接叩けば、Play Mode 不要でスタック挙動を検証できる）。
 
 ## このスキルを拡張するタイミング
