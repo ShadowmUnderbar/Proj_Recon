@@ -116,6 +116,8 @@ namespace App.Battle
                 .As<IDodgeCounterAttackDataStore>();
             builder.Register<ElectricShockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IElectricShockDataStore>();
+            builder.Register<VirusDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IVirusDataStore>();
             builder.Register<ShotConflictDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IShotConflictDataStore>();
             builder.Register<UpgradeSessionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -220,6 +222,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
+            // ウイルス（敵への継続ダメージ）の時間経過と毎秒ダメージ
+            builder.RegisterEntryPoint<VirusUseCase>();
             // ソシオパス（撃破でレイジを得る。発動中なら倍）
             builder.RegisterEntryPoint<SociopathUseCase>();
             // 召喚した味方の出現・被弾・攻撃・停止・消去と、サモンタレット・サモンドローンの召喚
