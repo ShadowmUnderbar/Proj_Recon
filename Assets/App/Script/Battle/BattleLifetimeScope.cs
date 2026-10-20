@@ -372,6 +372,7 @@ namespace App.Battle
 
             // デバッグ設定は組み立て時にだけ DebugConfig から読み、利用側へは注入で渡す
             builder.RegisterInstance(new EnemyGazeDebugSettings(DebugConfig.IsGazeTouchHitFeedback));
+            builder.RegisterInstance(new VirusDebugSettings(DebugConfig.IsVirusDebugLog));
             // デバッグ対戦の予約は組み立て時に1回だけ取り出す（リスタートはこの設定のまま続く）
             builder.RegisterInstance(CreateDebugArenaSettings());
             builder.RegisterInstance(_streamerCameraTriggerConfig);
