@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using App.Battle.Data;
 using App.Battle.Interface.DataStore;
+using R3;
 
 namespace App.Battle.DataStore
 {
@@ -12,7 +13,7 @@ namespace App.Battle.DataStore
     /// 重複時は威力を加算し、新しい効果時間が残り効果時間より長いときだけ時間を置き換える。
     /// 1秒周期の経過時間は重複しても引き継ぐ（付け直しのたびに周期が戻ってダメージが出なくなるのを防ぐ）
     /// </summary>
-    public class VirusDataStore : IVirusDataStore, IRunResettable
+    public class VirusDataStore : IVirusDataStore, IRunResettable, IDisposable
     {
         // ダメージを与える間隔（秒）
         private const float TickInterval = 1f;
@@ -38,6 +39,10 @@ namespace App.Battle.DataStore
         // 効果時間が切れた敵Idの一時バッファ（呼び出しごとに詰め直す）
         private readonly List<int> _expiredEnemyIds = new();
 
+        private readonly Subject<VirusApplyResult> _onApplied = new();
+
+        public Observable<VirusApplyResult> OnApplied => _onApplied;
+
         public void Apply(int enemyId, float power, float duration)
         {
             if (power <= 0f || duration <= 0f)
@@ -47,22 +52,31 @@ namespace App.Battle.DataStore
 
             if (!_viruses.TryGetValue(enemyId, out var state))
             {
-                _viruses.Add(enemyId, new VirusState
+                state = new VirusState
                 {
                     Power = power,
                     MaxDuration = duration,
                     RemainingTime = duration
-                });
+                };
+                _viruses.Add(enemyId, state);
+                _onApplied.OnNext(new VirusApplyResult(enemyId, power, duration, true, default, ToStatus(state), false,
+                    CalcDamagePerSecond(state.Power, state.MaxDuration)));
                 return;
             }
 
+            var before = ToStatus(state);
+
             state.Power += power;
 
-            if (duration > state.RemainingTime)
+            var isDurationReplaced = duration > state.RemainingTime;
+            if (isDurationReplaced)
             {
                 state.MaxDuration = duration;
                 state.RemainingTime = duration;
             }
+
+            _onApplied.OnNext(new VirusApplyResult(enemyId, power, duration, false, before, ToStatus(state), isDurationReplaced,
+                CalcDamagePerSecond(state.Power, state.MaxDuration)));
         }
 
         public bool TryGetVirus(int enemyId, out VirusStatus status)
@@ -73,8 +87,13 @@ namespace App.Battle.DataStore
                 return false;
             }
 
-            status = new VirusStatus(state.Power, state.MaxDuration, state.RemainingTime);
+            status = ToStatus(state);
             return true;
+        }
+
+        private static VirusStatus ToStatus(VirusState state)
+        {
+            return new VirusStatus(state.Power, state.MaxDuration, state.RemainingTime);
         }
 
         public void Advance(float deltaTime, List<VirusDamage> results)
@@ -129,6 +148,11 @@ namespace App.Battle.DataStore
         public void ResetRun()
         {
             _viruses.Clear();
+        }
+
+        public void Dispose()
+        {
+            _onApplied.Dispose();
         }
 
         /// <summary>

@@ -301,7 +301,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `BattleHitUseCase` | `OnHit` → 倍率（貫通バフ／ガン飛ばし／クリティカル）→ 感電伝播 → `EnemyDataStore.Damage`。撃破時の回復（HealOnKill）等 | Enemy, BuffState, CriticalHit, ElectricShock |
 | `PointDropUseCase` | 撃破 → 粒子ドロップ、回収 → ポイント加算。`BattleHitUseCase` より先に登録（撃破地点を読むため） | Point, PointDropCalculator |
 | `BuffConditionUseCase` / `CareNodeUseCase` | バフ条件の入力（ヒット・HP割合・回避）／ケア・ノードの毎秒効果 | BuffState, CareNode |
-| `VirusUseCase` | ウイルス（敵への継続ダメージ）の時間を進め、1秒ごとに固定ダメージ（`HitData.IsFixedDamage`）で `EnemyDataStore.Damage`。ウェーブ間ポーズ・オーバークロック・ゲームオーバー中は停止。敵が消えたら状態を破棄 | Virus, Enemy |
+| `VirusUseCase` | ウイルス（敵への継続ダメージ）の時間を進め、1秒ごとに固定ダメージ（`HitData.IsFixedDamage`）で `EnemyDataStore.Damage`。ウェーブ間ポーズ・オーバークロック・ゲームオーバー中は停止。敵が消えたら状態を破棄。デバッグ設定（`VirusDebugSettings`、メニュー `App/デバッグ: ウイルスのログを出す`）で発生・重複・ダメージをログに出す | Virus, Enemy |
 | `FreezeUseCase` | フリーズの開始・解除、ボスの時止めの開始・解除で弾・レイ演出を止める（論理和。ボスの時止めでは敵は止めない）。**敵の停止は「ウェーブ間ポーズ・フリーズ・オーバークロック」の論理和をここ1か所で計算して `EnemyPresenter.SetPause` に渡す**（停止要因ごとに別々に呼ぶと片方の解除で他を解いてしまう） | Freeze, WaveManager, Overclock, TimeStop, Enemy, BulletStore |
 | `OverclockUseCase` | オーバークロック。回避中の被弾無効化で秒数を獲得 → 3秒超で自動発動。発動中は敵弾の停止・レイ/トレイルの保持・視点の固定（`PlayerCameraPinView`）、終了時に溜めたダメージを1回で適用。ウェーブ間ポーズで打ち切り。発動・終了で `OverclockConfig` のセピア調プリセットをかける・外す | Overclock, DodgeParameter, PlayerState, BulletStore, SepiaTone |
 | `SepiaToneUseCase` | `SepiaToneDataStore.Weights` の変化を `SepiaToneView` へ流す | SepiaTone |
