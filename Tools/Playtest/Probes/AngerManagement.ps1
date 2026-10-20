@@ -5,7 +5,7 @@
 # 逆ギレ未所持でも BuffId のレイジで発動する。秒数・待ち時間は被弾した時点の最高レベルの値で決める。
 # デバッグ対戦（無敵）で始め、敵の攻撃で予約が増えないよう最初に敵を倒しておく（出し直しはしない）。
 # 被弾は IPlayerStateDataStore.TakeDamage で起こす（無敵でも OnDamaged は発火する）。
-# オーバークロック中は待ち時間が止まり、終わると進み出すことも見る。
+# オーバークロック中・ウェーブ間ポーズ中は待ち時間とレイジの残り時間が止まり、終わると進み出すことも見る。
 # スニペットの間は時間が進むので、待ち時間の前後は余裕を持って比べる。
 #
 
@@ -127,6 +127,7 @@ pendingField.FieldType.GetMethod("Clear").Invoke(pendingField.GetValue(anger), n
 return $"{{\"seconds\":{F(seconds)},\"value1\":{F(l3.Value1.value)}}}";
 '@
     Assert-Near -Name 'L1とL3: 最高レベルの Value1 で秒数を決める' -Actual $r.seconds -Expected (2 * [double]$r.value1)
+    $Global:AngerL3Value1 = [double]$r.value1
 
     # --- 逆ギレ所持: 被弾で即座に得るレイジに、Value2 秒後の分が足される ---
     $r = Invoke-AngerSnippet -Body @'
@@ -175,4 +176,32 @@ return $"{{\"pending\":{pending}}}";
 return $"{{\"pending\":{Pending()}}}";
 '@
     Assert-ProbeValue -Name 'オーバークロック: 終わると待ち時間が進み消化される' -Actual $r.pending -Expected 0 | Out-Null
+
+    # --- ウェーブ間ポーズ中は待ち時間もレイジの残り時間も進まない ---
+    $r = Invoke-AngerSnippet -Body @'
+SetRage(5f);
+player.TakeDamage(2f);
+wave.SetWavePause(true);
+return $"{{\"pending\":{Pending()},\"rage\":{F(Rage())}}}";
+'@
+    $rageAtPause = [double]$r.rage
+    Assert-ProbeValue -Name 'ポーズ: 被弾で予約する' -Actual $r.pending -Expected 1 | Out-Null
+
+    Start-Sleep -Milliseconds ([int](($delay + 1.5) * 1000))
+    $r = Invoke-AngerSnippet -Body @'
+var pending = Pending();
+var rage = Rage();
+wave.SetWavePause(false);
+return $"{{\"pending\":{pending},\"rage\":{F(rage)}}}";
+'@
+    Assert-ProbeValue -Name 'ポーズ: ポーズ中は Value2 秒経っても予約のまま' -Actual $r.pending -Expected 1 | Out-Null
+    Assert-Near -Name 'ポーズ: ポーズ中はレイジの残り時間が減らない' -Actual $r.rage -Expected $rageAtPause -Tolerance 0.05
+
+    Start-Sleep -Milliseconds ([int](($delay + 1.5) * 1000))
+    $r = Invoke-AngerSnippet -Body @'
+return $"{{\"pending\":{Pending()},\"rage\":{F(Rage())}}}";
+'@
+    $gained = $rageAtPause + 2 * $Global:AngerL3Value1
+    Assert-ProbeValue -Name 'ポーズ: ポーズが明けると待ち時間が進み消化される' -Actual $r.pending -Expected 0 | Out-Null
+    Assert-ProbeTrue -Name 'ポーズ: ポーズが明けるとレイジの残り時間が減り始める' -Condition (([double]$r.rage -lt $gained - 5) -and ([double]$r.rage -gt $gained - 11)) -Detail "実測=$($r.rage) 経過なしなら=$gained（ポーズ明けから約 Value2+1.5 秒分減る）" | Out-Null
 }
