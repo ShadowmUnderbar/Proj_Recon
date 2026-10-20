@@ -86,11 +86,13 @@ namespace App.Battle.DataStore
         private float _currentHealthRatio = 1f;
 
         private readonly IOverclockDataStore _overclockDataStore;
+        private readonly IWaveManagerDataStore _waveManagerDataStore;
 
         [Inject]
-        public BuffStateDataStore(IOverclockDataStore overclockDataStore)
+        public BuffStateDataStore(IOverclockDataStore overclockDataStore, IWaveManagerDataStore waveManagerDataStore)
         {
             _overclockDataStore = overclockDataStore;
+            _waveManagerDataStore = waveManagerDataStore;
         }
 
         public void Tick()
@@ -109,7 +111,8 @@ namespace App.Battle.DataStore
                 }
             }
 
-            if (_rageRemainingTime > 0f)
+            // レイジはウェーブ間ポーズ（ショップ等）の間も残り時間を減らさない
+            if (_rageRemainingTime > 0f && !_waveManagerDataStore.IsWavePause.Value)
             {
                 _rageRemainingTime -= Time.deltaTime;
             }

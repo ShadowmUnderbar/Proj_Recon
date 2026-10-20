@@ -118,6 +118,9 @@ namespace App.Battle.DataStore
 
             // Value1=1ウェーブに発動できる回数 / Value2=レイジ発動中にレイジの残り秒数へ掛ける回復倍率
             { UpgradeType.Grit, new[] { ValueFormat.Raw, ValueFormat.Raw } },
+
+            // Value1=受けたダメージに掛けるレイジ秒数の割合（1.5→150%） / Value2=レイジを得るまでの秒数
+            { UpgradeType.AngerManagement, new[] { ValueFormat.Percent, ValueFormat.Raw } },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む
