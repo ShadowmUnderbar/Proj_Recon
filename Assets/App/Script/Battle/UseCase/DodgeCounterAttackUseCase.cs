@@ -19,6 +19,7 @@ namespace App.Battle.UseCase
     /// 「攻撃対象の検索（扇形＋直線）→ レイ演出 → フリーズ → フリーズ解除後にダメージ」を行う。
     /// 接触した敵は扇形範囲外でも必ず攻撃対象に含める。
     /// スタンは「吹き飛ばしの移動時間＋フリーズ時間」で自動的に解除される。
+    /// 毒牙を所持していれば、接触した敵へダメージを与えた後にウイルスを付与する。
     /// </summary>
     public class DodgeCounterAttackUseCase : IRunResettable, IInitializable, ITickable, IDisposable
     {
@@ -33,6 +34,7 @@ namespace App.Battle.UseCase
 
         private readonly IFreezeDataStore _freezeDataStore;
         private readonly IOverclockDataStore _overclockDataStore;
+        private readonly IDokugaDataStore _dokugaDataStore;
 
         // レイ演出の高さなどの調整値
         private readonly DodgeCounterAttackConfig _config;
@@ -46,6 +48,10 @@ namespace App.Battle.UseCase
         private float _pendingDamage;
         private Vector3 _pendingDamageOrigin;
 
+        // 持ち越し分のうち、回避中に体が触れた敵（毒牙のウイルス付与対象）。
+        // DataStore側の接触記録は回避終了時に破棄されるため、ここへ複製する
+        private readonly List<int> _pendingContactedEnemyIds = new();
+
         [Inject]
         public DodgeCounterAttackUseCase(
             IPlayerDodgeParameterDataStore playerDodgeParameterDataStore,
@@ -57,7 +63,8 @@ namespace App.Battle.UseCase
             IPlayerStateDataStore playerStateDataStore,
             DodgeCounterAttackConfig config,
             IFreezeDataStore freezeDataStore,
-            IOverclockDataStore overclockDataStore
+            IOverclockDataStore overclockDataStore,
+            IDokugaDataStore dokugaDataStore
         )
         {
             _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
@@ -70,6 +77,7 @@ namespace App.Battle.UseCase
             _config = config;
             _freezeDataStore = freezeDataStore;
             _overclockDataStore = overclockDataStore;
+            _dokugaDataStore = dokugaDataStore;
         }
 
         public void Initialize()
@@ -211,6 +219,8 @@ namespace App.Battle.UseCase
             _pendingDamageEnemyIds.Clear();
             _pendingDamageEnemyIds.AddRange(targetEnemyIds);
             _pendingDamageEnemyIds.AddRange(lineTargetEnemyIds);
+            _pendingContactedEnemyIds.Clear();
+            _pendingContactedEnemyIds.AddRange(_dodgeCounterAttackDataStore.ContactedEnemyIds);
             _pendingDamage = damage;
             _pendingDamageOrigin = origin;
             _hasPendingDamage = true;
@@ -234,6 +244,7 @@ namespace App.Battle.UseCase
             _pendingDamage = 0f;
             _pendingDamageOrigin = Vector3.zero;
             _pendingDamageEnemyIds.Clear();
+            _pendingContactedEnemyIds.Clear();
         }
 
         /// <summary>
@@ -253,6 +264,7 @@ namespace App.Battle.UseCase
             if (_waveManagerDataStore.IsWavePause.Value)
             {
                 _pendingDamageEnemyIds.Clear();
+                _pendingContactedEnemyIds.Clear();
                 return;
             }
 
@@ -262,6 +274,29 @@ namespace App.Battle.UseCase
             }
 
             _pendingDamageEnemyIds.Clear();
+
+            InfectContactedEnemies();
+        }
+
+        /// <summary>
+        /// 毒牙: 接触ダメージを受けた敵にウイルスを付与する。
+        /// 接触した敵は必ず攻撃対象に含まれるため、ここに残っている敵はダメージを受けている。
+        /// そのダメージで撃破された敵には付与しない
+        /// </summary>
+        private void InfectContactedEnemies()
+        {
+            for (var i = 0; i < _pendingContactedEnemyIds.Count; i++)
+            {
+                var enemyId = _pendingContactedEnemyIds[i];
+                if (!_enemyDataStore.TryGetEnemyData(enemyId, out var enemyData) || enemyData.IsDead)
+                {
+                    continue;
+                }
+
+                _dokugaDataStore.Infect(enemyId);
+            }
+
+            _pendingContactedEnemyIds.Clear();
         }
 
         /// <summary>

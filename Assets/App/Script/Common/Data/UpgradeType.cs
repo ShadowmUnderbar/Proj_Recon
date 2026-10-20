@@ -45,4 +45,6 @@ public enum UpgradeType
     SummonDrone = 41, // サモンドローン
     Sociopath = 42, // ソシオパス
     Grit = 43, // 食いしばり
+    AngerManagement = 44, // アンガーマネジメント
+    Dokuga = 45, // 毒牙
 }

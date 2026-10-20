@@ -118,6 +118,9 @@ namespace App.Battle.DataStore
 
             // Value1=1ウェーブに発動できる回数 / Value2=レイジ発動中にレイジの残り秒数へ掛ける回復倍率
             { UpgradeType.Grit, new[] { ValueFormat.Raw, ValueFormat.Raw } },
+
+            // Value1=ウイルスの威力 / Value2=ウイルスの効果時間（秒）
+            { UpgradeType.Dokuga, new[] { ValueFormat.Raw, ValueFormat.Raw } },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む

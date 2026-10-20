@@ -118,6 +118,8 @@ namespace App.Battle
                 .As<IElectricShockDataStore>();
             builder.Register<VirusDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IVirusDataStore>();
+            builder.Register<DokugaDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IDokugaDataStore>();
             builder.Register<ShotConflictDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IShotConflictDataStore>();
             builder.Register<UpgradeSessionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
