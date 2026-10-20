@@ -14,6 +14,7 @@ namespace App.Battle.DataStore
         private readonly IBuffStateDataStore _buffStateDataStore;
         private readonly IGritDataStore _gritDataStore;
         private readonly IEmergencyNodeDataStore _emergencyNodeDataStore;
+        private readonly ITenacityDataStore _tenacityDataStore;
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly PlayerBaseParameterConfig _baseParameter;
         private readonly DebugArenaSettings _debugArenaSettings;
@@ -27,6 +28,7 @@ namespace App.Battle.DataStore
             IBuffStateDataStore buffStateDataStore,
             IGritDataStore gritDataStore,
             IEmergencyNodeDataStore emergencyNodeDataStore,
+            ITenacityDataStore tenacityDataStore,
             IUpgradeEffectSimpleCalculatorDataStore upgradeEffectSimpleCalculatorDataStore,
             PlayerBaseParameterConfig baseParameter,
             DebugArenaSettings debugArenaSettings
@@ -36,6 +38,7 @@ namespace App.Battle.DataStore
             _buffStateDataStore = buffStateDataStore;
             _gritDataStore = gritDataStore;
             _emergencyNodeDataStore = emergencyNodeDataStore;
+            _tenacityDataStore = tenacityDataStore;
             _upgradeEffectSimpleCalculatorDataStore = upgradeEffectSimpleCalculatorDataStore;
             _baseParameter = baseParameter;
             _debugArenaSettings = debugArenaSettings;
@@ -137,7 +140,16 @@ namespace App.Battle.DataStore
                 }
                 else
                 {
-                    Health.Value = Mathf.Max(0f, Health.Value - damage);
+                    // ダメージを受けてから執念で回復する（この時点で体力0なら回復せず敗北）。
+                    // 回復量はこの被弾で得るレイジを含めないよう被弾の通知より前に決め、
+                    // 購読側に減った直後の値が流れないよう体力は1回で書き換える
+                    var damagedHealth = Mathf.Max(0f, Health.Value - damage);
+                    if (damagedHealth > 0f)
+                    {
+                        damagedHealth = Mathf.Min(MaxHealth.Value, damagedHealth + _tenacityDataStore.GetHealAmount(damage));
+                    }
+
+                    Health.Value = damagedHealth;
                 }
             }
 
