@@ -23,6 +23,9 @@ namespace App.Common.Data
         /// <summary>デバッグ用「視線が判定球を通った敵に被弾リアクションを出す」設定の有効フラグ</summary>
         public static string GazeTouchHitFeedbackKey => "GazeTouchHitFeedback";
 
+        /// <summary>デバッグ用「ウイルスの発生・重複・ダメージをログに出す」設定の有効フラグ</summary>
+        public static string VirusDebugLogKey => "VirusDebugLog";
+
         /// <summary>デバッグ用「敵と対戦」の予約内容（DebugArenaRequestのJSON）。次のバトルの組み立てで1回だけ使う</summary>
         public static string DebugArenaRequestKey => "DebugArenaRequest";
 
@@ -46,6 +49,13 @@ namespace App.Common.Data
 #else
         // 実行のたびに読み直す（メニューでの変更をドメインリロード無しでも拾えるようにする）
         public static bool IsGazeTouchHitFeedback => EditorPrefs.GetBool(GazeTouchHitFeedbackKey, false);
+#endif
+
+#if !UNITY_EDITOR
+        public static bool IsVirusDebugLog => false;
+#else
+        // 実行のたびに読み直す（メニューでの変更をドメインリロード無しでも拾えるようにする）
+        public static bool IsVirusDebugLog => EditorPrefs.GetBool(VirusDebugLogKey, false);
 #endif
 
 #if !UNITY_EDITOR

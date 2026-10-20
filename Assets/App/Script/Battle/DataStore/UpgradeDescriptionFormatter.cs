@@ -122,6 +122,9 @@ namespace App.Battle.DataStore
             // Value1=受けたダメージに掛けるレイジ秒数の割合（1.5→150%） / Value2=レイジを得るまでの秒数
             { UpgradeType.AngerManagement, new[] { ValueFormat.Percent, ValueFormat.Raw } },
 
+            // Value1=ウイルスの威力 / Value2=ウイルスの効果時間（秒）
+            { UpgradeType.Dokuga, new[] { ValueFormat.Raw, ValueFormat.Raw } },
+
             // Value1=受けたダメージに対する回復割合 / Value2=レイジ発動中の回復割合
             { UpgradeType.Tenacity, new[] { ValueFormat.Percent, ValueFormat.Percent } },
         };

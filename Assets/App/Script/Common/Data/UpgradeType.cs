@@ -46,5 +46,6 @@ public enum UpgradeType
     Sociopath = 42, // ソシオパス
     Grit = 43, // 食いしばり
     AngerManagement = 44, // アンガーマネジメント
+    Dokuga = 45, // 毒牙
     Tenacity = 46, // 執念
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using App.Battle.Data;
 using App.Battle.DataStore;
 using NUnit.Framework;
+using R3;
 
 namespace App.Tests.EditMode
 {
@@ -178,6 +179,63 @@ namespace App.Tests.EditMode
 
             _store.ResetRun();
             Assert.IsFalse(_store.TryGetVirus(EnemyB, out _));
+        }
+
+        [Test]
+        public void 付与のたびに発生か重複かと前後の状態が流れる()
+        {
+            var results = new List<VirusApplyResult>();
+            using var subscription = _store.OnApplied.Subscribe(results.Add);
+
+            _store.Apply(EnemyA, 10f, 5f);
+            Run(3f, 1f);
+            _store.Apply(EnemyA, 3f, 3f);
+            _store.Apply(EnemyA, 2f, 1f);
+
+            Assert.AreEqual(3, results.Count);
+
+            var created = results[0];
+            Assert.IsTrue(created.IsNew);
+            Assert.IsFalse(created.IsDurationReplaced);
+            Assert.AreEqual(EnemyA, created.EnemyId);
+            Assert.AreEqual(10f, created.After.Power, Tolerance);
+            Assert.AreEqual(5f, created.After.MaxDuration, Tolerance);
+            Assert.AreEqual(5f, created.After.RemainingTime, Tolerance);
+
+            // 残り2秒に (3, 3秒) → 時間を置き換え、威力は加算
+            var replaced = results[1];
+            Assert.IsFalse(replaced.IsNew);
+            Assert.IsTrue(replaced.IsDurationReplaced);
+            Assert.AreEqual(3f, replaced.AddedPower, Tolerance);
+            Assert.AreEqual(3f, replaced.AddedDuration, Tolerance);
+            Assert.AreEqual(10f, replaced.Before.Power, Tolerance);
+            Assert.AreEqual(5f, replaced.Before.MaxDuration, Tolerance);
+            Assert.AreEqual(2f, replaced.Before.RemainingTime, Tolerance);
+            Assert.AreEqual(13f, replaced.After.Power, Tolerance);
+            Assert.AreEqual(3f, replaced.After.MaxDuration, Tolerance);
+            Assert.AreEqual(3f, replaced.After.RemainingTime, Tolerance);
+            Assert.AreEqual(13f / 3f, replaced.DamagePerSecond, Tolerance);
+
+            // 残り3秒に (2, 1秒) → 時間はそのまま、威力だけ加算
+            var kept = results[2];
+            Assert.IsFalse(kept.IsNew);
+            Assert.IsFalse(kept.IsDurationReplaced);
+            Assert.AreEqual(13f, kept.Before.Power, Tolerance);
+            Assert.AreEqual(15f, kept.After.Power, Tolerance);
+            Assert.AreEqual(3f, kept.After.MaxDuration, Tolerance);
+            Assert.AreEqual(3f, kept.After.RemainingTime, Tolerance);
+        }
+
+        [Test]
+        public void 付与しなかったときは流れない()
+        {
+            var count = 0;
+            using var subscription = _store.OnApplied.Subscribe(_ => count++);
+
+            _store.Apply(EnemyA, 0f, 5f);
+            _store.Apply(EnemyA, 5f, 0f);
+
+            Assert.AreEqual(0, count);
         }
     }
 }

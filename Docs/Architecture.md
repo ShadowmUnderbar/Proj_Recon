@@ -301,7 +301,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `BattleHitUseCase` | `OnHit` → 倍率（貫通バフ／ガン飛ばし／クリティカル）→ 感電伝播 → `EnemyDataStore.Damage`。撃破時の回復（HealOnKill）等 | Enemy, BuffState, CriticalHit, ElectricShock |
 | `PointDropUseCase` | 撃破 → 粒子ドロップ、回収 → ポイント加算。`BattleHitUseCase` より先に登録（撃破地点を読むため） | Point, PointDropCalculator |
 | `BuffConditionUseCase` / `CareNodeUseCase` | バフ条件の入力（ヒット・HP割合・回避）／ケア・ノードの毎秒効果 | BuffState, CareNode |
-| `VirusUseCase` | ウイルス（敵への継続ダメージ）の時間を進め、1秒ごとに固定ダメージ（`HitData.IsFixedDamage`）で `EnemyDataStore.Damage`。ウェーブ間ポーズ・オーバークロック・ゲームオーバー中は停止。敵が消えたら状態を破棄 | Virus, Enemy |
+| `VirusUseCase` | ウイルス（敵への継続ダメージ）の時間を進め、1秒ごとに固定ダメージ（`HitData.IsFixedDamage`）で `EnemyDataStore.Damage`。ウェーブ間ポーズ・オーバークロック・ゲームオーバー中は停止。敵が消えたら状態を破棄。デバッグ設定（`VirusDebugSettings`、メニュー `App/デバッグ: ウイルスのログを出す`）で発生・重複・ダメージをログに出す | Virus, Enemy |
 | `FreezeUseCase` | フリーズの開始・解除、ボスの時止めの開始・解除で弾・レイ演出を止める（論理和。ボスの時止めでは敵は止めない）。**敵の停止は「ウェーブ間ポーズ・フリーズ・オーバークロック」の論理和をここ1か所で計算して `EnemyPresenter.SetPause` に渡す**（停止要因ごとに別々に呼ぶと片方の解除で他を解いてしまう） | Freeze, WaveManager, Overclock, TimeStop, Enemy, BulletStore |
 | `OverclockUseCase` | オーバークロック。回避中の被弾無効化で秒数を獲得 → 3秒超で自動発動。発動中は敵弾の停止・レイ/トレイルの保持・視点の固定（`PlayerCameraPinView`）、終了時に溜めたダメージを1回で適用。ウェーブ間ポーズで打ち切り。発動・終了で `OverclockConfig` のセピア調プリセットをかける・外す | Overclock, DodgeParameter, PlayerState, BulletStore, SepiaTone |
 | `SepiaToneUseCase` | `SepiaToneDataStore.Weights` の変化を `SepiaToneView` へ流す | SepiaTone |
@@ -360,7 +360,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | （共通）`TagLocalizationDataStore` / `UpgradeTagRankingDataStore` / `UpgradeTagRanking` | アップグレードのタグ（表示専用）。タグ名は Localization の `TagText` テーブル（キーは `$`＋`UpgradeTag` の名前）。所持タグ上位は ID の一覧から数える（レベル違いは1件・件数順・同数は定義順）ので、ショップ以外（セット選択・ポーズ等）からも使える。マスターデータは `UpgradeTagData` シート（NameKey とタグの縦持ち）→ `UpgradeTagDataImporter` で各レベルの `UpgradeMasterData.Tags` へ |
 | `BuffStateDataStore` | 取得済みバフの発動条件進行と残り時間。バフ「レイジ」（`OnDamaged` 条件のバフ。アップグレード「逆ギレ」が付与）は、逆ギレを何レベル持っていても獲得元が何でも**残り時間1本・効果1つ**の状態として持ち（残り時間はオーバークロック中・ウェーブ間ポーズ中は減らない）、発動中判定 `IsRageActive` と獲得 `GainRage` を公開する。被弾（逆ギレ）は最高レベルの倍率で、撃破（ソシオパス）は `GainRage` で同じ残り時間を増やす。逆ギレ未所持で `GainRage` されたときは渡されたバフの効果で発動する（被弾では延びない）。**レイジの発動を条件にするアップグレードはこれを使う** |
 | `AllyDataStore` | 召喚した味方のデータ（種類・体力・攻撃間隔・射程・旋回速度・移動速度・狙われるか）。同じ種類が `AllyConfig` の最大数（0なら上限なし）に達していれば出さない。Id は敵・プレイヤーと重ならない負の値（-100 から）。種類ごとの値は `AllyConfig`。最大体力は基礎値にプレイヤーの体力アップ（`CalcMultiply(Health)`）と同じ倍率を掛けた値（出現時に固定）。体力0・一括消去・出現失敗で `OnAllyRemoved` |
-| 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack`, `SummonTurret`, `SummonDrone`, `Sociopath`, `Grit`, `AngerManagement`, `Tenacity`, `Virus` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |
+| 個別効果: `Avalanche`, `PeaceMaker`, `CriticalHit`, `ElectricShock`, `HealOnKill`, `SnakeEyes`, `Medusa`, `MeanMug`, `DependencyNode`, `DamageNode`, `CareNode`, `EmergencyNode`, `DodgeCounterAttack`, `SummonTurret`, `SummonDrone`, `Sociopath`, `Grit`, `AngerManagement`, `Tenacity`, `Virus`, `Dokuga` | 各アップグレードの実行時状態・倍率計算。**新しいアップグレードはこの粒度で DataStore を足す**（`upgrade-add` スキル参照） |
 
 **ポイント・配信**
 

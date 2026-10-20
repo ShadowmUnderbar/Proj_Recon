@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using App.Battle.Data;
+using R3;
 
 namespace App.Battle.Interface.DataStore
 {
@@ -16,6 +17,9 @@ namespace App.Battle.Interface.DataStore
         /// 威力・効果時間が0以下なら何もしない。
         /// </summary>
         void Apply(int enemyId, float power, float duration);
+
+        /// <summary>付与するたびに、発生か重複かと付与前後の状態を流す（デバッグログ等の確認用）</summary>
+        Observable<VirusApplyResult> OnApplied { get; }
 
         /// <summary>敵に付いているウイルスの状態を返す。付いていなければ false</summary>
         bool TryGetVirus(int enemyId, out VirusStatus status);
