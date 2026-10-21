@@ -8,7 +8,7 @@ using VContainer;
 namespace App.Battle.UseCase
 {
     /// <summary>
-    /// アップグレードの付与副作用（GrantBuffのバフ起動・バリアの満タン付与）を適用する共通処理。
+    /// アップグレードの付与副作用（GrantBuffのバフ起動・バリアの満タン付与・最大値の再計算）を適用する共通処理。
     /// ショップでの新規獲得（<see cref="ShopUseCase"/>）とセット読込（<see cref="RunStartUseCase"/>）の
     /// 両方から使う。セッションへの追加（AddUpgrade/Preload）は呼び出し側の責務。
     /// </summary>
@@ -17,6 +17,7 @@ namespace App.Battle.UseCase
         private readonly IBuffStateDataStore _buffStateDataStore;
         private readonly IPlayerBarrierDataStore _playerBarrierDataStore;
         private readonly IPlayerStateDataStore _playerStateDataStore;
+        private readonly IPlayerDodgeParameterDataStore _playerDodgeParameterDataStore;
         private readonly BuffDatabase _buffDatabase;
 
         [Inject]
@@ -24,12 +25,14 @@ namespace App.Battle.UseCase
             IBuffStateDataStore buffStateDataStore,
             IPlayerBarrierDataStore playerBarrierDataStore,
             IPlayerStateDataStore playerStateDataStore,
+            IPlayerDodgeParameterDataStore playerDodgeParameterDataStore,
             BuffDatabase buffDatabase
         )
         {
             _buffStateDataStore = buffStateDataStore;
             _playerBarrierDataStore = playerBarrierDataStore;
             _playerStateDataStore = playerStateDataStore;
+            _playerDodgeParameterDataStore = playerDodgeParameterDataStore;
             _buffDatabase = buffDatabase;
         }
 
@@ -53,6 +56,12 @@ namespace App.Battle.UseCase
             if (upgrade.UpgradeType == UpgradeType.Health)
             {
                 _playerStateDataStore.RefreshMaxHealth();
+            }
+
+            // ホップステップ: 回避回数の上限を再計算する（増えた分は現在の回避回数にも入る）
+            if (upgrade.UpgradeType == UpgradeType.HopSteps)
+            {
+                _playerDodgeParameterDataStore.RefreshMaxDodgeCount();
             }
 
             // バリア型: 最大HP×倍率で満タン付与

@@ -105,6 +105,7 @@ Googleスプレッドシート（正本）
 | `Tenacity` | `TenacityDataStore` → `PlayerStateDataStore.TakeDamage`（被弾でHPが減ったとき、受けたダメージ × Value1 を即座に回復する。レイジ発動中なら × Value2。発動中かはこの被弾で得るレイジを含めないよう `OnDamaged` の通知より前に判定する。ダメージを受けてから回復し、体力0なら回復しない。バリアで防いだ・食いしばり／エマージェンシー・ノードで耐えた被弾では回復しない。最高レベルのみ採用。検証は `playtest-run` の `Tenacity` プローブ） |
 | `Vampire` | `VampireDataStore` → `BattleHitUseCase.OnEnemyDead`（敵を撃破するたびに体力を Value1 回復する。ランクを問わない。撃破は `EnemyDataStore.Damage` で体力0になったもの（味方の撃破も含む）。ジャイアントキリング（`HealOnKill`）の回復と合計して1回で `Heal` する。最高レベルのみ採用。検証は `playtest-run` の `Vampire` プローブ） |
 | `Cachummyyy` | `CachummyyyDataStore` → `PointDropUseCase`（キャッシュ（ポイント粒子）を1個回収するたびに、粒子の値が Value1 以上なら体力を Value2 回復する（粒子の値に比例しない）。Value1=回復する粒子の最低値 / Value2=回復量。回収の通知は `IPointParticlePresenter.OnCollected`（オーバークロック中は粒子が止まり回収されない）。最高レベルのみ採用。検証は `playtest-run` の `Cachummyyy` プローブ） |
+| `HopSteps` | `HopStepsDataStore` → `PlayerDodgeParameterDataStore`（Value1=回避回数の上限に足す回数 / Value2=回避のクールダウンに掛ける倍率。最高レベルのみ採用。上限は `RefreshMaxDodgeCount` で再計算し、`UpgradeSideEffectApplier` が獲得時・セット読込時に呼ぶ（増えた分はその場で使える）。クールダウンは `SetCoolDownTime` で基礎値に掛ける。検証は `playtest-run` の `HopSteps` プローブ） |
 
 > 📌 **バフ「レイジ」の扱い**: アップグレード「逆ギレ」（`$SnapBack`。旧名レイジ）は GrantBuff 型で、被弾で効果時間が延びる `BuffConditionType.OnDamaged` 条件のバフ「レイジ」（`$RageBuffL1`〜`L3`）を付与する。`BuffStateDataStore` はレイジを、逆ギレを何レベル持っていても獲得元が何でも**残り時間1本・効果1つ（攻撃倍率は重ねない）**の状態として持つ。被弾では最高レベルの `ConditionValue` × ダメージ秒を得る。**残り時間はオーバークロック中とウェーブ間ポーズ（ショップ・ラン開始前・ゲームオーバー）の間は減らない**。**レイジの発動を条件にするアップグレードは `IBuffStateDataStore.IsRageActive` で判定し、レイジを与えるなら `GainRage(秒, 逆ギレ未所持時のバフ)` を使う**（発動中なら残り時間に足し、切れていれば0から発動。逆ギレ未所持なら渡されたバフの効果で発動し、被弾では延びない）。レイジの見分けは `BuffStateDataStore.IsRageBuff`（`OnDamaged` 条件）の1か所に寄せてあるので、別の被弾条件バフを足すときはここを見直す
 
@@ -117,7 +118,7 @@ Googleスプレッドシート（正本）
 
 > 🗑 **廃止済み**: `ParryingDagger`（パリングダガー）はアップグレードとして廃止し、**回避時跳ね返し攻撃としてデフォルト機能へ移行**した（`DodgeCounterAttackDataStore` / `DodgeCounterAttackUseCase`）。enum・CSV行・アセット・スプレッドシート行のすべてを削除済みで、`UpgradeType` の 32 は欠番。同様に「アップグレードを廃止してデフォルト化」する場合は、enum削除（スプレッドシートのenumシート → `UpgradeType.cs`）・CSV行削除・`Upgrade/*.asset` 削除・`UpgradeDatabase.asset` のguid参照削除・消費側コードの置き換えをセットで行う（保存済みセットの参照は `TryGetUpgradeMasterData` が空振りするだけなので安全）。
 
-> ⚠️ **未接続タイプ問題**: `DodgeDistance` / `DodgeCount` / `DodgeCooldown` は enum・CSVには存在するが**どこからも Calc されておらず、効果が出ない**。（`Health` は接続済み: `PlayerStateDataStore.RefreshMaxHealth` が最大HPに `CalcMultiply(Health)` を掛け、`UpgradeSideEffectApplier` が獲得時に呼ぶ。召喚した味方の最大体力にも `AllyDataStore.TrySpawn` が同じ倍率を掛ける）**新タイプ追加＝消費側コードもセットで書く**ことを絶対に忘れない。
+> ⚠️ **未接続タイプ問題**: `DodgeDistance` / `DodgeCount` / `DodgeCooldown` は enum・CSVには存在するが**どこからも Calc されておらず、効果が出ない**（回避回数・クールダウンを変えるホップステップは専用タイプ `HopSteps` で接続した）。（`Health` は接続済み: `PlayerStateDataStore.RefreshMaxHealth` が最大HPに `CalcMultiply(Health)` を掛け、`UpgradeSideEffectApplier` が獲得時に呼ぶ。召喚した味方の最大体力にも `AllyDataStore.TrySpawn` が同じ倍率を掛ける）**新タイプ追加＝消費側コードもセットで書く**ことを絶対に忘れない。
 
 いずれも基礎値は ScriptableObject `PlayerBaseParameterConfig`（`Assets/App/Script/Battle/Data/PlayerBaseParameterConfig.cs`、アセットは `Assets/App/MasterData/Player/PlayerBaseParameterConfig.asset`）。各 DataStore にコンストラクタ注入され、乗算補正として重なる。
 

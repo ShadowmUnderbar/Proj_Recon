@@ -50,4 +50,5 @@ public enum UpgradeType
     Tenacity = 46, // 執念
     Vampire = 47, // ヴァンパイア
     Cachummyyy = 48, // カチャミー
+    HopSteps = 49, // ホップステップ
 }
