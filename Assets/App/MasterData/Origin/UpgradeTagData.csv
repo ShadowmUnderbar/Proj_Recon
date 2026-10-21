@@ -43,10 +43,11 @@ $ExtraConflict,NormalShot
 $FocusConflict,FocusConflict
 $MergeConflict,MergeConflict
 $WaltzConflict,WaltzConflict
-$Overclock,OverClock
-$Overclock,Blink
+$MatrixTime,OverClock
+$MatrixTime,Blink
 $Sociopath,Rage
 $AngerManagement,Rage
 $Dokuga,Virus
+$Dokuga,Blink
 $Tenacity,Rage
 $Tenacity,Hurt
