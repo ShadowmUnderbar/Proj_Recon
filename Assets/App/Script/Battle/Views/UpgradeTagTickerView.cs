@@ -40,10 +40,11 @@ namespace App.Battle.Views
 
             if (_text != null)
             {
-                // 流すときは1行で左端から並べる前提で幅を測るため、prefab の設定に関わらず固定する
+                // 流すときは1行で左端から並べる前提で幅を測るため、prefab の設定に関わらず固定する。
+                // 縦方向の揃えは prefab のレイアウトに任せる
                 _text.enableWordWrapping = false;
                 _text.overflowMode = TextOverflowModes.Overflow;
-                _text.alignment = TextAlignmentOptions.MidlineLeft;
+                _text.horizontalAlignment = HorizontalAlignmentOptions.Left;
             }
         }
 
