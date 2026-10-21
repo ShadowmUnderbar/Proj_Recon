@@ -35,10 +35,10 @@ namespace App.Battle.Interface
         void SetUpgradeText(int index, in UpgradeLocalizedText text);
 
         /// <summary>
-        /// 指定インデックスの候補にタグの表示名を反映する（3Dカードのみ。ボタン表示では出さない）。
-        /// Open の後に呼ぶ。ロケール切替でタグ名が変わったときも呼び直される
+        /// 指定インデックスの候補にタグを反映する（3Dカードのみ。ボタン表示では出さない）。
+        /// Open の後に呼ぶ。表示はロケールに関わらず英語の enum 名（例: #Barrier）
         /// </summary>
-        void SetUpgradeTags(int index, IReadOnlyList<string> tagNames);
+        void SetUpgradeTags(int index, IReadOnlyList<UpgradeTag> tags);
 
         /// <summary>所持アップグレードのタグ上位（件数の多い順・件数つき）を表示する</summary>
         void SetOwnedTagRanking(IReadOnlyList<LocalizedUpgradeTagCount> ranking);

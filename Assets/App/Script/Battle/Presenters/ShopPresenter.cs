@@ -48,9 +48,9 @@ namespace App.Battle.Presenters
             _shopView.SetUpgradeText(index, text);
         }
 
-        public void SetUpgradeTags(int index, IReadOnlyList<string> tagNames)
+        public void SetUpgradeTags(int index, IReadOnlyList<UpgradeTag> tags)
         {
-            _shopView.SetUpgradeTags(index, tagNames);
+            _shopView.SetUpgradeTags(index, tags);
         }
 
         public void SetOwnedTagRanking(IReadOnlyList<LocalizedUpgradeTagCount> ranking)

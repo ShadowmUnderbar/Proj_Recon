@@ -186,12 +186,12 @@ namespace App.Battle.Views
             _currentPointLabel.text = $"所持ポイント: {currentPoint} P";
         }
 
-        public void SetUpgradeTags(int index, IReadOnlyList<string> tagNames)
+        public void SetUpgradeTags(int index, IReadOnlyList<UpgradeTag> tags)
         {
             // ボタン表示はラベルが1つしかなく、名前とコストで埋まるためタグは出さない
             if (_isCardMode)
             {
-                _upgradeCardBoardView.SetTags(index, tagNames);
+                _upgradeCardBoardView.SetTags(index, tags);
             }
         }
 

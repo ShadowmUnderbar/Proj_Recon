@@ -205,14 +205,14 @@ namespace App.Battle.Views
             }
         }
 
-        /// <summary>指定インデックスのカードに、タグの表示名を反映する（購入済みで消えたカードは無視）</summary>
-        public void SetTags(int index, IReadOnlyList<string> tagNames)
+        /// <summary>指定インデックスのカードに、タグを反映する（購入済みで消えたカードは無視）</summary>
+        public void SetTags(int index, IReadOnlyList<UpgradeTag> tags)
         {
             foreach (var card in _cards)
             {
                 if (card.Index == index)
                 {
-                    card.SetTags(tagNames);
+                    card.SetTags(tags);
                     return;
                 }
             }

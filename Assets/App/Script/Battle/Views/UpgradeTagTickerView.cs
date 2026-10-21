@@ -14,8 +14,8 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("タグを表示するテキスト。左寄せ・折り返しなしで使う（幅が表示枠になる）")]
         private TextMeshPro _text;
 
-        [SerializeField, Tooltip("タグ同士の区切り")]
-        private string _separator = "  /  ";
+        [SerializeField, Tooltip("タグ同士の区切り（各タグに # が付くので空白だけで区切る）")]
+        private string _separator = "  ";
 
         [SerializeField, Tooltip("流れる速さ[テキストのローカル単位/秒]")]
         private float _scrollSpeed = 2f;

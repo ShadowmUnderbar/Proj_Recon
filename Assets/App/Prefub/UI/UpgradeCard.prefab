@@ -1187,7 +1187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _text: {fileID: 2995793828749796637}
-  _separator: '  /  '
+  _separator: '  '
   _scrollSpeed: 2
   _loopPause: 1
   _edgeFadeWidth: 0.8
