@@ -12,6 +12,7 @@ namespace App.Battle.DataStore
     {
         private readonly IPlayerBarrierDataStore _playerBarrierDataStore;
         private readonly IBuffStateDataStore _buffStateDataStore;
+        private readonly IColasourDataStore _colasourDataStore;
         private readonly IGritDataStore _gritDataStore;
         private readonly IEmergencyNodeDataStore _emergencyNodeDataStore;
         private readonly ITenacityDataStore _tenacityDataStore;
@@ -26,6 +27,7 @@ namespace App.Battle.DataStore
         public PlayerStateDataStore(
             IPlayerBarrierDataStore playerBarrierDataStore,
             IBuffStateDataStore buffStateDataStore,
+            IColasourDataStore colasourDataStore,
             IGritDataStore gritDataStore,
             IEmergencyNodeDataStore emergencyNodeDataStore,
             ITenacityDataStore tenacityDataStore,
@@ -36,6 +38,7 @@ namespace App.Battle.DataStore
         {
             _playerBarrierDataStore = playerBarrierDataStore;
             _buffStateDataStore = buffStateDataStore;
+            _colasourDataStore = colasourDataStore;
             _gritDataStore = gritDataStore;
             _emergencyNodeDataStore = emergencyNodeDataStore;
             _tenacityDataStore = tenacityDataStore;
@@ -127,9 +130,14 @@ namespace App.Battle.DataStore
             // デバッグ対戦の無敵中は HP を減らさない（バリアの吸収・被弾の通知は通常どおり行う）
             if (!_playerBarrierDataStore.TryAbsorb(damage) && !_debugArenaSettings.IsPlayerInvincible)
             {
-                // 致死ダメージはまず食いしばりで耐えるのを試みる（ウェーブごとの回数制。依存ノードを消費しないため先に使う）
+                // 致死ダメージはまずコーラサワーで無効化を試みる（確率で発動し、体力は減らさない。復活系の中で最優先）
                 var isFatal = damage >= Health.Value && Health.Value > 0f;
-                if (isFatal && _gritDataStore.TryActivate(out var gritHealth))
+                if (isFatal && _colasourDataStore.TryActivate())
+                {
+                    // ダメージごと無効化するので体力は書き換えない
+                }
+                // 次に食いしばりで耐えるのを試みる（ウェーブごとの回数制。依存ノードを消費しないため先に使う）
+                else if (isFatal && _gritDataStore.TryActivate(out var gritHealth))
                 {
                     Health.Value = Mathf.Min(MaxHealth.Value, gritHealth);
                 }
