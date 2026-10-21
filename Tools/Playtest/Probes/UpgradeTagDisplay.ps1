@@ -97,7 +97,7 @@ var tagNames = scope.Container.Resolve<ITagLocalizationDataStore>();
 var shop = scope.Container.Resolve<System.Collections.Generic.IReadOnlyList<IInitializable>>().OfType<ShopUseCase>().First();
 var candidates = (System.Collections.Generic.List<UpgradeMasterData>)typeof(ShopUseCase)
     .GetField("_currentCandidates", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(shop);
-const string separator = "  /  ";
+const string separator = "  ";
 
 var total = 0; var matched = 0; var tagged = 0; var scrolling = 0; var keyNames = 0;
 var mismatches = new System.Collections.Generic.List<string>();
@@ -107,6 +107,8 @@ foreach (var card in UnityEngine.Object.FindObjectsOfType<UpgradeCardView>())
     var upgrade = candidates[card.Index];
     var names = upgrade.Tags.Select(t => tagNames.GetName(t)).ToArray();
     keyNames += names.Count(n => n.StartsWith("$"));
+    // カードでは各タグ名の頭に # が付く（例: #バリア）
+    names = names.Select(n => "#" + n).ToArray();
     var joined = string.Join(separator, names);
     var cycle = joined + separator;
     var actual = card.transform.Find("TagText").GetComponent<TMPro.TextMeshPro>().text;
