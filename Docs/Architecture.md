@@ -89,7 +89,7 @@ VContainerSettings.RootLifetimeScope = CommonLifetimeScope.prefab  ← DontDestr
 
 ```
 Google スプレッドシート（GAS で CSV/ScriptableObject 出力）
-  → Tools/マスターデータ/* ファイルコピー（Editor/*Importer.cs）
+  → Tools/マスターデータ/インポート（選んだCSVのファイル名から Editor/*Importer.cs を推測。MasterDataImportDispatcher）
   → Assets/App/MasterData/**（UpgradeMasterData / BuffMasterData / EnemyMasterData / WaveScalingMasterData）
   → *Database.asset にまとめて CommonLifetimeScope から RegisterInstance
 ```

@@ -18,9 +18,12 @@ namespace App.Editor
         // パス定数
         private const string CsvPath = "Assets/App/MasterData/Origin/UpgradeTagData.csv";
         private const string DatabasePath = "Assets/App/MasterData/Database/UpgradeDatabase.asset";
-        private const string TagCsvFileName = "UpgradeTagData.csv";
-        private const string UpgradeTagFileName = "UpgradeTag.cs";
-        private const string DestCsPath = "Assets/App/Script/Common/Data/UpgradeTag.cs";
+
+        // GAS出力からCSVと一緒にコピーするenumファイル（ファイル名, コピー先パス）。MasterDataImportDispatcher が参照する
+        public static readonly (string fileName, string destPath)[] EnumCsFiles =
+        {
+            ("UpgradeTag.cs", "Assets/App/Script/Common/Data/UpgradeTag.cs"),
+        };
 
         // CSV列インデックス
         // ヘッダー: NameKey,Tag
@@ -30,64 +33,21 @@ namespace App.Editor
 
         private const string TagsPropertyName = "_tags";
 
-        [MenuItem("Tools/マスターデータ/UpgradeTagData ファイルコピー")]
-        private static void CopyFilesFromFolder()
-        {
-            var selectedFolder = EditorUtility.OpenFolderPanel("インポート元フォルダを選択", "", "");
-            if (string.IsNullOrEmpty(selectedFolder)) return;
-
-            var csvFiles = Directory.GetFiles(selectedFolder, TagCsvFileName, SearchOption.AllDirectories);
-            if (csvFiles.Length == 0)
-            {
-                EditorUtility.DisplayDialog("エラー", $"以下のファイルが見つかりませんでした:\n・{TagCsvFileName}", "OK");
-                return;
-            }
-
-            // enum は追加・変更があるときだけ出力すればよいので任意
-            var csFiles = Directory.GetFiles(selectedFolder, UpgradeTagFileName, SearchOption.AllDirectories);
-            var destCsAbsolute = Path.GetFullPath(DestCsPath);
-            var upgradeTagChanged = false;
-
-            try
-            {
-                if (csFiles.Length > 0)
-                {
-                    upgradeTagChanged = !File.Exists(destCsAbsolute) ||
-                                        File.ReadAllText(csFiles[0]) != File.ReadAllText(destCsAbsolute);
-                    File.Copy(csFiles[0], destCsAbsolute, overwrite: true);
-                }
-
-                File.Copy(csvFiles[0], Path.GetFullPath(CsvPath), overwrite: true);
-            }
-            catch (Exception e)
-            {
-                EditorUtility.DisplayDialog("エラー", $"ファイルのコピーに失敗しました:\n{e.Message}", "OK");
-                return;
-            }
-
-            AssetDatabase.Refresh();
-
-            if (upgradeTagChanged)
-            {
-                EditorUtility.DisplayDialog(
-                    "UpgradeTag.cs を更新しました",
-                    "UpgradeTag.cs を更新しました。\nUnityの再コンパイル後にインポートを実行してください。",
-                    "OK");
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("コピー完了", "ファイルのコピーが完了しました。", "OK");
-            }
-        }
-
-        [MenuItem("Tools/マスターデータ/UpgradeTagData CSVインポート")]
-        private static void ImportFromMenu()
+        /// <summary>
+        /// UpgradeDatabase に登録済みの全アセットへ UpgradeTagData.csv のタグを書き込む。
+        /// </summary>
+        /// <param name="interactive">
+        /// true: 完了/エラーをダイアログ表示（メニュー実行向け）。
+        /// false: ダイアログを出さずログに出力する（自動実行向け）。
+        /// </param>
+        /// <returns>インポートを実行できたら true、前提エラーで中断したら false</returns>
+        public static bool ImportData(bool interactive = false)
         {
             var database = AssetDatabase.LoadAssetAtPath<UpgradeDatabase>(DatabasePath);
             if (database == null)
             {
-                EditorUtility.DisplayDialog("エラー", $"UpgradeDatabase が見つかりません:\n{DatabasePath}", "OK");
-                return;
+                Notify(interactive, "エラー", $"UpgradeDatabase が見つかりません:\n{DatabasePath}", isError: true);
+                return false;
             }
 
             var errors = new List<string>();
@@ -98,9 +58,33 @@ namespace App.Editor
             if (errors.Count > 0)
             {
                 message += $"\n\n警告 ({errors.Count} 件):\n" + string.Join("\n", errors);
+                Notify(interactive, "インポート完了（警告あり）", message, isError: true);
+            }
+            else
+            {
+                Notify(interactive, "インポート完了", message, isError: false);
             }
 
-            EditorUtility.DisplayDialog(errors.Count > 0 ? "インポート完了（警告あり）" : "インポート完了", message, "OK");
+            return true;
+        }
+
+        /// <summary>
+        /// 対話モードならダイアログ、自動実行モードならログで結果を通知する。
+        /// </summary>
+        private static void Notify(bool interactive, string title, string message, bool isError)
+        {
+            if (interactive)
+            {
+                EditorUtility.DisplayDialog(title, message, "OK");
+            }
+            else if (isError)
+            {
+                Debug.LogError($"[UpgradeTagDataImporter] {title}: {message}");
+            }
+            else
+            {
+                Debug.Log($"[UpgradeTagDataImporter] {title}: {message}");
+            }
         }
 
         /// <summary>

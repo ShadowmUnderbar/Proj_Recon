@@ -21,7 +21,7 @@ RECONの**アップグレード**は、1回のゲームプレイサイクル中�
 Googleスプレッドシート（正本）
   └─ GAS UpgradeDataExporter.gs でエクスポート
       └─ UpgradeData.csv / UpgradeType.cs（自動生成物）
-          └─ Unity: Tools/マスターデータ/UpgradeData CSVインポート
+          └─ Unity: Tools/マスターデータ/インポート（UpgradeData.csv を選択）
               └─ Upgrade/*.asset 生成 ＋ UpgradeDatabase.asset 配列更新
                   └─ 実行時: ショップ抽選 → 獲得 → 効果計算 → プレイヤーパラメータへ反映
 ```
@@ -126,8 +126,8 @@ Googleスプレッドシート（正本）
 ## パターンA: 既存タイプにレベル/行を追加（データのみ）
 
 1. スプレッドシート `UpgradeData` シートに行追加（[`sheets-write`](../sheets-write/SKILL.md)）→ GASでエクスポート
-2. `Assets/App/MasterData/Origin/UpgradeData.csv` を追随（またはUnityメニュー `Tools/マスターデータ/UpgradeData ファイルコピー`）
-3. Unityで `Tools/マスターデータ/UpgradeData CSVインポート` 実行 → アセット生成＋Database更新
+2. `Assets/App/MasterData/Origin/UpgradeData.csv` を追随（またはUnityメニュー `Tools/マスターデータ/インポート` でGAS出力の `UpgradeData.csv` を選ぶ。Originへのコピーとインポートを一度に行う）
+3. Unityで `Tools/マスターデータ/インポート（UpgradeData.csv を選択）` 実行 → アセット生成＋Database更新
 4. 消費側は既存の `CalcMultiply/CalcAdd` が自動で拾うため**コード変更不要**
 5. [`playtest-run`](../playtest-run/SKILL.md) で獲得→効果反映を確認
 6. 新しい `NameKey` を足した場合は「ローカライズ表への追記」の3行を追加（レベル追加だけなら不要）
@@ -150,7 +150,7 @@ Googleスプレッドシート（正本）
 | 役割 | パス |
 |---|---|
 | バフ型 / Database / CSV | `Assets/App/MasterData/Origin/BuffData.csv` ほか `MasterData/Buff/`・`Database/BuffDatabase.asset` |
-| バフCSVインポーター | `Assets/App/Script/Editor/BuffDataImporter.cs`（メニュー `Tools/マスターデータ/BuffData CSVインポート`） |
+| バフCSVインポーター | `Assets/App/Script/Editor/BuffDataImporter.cs`（メニュー `Tools/マスターデータ/インポート（BuffData.csv を選択）`） |
 | 実行時バフ状態 | `Assets/App/Script/Battle/DataStore/BuffStateDataStore.cs`（`AddBuff` / `IsActive` / `CalcMultiply(BuffEffectType)`） |
 | 発動条件の駆動 | `Assets/App/Script/Battle/UseCase/BuffConditionUseCase.cs`（`NotifyHit` / `SetHealthRatio` 等） |
 
@@ -162,7 +162,7 @@ BuffData.csv ヘッダー: `id,NameKey,ConditionType,ConditionValue,Duration,Eff
 > 回避の通知経路: `PlayerDodgeUseCase` → `PlayerDodgeParameterDataStore.SetCoolDownTime()`（ここで `OnDodge` を発火）→ `BuffConditionUseCase` → `BuffStateDataStore.NotifyDodge()`。
 
 手順:
-1. `BuffData` シート/CSVにバフ行を追加 → `Tools/マスターデータ/BuffData CSVインポート`
+1. `BuffData` シート/CSVにバフ行を追加 → `Tools/マスターデータ/インポート（BuffData.csv を選択）`
 2. `UpgradeData.csv` に `UpgradeType=GrantBuff` かつ `BuffId=対象バフのid` の行を追加 → UpgradeDataインポート
 3. `BuffDatabase.asset` と `UpgradeDatabase.asset` が更新されたことを確認。`CommonLifetimeScope`（`Assets/App/Script/Common/CommonLifetimeScope.cs`）に両Databaseが割当済みか確認
 4. 選択時挙動: `ShopUseCase.OnUpgradeSelected` が GrantBuff を見て `BuffDatabase.TryGetBuffMasterData(BuffId)` → `BuffStateDataStore.AddBuff`。BuffIdがDBに無いと `Debug.LogWarning`（`playtest-run` で検出される）

@@ -302,7 +302,7 @@ Idle ──（プレイヤー検出）──→ Battle ──（HP0）──→ 
 | `atkBuff` | float | この段階の攻撃力倍率（1.2で基礎値の1.2倍） |
 | `hpBuff` | float | この段階のHP倍率（1.2で基礎値の1.2倍） |
 
-インポート経路は他のマスターデータと同じ（スプレッドシート → `マスターデータ > WaveScalingData CSVエクスポート` → `Tools > マスターデータ > WaveScalingData ファイルコピー` → `WaveScalingData CSVインポート`）。インポートすると `WaveScalingMasterData` アセットと `WaveScalingDatabase` が更新され、CSVから消えた行のアセットは削除される。
+インポート経路は他のマスターデータと同じ（スプレッドシート → `マスターデータ > WaveScalingData CSVエクスポート` → `Tools > マスターデータ > インポート` で `WaveScalingData.csv` を選ぶ）。インポートすると `WaveScalingMasterData` アセットと `WaveScalingDatabase` が更新され、CSVから消えた行のアセットは削除される。
 
 不正な行（`id` の重複、`wave` が1未満、`wave` の重複、`atkBuff`/`hpBuff` が負、列数不足、パース失敗）が**1行でもあればインポート全体を中断**し、既存のアセットとデータベースには一切手を触れない（行番号付きでエラーを通知する）。部分的に取り込むと難易度カーブが黙って変わるため。
 

@@ -16,9 +16,12 @@ namespace App.Editor
         private const string CsvPath = "Assets/App/MasterData/Origin/UpgradeData.csv";
         private const string OutputPath = "Assets/App/MasterData/Upgrade";
         private const string DatabasePath = "Assets/App/MasterData/Database/UpgradeDatabase.asset";
-        private const string UpgradeCsvFileName = "UpgradeData.csv";
-        private const string UpgradeTypeFileName = "UpgradeType.cs";
-        private const string DestCsPath = "Assets/App/Script/Common/Data/UpgradeType.cs";
+
+        // GAS出力からCSVと一緒にコピーするenumファイル（ファイル名, コピー先パス）。MasterDataImportDispatcher が参照する
+        public static readonly (string fileName, string destPath)[] EnumCsFiles =
+        {
+            ("UpgradeType.cs", "Assets/App/Script/Common/Data/UpgradeType.cs"),
+        };
 
         // CSV列インデックス（GASエクスポーターのスキーマに対応）
         // ヘッダー: id,NameKey,SimpleDescriptionKey,DescriptionKey,UpgradeType,PlayerUnlockType,Level,
@@ -45,59 +48,6 @@ namespace App.Editor
 
         private static readonly BindingFlags PrivateInstance =
             BindingFlags.NonPublic | BindingFlags.Instance;
-
-        [MenuItem("Tools/マスターデータ/UpgradeData ファイルコピー")]
-        private static void CopyFilesFromFolder()
-        {
-            var selectedFolder = EditorUtility.OpenFolderPanel("インポート元フォルダを選択", "", "");
-            if (string.IsNullOrEmpty(selectedFolder)) return;
-
-            var csvFiles = Directory.GetFiles(selectedFolder, UpgradeCsvFileName, SearchOption.AllDirectories);
-            var csFiles = Directory.GetFiles(selectedFolder, UpgradeTypeFileName, SearchOption.AllDirectories);
-
-            if (csvFiles.Length == 0 || csFiles.Length == 0)
-            {
-                var missing = new System.Text.StringBuilder();
-                if (csvFiles.Length == 0) missing.AppendLine($"・{UpgradeCsvFileName}");
-                if (csFiles.Length == 0) missing.AppendLine($"・{UpgradeTypeFileName}");
-                EditorUtility.DisplayDialog("エラー", $"以下のファイルが見つかりませんでした:\n{missing}", "OK");
-                return;
-            }
-
-            var srcCsv = csvFiles[0];
-            var srcCs = csFiles[0];
-            var destCsAbsolute = Path.GetFullPath(DestCsPath);
-            var upgradeTypeChanged = !File.Exists(destCsAbsolute) ||
-                                     File.ReadAllText(srcCs) != File.ReadAllText(destCsAbsolute);
-
-            try
-            {
-                File.Copy(srcCsv, Path.GetFullPath(CsvPath), overwrite: true);
-                File.Copy(srcCs, destCsAbsolute, overwrite: true);
-            }
-            catch (Exception e)
-            {
-                EditorUtility.DisplayDialog("エラー", $"ファイルのコピーに失敗しました:\n{e.Message}", "OK");
-                return;
-            }
-
-            AssetDatabase.Refresh();
-
-            if (upgradeTypeChanged)
-            {
-                EditorUtility.DisplayDialog(
-                    "UpgradeType.cs を更新しました",
-                    "UpgradeType.cs を更新しました。\nUnityの再コンパイル後に再度インポートを実行してください。",
-                    "OK");
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("コピー完了", "ファイルのコピーが完了しました。", "OK");
-            }
-        }
-
-        [MenuItem("Tools/マスターデータ/UpgradeData CSVインポート")]
-        private static void ImportFromMenu() => ImportData(interactive: true);
 
         /// <summary>
         /// UpgradeData.csv をインポートしてアセットと UpgradeDatabase を更新する。

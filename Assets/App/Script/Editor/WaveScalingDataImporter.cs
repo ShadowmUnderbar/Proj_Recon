@@ -19,7 +19,6 @@ namespace App.Editor
         private const string CsvPath = "Assets/App/MasterData/Origin/WaveScalingData.csv";
         private const string OutputPath = "Assets/App/MasterData/WaveScaling";
         private const string DatabasePath = "Assets/App/MasterData/Database/WaveScalingDatabase.asset";
-        private const string WaveScalingCsvFileName = "WaveScalingData.csv";
 
         // CSV列インデックス
         // ヘッダー: id,wave,atkBuff,hpBuff
@@ -31,52 +30,6 @@ namespace App.Editor
 
         private static readonly BindingFlags PrivateInstance =
             BindingFlags.NonPublic | BindingFlags.Instance;
-
-        [MenuItem("Tools/マスターデータ/WaveScalingData ファイルコピー")]
-        private static void CopyFilesFromFolder()
-        {
-            var selectedFolder = EditorUtility.OpenFolderPanel("インポート元フォルダを選択", "", "");
-            if (string.IsNullOrEmpty(selectedFolder)) return;
-
-            string errorMessage;
-            try
-            {
-                errorMessage = CopyFilesCore(selectedFolder);
-            }
-            catch (Exception e)
-            {
-                EditorUtility.DisplayDialog("エラー", $"ファイルのコピーに失敗しました:\n{e.Message}", "OK");
-                return;
-            }
-
-            if (errorMessage != null)
-            {
-                EditorUtility.DisplayDialog("エラー", errorMessage, "OK");
-                return;
-            }
-
-            AssetDatabase.Refresh();
-            EditorUtility.DisplayDialog("コピー完了", "ファイルのコピーが完了しました。", "OK");
-        }
-
-        /// <summary>
-        /// GAS出力フォルダからCSVをプロジェクトへコピーする（ダイアログなしの本体）。
-        /// </summary>
-        /// <returns>エラーメッセージ。正常時は null</returns>
-        private static string CopyFilesCore(string selectedFolder)
-        {
-            var csvFiles = Directory.GetFiles(selectedFolder, WaveScalingCsvFileName, SearchOption.AllDirectories);
-            if (csvFiles.Length == 0)
-            {
-                return $"以下のファイルが見つかりませんでした:\n・{WaveScalingCsvFileName}";
-            }
-
-            File.Copy(csvFiles[0], Path.GetFullPath(CsvPath), overwrite: true);
-            return null;
-        }
-
-        [MenuItem("Tools/マスターデータ/WaveScalingData CSVインポート")]
-        private static void ImportFromMenu() => ImportData(interactive: true);
 
         /// <summary>
         /// WaveScalingData.csv をインポートしてアセットと WaveScalingDatabase を更新する。

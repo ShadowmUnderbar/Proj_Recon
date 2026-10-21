@@ -52,7 +52,7 @@ node sheets-cli.mjs delete-columns UpgradeData X:Z               # 列削除（�
 2. 既存行に値が必要なら `set` で埋める（省略時は空=既定値扱いになるか、インポータ側の任意列対応を確認）
 3. 新しい行は `append-rows`、enum値は `add-enum` で追加
 4. `get` で読み戻し、リポジトリの `Assets/App/MasterData/Origin/*.csv` と一致することを確認
-5. **ユーザー作業**: スプレッドシートのメニュー「マスターデータ」からCSV/enumをエクスポート → Unityの `Tools/マスターデータ/UpgradeData ファイルコピー` → `CSVインポート`。git diffが出なければ完全同期
+5. **ユーザー作業**: スプレッドシートのメニュー「マスターデータ」からCSV/enumをエクスポート → Unityの `Tools/マスターデータ/インポート` でエクスポートした `UpgradeData.csv` を選ぶ（同じフォルダの enum ファイルも一緒にコピーされる）。git diffが出なければ完全同期
 
 ## 初回セットアップ（ユーザー作業）
 
