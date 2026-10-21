@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using UnityEditor;
@@ -8,130 +7,90 @@ using UnityEngine;
 namespace App.Editor
 {
     /// <summary>
-    /// Project ウィンドウで選択したマスターデータCSVのファイル名からインポーターを推測して実行する。
-    /// 「UpgradeData.csv」なら「App.Editor.UpgradeDataImporter.ImportData(bool)」を呼ぶ規約。
+    /// エクスプローラーで選んだマスターデータCSVのファイル名からインポーターを推測して実行する。
+    /// 「UpgradeData.csv」なら Origin フォルダへコピーしたうえで「App.Editor.UpgradeDataImporter.ImportData(bool)」を呼ぶ規約。
     /// 新しいインポーターもこの命名と ImportData(bool) を守れば自動で対象になる
     /// </summary>
     public static class MasterDataImportDispatcher
     {
-        private const string MenuPath = "Assets/マスターデータ/選択したCSVをインポート";
-        private const string ToolsMenuPath = "Tools/マスターデータ/選択したCSVをインポート";
-        private const string CsvExtension = ".csv";
+        private const string MenuName = "App/マスターデータをインポート";
+        private const string OriginFolder = "Assets/App/MasterData/Origin";
+        private const string CsvExtension = "csv";
         private const string ImporterNamespace = "App.Editor";
         private const string ImporterSuffix = "Importer";
         private const string ImportMethodName = "ImportData";
 
-        [MenuItem(MenuPath)]
-        [MenuItem(ToolsMenuPath)]
-        private static void ImportSelected() => ImportCsvFiles(GetSelectedPaths(), interactive: true);
+        // 前回選んだフォルダを次回のダイアログの初期位置にする（個人ごとの利便用）
+        private const string LastFolderPrefsKey = "App.MasterDataImportDispatcher.LastFolder";
 
-        [MenuItem(MenuPath, true)]
-        [MenuItem(ToolsMenuPath, true)]
-        private static bool ValidateImportSelected() => CollectTargets(GetSelectedPaths(), out _).Count > 0;
+        [MenuItem(MenuName)]
+        private static void ImportFromMenu()
+        {
+            var lastFolder = EditorPrefs.GetString(LastFolderPrefsKey, string.Empty);
+            var filePath = EditorUtility.OpenFilePanelWithFilters(
+                "インポートするマスターデータを選択",
+                lastFolder,
+                new[] { "CSV", CsvExtension });
+            if (string.IsNullOrEmpty(filePath)) return;
+
+            EditorPrefs.SetString(LastFolderPrefsKey, Path.GetDirectoryName(filePath));
+            ImportFile(filePath, interactive: true);
+        }
 
         /// <summary>
-        /// 渡したCSVパスそれぞれのインポーターを推測して実行する。CSV以外のパスは無視する
+        /// ファイル名からインポーターを推測し、CSVを Origin フォルダへコピーしてからインポートする。
+        /// すでに Origin 内のファイルならコピーしない
         /// </summary>
+        /// <param name="filePath">取り込むCSVのパス（プロジェクト外でもよい）</param>
         /// <param name="interactive">
-        /// true: 各インポーターの完了/エラーをダイアログ表示（メニュー実行向け）。
+        /// true: 完了/エラーをダイアログ表示（メニュー実行向け）。
         /// false: ダイアログを出さずログに出力する（自動実行向け）。
         /// </param>
-        /// <returns>インポーターを推測でき、ImportData が true を返した件数</returns>
-        public static int ImportCsvFiles(IEnumerable<string> assetPaths, bool interactive = false)
+        /// <returns>インポーターの ImportData が true を返したら true</returns>
+        public static bool ImportFile(string filePath, bool interactive = false)
         {
-            var targets = CollectTargets(assetPaths, out var unresolved);
-            if (targets.Count == 0)
+            var fileName = Path.GetFileName(filePath);
+            var importMethod = FindImportMethod(Path.GetFileNameWithoutExtension(filePath));
+            if (importMethod == null)
             {
-                var message = "インポーターを推測できるCSVが選択されていません。\n" +
-                              $"「<名前>.csv」に対して {ImporterNamespace}.<名前>{ImporterSuffix}.{ImportMethodName}(bool) を探します。" +
-                              FormatUnresolved(unresolved);
-                if (interactive)
-                {
-                    EditorUtility.DisplayDialog("エラー", message, "OK");
-                }
-                else
-                {
-                    Debug.LogError($"[MasterDataImportDispatcher] {message}");
-                }
-
-                return 0;
+                Notify(interactive,
+                    $"「{fileName}」に対応するインポーターが見つかりません。\n" +
+                    $"「<名前>.csv」に対して {ImporterNamespace}.<名前>{ImporterSuffix}.{ImportMethodName}(bool) を探します。");
+                return false;
             }
 
-            if (unresolved.Count > 0)
+            var destPath = $"{OriginFolder}/{fileName}";
+            try
             {
-                Debug.LogWarning("[MasterDataImportDispatcher] インポーターを推測できなかったファイルをスキップしました:" +
-                                 FormatUnresolved(unresolved));
-            }
-
-            // 完了/エラーの通知は各インポーターが行うので、ここでは順に呼ぶだけ
-            var succeeded = 0;
-            foreach (var (csvPath, importMethod) in targets)
-            {
-                try
+                var destAbsolute = Path.GetFullPath(destPath);
+                if (!string.Equals(Path.GetFullPath(filePath), destAbsolute, StringComparison.OrdinalIgnoreCase))
                 {
-                    if ((bool)importMethod.Invoke(null, new object[] { interactive }))
-                    {
-                        succeeded++;
-                    }
-                }
-                catch (TargetInvocationException e)
-                {
-                    var inner = e.InnerException ?? e;
-                    Debug.LogException(inner);
-                    if (interactive)
-                    {
-                        EditorUtility.DisplayDialog("エラー", $"{csvPath} のインポート中に例外が発生しました:\n{inner.Message}", "OK");
-                    }
+                    File.Copy(filePath, destAbsolute, overwrite: true);
+                    AssetDatabase.ImportAsset(destPath);
                 }
             }
-
-            return succeeded;
-        }
-
-        private static IEnumerable<string> GetSelectedPaths()
-        {
-            foreach (var guid in Selection.assetGUIDs)
+            catch (Exception e)
             {
-                yield return AssetDatabase.GUIDToAssetPath(guid);
+                Notify(interactive, $"ファイルのコピーに失敗しました:\n{e.Message}");
+                return false;
+            }
+
+            // 完了/エラーの通知はインポーターが行う
+            try
+            {
+                return (bool)importMethod.Invoke(null, new object[] { interactive });
+            }
+            catch (TargetInvocationException e)
+            {
+                var inner = e.InnerException ?? e;
+                Debug.LogException(inner);
+                Notify(interactive, $"{fileName} のインポート中に例外が発生しました:\n{inner.Message}");
+                return false;
             }
         }
 
         /// <summary>
-        /// パス群からCSVを拾い、対応するインポーターの ImportData を解決する。
-        /// 同じインポーターは1回だけ実行する
-        /// </summary>
-        private static List<(string csvPath, MethodInfo importMethod)> CollectTargets(
-            IEnumerable<string> assetPaths, out List<string> unresolved)
-        {
-            var targets = new List<(string, MethodInfo)>();
-            var seen = new HashSet<MethodInfo>();
-            unresolved = new List<string>();
-
-            foreach (var path in assetPaths)
-            {
-                if (!string.Equals(Path.GetExtension(path), CsvExtension, StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                var importMethod = FindImportMethod(Path.GetFileNameWithoutExtension(path));
-                if (importMethod == null)
-                {
-                    unresolved.Add(path);
-                    continue;
-                }
-
-                if (seen.Add(importMethod))
-                {
-                    targets.Add((path, importMethod));
-                }
-            }
-
-            return targets;
-        }
-
-        /// <summary>
-        /// ファイル名から「App.Editor.<ファイル名>Importer」の public static bool ImportData(bool) を探す
+        /// ファイル名から「App.Editor.&lt;ファイル名&gt;Importer」の public static bool ImportData(bool) を探す
         /// </summary>
         private static MethodInfo FindImportMethod(string fileNameWithoutExtension)
         {
@@ -146,9 +105,19 @@ namespace App.Editor
             return method != null && method.ReturnType == typeof(bool) ? method : null;
         }
 
-        private static string FormatUnresolved(List<string> unresolved)
+        /// <summary>
+        /// 対話モードならダイアログ、自動実行モードならエラーログで通知する。
+        /// </summary>
+        private static void Notify(bool interactive, string message)
         {
-            return unresolved.Count == 0 ? string.Empty : "\n\n推測できなかったファイル:\n・" + string.Join("\n・", unresolved);
+            if (interactive)
+            {
+                EditorUtility.DisplayDialog("エラー", message, "OK");
+            }
+            else
+            {
+                Debug.LogError($"[MasterDataImportDispatcher] {message}");
+            }
         }
     }
 }
