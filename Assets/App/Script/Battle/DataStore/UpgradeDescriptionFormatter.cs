@@ -145,6 +145,9 @@ namespace App.Battle.DataStore
 
             // Value1=射撃の命中の最低保証ダメージ
             { UpgradeType.AntiMaterial, new[] { ValueFormat.Raw } },
+
+            // Value1=ウイルスを付与する確率 / Value2=ウイルスの威力 / Value3=ウイルスの効果時間（秒）
+            { UpgradeType.DOS, new[] { ValueFormat.Percent, ValueFormat.Raw, ValueFormat.Raw } },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む
