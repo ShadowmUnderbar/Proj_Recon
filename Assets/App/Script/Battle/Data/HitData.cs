@@ -8,7 +8,7 @@ namespace App.Battle.Data
     {
         public HitData(int damagedId, float damage, HitDirectionType hitDirectionType,
             Vector3 hitDirection = default, int penetrationIndex = 1, ShotType? shotType = null,
-            AimFocusType focusType = AimFocusType.NotFocus, bool isFocusTarget = false)
+            AimFocusType focusType = AimFocusType.NotFocus, bool isFocusTarget = false, bool isFixedDamage = false)
         {
             DamagedId = damagedId;
             Damage = damage;
@@ -18,6 +18,7 @@ namespace App.Battle.Data
             ShotType = shotType;
             FocusType = focusType;
             IsFocusTarget = isFocusTarget;
+            IsFixedDamage = isFixedDamage;
         }
 
         public int DamagedId { get; set; }
@@ -54,5 +55,11 @@ namespace App.Battle.Data
         /// フォーカス弾が対象以外へ当たったケースを区別する（キリングコールの条件判定に使う）。
         /// </summary>
         public bool IsFocusTarget { get; set; }
+
+        /// <summary>
+        /// 弱点・耐性方向の倍率と最低保証ダメージを掛けず、Damage をそのまま与えるか。
+        /// ウイルスの毎秒ダメージのように、値そのものが確定している継続ダメージに使う。
+        /// </summary>
+        public bool IsFixedDamage { get; set; }
     }
 }

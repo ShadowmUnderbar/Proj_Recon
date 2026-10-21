@@ -6,6 +6,7 @@
         "UnityEditor.TestRunner",
         "App.Battle.Data",
         "App.Battle.DataStore",
+        "App.Battle.Interfaces",
         "App.Battle.Views",
         "App.Common.Data"
     ],

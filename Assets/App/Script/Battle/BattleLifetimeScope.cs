@@ -118,6 +118,10 @@ namespace App.Battle
                 .As<IDodgeCounterAttackDataStore>();
             builder.Register<ElectricShockDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IElectricShockDataStore>();
+            builder.Register<VirusDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IVirusDataStore>();
+            builder.Register<DokugaDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IDokugaDataStore>();
             builder.Register<ShotConflictDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IShotConflictDataStore>();
             builder.Register<UpgradeSessionDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -226,6 +230,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
+            // ウイルス（敵への継続ダメージ）の時間経過と毎秒ダメージ
+            builder.RegisterEntryPoint<VirusUseCase>();
             // ソシオパス（撃破でレイジを得る。発動中なら倍）
             builder.RegisterEntryPoint<SociopathUseCase>();
             // アンガーマネジメント（被弾から一定時間後にレイジを得る）
@@ -370,6 +376,7 @@ namespace App.Battle
 
             // デバッグ設定は組み立て時にだけ DebugConfig から読み、利用側へは注入で渡す
             builder.RegisterInstance(new EnemyGazeDebugSettings(DebugConfig.IsGazeTouchHitFeedback));
+            builder.RegisterInstance(new VirusDebugSettings(DebugConfig.IsVirusDebugLog));
             // デバッグ対戦の予約は組み立て時に1回だけ取り出す（リスタートはこの設定のまま続く）
             builder.RegisterInstance(CreateDebugArenaSettings());
             builder.RegisterInstance(_streamerCameraTriggerConfig);
