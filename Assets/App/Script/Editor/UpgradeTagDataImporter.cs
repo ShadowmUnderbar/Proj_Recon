@@ -81,13 +81,23 @@ namespace App.Editor
         }
 
         [MenuItem("Tools/マスターデータ/UpgradeTagData CSVインポート")]
-        private static void ImportFromMenu()
+        private static void ImportFromMenu() => ImportData(interactive: true);
+
+        /// <summary>
+        /// UpgradeDatabase に登録済みの全アセットへ UpgradeTagData.csv のタグを書き込む。
+        /// </summary>
+        /// <param name="interactive">
+        /// true: 完了/エラーをダイアログ表示（メニュー実行向け）。
+        /// false: ダイアログを出さずログに出力する（自動実行向け）。
+        /// </param>
+        /// <returns>インポートを実行できたら true、前提エラーで中断したら false</returns>
+        public static bool ImportData(bool interactive = false)
         {
             var database = AssetDatabase.LoadAssetAtPath<UpgradeDatabase>(DatabasePath);
             if (database == null)
             {
-                EditorUtility.DisplayDialog("エラー", $"UpgradeDatabase が見つかりません:\n{DatabasePath}", "OK");
-                return;
+                Notify(interactive, "エラー", $"UpgradeDatabase が見つかりません:\n{DatabasePath}", isError: true);
+                return false;
             }
 
             var errors = new List<string>();
@@ -98,9 +108,33 @@ namespace App.Editor
             if (errors.Count > 0)
             {
                 message += $"\n\n警告 ({errors.Count} 件):\n" + string.Join("\n", errors);
+                Notify(interactive, "インポート完了（警告あり）", message, isError: true);
+            }
+            else
+            {
+                Notify(interactive, "インポート完了", message, isError: false);
             }
 
-            EditorUtility.DisplayDialog(errors.Count > 0 ? "インポート完了（警告あり）" : "インポート完了", message, "OK");
+            return true;
+        }
+
+        /// <summary>
+        /// 対話モードならダイアログ、自動実行モードならログで結果を通知する。
+        /// </summary>
+        private static void Notify(bool interactive, string title, string message, bool isError)
+        {
+            if (interactive)
+            {
+                EditorUtility.DisplayDialog(title, message, "OK");
+            }
+            else if (isError)
+            {
+                Debug.LogError($"[UpgradeTagDataImporter] {title}: {message}");
+            }
+            else
+            {
+                Debug.Log($"[UpgradeTagDataImporter] {title}: {message}");
+            }
         }
 
         /// <summary>
