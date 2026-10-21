@@ -11,6 +11,7 @@ namespace App.Battle.UseCase
 {
     /// <summary>
     /// 敵の撃破でポイント粒子をドロップさせ、回収された粒子ぶんのポイントを加算する。
+    /// CACHUMMYYY! を所持していれば、回収した粒子に応じて体力も回復する。
     /// </summary>
     public class PointDropUseCase : IInitializable, IDisposable
     {
@@ -18,6 +19,8 @@ namespace App.Battle.UseCase
         private readonly IPointDataStore _pointDataStore;
         private readonly IPointParticlePresenter _pointParticlePresenter;
         private readonly IPointDropCalculatorDataStore _pointDropCalculator;
+        private readonly ICachummyyyDataStore _cachummyyyDataStore;
+        private readonly IPlayerStateDataStore _playerStateDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -29,13 +32,17 @@ namespace App.Battle.UseCase
             IEnemyDataStore enemyDataStore,
             IPointDataStore pointDataStore,
             IPointParticlePresenter pointParticlePresenter,
-            IPointDropCalculatorDataStore pointDropCalculator
+            IPointDropCalculatorDataStore pointDropCalculator,
+            ICachummyyyDataStore cachummyyyDataStore,
+            IPlayerStateDataStore playerStateDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
             _pointDataStore = pointDataStore;
             _pointParticlePresenter = pointParticlePresenter;
             _pointDropCalculator = pointDropCalculator;
+            _cachummyyyDataStore = cachummyyyDataStore;
+            _playerStateDataStore = playerStateDataStore;
         }
 
         public void Initialize()
@@ -46,7 +53,7 @@ namespace App.Battle.UseCase
                 .AddTo(_disposable);
 
             _pointParticlePresenter.OnCollected
-                .Subscribe(_pointDataStore.Add)
+                .Subscribe(OnCollected)
                 .AddTo(_disposable);
         }
 
@@ -70,6 +77,13 @@ namespace App.Battle.UseCase
             }
 
             _pointParticlePresenter.Spawn(enemyData.Pose.position, _dropUnits);
+        }
+
+        private void OnCollected(int point)
+        {
+            _pointDataStore.Add(point);
+
+            _playerStateDataStore.Heal(_cachummyyyDataStore.GetHealAmount(point));
         }
 
         public void Dispose()
