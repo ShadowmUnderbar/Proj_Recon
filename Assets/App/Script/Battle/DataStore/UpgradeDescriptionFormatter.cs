@@ -127,6 +127,9 @@ namespace App.Battle.DataStore
 
             // Value1=受けたダメージに対する回復割合 / Value2=レイジ発動中の回復割合
             { UpgradeType.Tenacity, new[] { ValueFormat.Percent, ValueFormat.Percent } },
+
+            // Value1=撃破1体あたりの回復量
+            { UpgradeType.Vampire, new[] { ValueFormat.Raw } },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む

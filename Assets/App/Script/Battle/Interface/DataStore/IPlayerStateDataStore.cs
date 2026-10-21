@@ -34,7 +34,7 @@ namespace App.Battle.Interface.DataStore
         /// </summary>
         void RefreshMaxHealth();
 
-        /// <summary>プレイヤーのHPを回復する（MaxHealth を上限にクランプ）</summary>
+        /// <summary>プレイヤーのHPを回復する（MaxHealth を上限にクランプ。体力0＝敗北済みなら回復しない）</summary>
         void Heal(float amount);
 
         void SetUnlockCoreSkillType(UnlockCoreSkillType unlockCoreSkillType);

@@ -48,4 +48,5 @@ public enum UpgradeType
     AngerManagement = 44, // アンガーマネジメント
     Dokuga = 45, // 毒牙
     Tenacity = 46, // 執念
+    Vampire = 47, // ヴァンパイア
 }
