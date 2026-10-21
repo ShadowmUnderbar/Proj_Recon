@@ -124,7 +124,11 @@ namespace App.Editor
                 if (!File.Exists(enumSource)) continue;
 
                 var enumDestAbsolute = Path.GetFullPath(enumDestPath);
-                if (File.Exists(enumDestAbsolute) && File.ReadAllText(enumSource) == File.ReadAllText(enumDestAbsolute))
+                // GAS 出力は LF、git から取り出したファイルは CRLF になるため、改行コードの違いは同一とみなす。
+                // 同一ならコピーもしない（改行コードだけの差分を作らない）
+                if (File.Exists(enumDestAbsolute) &&
+                    NormalizeLineEndings(File.ReadAllText(enumSource)) ==
+                    NormalizeLineEndings(File.ReadAllText(enumDestAbsolute)))
                 {
                     continue;
                 }
@@ -135,6 +139,8 @@ namespace App.Editor
 
             return changedEnumFiles;
         }
+
+        private static string NormalizeLineEndings(string text) => text.Replace("\r\n", "\n");
 
         /// <summary>
         /// ファイル名から「App.Editor.&lt;ファイル名&gt;Importer」型を探す
