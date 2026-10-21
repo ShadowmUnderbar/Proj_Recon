@@ -214,12 +214,12 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            // カードのタグは英語の enum 名で出すためロケールに依存せず、所持タグの一覧だけ取り直す
+            RefreshUpgradeTags();
             RefreshOwnedTagRanking();
         }
 
         /// <summary>
-        /// 候補ごとのタグをViewへ反映する。並びはマスターデータ（UpgradeTagData シート）の順
+        /// 候補ごとのタグの表示名をViewへ反映する。並びはマスターデータ（UpgradeTagData シート）の順
         /// </summary>
         private void RefreshUpgradeTags()
         {
@@ -231,7 +231,14 @@ namespace App.Battle.UseCase
                     continue;
                 }
 
-                _shopPresenter.SetUpgradeTags(i, _currentCandidates[i].Tags);
+                var tags = _currentCandidates[i].Tags;
+                var tagNames = new string[tags.Count];
+                for (var t = 0; t < tags.Count; t++)
+                {
+                    tagNames[t] = _tagLocalizationDataStore.GetName(tags[t]);
+                }
+
+                _shopPresenter.SetUpgradeTags(i, tagNames);
             }
         }
 

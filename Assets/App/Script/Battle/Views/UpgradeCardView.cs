@@ -29,7 +29,7 @@ namespace App.Battle.Views
         [SerializeField, Tooltip("購入コストの表記")]
         private TextMeshPro _costText;
 
-        [SerializeField, Tooltip("タグの表示。英語の enum 名を #Barrier の形で並べ、収まらないときは横に流れる")]
+        [SerializeField, Tooltip("タグの表示。ローカライズ名（TagText テーブル）を #バリア の形で並べ、収まらないときは横に流れる")]
         private UpgradeTagTickerView _tagTicker;
 
         [SerializeField, Tooltip("掴み判定に使うコライダー")]
@@ -59,7 +59,7 @@ namespace App.Battle.Views
         /// <summary>持ち手が未設定のときに使う、手からカードまでのオフセット[m]</summary>
         private static readonly Vector3 FallbackHoldOffset = new(0f, 0.02f, 0.12f);
 
-        /// <summary>タグ名の前に付ける記号（#Barrier の形で出す）</summary>
+        /// <summary>タグ名の前に付ける記号（#バリア の形で出す）</summary>
         private const string TagPrefix = "#";
 
         /// <summary>枠色の変更に使うマテリアルプロパティ名</summary>
@@ -116,23 +116,23 @@ namespace App.Battle.Views
         }
 
         /// <summary>
-        /// タグを反映する（タグなしのアップグレードは空）。
-        /// ロケールに関わらず英語の enum 名に # を付けて出す（例: Barrier → #Barrier）
+        /// タグの表示名を反映する（タグなしのアップグレードは空）。
+        /// 各名前の頭に # を付けて出す（例: バリア → #バリア）
         /// </summary>
-        public void SetTags(IReadOnlyList<UpgradeTag> tags)
+        public void SetTags(IReadOnlyList<string> tagNames)
         {
             if (_tagTicker == null)
             {
                 return;
             }
 
-            var tagNames = new string[tags.Count];
-            for (var i = 0; i < tags.Count; i++)
+            var labels = new string[tagNames.Count];
+            for (var i = 0; i < tagNames.Count; i++)
             {
-                tagNames[i] = TagPrefix + tags[i];
+                labels[i] = TagPrefix + tagNames[i];
             }
 
-            _tagTicker.SetTags(tagNames);
+            _tagTicker.SetTags(labels);
         }
 
         /// <summary>定位置へ向けて補間で戻す</summary>
