@@ -4,8 +4,8 @@
 //
 // 使い方:
 //   node sheets-cli.mjs list-sheets
-//   node sheets-cli.mjs get <シート名> [範囲(A1形式)] [--json]
-//   node sheets-cli.mjs set "<シート名>!<範囲>" '<JSON 2次元配列>'
+//   node sheets-cli.mjs get <シート名> [範囲(A1形式)] [--json] [--formula]
+//   node sheets-cli.mjs set "<シート名>!<範囲>" '<JSON 2次元配列>' [--formula]
 //   node sheets-cli.mjs append-rows <シート名> '<JSON 2次元配列>'
 //   node sheets-cli.mjs add-column <シート名> "<変数名,型>"
 //   node sheets-cli.mjs create-sheet <シート名> [--schema '<JSON 文字列配列>']
@@ -84,11 +84,16 @@ function parseJsonArg(raw, label) {
 }
 
 // get: シート範囲を読み取り TSV（既定）または JSON で表示
+// --formula: 計算結果ではなく数式そのものを表示する（数式の無いセルは値のまま）
 async function cmdGet(sheets, spreadsheetId, args, flags) {
     const [sheetName, range] = args;
-    if (!sheetName) fail('使い方: get <シート名> [範囲] [--json]');
+    if (!sheetName) fail('使い方: get <シート名> [範囲] [--json] [--formula]');
     const a1 = range ? `${sheetName}!${range}` : sheetName;
-    const res = await sheets.spreadsheets.values.get({ spreadsheetId, range: a1 });
+    const res = await sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range: a1,
+        valueRenderOption: flags.formula ? 'FORMULA' : 'FORMATTED_VALUE',
+    });
     const values = res.data.values ?? [];
     if (flags.json) {
         console.log(JSON.stringify(values, null, 2));
@@ -107,9 +112,12 @@ async function cmdListSheets(sheets, spreadsheetId) {
 }
 
 // set: 指定範囲へ2次元配列を書き込み
-async function cmdSet(sheets, spreadsheetId, args) {
+// 既定は入力したままの値（RAW）で書き込む。"=" で始まる文字列も文字列として入る。
+// --formula: シートに手入力したのと同じ扱い（USER_ENTERED）で書き込み、"=" で始まる文字列を数式にする。
+//            数値に見える文字列は数値に、日付に見える文字列は日付に変わるので、数式を入れるときだけ使う
+async function cmdSet(sheets, spreadsheetId, args, flags) {
     const [range, valuesJson] = args;
-    if (!range || !valuesJson) fail('使い方: set "<シート名>!<範囲>" \'<JSON 2次元配列>\'');
+    if (!range || !valuesJson) fail('使い方: set "<シート名>!<範囲>" \'<JSON 2次元配列>\' [--formula]');
     const values = parseJsonArg(valuesJson, '値');
     if (!Array.isArray(values) || !values.every(Array.isArray)) {
         fail('値は2次元配列で指定してください（例: [["a","b"],["c","d"]]）');
@@ -117,7 +125,7 @@ async function cmdSet(sheets, spreadsheetId, args) {
     const res = await sheets.spreadsheets.values.update({
         spreadsheetId,
         range,
-        valueInputOption: 'RAW',
+        valueInputOption: flags.formula ? 'USER_ENTERED' : 'RAW',
         requestBody: { values },
     });
     console.log(`更新完了: ${res.data.updatedRange} (${res.data.updatedCells}セル)`);
@@ -384,6 +392,7 @@ async function main() {
     const args = [];
     for (let i = 1; i < argv.length; i++) {
         if (argv[i] === '--json') flags.json = true;
+        else if (argv[i] === '--formula') flags.formula = true;
         else if (argv[i] === '--schema') flags.schema = argv[++i];
         else if (argv[i] === '--spreadsheet') flags.spreadsheet = argv[++i];
         else args.push(argv[i]);
@@ -411,6 +420,11 @@ async function main() {
         console.error('使い方: node sheets-cli.mjs <コマンド> [引数...]');
         console.error(`コマンド: ${Object.keys(commands).join(', ')}`);
         process.exit(2);
+    }
+    // 対応していないコマンドで黙って無視すると、数式のつもりの値が文字列のまま書き込まれるので止める
+    const formulaCommands = ['get', 'set'];
+    if (flags.formula && !formulaCommands.includes(command)) {
+        fail(`--formula は ${formulaCommands.join(' / ')} でだけ使えます（${command} では使えません）`);
     }
 
     const config = loadConfig();
