@@ -130,6 +130,9 @@ namespace App.Battle.DataStore
 
             // Value1=撃破1体あたりの回復量
             { UpgradeType.Vampire, new[] { ValueFormat.Raw } },
+
+            // Value1=回復する粒子の最低値 / Value2=回復量
+            { UpgradeType.Cachummyyy, new[] { ValueFormat.Raw, ValueFormat.Raw } },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む
