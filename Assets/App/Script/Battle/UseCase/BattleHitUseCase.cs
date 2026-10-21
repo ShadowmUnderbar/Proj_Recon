@@ -27,6 +27,7 @@ namespace App.Battle.UseCase
         private readonly IMeanMugDataStore _meanMugDataStore;
         private readonly ICriticalHitDataStore _criticalHitDataStore;
         private readonly IElectricShockDataStore _electricShockDataStore;
+        private readonly IAntiMaterialDataStore _antiMaterialDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -47,7 +48,8 @@ namespace App.Battle.UseCase
             IAvalancheDataStore avalancheDataStore,
             IMeanMugDataStore meanMugDataStore,
             ICriticalHitDataStore criticalHitDataStore,
-            IElectricShockDataStore electricShockDataStore
+            IElectricShockDataStore electricShockDataStore,
+            IAntiMaterialDataStore antiMaterialDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
@@ -62,6 +64,7 @@ namespace App.Battle.UseCase
             _meanMugDataStore = meanMugDataStore;
             _criticalHitDataStore = criticalHitDataStore;
             _electricShockDataStore = electricShockDataStore;
+            _antiMaterialDataStore = antiMaterialDataStore;
         }
 
         public void Initialize()
@@ -91,6 +94,13 @@ namespace App.Battle.UseCase
 
             // クリティカルヒット（ラッキーチャンス・キリングコール・ターンテーブル）を命中ごとに抽選する
             hitData.Damage *= _criticalHitDataStore.GetDamageMultiplier(hitData);
+
+            // アンチマテリアル: 射撃（プレイヤー・味方の弾）の命中は最低保証ダメージを引き上げる。
+            // 弱点・耐性方向の倍率の後で効かせるため、適用は EnemyDataStore.Damage に任せる
+            if (hitData.ShotType != null)
+            {
+                hitData.MinDamage = _antiMaterialDataStore.GetMinDamage();
+            }
 
             // マージショットの命中を雪崩へ通知する（次発のクールダウンを短縮する）
             if (hitData.ShotType == ShotType.Merge)

@@ -53,4 +53,5 @@ public enum UpgradeType
     HopSteps = 49, // ホップステップ
     Colasour = 50, // コーラサワー
     Subscribe = 51, // サブスク
+    AntiMaterial = 52, // アンチマテリアル
 }
