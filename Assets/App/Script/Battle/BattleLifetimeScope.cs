@@ -162,6 +162,8 @@ namespace App.Battle
                 .As<IHopStepsDataStore>();
             builder.Register<ColasourDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IColasourDataStore>();
+            builder.Register<SubscribeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<ISubscribeDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -240,6 +242,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<VirusUseCase>();
             // ソシオパス（撃破でレイジを得る。発動中なら倍）
             builder.RegisterEntryPoint<SociopathUseCase>();
+            builder.RegisterEntryPoint<SubscribeUseCase>();
             // アンガーマネジメント（被弾から一定時間後にレイジを得る）
             builder.RegisterEntryPoint<AngerManagementUseCase>();
             // 召喚した味方の出現・被弾・攻撃・停止・消去と、サモンタレット・サモンドローンの召喚
