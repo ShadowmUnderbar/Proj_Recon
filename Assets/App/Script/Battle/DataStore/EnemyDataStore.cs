@@ -261,11 +261,8 @@ namespace App.Battle.DataStore
                     damage *= masterData.ResistanceMultiplier;
                 }
 
-                //ダメージの最低保証は1
-                if (damage <= 1f)
-                {
-                    damage = 1;
-                }
+                // ダメージの最低保証（既定は1。プレイヤーの射撃はアンチマテリアルで引き上がる）
+                damage = Mathf.Max(damage, hitData.MinDamage);
             }
 
             var hasShared = _sharedHealthByEnemyId.TryGetValue(hitData.DamagedId, out var shared);

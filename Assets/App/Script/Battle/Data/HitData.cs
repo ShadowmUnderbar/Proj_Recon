@@ -6,6 +6,9 @@ namespace App.Battle.Data
 {
     public class HitData
     {
+        /// <summary>何も指定しないときの最低保証ダメージ</summary>
+        public const float DefaultMinDamage = 1f;
+
         public HitData(int damagedId, float damage, HitDirectionType hitDirectionType,
             Vector3 hitDirection = default, int penetrationIndex = 1, ShotType? shotType = null,
             AimFocusType focusType = AimFocusType.NotFocus, bool isFocusTarget = false, bool isFixedDamage = false)
@@ -61,5 +64,11 @@ namespace App.Battle.Data
         /// ウイルスの毎秒ダメージのように、値そのものが確定している継続ダメージに使う。
         /// </summary>
         public bool IsFixedDamage { get; set; }
+
+        /// <summary>
+        /// 最低保証ダメージ。弱点・耐性方向の倍率を掛けた後、これを下回るダメージはこの値まで引き上げる（固定ダメージには掛けない）。
+        /// プレイヤーの射撃の命中ではアンチマテリアルの値が入る。
+        /// </summary>
+        public float MinDamage { get; set; } = DefaultMinDamage;
     }
 }
