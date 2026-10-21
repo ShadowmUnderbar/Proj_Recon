@@ -24,7 +24,7 @@ RECONの**バフ**は「発動条件を満たしている間だけ効くパラ�
 
 ```
 BuffData.csv（発動条件・効果・時間の定義）
-  └─ Tools/マスターデータ/BuffData CSVインポート
+  └─ Tools/マスターデータ/インポート（BuffData.csv を選択）
       └─ Buff/*.asset 生成 ＋ BuffDatabase.asset 配列更新
           └─ 実行時:
              GrantBuffアップグレード獲得 → ShopUseCase → BuffStateDataStore.AddBuff（監視開始）
@@ -86,8 +86,8 @@ BuffData.csv（発動条件・効果・時間の定義）
 ## パターンA: 既存の条件×効果で新バフ（データのみ）
 
 1. スプレッドシート `BuffData` シートに行追加（[`sheets-write`](../sheets-write/SKILL.md)）→ GASエクスポート
-2. `Assets/App/MasterData/Origin/BuffData.csv` を追随（またはUnityメニュー `Tools/マスターデータ/BuffData ファイルコピー`）
-3. Unityで `Tools/マスターデータ/BuffData CSVインポート` → `Buff/*.asset` 生成＋`BuffDatabase.asset` 更新
+2. `Assets/App/MasterData/Origin/BuffData.csv` を追随（またはUnityメニュー `Tools/マスターデータ/インポート` でGAS出力の `BuffData.csv` を選ぶ。Originへのコピーとインポートを一度に行う）
+3. Unityで `Tools/マスターデータ/インポート（BuffData.csv を選択）` → `Buff/*.asset` 生成＋`BuffDatabase.asset` 更新
 4. **バフをプレイヤーに届ける経路を用意**: 現状は `GrantBuff` アップグレード経由のみ。[`upgrade-add`](../upgrade-add/SKILL.md) のパターンCで `UpgradeData.csv` に `UpgradeType=GrantBuff, BuffId=このバフのid` の行を追加する
 5. [`playtest-run`](../playtest-run/SKILL.md) で「獲得→条件成立→効果反映」を確認
 
@@ -119,7 +119,7 @@ BuffData.csv（発動条件・効果・時間の定義）
 - **オーバークロック発動中は `BuffStateDataStore.Tick` が止まる**（効果時間を減らさない。条件の進行・付与は通常どおり受け付ける）。時間で進む新しい状態を足すときも `IOverclockDataStore.IsActive` 中は進めないこと（敵のスタン・スロー、スポーン周期、バリア再生、ケア・ノードも同様に止めている）
 - enum系（`BuffConditionType.cs` / `BuffEffectType.cs`）は**GAS自動生成物**。手編集は次回エクスポートで消えるため必ずスプレッドシートへ反映
 - コード変更は日本語コミット。Claudeの変更はPR運用が原則（developベース）
-- **自動実行時のインポート**は `Tools/マスターデータ/BuffData CSVインポート` メニュー（`ExecuteMenuItem`）だと完了ダイアログでメインスレッドがブロックしuLoopがハングする。execute-dynamic-code から `App.Editor.BuffDataImporter.ImportData(false)` を呼ぶ（`interactive=false` でダイアログを出さずログ出力）。詳細は [`upgrade-add`](../upgrade-add/SKILL.md) の「自動実行の落とし穴」を参照
+- **自動実行時のインポート**は `Tools/マスターデータ/インポート` メニュー（`ExecuteMenuItem`）だと完了ダイアログでメインスレッドがブロックしuLoopがハングする。execute-dynamic-code から `App.Editor.BuffDataImporter.ImportData(false)` を呼ぶ（`interactive=false` でダイアログを出さずログ出力）。詳細は [`upgrade-add`](../upgrade-add/SKILL.md) の「自動実行の落とし穴」を参照
 
 ## 完了チェックリスト
 

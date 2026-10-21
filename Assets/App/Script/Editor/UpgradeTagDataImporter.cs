@@ -18,9 +18,12 @@ namespace App.Editor
         // パス定数
         private const string CsvPath = "Assets/App/MasterData/Origin/UpgradeTagData.csv";
         private const string DatabasePath = "Assets/App/MasterData/Database/UpgradeDatabase.asset";
-        private const string TagCsvFileName = "UpgradeTagData.csv";
-        private const string UpgradeTagFileName = "UpgradeTag.cs";
-        private const string DestCsPath = "Assets/App/Script/Common/Data/UpgradeTag.cs";
+
+        // GAS出力からCSVと一緒にコピーするenumファイル（ファイル名, コピー先パス）。MasterDataImportDispatcher が参照する
+        public static readonly (string fileName, string destPath)[] EnumCsFiles =
+        {
+            ("UpgradeTag.cs", "Assets/App/Script/Common/Data/UpgradeTag.cs"),
+        };
 
         // CSV列インデックス
         // ヘッダー: NameKey,Tag
@@ -29,59 +32,6 @@ namespace App.Editor
         private const int MinColumnCount = 2;
 
         private const string TagsPropertyName = "_tags";
-
-        [MenuItem("Tools/マスターデータ/UpgradeTagData ファイルコピー")]
-        private static void CopyFilesFromFolder()
-        {
-            var selectedFolder = EditorUtility.OpenFolderPanel("インポート元フォルダを選択", "", "");
-            if (string.IsNullOrEmpty(selectedFolder)) return;
-
-            var csvFiles = Directory.GetFiles(selectedFolder, TagCsvFileName, SearchOption.AllDirectories);
-            if (csvFiles.Length == 0)
-            {
-                EditorUtility.DisplayDialog("エラー", $"以下のファイルが見つかりませんでした:\n・{TagCsvFileName}", "OK");
-                return;
-            }
-
-            // enum は追加・変更があるときだけ出力すればよいので任意
-            var csFiles = Directory.GetFiles(selectedFolder, UpgradeTagFileName, SearchOption.AllDirectories);
-            var destCsAbsolute = Path.GetFullPath(DestCsPath);
-            var upgradeTagChanged = false;
-
-            try
-            {
-                if (csFiles.Length > 0)
-                {
-                    upgradeTagChanged = !File.Exists(destCsAbsolute) ||
-                                        File.ReadAllText(csFiles[0]) != File.ReadAllText(destCsAbsolute);
-                    File.Copy(csFiles[0], destCsAbsolute, overwrite: true);
-                }
-
-                File.Copy(csvFiles[0], Path.GetFullPath(CsvPath), overwrite: true);
-            }
-            catch (Exception e)
-            {
-                EditorUtility.DisplayDialog("エラー", $"ファイルのコピーに失敗しました:\n{e.Message}", "OK");
-                return;
-            }
-
-            AssetDatabase.Refresh();
-
-            if (upgradeTagChanged)
-            {
-                EditorUtility.DisplayDialog(
-                    "UpgradeTag.cs を更新しました",
-                    "UpgradeTag.cs を更新しました。\nUnityの再コンパイル後にインポートを実行してください。",
-                    "OK");
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("コピー完了", "ファイルのコピーが完了しました。", "OK");
-            }
-        }
-
-        [MenuItem("Tools/マスターデータ/UpgradeTagData CSVインポート")]
-        private static void ImportFromMenu() => ImportData(interactive: true);
 
         /// <summary>
         /// UpgradeDatabase に登録済みの全アセットへ UpgradeTagData.csv のタグを書き込む。
