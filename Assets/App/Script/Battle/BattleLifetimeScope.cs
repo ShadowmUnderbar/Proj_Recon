@@ -160,6 +160,8 @@ namespace App.Battle
                 .As<ICachummyyyDataStore>();
             builder.Register<HopStepsDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IHopStepsDataStore>();
+            builder.Register<ColasourDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IColasourDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()

@@ -51,4 +51,5 @@ public enum UpgradeType
     Vampire = 47, // ヴァンパイア
     Cachummyyy = 48, // カチャミー
     HopSteps = 49, // ホップステップ
+    Colasour = 50, // コーラサワー
 }
