@@ -139,6 +139,9 @@ namespace App.Battle.DataStore
 
             // Value1=致死ダメージを無効化する確率 / Value2=発動するたびに下がる確率
             { UpgradeType.Colasour, new[] { ValueFormat.Percent, ValueFormat.Percent } },
+
+            // Value1=ウェーブクリア時に所持キャッシュに掛ける倍率（1.1→10%増える）
+            { UpgradeType.Subscribe, MultiplierDeltaValue1 },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む
