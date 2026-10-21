@@ -89,7 +89,7 @@ namespace App.Battle.DataStore
 
         public void SetCoolDownTime()
         {
-            _dodgeCoolDown = _baseParameter.DodgeCooldown * _hopStepsDataStore.GetCooldownMultiplier();
+            _dodgeCoolDown = GetCoolDownTime();
             DodgeCount.Value--;
 
             // 回避成立の通知（呼び出し元のPlayerDodgeUseCaseは可否判定を通過した後にのみ呼ぶ）
@@ -188,6 +188,18 @@ namespace App.Battle.DataStore
             }
 
             DodgeCount.Value++;
+
+            // 回避回数はクールダウンごとに1回ずつ戻す。まだ上限に届かなければ次の1回ぶんを待ち直す
+            if (DodgeCount.Value < MaxDodgeCount.Value)
+            {
+                _dodgeCoolDown = GetCoolDownTime();
+            }
+        }
+
+        // 回避1回ぶんが戻るまでの秒数（ホップステップの短縮を反映）
+        private float GetCoolDownTime()
+        {
+            return _baseParameter.DodgeCooldown * _hopStepsDataStore.GetCooldownMultiplier();
         }
 
         public void Dispose()

@@ -3,7 +3,7 @@
 #
 # 回避回数の上限を Value1 回増やし（増えた分はその場で使える）、回避のクールダウンに Value2 を掛ける。最高レベルのみ採用。
 # 獲得はショップと同じく UpgradeSessionDataStore.AddUpgrade → UpgradeSideEffectApplier.Apply で行い、
-# 回避は PlayerDodgeUseCase が可否判定後に呼ぶ SetCoolDownTime で消費する。クールダウンの回復は実時間で待って確かめる。
+# 回避は PlayerDodgeUseCase が可否判定後に呼ぶ SetCoolDownTime で消費する。クールダウンごとに1回ずつ戻ることを実時間で待って確かめる。
 #
 
 . (Join-Path $PSScriptRoot 'Common/BossProbeCommon.ps1')
@@ -117,24 +117,33 @@ return $"{{\"max\":{F(max)},\"count\":{F(count)},\"cd\":{F(cd)},\"v1\":{F(u.Valu
     $r = Invoke-HopStepsSnippet -Body @'
 var dodges = 1;
 while (dodge.CanDodge && dodges < 100) { DodgeOnce(); dodges++; }
-return $"{{\"dodges\":{dodges},\"count\":{F(dodge.DodgeCount.Value)}}}";
+return $"{{\"dodges\":{dodges},\"count\":{F(dodge.DodgeCount.Value)},\"t\":{F(Time.time)}}}";
 '@
     Assert-Near -Name 'L5: 上限の回数まで連続で回避できる' -Actual $r.dodges -Expected $l5Max
+    $t0 = [double]$r.t
 
-    # --- 短くなったクールダウンより前には回復せず、基礎値のクールダウンより前に回復する ---
-    $earlyMs = [int]($l5Cd * 1000 / 2)
-    Write-Host "  クールダウン $l5Cd 秒の半分（$($earlyMs / 1000) 秒）待つ"
-    Start-Sleep -Milliseconds $earlyMs
-    $r = Invoke-HopStepsSnippet -Body @'
-return $"{{\"count\":{F(dodge.DodgeCount.Value)}}}";
+    # --- クールダウンごとに1回ずつ戻る（まとめて全部は戻らない）---
+    # 呼び出しの遅れで判定がずれないよう、Unity 側の経過時間から戻っているはずの回数を出して比べる
+    $checks = @(
+        @{ Name = 'L5: クールダウンが明けるまでは回復しない'; WaitMs = [int]($l5Cd * 1000 / 2) },
+        @{ Name = 'L5: 短くなったクールダウン1回ぶんで1回だけ戻る（基礎値のクールダウンより前）'; WaitMs = [int](($l5Cd + ($baseCd - $l5Cd) / 2) * 1000) },
+        @{ Name = 'L5: 次のクールダウンでさらに1回戻る'; WaitMs = [int](($l5Cd * 2 + ($baseCd - $l5Cd) / 2) * 1000) }
+    )
+    foreach ($check in $checks) {
+        $r = Invoke-HopStepsSnippet -Body @'
+return $"{{\"count\":{F(dodge.DodgeCount.Value)},\"t\":{F(Time.time)}}}";
 '@
-    Assert-Near -Name 'L5: クールダウンが明けるまでは回復しない' -Actual $r.count -Expected 0
-
-    $waitMs = [int](($l5Cd + ($baseCd - $l5Cd) / 2) * 1000) - $earlyMs
-    Write-Host "  クールダウン $l5Cd 秒・基礎値 $baseCd 秒の間まで（さらに $($waitMs / 1000) 秒）待つ"
-    Start-Sleep -Milliseconds $waitMs
-    $r = Invoke-HopStepsSnippet -Body @'
-return $"{{\"count\":{F(dodge.DodgeCount.Value)}}}";
+        $elapsed = [double]$r.t - $t0
+        $remainMs = $check.WaitMs - [int]($elapsed * 1000)
+        if ($remainMs -gt 0) {
+            Start-Sleep -Milliseconds $remainMs
+            $r = Invoke-HopStepsSnippet -Body @'
+return $"{{\"count\":{F(dodge.DodgeCount.Value)},\"t\":{F(Time.time)}}}";
 '@
-    Assert-ProbeTrue -Name 'L5: 短くなったクールダウンで回避回数が回復する' -Condition ([double]$r.count -gt 0) -Detail "回避回数=$($r.count)" | Out-Null
+            $elapsed = [double]$r.t - $t0
+        }
+        $expected = [math]::Min($l5Max, [math]::Floor($elapsed / $l5Cd))
+        Write-Host ("  経過 {0:0.00} 秒" -f $elapsed)
+        Assert-Near -Name $check.Name -Actual $r.count -Expected $expected
+    }
 }
