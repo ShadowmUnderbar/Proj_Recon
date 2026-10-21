@@ -24,8 +24,10 @@ cd Tools/Sheets
 node sheets-cli.mjs list-sheets                                  # シート一覧
 node sheets-cli.mjs get UpgradeData                              # 全体をTSV表示
 node sheets-cli.mjs get UpgradeData A1:C5 --json                 # 範囲指定+JSON
-node sheets-cli.mjs set "UpgradeData!P2" '[["1"]]'               # セル更新（2次元配列）
-node sheets-cli.mjs append-rows UpgradeData '[[13,"$Foo",9,0,1,0,0,0,0,0,0,0,0,0,0,"1"]]'  # 行追加
+node sheets-cli.mjs get UpgradeData E140:E149 --formula          # 計算結果ではなく数式そのものを表示（数式の無いセルは値のまま）
+node sheets-cli.mjs set "UpgradeData!P2" '[[1]]'                 # セル更新（2次元配列。入力したままの値で書き込む）
+node sheets-cli.mjs set "UpgradeData!E150" '[["=vlookup(D150,UpgradeType!$A:$C,2,false)"]]' --formula  # 数式として書き込む
+node sheets-cli.mjs append-rows BuffData '[[50,"開発名称","$FooBuff",1,0,5,1,1.2]]'  # 行追加（シートの全列順。下の注意を参照）
 node sheets-cli.mjs add-column UpgradeData "BuffId,string"       # Row1右端に列スキーマ追記
 node sheets-cli.mjs create-sheet BuffData --schema '["id,int","NameKey,string"]'  # シート新設
 node sheets-cli.mjs add-enum UpgradeType 9 "バフ付与" GrantBuff  # enumシートへ行追加
@@ -54,10 +56,50 @@ node sheets-cli.mjs get Upgrade --spreadsheet <ID>               # 全コマン�
 - **enumシート**（UpgradeType等）: **4行目から** A列=数値、B列=日本語コメント、C列=要素名。こちらも**A列が空で終端**
 - エクスポート処理の実体はリポジトリ内 `Tools/GAS/UpgradeDataExporter.gs`（スプレッドシートへは手動コピペで反映する運用）
 
+> ⚠️ **書き込みは既定で「入力したままの値」（RAW）**。`set` / `append-rows` は次のように振る舞う。
+> - **数値は JSON の数値で渡す**（`48`）。`"48"` と文字列で渡すと文字列のまま入り、それを `vlookup` で参照する補助列が `#N/A` になる。
+> - **`=` で始まる文字列も文字列として入る**。数式を入れたいときは `set ... --formula`（シートに手入力したのと同じ扱い＝USER_ENTERED）を使う。`--formula` では数値に見える文字列は数値に、日付に見える文字列は日付に変わるので、数式を入れる範囲だけに使う。`append-rows` に `--formula` は無い。
+> - 数式を確かめるときは `get ... --formula`。既定の `get` は計算結果を表示する。
+
 > ⚠️ **スプレッドシートの列数はCSVより多い**（GASエクスポート時に一部列が除外される）。`append-rows` はシートの全列順に値を並べる必要があり、**CSVの列順で渡すと列ずれする**。
 > - `BuffData`: CSVの7列に対し、`id` と `NameKey` の間に人間用の `開発名称` 列がある（計8列）。
-> - `UpgradeData`: CSVの16列に対し、`開発名称` 列に加え、各 enum/ref 列の**直後に表示名の補助列**が挿入されている（例: `UpgradeType` の右に「ダメージアップ」）。実測で計24列（A〜X、末尾Xが `BuffId`）。補助列は手動運用で、既存のGrantBuff行では空欄。
-> - 安全な手順: **既存の同種行を `get <シート> A{行}:X{行} --json` で読み、それをテンプレに全列並べて `append-rows`**（補助列は空文字でよい）。追記後は `get` で読み戻して列ずれが無いか必ず確認する。
+> - `UpgradeData`: CSVの17列に対し、`開発名称` 列と、enum/ref 列の**直後に表示名の補助列（数式）**がある。実測で計25列（A〜Y）。列構成は下の表のとおり。
+
+### UpgradeData の列構成（実測: 2026-10-22）
+
+| 列 | 中身 | 列 | 中身 |
+|---|---|---|---|
+| A | `id,int` | N | （補助）`=vlookup(M{行},ParameterType!$A:$C,2,false)` |
+| B | `開発名称`（人間用・エクスポート対象外） | O | `Value3,float` |
+| C | `NameKey,string` | P | `Value3ParameterType` |
+| D | `UpgradeType,ref@UpgradeType` | Q | （補助）`=vlookup(P{行},ParameterType!$A:$C,2,false)` |
+| E | （補助）`=vlookup(D{行},UpgradeType!$A:$C,2,false)` | R | `Value4,float` |
+| F | `PlayerUnlockType,ref@PlayerUnlockType` | S | `Value4ParameterType` |
+| G | （補助）`=vlookup(F{行},PlayerUnlockType!$A:$C,2,false)` | T | （補助）`=vlookup(S{行},ParameterType!$A:$C,2,false)` |
+| H | `Level,int` | U | `Value5,float` |
+| I | `Value1,float` | V | `Value5ParameterType` |
+| J | `Value1ParameterType,ref@ParameterType` | W | （補助）`=vlookup(V{行},ParameterType!$A:$C,2,false)` |
+| K | （補助）`=vlookup(J{行},ParameterType!$A:$C,2,false)` | X | `BuffId,string` |
+| L | `Value2,float` | Y | `Cost,int` |
+| M | `Value2ParameterType,ref@ParameterType` | | |
+
+### UpgradeData に行を足す手順
+
+補助列（数式）を上書きしないよう、`append-rows` ではなく**列のまとまりごとに `set` で書く**。
+
+1. `get UpgradeData A{行}:D{行}` で最終行を探し、新しい行番号を決める（**行番号は `id + 1` ではない**。欠番があり、2026-10 時点では `行番号 = id - 2`。必ず読んで確かめる）
+2. 値の列を `set` で書く（数値は JSON の数値で）: `A:D` / `F` / `H:J` / `L:M` / `O:P` / `R:S` / `U:V` / `X:Y`
+   ```powershell
+   node sheets-cli.mjs set "UpgradeData!A150:D150" '[[152,"開発名称","$Foo",52]]'
+   node sheets-cli.mjs set "UpgradeData!F150" '[[0]]'
+   node sheets-cli.mjs set "UpgradeData!H150:J150" '[[1,1.1,1]]'
+   # …L:M / O:P / R:S / U:V / X:Y も同様
+   ```
+3. **補助列の数式を確かめて、空なら入れる**。G・K・N・Q・T・W は先の行まで数式が入っていることが多いが、**E列は行を足しても伸びず空になりやすい**。`get UpgradeData E{行}:W{行} --formula` で見て、空の列だけ上の表の数式を `set ... --formula` で入れる
+   ```powershell
+   node sheets-cli.mjs set "UpgradeData!E150:E152" '[["=vlookup(D150,UpgradeType!$A:$C,2,false)"],["=vlookup(D151,UpgradeType!$A:$C,2,false)"],["=vlookup(D152,UpgradeType!$A:$C,2,false)"]]' --formula
+   ```
+4. `get UpgradeData A{行}:Y{行}` で読み戻し、補助列に表示名（「ダメージアップ」「強化効果」など）が出ていること・`#N/A` が無いことを確かめる
 
 ## カラム追加時の定型フロー
 
