@@ -402,7 +402,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0083, y: 0.0519}
+  m_AnchoredPosition: {x: 0.0121, y: 0.0865}
   m_SizeDelta: {x: 10, y: 1.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &7005043150097721448
@@ -530,7 +530,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 3.946279, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
@@ -573,11 +573,11 @@ Transform:
   - {fileID: 8176556092460568081}
   - {fileID: 8352039422114964560}
   - {fileID: 6769795509472549761}
+  - {fileID: 5330175944463666004}
   - {fileID: 8570840598568649616}
   - {fileID: 6029914699336392396}
   - {fileID: 1972943836866606692}
   - {fileID: 4280789006447658464}
-  - {fileID: 5330175944463666004}
   - {fileID: 6374882748706305974}
   - {fileID: 4235984609423652711}
   m_Father: {fileID: 0}
@@ -695,7 +695,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0.07}
-  m_SizeDelta: {x: 10, y: 3}
+  m_SizeDelta: {x: 12, y: 2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &351599563933327192
 MeshRenderer:
@@ -802,7 +802,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -865,8 +865,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.01}
-  m_SizeDelta: {x: 10, y: 10.59}
+  m_AnchoredPosition: {x: 0, y: -0.02}
+  m_SizeDelta: {x: 10, y: 13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &1597981050368918138
 MeshRenderer:
@@ -1037,8 +1037,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -0.075}
-  m_SizeDelta: {x: 10, y: 1.5}
+  m_AnchoredPosition: {x: 0, y: 0.0541}
+  m_SizeDelta: {x: 12, y: 1.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!23 &4646590983815936374
 MeshRenderer:
@@ -1102,7 +1102,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: '#Barrier'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: fe3ee6b3eba2c1b44a0449cbe1cfc0c9, type: 2}
   m_sharedMaterial: {fileID: -4738480788537976419, guid: fe3ee6b3eba2c1b44a0449cbe1cfc0c9, type: 2}
@@ -1129,15 +1129,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 0.3
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 8
   m_fontSizeMax: 18
-  m_fontStyle: 0
+  m_fontStyle: 2
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 4096
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -1187,7 +1187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _text: {fileID: 2995793828749796637}
-  _separator: '  /  '
+  _separator: '  '
   _scrollSpeed: 2
   _loopPause: 1
   _edgeFadeWidth: 0.8
@@ -1353,7 +1353,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 3.8806324, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   _SortingLayer: 0
