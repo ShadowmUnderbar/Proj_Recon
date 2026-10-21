@@ -1,7 +1,7 @@
 ﻿#
 # CACHUMMYYY!（CachummyyyDataStore / PointDropUseCase）を確かめるプローブ。
 #
-# キャッシュ（ポイント粒子）を1個回収するたびに、粒子の値が Value1 以上なら Value2 ＋ 粒子の値 × Value3 だけ体力を回復する。
+# キャッシュ（ポイント粒子）を1個回収するたびに、粒子の値が Value1 以上なら体力を Value2 回復する（粒子の値に比例しない）。
 # 最高レベルのみ採用・最大HPで頭打ち。
 # 回収は PointParticleStoreView の回収通知（_onCollected）を直接流し、Presenter → PointDropUseCase の実際の購読経路を通す。
 #
@@ -76,35 +76,42 @@ Collect((int)u.Value1.value);
 var atMin = player.Health.Value;
 Collect(100);
 var big = player.Health.Value;
-return $"{{\"below\":{F(below)},\"atMin\":{F(atMin)},\"big\":{F(big)},\"v1\":{F(u.Value1.value)},\"v2\":{F(u.Value2.value)},\"v3\":{F(u.Value3.value)}}}";
+return $"{{\"below\":{F(below)},\"atMin\":{F(atMin)},\"big\":{F(big)},\"v1\":{F(u.Value1.value)},\"v2\":{F(u.Value2.value)}}}";
 '@
-    Write-Host "  L1: Value1=$($r.v1) Value2=$($r.v2) Value3=$($r.v3)"
+    Write-Host "  L1: Value1=$($r.v1) Value2=$($r.v2)"
     Assert-Near -Name 'L1: Value1 未満の粒子では回復しない' -Actual $r.below -Expected 50
     Assert-Near -Name 'L1: Value1 ちょうどの粒子で Value2 回復する' -Actual $r.atMin -Expected (50 + [double]$r.v2)
     Assert-Near -Name 'L1: 値の大きい粒子でも回復量は Value2（値に比例しない）' -Actual $r.big -Expected (50 + 2 * [double]$r.v2)
 
-    # --- L2（L1 と同時所持）: 最高レベルの値で、値1の粒子でも回復 ---
+    # --- L2（L1 と同時所持）: 最高レベルの値で回復し、Value1 未満では回復しない ---
     $r = Invoke-CachummyyySnippet -Body @'
 session.AddUpgrade(Cachummyyy(2));
 var u = Cachummyyy(2);
 player.Health.Value = 50f;
-Collect(1);
-return $"{{\"hp\":{F(player.Health.Value)},\"v2\":{F(u.Value2.value)}}}";
+Collect((int)u.Value1.value - 1);
+var below = player.Health.Value;
+Collect((int)u.Value1.value);
+var atMin = player.Health.Value;
+return $"{{\"below\":{F(below)},\"atMin\":{F(atMin)},\"v1\":{F(u.Value1.value)},\"v2\":{F(u.Value2.value)}}}";
 '@
-    Assert-Near -Name 'L1とL2: L2 の値で、値1の粒子でも回復する' -Actual $r.hp -Expected (50 + [double]$r.v2)
+    Write-Host "  L2: Value1=$($r.v1) Value2=$($r.v2)"
+    Assert-Near -Name 'L1とL2: Value1 未満の粒子では回復しない' -Actual $r.below -Expected 50
+    Assert-Near -Name 'L1とL2: L2 の Value2 だけ回復する' -Actual $r.atMin -Expected (50 + [double]$r.v2)
 
-    # --- L3: 粒子の値と同じだけ回復 ---
+    # --- L3: どの粒子でも Value2 回復（値に比例しない） ---
     $r = Invoke-CachummyyySnippet -Body @'
 session.AddUpgrade(Cachummyyy(3));
+var u = Cachummyyy(3);
 player.Health.Value = 20f;
 Collect(1);
 var one = player.Health.Value;
-Collect(10);
-var ten = player.Health.Value;
-return $"{{\"one\":{F(one)},\"ten\":{F(ten)}}}";
+Collect(100);
+var big = player.Health.Value;
+return $"{{\"one\":{F(one)},\"big\":{F(big)},\"v1\":{F(u.Value1.value)},\"v2\":{F(u.Value2.value)}}}";
 '@
-    Assert-Near -Name 'L3: 値1の粒子で1回復する' -Actual $r.one -Expected 21
-    Assert-Near -Name 'L3: 値10の粒子で10回復する' -Actual $r.ten -Expected 31
+    Write-Host "  L3: Value1=$($r.v1) Value2=$($r.v2)"
+    Assert-Near -Name 'L3: 値1の粒子で Value2 回復する' -Actual $r.one -Expected (20 + [double]$r.v2)
+    Assert-Near -Name 'L3: 値100の粒子でも回復量は Value2' -Actual $r.big -Expected (20 + 2 * [double]$r.v2)
 
     # --- 最大HPで頭打ち ---
     $r = Invoke-CachummyyySnippet -Body @'
