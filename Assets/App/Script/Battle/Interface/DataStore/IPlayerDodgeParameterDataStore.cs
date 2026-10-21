@@ -48,6 +48,12 @@ namespace App.Battle.Interface.DataStore
 
         void SetCoolDownTime();
 
+        /// <summary>
+        /// 所持中のホップステップを反映して MaxDodgeCount を再計算する（増えた分は現在の回避回数にも足す）。
+        /// アップグレード獲得時・セット読込時に呼ぶ
+        /// </summary>
+        void RefreshMaxDodgeCount();
+
         /// <summary>回避の直線移動を開始する（start から target へ DodgeDuration 秒で移動）</summary>
         void StartDodge(Vector3 start, Vector3 target);
 

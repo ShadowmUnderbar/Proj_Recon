@@ -13,6 +13,7 @@ namespace App.Battle.DataStore
     {
         private readonly IFreezeDataStore _freezeDataStore;
         private readonly PlayerBaseParameterConfig _baseParameter;
+        private readonly IHopStepsDataStore _hopStepsDataStore;
 
         private float _dodgeCoolDown;
 
@@ -44,10 +45,12 @@ namespace App.Battle.DataStore
         public float DodgeDuration => _baseParameter.DodgeDuration;
 
         [Inject]
-        public PlayerDodgeParameterDataStore(IFreezeDataStore freezeDataStore, PlayerBaseParameterConfig baseParameter)
+        public PlayerDodgeParameterDataStore(IFreezeDataStore freezeDataStore, PlayerBaseParameterConfig baseParameter,
+            IHopStepsDataStore hopStepsDataStore)
         {
             _freezeDataStore = freezeDataStore;
             _baseParameter = baseParameter;
+            _hopStepsDataStore = hopStepsDataStore;
             MaxDodgeCount = new ReactiveProperty<float>(baseParameter.DodgeCount);
         }
 
@@ -65,13 +68,28 @@ namespace App.Battle.DataStore
             _dodgeElapsed = 0f;
             _dodgeCoolDown = 0f;
 
+            // 強化の反映はセット読込・獲得時（UpgradeSideEffectApplier）にあらためて行うので、ここでは基礎値に戻すだけにする
             MaxDodgeCount.Value = _baseParameter.DodgeCount;
             DodgeCount.Value = MaxDodgeCount.Value;
         }
 
+        public void RefreshMaxDodgeCount()
+        {
+            var newMaxDodgeCount = _baseParameter.DodgeCount + _hopStepsDataStore.GetExtraDodgeCount();
+            var increased = newMaxDodgeCount - MaxDodgeCount.Value;
+
+            MaxDodgeCount.Value = newMaxDodgeCount;
+
+            // 上限が増えた分はその場で使えるようにする（取得した瞬間に回避回数が増える手応えを出す）。
+            // 減った場合は上限でクランプするだけ
+            DodgeCount.Value = increased > 0f
+                ? Mathf.Min(newMaxDodgeCount, DodgeCount.Value + increased)
+                : Mathf.Min(DodgeCount.Value, newMaxDodgeCount);
+        }
+
         public void SetCoolDownTime()
         {
-            _dodgeCoolDown = _baseParameter.DodgeCooldown;
+            _dodgeCoolDown = GetCoolDownTime();
             DodgeCount.Value--;
 
             // 回避成立の通知（呼び出し元のPlayerDodgeUseCaseは可否判定を通過した後にのみ呼ぶ）
@@ -170,6 +188,18 @@ namespace App.Battle.DataStore
             }
 
             DodgeCount.Value++;
+
+            // 回避回数はクールダウンごとに1回ずつ戻す。まだ上限に届かなければ次の1回ぶんを待ち直す
+            if (DodgeCount.Value < MaxDodgeCount.Value)
+            {
+                _dodgeCoolDown = GetCoolDownTime();
+            }
+        }
+
+        // 回避1回ぶんが戻るまでの秒数（ホップステップの短縮を反映）
+        private float GetCoolDownTime()
+        {
+            return _baseParameter.DodgeCooldown * _hopStepsDataStore.GetCooldownMultiplier();
         }
 
         public void Dispose()

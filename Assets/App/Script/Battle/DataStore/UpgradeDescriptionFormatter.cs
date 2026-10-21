@@ -133,6 +133,9 @@ namespace App.Battle.DataStore
 
             // Value1=回復する粒子の最低値 / Value2=回復量
             { UpgradeType.Cachummyyy, new[] { ValueFormat.Raw, ValueFormat.Raw } },
+
+            // Value1=回避回数の上限に足す回数 / Value2=回避のクールダウンに掛ける倍率（0.9→10%短縮）
+            { UpgradeType.HopSteps, new[] { ValueFormat.Raw, ValueFormat.MultiplierDelta } },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む
