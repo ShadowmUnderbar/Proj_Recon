@@ -1,33 +1,31 @@
 using System.Collections.Generic;
 using App.Battle.Interface.DataStore;
-using UnityEngine;
 using VContainer;
 
 namespace App.Battle.DataStore
 {
     /// <summary>
     /// マリスの効果判定。
-    /// 1秒ごとに、プレイヤーから半径 Value1 m 以内（水平距離）の敵へ、威力 Value2・効果時間 Value3 秒のウイルスを付与する。
-    /// ウイルスは重ねると威力が加算されるので、範囲内にいる間は毎秒威力が積み上がる（ユーザー確認済みの仕様）。
+    /// プレイヤーから半径 Value1 m 以内（水平距離）の敵について、
+    /// ・ウイルスの残り効果時間を減らさない（範囲内にいる間はどのウイルスも切れない）
+    /// ・1秒ごとに、ウイルスが無ければ威力 Value2・効果時間 Value3 秒で付け、あれば威力だけ Value2 足す（効果時間には触れない）
+    /// ので、範囲内にいる間は威力が毎秒積み上がる（ユーザー確認済みの仕様）。
     /// レベルは累積せず、所持中の最高レベルのみを採用する
     /// </summary>
     public class MaliceDataStore : IMaliceDataStore, IRunResettable
     {
-        // 付与の間隔（秒）。issue の「1秒毎」
+        // 威力を足す間隔（秒）。issue の「1秒毎」
         private const float Interval = 1f;
-
-        // ウイルス側（VirusDataStore）と同じ誤差の許容。付け直しがウイルスの切れるのと同じフレームになっても先に付くようにそろえる
-        private const float Epsilon = 1e-4f;
 
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IVirusDataStore _virusDataStore;
 
-        // 前回の付与からの経過時間。付与したフレームの deltaTime を含めて数え、ウイルスの残り効果時間と同じ進み方にする
+        // 前回威力を足してからの経過時間
         private float _timer;
 
-        // 付与する敵（列挙中に付与しないよう使い回す）
+        // 範囲内の敵（列挙中に付与しないよう使い回す）
         private readonly List<int> _targetEnemyIds = new();
 
         [Inject]
@@ -53,20 +51,31 @@ namespace App.Battle.DataStore
                 return;
             }
 
+            CollectTargets(upgrade.Value1.value);
+
             _timer += deltaTime;
-            if (_timer < Interval - Epsilon)
+            if (_timer >= Interval)
             {
-                return;
+                _timer -= Interval;
+
+                // 威力・効果時間が0以下なら VirusDataStore 側で何もしない
+                foreach (var enemyId in _targetEnemyIds)
+                {
+                    _virusDataStore.AddPower(enemyId, upgrade.Value2.value, upgrade.Value3.value);
+                }
             }
 
-            // 付与したウイルスはこのフレームの deltaTime 分だけ直後に進むので、次の周期もこのフレームから数える
-            _timer = deltaTime;
-
-            Infect(upgrade.Value1.value, upgrade.Value2.value, upgrade.Value3.value);
+            // 付けたばかりのウイルスも含めて、範囲内の敵のウイルスはこのフレーム切れないようにする
+            foreach (var enemyId in _targetEnemyIds)
+            {
+                _virusDataStore.HoldRemainingTime(enemyId);
+            }
         }
 
-        private void Infect(float radius, float power, float duration)
+        private void CollectTargets(float radius)
         {
+            _targetEnemyIds.Clear();
+
             if (radius <= 0f)
             {
                 return;
@@ -75,7 +84,6 @@ namespace App.Battle.DataStore
             var center = _playerStateDataStore.Position.Value;
             var sqrRadius = radius * radius;
 
-            _targetEnemyIds.Clear();
             foreach (var enemy in _enemyDataStore.Enemies)
             {
                 if (enemy.IsDead)
@@ -92,12 +100,6 @@ namespace App.Battle.DataStore
                 }
 
                 _targetEnemyIds.Add(enemy.Id);
-            }
-
-            // 威力・効果時間が0以下なら Apply 側で何もしない
-            foreach (var enemyId in _targetEnemyIds)
-            {
-                _virusDataStore.Apply(enemyId, power, duration);
             }
         }
 

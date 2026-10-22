@@ -18,6 +18,18 @@ namespace App.Battle.Interface.DataStore
         /// </summary>
         void Apply(int enemyId, float power, float duration);
 
+        /// <summary>
+        /// ウイルスの威力だけを加算する（効果時間には触れない）。ウイルスが付いていなければ、
+        /// 威力 power・効果時間 durationIfNew で新しく付ける（<see cref="Apply"/> と同じ）。威力が0以下なら何もしない。
+        /// </summary>
+        void AddPower(int enemyId, float power, float durationIfNew);
+
+        /// <summary>
+        /// 次の <see cref="Advance"/> の1回だけ、この敵のウイルスの残り効果時間を減らさない（切れない）。1秒周期のダメージはそのまま進む。
+        /// 止め続けたいときは毎フレーム Advance の前に呼ぶ。ウイルスが付いていなければ何もしない。
+        /// </summary>
+        void HoldRemainingTime(int enemyId);
+
         /// <summary>付与するたびに、発生か重複かと付与前後の状態を流す（デバッグログ等の確認用）</summary>
         Observable<VirusApplyResult> OnApplied { get; }
 

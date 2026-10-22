@@ -1,8 +1,9 @@
 ﻿#
 # マリス（MaliceDataStore / VirusUseCase）を確かめるプローブ。
 #
-# 1秒ごとに、プレイヤーから半径 Value1 m 以内（水平距離）の敵へ威力 Value2・効果時間 Value3 秒のウイルスを付与する。
-# ウイルスは重ねると威力が加算されるので、範囲内にいる間は毎秒威力が積み上がる（途中で切れて付け直しにならない）。
+# プレイヤーから半径 Value1 m 以内（水平距離）の敵は、ウイルスの残り効果時間が減らない（切れない）。
+# そのうえで1秒ごとに、ウイルスが無ければ威力 Value2・効果時間 Value3 秒で付け、あれば威力だけ Value2 足す（効果時間には触れない）。
+# なので範囲内にいる間は毎秒威力が積み上がり、ほかのウイルスが付いた敵でも最長効果時間は置き換わらない。
 # デバッグ対戦（無敵）で敵を2体出し、フリーズで動きを止めてから、敵のビューの transform を動かして
 # 1体を半径の内側、1体を外側に置く（敵データの位置は毎フレーム transform から書き戻される）。
 # 経過時間は Unity 側の Time.time で数え、呼び出しの遅れで判定がずれないようにする。
@@ -52,7 +53,7 @@ string Sample()
     var nearHas = virus.TryGetVirus(NearId(), out var near);
     var farHas = virus.TryGetVirus(FarId(), out _);
     var c = Counter();
-    return $"{{\"t\":{F(Time.time - (float)AppDomain.CurrentDomain.GetData("maliceProbe.t0"))},\"nearHas\":{nearHas.ToString().ToLower()},\"power\":{F(near.Power)},\"maxDuration\":{F(near.MaxDuration)},\"farHas\":{farHas.ToString().ToLower()},\"nearNew\":{c[0]},\"nearApplied\":{c[1]}}}";
+    return $"{{\"t\":{F(Time.time - (float)AppDomain.CurrentDomain.GetData("maliceProbe.t0"))},\"nearHas\":{nearHas.ToString().ToLower()},\"power\":{F(near.Power)},\"maxDuration\":{F(near.MaxDuration)},\"remaining\":{F(near.RemainingTime)},\"farHas\":{farHas.ToString().ToLower()},\"nearNew\":{c[0]},\"nearApplied\":{c[1]}}}";
 }
 '@
 
@@ -134,4 +135,36 @@ return $"{{\"v1\":{F(u.Value1.value)},\"v2\":{F(u.Value2.value)},\"v3\":{F(u.Val
     $last = $samples[$samples.Count - 1]
     Assert-Near -Name '最長効果時間は Value3 のまま' -Actual $last.maxDuration -Expected $v3
     Assert-Near -Name '途中で切れて新しく付き直していない（新規の付与は1回だけ）' -Actual $last.nearNew -Expected 1
+
+    # --- ほかのウイルス（威力30・最長6秒）が付いた敵: 最長効果時間は置き換わらず、範囲内では残り効果時間が減らない ---
+    $r = Invoke-MaliceSnippet -Body @'
+virus.Remove(NearId());
+virus.Apply(NearId(), 30f, 6f);
+AppDomain.CurrentDomain.SetData("maliceProbe.t0", Time.time);
+return Sample();
+'@
+    $start = [double]$r.remaining
+    Start-Sleep -Milliseconds 2500
+    $r = Invoke-MaliceSnippet -Body 'return Sample();'
+    Write-Host ("  ほかのウイルス: 経過 {0:0.00} 秒 威力={1} 最長={2} 残り={3}（開始時の残り={4}）" -f [double]$r.t, $r.power, $r.maxDuration, $r.remaining, $start)
+    Assert-Near -Name 'ほかのウイルス: 最長効果時間は6秒のまま（マリスの1秒に置き換わらない）' -Actual $r.maxDuration -Expected 6
+    Assert-Near -Name 'ほかのウイルス: 範囲内では残り効果時間が減らない' -Actual $r.remaining -Expected $start
+    Assert-ProbeTrue -Name 'ほかのウイルス: 威力にはマリスの分が足されている' -Condition ([double]$r.power -gt 30) -Detail "威力=$($r.power)" | Out-Null
+
+    # --- 範囲の外へ出すと、残り効果時間がまた減り始める ---
+    $r = Invoke-MaliceSnippet -Body @'
+var nearT = UnityEngine.Object.FindObjectsByType<App.Battle.Views.HitBoxView>(FindObjectsSortMode.None)
+    .First(h => h.Id == NearId()).GetComponentInParent<App.Battle.Views.EnemyView>().transform;
+var center = player.Position.Value;
+nearT.position = new Vector3(center.x, nearT.position.y, center.z + Malice(1).Value1.value + 5f);
+AppDomain.CurrentDomain.SetData("maliceProbe.t0", Time.time);
+return Sample();
+'@
+    $start = [double]$r.remaining
+    Start-Sleep -Milliseconds 1500
+    $r = Invoke-MaliceSnippet -Body 'return Sample();'
+    $decreased = $start - [double]$r.remaining
+    Write-Host ("  範囲外: 経過 {0:0.00} 秒 残り={1}（開始時の残り={2}）" -f [double]$r.t, $r.remaining, $start)
+    # 動かした位置が敵データに届くまで数フレームかかり、その間は範囲内として止まるので、減った量は経過時間より少し小さくなる
+    Assert-ProbeTrue -Name '範囲外: 残り効果時間がまた減り始める（減った量が 経過時間-0.3秒〜経過時間）' -Condition ($decreased -gt ([double]$r.t - 0.3) -and $decreased -le ([double]$r.t + 0.01)) -Detail "減った量=$decreased 経過=$($r.t)" | Out-Null
 }
