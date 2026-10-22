@@ -5,7 +5,7 @@ namespace App.Battle.Data
 {
     /// <summary>
     /// 残像1体ぶんの見た目。生成時に渡し、寿命の間は <see cref="AfterimageConfig"/> の曲線で不透明度・欠損量だけを動かす。
-    /// 不透明度（全体のフェード）と欠損量（表面のマスク）は別々に効く。
+    /// 透過は使わず、不透明度（全体のフェード）も欠けるブロックの量で表す。不透明度は欠損量で残る部分にさらに掛ける。
     /// </summary>
     [Serializable]
     public struct AfterimageStyle
@@ -16,7 +16,7 @@ namespace App.Battle.Data
         [Range(0f, 1f), Tooltip("彩度。0で灰色、1で指定色そのまま")]
         public float Saturation;
 
-        [Range(0f, 1f), Tooltip("生成直後の不透明度。寿命に応じて曲線で下げる")]
+        [Range(0f, 1f), Tooltip("生成直後の不透明度。透過ではなく、残すブロックの割合として効く（1で欠損量どおり、0で全部欠ける）。寿命に応じて曲線で下げる")]
         public float Opacity;
 
         [Range(0f, 4f), Tooltip("陰影のコントラスト。0で平坦、1で素の陰影、大きいほど明暗がはっきりする")]

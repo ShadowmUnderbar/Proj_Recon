@@ -5,8 +5,9 @@
 //   指定色の「暗部〜ハイライト」のランプへ当てる。元の色と残像色を掛け合わせないので濁らない
 // ・欠損: 残像の基準点からの相対座標（ワールド軸）でブロックに区切ったノイズを、しきい値で Alpha Clip する。
 //   体と頭で同じ基準点を使うので、パーツの境目で模様が途切れない。スクリーン座標は使わない
-// ・不透明度（全体のフェード）と欠損量（表面のマスク）は別のプロパティで独立に効く
-// ・半透明だが、先に深度だけを書くパスを持つ。腕と胴の重なりや体と頭の重なりで、奥の面が透けて二重に見えない
+// ・透過は使わない（不透明の1パス）。欠損は Alpha Clip で抜き、全体のフェードも「欠けるブロックを増やす」ことで表す。
+//   不透明度 _Opacity は残すブロックの割合として欠損量 _Dissolve に掛け合わせる（1で欠損量どおり、0で全部欠ける）。
+//   半透明のブレンドと深度だけを書くパスをやめ、描画を1回にして軽くしている
 //
 // 値はインスタンスごとに MaterialPropertyBlock で渡す（AfterimageDrawer）。
 // 水平線カーブは基準点（_AfterimagePivot）でまとめて沈め、体と頭の位置関係を崩さない。
@@ -17,7 +18,7 @@ Shader "App/Afterimage"
         _BaseMap("元テクスチャ（明暗だけ使う）", 2D) = "white" {}
         _Color("残像の色", Color) = (0.3, 0.85, 1, 1)
         _Saturation("彩度", Range(0, 1)) = 0.8
-        _Opacity("不透明度", Range(0, 1)) = 0.7
+        _Opacity("不透明度（残すブロックの割合。透過ではなく欠損で薄くする）", Range(0, 1)) = 0.7
         _ShadeContrast("陰影のコントラスト", Range(0, 4)) = 1.2
         _Dissolve("欠損量", Range(0, 1)) = 0.15
         _NoiseScale("欠損模様の細かさ（1mあたりのブロック数）", Float) = 12
@@ -39,9 +40,9 @@ Shader "App/Afterimage"
     {
         Tags
         {
-            "RenderType" = "Transparent"
+            "RenderType" = "TransparentCutout"
             "RenderPipeline" = "UniversalPipeline"
-            "Queue" = "Transparent"
+            "Queue" = "AlphaTest"
             "IgnoreProjector" = "True"
         }
 
@@ -149,43 +150,21 @@ Shader "App/Afterimage"
             float next = AfterimageHash01(cell, seed + step + 1u);
             return lerp(current, next, smoothstep(0.0, 1.0, frac(time)));
         }
-        ENDHLSL
 
-        // 深度だけを先に書く。欠損で抜けた所は書かないので、穴の奥は次のパスで見える
-        Pass
+        // 欠損のしきい値（0〜1）。模様の値がこれを下回る所を抜く。
+        // 欠損量で決まる「残る部分」を、さらに不透明度の割合だけ残す（不透明度0で全部欠ける）
+        float AfterimageClipThreshold()
         {
-            Name "AfterimageDepth"
-            Tags { "LightMode" = "SRPDefaultUnlit" }
-
-            ZWrite On
-            ZTest LEqual
-            ColorMask 0
-            Cull Back
-
-            HLSLPROGRAM
-            #pragma vertex AfterimageVertex
-            #pragma fragment Fragment
-            #pragma multi_compile_instancing
-
-            half4 Fragment(Varyings input) : SV_Target
-            {
-                UNITY_SETUP_INSTANCE_ID(input);
-                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
-
-                clip(AfterimagePattern(input.patternPosition) - _Dissolve);
-                clip(_Opacity - 0.001);
-                return 0;
-            }
-            ENDHLSL
+            return 1.0 - (1.0 - _Dissolve) * _Opacity;
         }
+        ENDHLSL
 
         Pass
         {
             Name "ForwardLit"
             Tags { "LightMode" = "UniversalForward" }
 
-            Blend SrcAlpha OneMinusSrcAlpha
-            ZWrite Off
+            ZWrite On
             ZTest LEqual
             Cull Back
 
@@ -206,9 +185,9 @@ Shader "App/Afterimage"
                 UNITY_SETUP_INSTANCE_ID(input);
                 UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(input);
 
-                // 欠損。全体のフェード（_Opacity）とは別に、表面をしきい値で切り取る
+                // 欠損。表面をしきい値で切り取る（全体のフェードもしきい値に含める）
                 float pattern = AfterimagePattern(input.patternPosition);
-                float remain = pattern - _Dissolve;
+                float remain = pattern - AfterimageClipThreshold();
                 clip(remain);
                 half edge = _EdgeWidth > 0.0001 ? 1.0 - saturate(remain / _EdgeWidth) : 0.0;
 
@@ -245,7 +224,7 @@ Shader "App/Afterimage"
 
                 color = MixFog(color, input.fogFactor);
                 color = SepiaTone_Apply(color, SepiaTone_RendererWeight());
-                return half4(color, _Opacity);
+                return half4(color, 1.0);
             }
             ENDHLSL
         }
