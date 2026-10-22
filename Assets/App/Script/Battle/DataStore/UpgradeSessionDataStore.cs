@@ -21,6 +21,8 @@ namespace App.Battle.DataStore
         private readonly Subject<Unit> _onChanged = new();
         public Observable<Unit> OnChanged => _onChanged;
 
+        public int Version { get; private set; }
+
         public IReadOnlyList<string> NewlyAcquiredUpgrades =>
             _appliedUpgrades.Where(id => !_preloadedIds.Contains(id)).ToList();
 
@@ -35,6 +37,7 @@ namespace App.Battle.DataStore
             }
 
             _appliedUpgrades.Add(upgradeData.Id);
+            Version++;
             _onChanged.OnNext(Unit.Default);
         }
 
@@ -47,6 +50,7 @@ namespace App.Battle.DataStore
 
             _appliedUpgrades.Add(upgradeData.Id);
             _preloadedIds.Add(upgradeData.Id);
+            Version++;
             _onChanged.OnNext(Unit.Default);
         }
 
@@ -54,6 +58,7 @@ namespace App.Battle.DataStore
         {
             _appliedUpgrades.Clear();
             _preloadedIds.Clear();
+            Version++;
             _onChanged.OnNext(Unit.Default);
         }
 

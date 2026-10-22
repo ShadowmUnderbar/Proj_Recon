@@ -61,40 +61,5 @@ namespace App.Common.Data.MasterData
         [Space]
         [SerializeField, ReadOnlyAttribute] private UpgradeTag[] _tags = Array.Empty<UpgradeTag>();
         public IReadOnlyList<UpgradeTag> Tags => _tags ?? Array.Empty<UpgradeTag>();
-
-        public UpgradeMasterData(
-            string id,
-            string nameKey,
-            UpgradeType upgradeType,
-            PlayerUnlockType playerUnlockType,
-            int level,
-            float value1,
-            ParameterType value1ParameterType,
-            float value2,
-            ParameterType value2ParameterType,
-            float value3,
-            ParameterType value3ParameterType,
-            float value4,
-            ParameterType value4ParameterType,
-            float value5,
-            ParameterType value5ParameterType
-        )
-        {
-            _id = id;
-            _nameKey = nameKey;
-            _upgradeType = upgradeType;
-            _playerUnlockType = playerUnlockType;
-            _level = level;
-            _value1 = value1;
-            _value1ParameterType = value1ParameterType;
-            _value2 = value2;
-            _value2ParameterType = value2ParameterType;
-            _value3 = value3;
-            _value3ParameterType = value3ParameterType;
-            _value4 = value4;
-            _value4ParameterType = value4ParameterType;
-            _value5 = value5;
-            _value5ParameterType = value5ParameterType;
-        }
     }
 }

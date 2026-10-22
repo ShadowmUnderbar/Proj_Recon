@@ -56,6 +56,9 @@ namespace App.Battle.DataStore
                 _ => false
             };
 
+            // 効果時間の間だけ効く（時間で切れる）条件か
+            public bool IsTimed => Master.ConditionType is BuffConditionType.HitCount or BuffConditionType.AfterDodge;
+
             // アクティブ時に適用する効果倍率。スタック型は累積倍率、それ以外はマスターの固定倍率
             public float EffectMultiplier => Master.ConditionType switch
             {
@@ -317,6 +320,27 @@ namespace App.Battle.DataStore
         }
 
         public bool IsRageActive => _rageRemainingTime > 0f;
+
+        public bool IsTimedBuffActive
+        {
+            get
+            {
+                if (IsRageActive)
+                {
+                    return true;
+                }
+
+                foreach (var state in _buffStates)
+                {
+                    if (state.IsTimed && state.IsActive)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
 
         // Tickで0をわずかに下回ることがあるので0で止める
         public float RageRemainingTime => Mathf.Max(_rageRemainingTime, 0f);

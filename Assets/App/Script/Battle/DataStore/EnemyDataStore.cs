@@ -37,7 +37,11 @@ namespace App.Battle.DataStore
         private readonly Subject<int> _onEnemyDamaged = new();
         public Observable<int> OnEnemyDamaged => _onEnemyDamaged;
 
-        public List<EnemyData> Enemies => _spawnEnemyDataList.Values.ToList();
+        // 敵一覧のスナップショット。スポーン・消去のたびに作り直し、それ以外の参照では使い回す
+        // （列挙中に撃破→消去が走っても、列挙側は古いスナップショットを読み続けられる）
+        private List<EnemyData> _enemiesSnapshot;
+
+        public IReadOnlyList<EnemyData> Enemies => _enemiesSnapshot ??= new List<EnemyData>(_spawnEnemyDataList.Values);
 
         public int AliveEnemyCount
         {
@@ -166,6 +170,7 @@ namespace App.Battle.DataStore
             var enemy = new EnemyData(enemyId, enemyMasterData, spawnPose, hp, damage);
 
             _spawnEnemyDataList.Add(enemyId, enemy);
+            _enemiesSnapshot = null;
             _onEnemyAdded.OnNext(enemyId);
             return enemy;
         }
@@ -174,6 +179,7 @@ namespace App.Battle.DataStore
         {
             _sharedHealthByEnemyId.Remove(enemyId);
             _onEnemyRemoved.OnNext(enemyId);
+            _enemiesSnapshot = null;
             return _spawnEnemyDataList.Remove(enemyId);
         }
 
@@ -207,6 +213,7 @@ namespace App.Battle.DataStore
             var ids = _spawnEnemyDataList.Keys.ToList();
             _spawnEnemyDataList.Clear();
             _sharedHealthByEnemyId.Clear();
+            _enemiesSnapshot = null;
             foreach (var id in ids)
             {
                 _onEnemyRemoved.OnNext(id);

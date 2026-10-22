@@ -5,6 +5,15 @@ namespace App.Battle.Interface
         void AllRemove();
 
         /// <summary>
+        /// 今ある弾を、<see cref="SweepWhere"/> で順に消す対象として覚える（床崩壊の開始時に1回呼ぶ）。
+        /// 毎フレーム弾を探し直さないため、以後に生まれた弾は対象にならない
+        /// </summary>
+        void BeginSweep();
+
+        /// <summary><see cref="BeginSweep"/> で覚えた弾のうち、位置が <paramref name="shouldRemove"/> を満たすものを消す</summary>
+        void SweepWhere(System.Func<UnityEngine.Vector3, bool> shouldRemove);
+
+        /// <summary>
         /// 現在飛んでいる弾をその場で止める／再開する（フリーズ用）。
         /// 呼び出した時点で存在する弾に適用するため、フリーズ中に新しく生まれた弾は止まらない。
         /// </summary>

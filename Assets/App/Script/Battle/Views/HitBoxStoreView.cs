@@ -15,15 +15,24 @@ namespace App.Battle.Views
 
         public IEnumerator<IHitBoxView> HitBoxViews => _hitBoxViews.Values.GetEnumerator();
 
-        private readonly CompositeDisposable _disposables = new();
+        // 敵ごとの購読。敵が消えたときに一緒に解除しないと、1ランで湧いた数だけ溜まり続ける。
+        // 1体に複数のヒットボックスがあっても同じ敵IDでまとめて持つ
+        private readonly Dictionary<int, CompositeDisposable> _subscriptions = new();
 
         public void AddHitBoxView(IHitBoxView hitBoxView)
         {
-            _hitBoxViews.Add(hitBoxView.Id, hitBoxView);
+            // 一覧は敵IDにつき1つ（最初のヒットボックス）だけ持つ。2つ目以降で例外にしない
+            _hitBoxViews.TryAdd(hitBoxView.Id, hitBoxView);
+
+            if (!_subscriptions.TryGetValue(hitBoxView.Id, out var subscriptions))
+            {
+                subscriptions = new CompositeDisposable();
+                _subscriptions.Add(hitBoxView.Id, subscriptions);
+            }
 
             hitBoxView.OnHitObservable
                 .Subscribe(OnHit)
-                .AddTo(_disposables);
+                .AddTo(subscriptions);
         }
 
         private void OnHit(HitData hitData)
@@ -34,11 +43,21 @@ namespace App.Battle.Views
         public void RemoveHitBoxView(int id)
         {
             _hitBoxViews.Remove(id);
+
+            if (_subscriptions.Remove(id, out var subscriptions))
+            {
+                subscriptions.Dispose();
+            }
         }
 
         public void OnDestroy()
         {
-            _disposables.Dispose();
+            foreach (var subscriptions in _subscriptions.Values)
+            {
+                subscriptions.Dispose();
+            }
+
+            _subscriptions.Clear();
             _hitBoxViews.Clear();
             _onHitObservable.Dispose();
         }

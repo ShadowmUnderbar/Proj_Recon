@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using App.Battle.Interface.DataStore;
 using App.Common.Data.Database;
 using App.Common.Data.MasterData;
@@ -5,10 +6,36 @@ using VContainer;
 
 namespace App.Battle.DataStore
 {
+    /// <summary>
+    /// 所持アップグレードの効果値を種類ごとに合成して返す計算基盤。
+    /// 毎フレーム・毎命中・毎射撃で呼ばれるため、所持内容が変わったとき（<see cref="IUpgradeSessionDataStore.Version"/> が進んだとき）
+    /// だけ種類ごとの集計を作り直し、問い合わせは辞書引きで済ませる。
+    /// 世代番号で判定するので、OnChanged の購読順（他の購読者が先に問い合わせても）に左右されない
+    /// </summary>
     public class UpgradeEffectSimpleCalculatorDataStore : IUpgradeEffectSimpleCalculatorDataStore
     {
+        // 種類ごとの集計結果
+        private sealed class Summary
+        {
+            // 全レベルの Value1 の積（乗算合成用）
+            public float Multiply = 1f;
+
+            // 全レベルの Value1 の最大値（最高値のみ採用用）
+            public float Max;
+
+            // 所持中の最高レベル行
+            public UpgradeMasterData Highest;
+        }
+
+        // まだ一度も集計していないことを表す世代番号（セッション側は 0 始まり）
+        private const int NotBuiltVersion = -1;
+
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
         private readonly UpgradeDatabase _upgradeDatabase;
+        private readonly Dictionary<UpgradeType, Summary> _summaries = new();
+
+        // 集計したときのセッションの世代番号
+        private int _builtVersion = NotBuiltVersion;
 
         [Inject]
         public UpgradeEffectSimpleCalculatorDataStore(
@@ -20,119 +47,47 @@ namespace App.Battle.DataStore
             _upgradeDatabase = upgradeDatabase;
         }
 
-        /// <summary>
-        /// 指定タイプの全アップグレード Value1 を乗算合成して返す。
-        /// 効果なし時は 1.0f。
-        /// </summary>
         public float CalcMultiply(UpgradeType upgradeType)
         {
-            var result = 1f;
-            foreach (var id in _upgradeSessionDataStore.AppliedUpgrades)
-            {
-                if (!_upgradeDatabase.TryGetUpgradeMasterData(id, out var data))
-                {
-                    continue;
-                }
-
-                if (data.UpgradeType != upgradeType)
-                {
-                    continue;
-                }
-
-                result *= data.Value1.value;
-            }
-
-            return result;
+            return TryGetSummary(upgradeType, out var summary) ? summary.Multiply : 1f;
         }
 
-        /// <summary>
-        /// 指定タイプの全アップグレード Value1 を加算して返す。
-        /// 効果なし時は 0f。
-        /// </summary>
-        public float CalcAdd(UpgradeType upgradeType)
-        {
-            var result = 0f;
-            foreach (var id in _upgradeSessionDataStore.AppliedUpgrades)
-            {
-                if (!_upgradeDatabase.TryGetUpgradeMasterData(id, out var data))
-                {
-                    continue;
-                }
-
-                if (data.UpgradeType != upgradeType)
-                {
-                    continue;
-                }
-
-                result += data.Value1.value;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// 指定タイプの全アップグレードのうち Value1 の最大値を返す。
-        /// レベルが累積せず「最高レベルのみ採用」したい効果（バリア等）に使う。効果なし時は 0f。
-        /// </summary>
         public float CalcMax(UpgradeType upgradeType)
         {
-            var result = 0f;
-            foreach (var id in _upgradeSessionDataStore.AppliedUpgrades)
-            {
-                if (!_upgradeDatabase.TryGetUpgradeMasterData(id, out var data))
-                {
-                    continue;
-                }
-
-                if (data.UpgradeType != upgradeType)
-                {
-                    continue;
-                }
-
-                if (data.Value1.value > result)
-                {
-                    result = data.Value1.value;
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// 指定タイプで所持中の最高レベルを返す。効果なし時は 0。
-        /// レベルによって挙動が変わる効果（チョークポイントのLv3など）の判定に使う。
-        /// </summary>
-        /// <summary>
-        /// 指定タイプで所持中の最高レベルのマスターデータを返す。未所持なら false。
-        /// レベルが累積せず、複数のValueを参照したい効果（ピースメイカー・雪崩等）に使う。
-        /// </summary>
-        public bool TryGetHighestLevelUpgrade(UpgradeType upgradeType, out UpgradeMasterData upgradeMasterData)
-        {
-            upgradeMasterData = null;
-            foreach (var id in _upgradeSessionDataStore.AppliedUpgrades)
-            {
-                if (!_upgradeDatabase.TryGetUpgradeMasterData(id, out var data))
-                {
-                    continue;
-                }
-
-                if (data.UpgradeType != upgradeType)
-                {
-                    continue;
-                }
-
-                if (upgradeMasterData == null || data.Level > upgradeMasterData.Level)
-                {
-                    upgradeMasterData = data;
-                }
-            }
-
-            return upgradeMasterData != null;
+            return TryGetSummary(upgradeType, out var summary) ? summary.Max : 0f;
         }
 
         public int CalcMaxLevel(UpgradeType upgradeType)
         {
-            var result = 0;
+            return TryGetSummary(upgradeType, out var summary) ? summary.Highest.Level : 0;
+        }
+
+        public bool TryGetHighestLevelUpgrade(UpgradeType upgradeType, out UpgradeMasterData upgradeMasterData)
+        {
+            if (TryGetSummary(upgradeType, out var summary))
+            {
+                upgradeMasterData = summary.Highest;
+                return true;
+            }
+
+            upgradeMasterData = null;
+            return false;
+        }
+
+        private bool TryGetSummary(UpgradeType upgradeType, out Summary summary)
+        {
+            if (_builtVersion != _upgradeSessionDataStore.Version)
+            {
+                Rebuild();
+            }
+
+            return _summaries.TryGetValue(upgradeType, out summary);
+        }
+
+        private void Rebuild()
+        {
+            _summaries.Clear();
+
             foreach (var id in _upgradeSessionDataStore.AppliedUpgrades)
             {
                 if (!_upgradeDatabase.TryGetUpgradeMasterData(id, out var data))
@@ -140,18 +95,26 @@ namespace App.Battle.DataStore
                     continue;
                 }
 
-                if (data.UpgradeType != upgradeType)
+                if (!_summaries.TryGetValue(data.UpgradeType, out var summary))
                 {
-                    continue;
+                    summary = new Summary();
+                    _summaries.Add(data.UpgradeType, summary);
                 }
 
-                if (data.Level > result)
+                var value1 = data.Value1.value;
+                summary.Multiply *= value1;
+                if (value1 > summary.Max)
                 {
-                    result = data.Level;
+                    summary.Max = value1;
+                }
+
+                if (summary.Highest == null || data.Level > summary.Highest.Level)
+                {
+                    summary.Highest = data;
                 }
             }
 
-            return result;
+            _builtVersion = _upgradeSessionDataStore.Version;
         }
     }
 }

@@ -1,5 +1,6 @@
 using App.Battle.Data;
 using App.Battle.Interface.DataStore;
+using UnityEngine;
 using VContainer;
 
 namespace App.Battle.DataStore
@@ -39,7 +40,8 @@ namespace App.Battle.DataStore
                 return 1f;
             }
 
-            return 1f + penetratedCount * (upgrade.Value1.value - 1f);
+            // Value1 が 1 未満のデータでも倍率が負（回復）にならないよう 0 で止める
+            return Mathf.Max(0f, 1f + penetratedCount * (upgrade.Value1.value - 1f));
         }
     }
 }

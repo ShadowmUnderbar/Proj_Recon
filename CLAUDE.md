@@ -33,6 +33,12 @@
 - **PRのベース**: developブランチ
 - **コミット単位**: 機能単位で分割、わかりやすいメッセージ
 - **Co-Authored-By**: Claudeとの共同作業時は必ず追加
+- **ブランチの切り替えは `Tools/Git/Switch-Branch.ps1` で行う**（`git switch` / `git checkout <ブランチ>` を直接使わない）
+  - Unity を開いたまま直接切り替えると、開いているシーン（`Battle.unity` など）がディスク上で書き換わり、Unity が再読み込みの確認ダイアログを出す。ダイアログの間は uloop がすべてタイムアウトし、ユーザーが手で閉じるまで作業が止まる
+  - スクリプトは開いているシーンを控えて Boot シーンへ移ってから切り替え、コンパイルを待って元のシーンを開き直す。Unity が起動していなければ、ふつうに切り替えるだけ
+  - **Boot.unity がブランチ間で違うときは切り替えずに止まる（終了コード 2）。起動まわりの大きな変更の可能性があるので、必ずユーザーに確認する**。了承を得たときだけ `-AllowBootSceneChange` を付けて実行し直す（空のシーンへ移って切り替える）
+  - 例: `& "Tools/Git/Switch-Branch.ps1" -Branch feature/foo -Create -StartPoint origin/develop`（作って切り替える）、`& "Tools/Git/Switch-Branch.ps1" -Branch feature/foo`（既存のブランチへ）
+  - Play モード中や、シーンに未保存の変更があるときは切り替えずに止まる。保存するか、変更が要らなければ破棄してから実行し直す
 
 #### PR必須（Claudeによるコード変更すべてが対象）
 - Claudeによるコード変更は**必ず**featureブランチを作成しPRを出す。`develop`への直接pushは禁止
