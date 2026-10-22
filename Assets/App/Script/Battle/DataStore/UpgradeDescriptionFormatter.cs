@@ -151,6 +151,9 @@ namespace App.Battle.DataStore
 
             // Value1=与えたダメージに対するウイルスの威力・効果時間の割合 / Value2=レイジ発動中の威力の倍率
             { UpgradeType.Invective, new[] { ValueFormat.Percent, ValueFormat.Raw } },
+
+            // Value1=広げる半径（m） / Value2=広げるウイルスの威力の倍率 / Value3=残り効果時間に足す秒数
+            { UpgradeType.Rafflesia, RawValue1To3 },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む

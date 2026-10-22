@@ -170,6 +170,8 @@ namespace App.Battle
                 .As<IDOSDataStore>();
             builder.Register<InvectiveDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IInvectiveDataStore>();
+            builder.Register<RafflesiaDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IRafflesiaDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()

@@ -30,6 +30,7 @@ namespace App.Battle.UseCase
         private readonly IAntiMaterialDataStore _antiMaterialDataStore;
         private readonly IDOSDataStore _dosDataStore;
         private readonly IInvectiveDataStore _invectiveDataStore;
+        private readonly IRafflesiaDataStore _rafflesiaDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -53,7 +54,8 @@ namespace App.Battle.UseCase
             IElectricShockDataStore electricShockDataStore,
             IAntiMaterialDataStore antiMaterialDataStore,
             IDOSDataStore dosDataStore,
-            IInvectiveDataStore invectiveDataStore
+            IInvectiveDataStore invectiveDataStore,
+            IRafflesiaDataStore rafflesiaDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
@@ -71,6 +73,7 @@ namespace App.Battle.UseCase
             _antiMaterialDataStore = antiMaterialDataStore;
             _dosDataStore = dosDataStore;
             _invectiveDataStore = invectiveDataStore;
+            _rafflesiaDataStore = rafflesiaDataStore;
         }
 
         public void Initialize()
@@ -189,6 +192,10 @@ namespace App.Battle.UseCase
             }
 
             _playerStateDataStore.Heal(healAmount);
+
+            // ラフレシア: ウイルスを持ったまま撃破された敵から周りの敵へウイルスを広げる。
+            // 死亡演出がすぐ終わる敵は await の直後に消去され、ウイルスも取り除かれるので、ここで先に読む
+            _rafflesiaDataStore.Spread(enemyId);
 
             await _enemyPresenter.Dead(enemyId);
 
