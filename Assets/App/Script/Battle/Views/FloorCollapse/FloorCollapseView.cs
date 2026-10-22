@@ -22,9 +22,8 @@ namespace App.Battle.Views.FloorCollapse
         private static readonly int ProgressId = Shader.PropertyToID("_CollapseProgress");
         private static readonly int OriginId = Shader.PropertyToID("_CollapseOrigin");
         private static readonly int DirectionId = Shader.PropertyToID("_CollapseDirection");
-        private static readonly int MaxTravelId = Shader.PropertyToID("_MaxTravel");
+        private static readonly int FrontId = Shader.PropertyToID("_CollapseFront");
         private static readonly int StaggerId = Shader.PropertyToID("_Stagger");
-        private static readonly int JitterId = Shader.PropertyToID("_Jitter");
         private static readonly int CrackPortionId = Shader.PropertyToID("_CrackPortion");
         private static readonly int SinkDepthId = Shader.PropertyToID("_SinkDepth");
         private static readonly int TiltAngleId = Shader.PropertyToID("_TiltAngle");
@@ -58,6 +57,10 @@ namespace App.Battle.Views.FloorCollapse
         private float _builtThickness = -1f;
 
         private readonly List<Renderer> _hiddenTargets = new();
+        private readonly List<Vector2> _startDistanceBuffer = new();
+
+        // 今回の再生の波。進行度から前線の位置を出すのに使う
+        private FloorCollapseWave _wave;
 
         public int PlateCount { get; private set; }
 
@@ -78,19 +81,25 @@ namespace App.Battle.Views.FloorCollapse
             SetVisible(false);
         }
 
-        public void Begin(Vector3 origin, FloorCollapseSettings settings)
+        public void Begin(FloorCollapseWave wave)
         {
             if (_config == null)
             {
                 return;
             }
 
+            _wave = wave;
+            var settings = wave.Settings;
+            var origin = wave.Origin;
+
             // やり直しのときは、前回隠した床を戻してから隠し直す
             RestoreTargets();
 
             RebuildPlatesIfNeeded(settings);
+            // 各プレートに波が届く距離は中心しだいで変わるので、再生のたびに書き込む（距離の式は FloorCollapseWave だけが持つ）
+            FloorCollapsePlateMeshBuilder.WriteStartDistances(_plateMesh, wave, _startDistanceBuffer);
 
-            // 床の見た目・高さは最初に見つかった対象から取る。プレートの境目が毎回同じワールド位置に来るよう、中心をプレートの格子へ揃える
+            // 床の見た目・高さは最初に見つかった対象から取る
             var floorHeight = origin.y;
             var renderingLayerMask = _plateRenderer.renderingLayerMask;
             _propertyBlock.Clear();
@@ -118,19 +127,15 @@ namespace App.Battle.Views.FloorCollapse
             }
 
             var plateSize = settings.PlateSize;
-            var center = new Vector3(
-                Mathf.Round(origin.x / plateSize) * plateSize,
-                floorHeight,
-                Mathf.Round(origin.z / plateSize) * plateSize);
+            // プレートの境目が毎回同じワールド位置に来るよう、波の格子の中心に置く
+            var center = new Vector3(wave.GridCenter.x, floorHeight, wave.GridCenter.z);
             transform.SetPositionAndRotation(center, Quaternion.identity);
             _voidRenderer.transform.localPosition = Vector3.down * _config.VoidDepth;
 
             var direction = settings.NormalizedDirection;
             _propertyBlock.SetVector(OriginId, new Vector4(origin.x - center.x, 0f, origin.z - center.z, 0f));
             _propertyBlock.SetVector(DirectionId, new Vector4(direction.x, direction.y, (float)settings.Mode, 0f));
-            _propertyBlock.SetFloat(MaxTravelId, settings.MaxTravelDistance);
             _propertyBlock.SetFloat(StaggerId, settings.Stagger);
-            _propertyBlock.SetFloat(JitterId, settings.Jitter);
             _propertyBlock.SetFloat(CrackPortionId, settings.CrackPortion);
             _propertyBlock.SetFloat(SinkDepthId, settings.SinkDepth);
             _propertyBlock.SetFloat(TiltAngleId, settings.TiltAngle * Mathf.Deg2Rad);
@@ -143,6 +148,7 @@ namespace App.Battle.Views.FloorCollapse
             _propertyBlock.SetFloat(LineWidthId, settings.LineWidth);
             _propertyBlock.SetFloat(HalfPlateSizeId, plateSize * 0.5f);
             _propertyBlock.SetFloat(ProgressId, 0f);
+            _propertyBlock.SetFloat(FrontId, wave.Front(0f));
 
             // セピア調のグループは元の床に揃える
             _plateRenderer.renderingLayerMask = renderingLayerMask;
@@ -153,12 +159,13 @@ namespace App.Battle.Views.FloorCollapse
 
         public void SetProgress(float progress)
         {
-            if (_propertyBlock == null || !_plateRenderer.enabled)
+            if (_propertyBlock == null || _wave == null || !_plateRenderer.enabled)
             {
                 return;
             }
 
             _propertyBlock.SetFloat(ProgressId, progress);
+            _propertyBlock.SetFloat(FrontId, _wave.Front(progress));
             _plateRenderer.SetPropertyBlock(_propertyBlock);
         }
 
@@ -183,7 +190,7 @@ namespace App.Battle.Views.FloorCollapse
                 return;
             }
 
-            PlateCount = FloorCollapsePlateMeshBuilder.Build(_plateMesh, settings.PlateSize, settings.FieldSize, settings.PlateThickness);
+            PlateCount = FloorCollapsePlateMeshBuilder.Build(_plateMesh, settings);
             _builtPlateSize = settings.PlateSize;
             _builtFieldSize = settings.FieldSize;
             _builtThickness = settings.PlateThickness;

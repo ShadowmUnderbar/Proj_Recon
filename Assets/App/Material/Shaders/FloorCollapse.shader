@@ -1,7 +1,8 @@
 // ステージ遷移用の床崩壊シェーダ。演出用のプレート床（FloorCollapsePlateMeshBuilder が組む、プレートごとに頂点を分けた板）に使う。
 //
-// 全体の進行度 _CollapseProgress 1つから、プレートごとに次を決める。
-// ・崩壊の波: 中心からの距離（または一方向への距離）に、プレートごとの乱数のずれを足した位置を波が通ると、そのプレートが動き出す
+// 波の距離の計算は C#（FloorCollapseWave）だけが持つ。シェーダは、プレートごとに波が届く距離（UV1.x）と、
+// 波の前線の位置 _CollapseFront[m] を受け取り、その差からプレートごとに次を決める。
+// ・崩壊の波: 前線がプレートの開始距離を越えると、そのプレートが割れ始める
 // ・亀裂: 動き出す前の区間（_CrackPortion）は、境界の線が区切りごとに順に光るだけ
 // ・変形: プレート単位の剛体変換として、隙間を開けながら沈下・外側の縁が下がる傾斜・外側へのスライドを重ねる
 // ・データ片化: 動きの後半でプレートをブロック状に割って Alpha Clip で消し、切り口を光らせる
@@ -22,11 +23,10 @@ Shader "App/FloorCollapse"
 
         [Header(Progress)]
         _CollapseProgress("全体の進行度", Range(0, 1)) = 0
-        _CollapseOrigin("崩壊の中心（オブジェクト空間）", Vector) = (0, 0, 0, 0)
-        _CollapseDirection("向き（xy）と進み方（z: 0=同心円 1=一方向）", Vector) = (0, 1, 0, 0)
-        _MaxTravel("波が進む最大距離[m]", Float) = 64
+        _CollapseFront("波の前線の位置[m]（FloorCollapseWave.Front）", Float) = 0
+        _CollapseOrigin("崩壊の中心（オブジェクト空間。ずれる向きにだけ使う）", Vector) = (0, 0, 0, 0)
+        _CollapseDirection("向き（xy）と進み方（z: 0=同心円 1=一方向）。ずれる向きにだけ使う", Vector) = (0, 1, 0, 0)
         _Stagger("1枚が動き切るまでに波が進む距離[m]", Float) = 12
-        _Jitter("プレートごとの開始のずれ[m]", Float) = 3
         _CrackPortion("亀裂だけの区間", Range(0, 0.9)) = 0.3
 
         [Header(Motion)]
@@ -63,11 +63,10 @@ Shader "App/FloorCollapse"
             float _LineWidth;
             half _SideDarkness;
             float _CollapseProgress;
+            float _CollapseFront;
             float4 _CollapseOrigin;
             float4 _CollapseDirection;
-            float _MaxTravel;
             float _Stagger;
-            float _Jitter;
             float _CrackPortion;
             float _HalfPlateSize;
             float _SinkDepth;
@@ -102,6 +101,8 @@ Shader "App/FloorCollapse"
             float3 normalOS : NORMAL;
             // xy: プレートの中心（オブジェクト空間のxz） zw: プレートごとの乱数
             float4 plateData : TEXCOORD0;
+            // x: このプレートに波が届く距離[m]（FloorCollapseWave.PlateStartDistance。再生のたびに C# が書き込む）
+            float2 startDistance : TEXCOORD1;
             UNITY_VERTEX_INPUT_INSTANCE_ID
         };
 
@@ -128,16 +129,6 @@ Shader "App/FloorCollapse"
             return v * c + cross(axis, v) * s + axis * dot(axis, v) * (1.0 - c);
         }
 
-        // プレートの崩壊の波からの位置（0で波が届いたばかり、大きいほど先に崩れている）[m]
-        float FloorCollapse_Distance(float2 center)
-        {
-            float2 fromOrigin = center - _CollapseOrigin.xz;
-            float radial = length(fromOrigin);
-            // 一方向のときは、範囲の向きの逆側の端を0とする距離（_MaxTravel は範囲を向きへ射影した幅）
-            float directional = dot(fromOrigin, _CollapseDirection.xy) + _MaxTravel * 0.5;
-            return lerp(radial, directional, _CollapseDirection.z);
-        }
-
         // プレートがずれていく外向き（xz）
         float2 FloorCollapse_Outward(float2 center)
         {
@@ -160,10 +151,8 @@ Shader "App/FloorCollapse"
             float random2 = input.plateData.w;
             float3 local = input.positionOS.xyz - center;
 
-            // 波の位置。最遠のプレートが動き切ったときに全体の進行度の暗転開始に届くよう伸ばす
-            float travel = _MaxTravel + _Stagger + _Jitter;
-            float front = _CollapseProgress / max(_BlackoutStart, 0.0001) * travel;
-            float plate = saturate((front - FloorCollapse_Distance(center2) - random * _Jitter) / _Stagger);
+            // このプレートの進み（0で前線が届いたばかり、1で動き切った）。距離と前線は C# が決めて渡す
+            float plate = saturate((_CollapseFront - input.startDistance.x) / max(_Stagger, 0.0001));
 
             float crack = saturate(plate / max(_CrackPortion, 0.0001));
             float motion = saturate((plate - _CrackPortion) / max(1.0 - _CrackPortion, 0.0001));

@@ -58,6 +58,12 @@ function Get-FloorCollapseState {
     return Invoke-UnityJson -Snippet ($Global:ProbeFloorCollapsePrelude + @'
 var s = config.Settings;
 var perSide = Mathf.CeilToInt(s.FieldSize / s.PlateSize);
+// C# が書き込んだプレートごとの開始距離（UV1.x）。中心のプレートは0付近、いちばん遠い角は 対角の半分＋ずれ幅 以内に収まるはず
+var startDistances = new System.Collections.Generic.List<Vector2>();
+plates.GetComponent<MeshFilter>().sharedMesh.GetUVs(1, startDistances);
+var minStart = startDistances.Count > 0 ? startDistances.Min(v => v.x) : -1f;
+var maxStart = startDistances.Count > 0 ? startDistances.Max(v => v.x) : -1f;
+var vertexCount = plates.GetComponent<MeshFilter>().sharedMesh.vertexCount;
 return "{"
     + "\"phase\":\"" + collapse.Phase.CurrentValue + "\""
     + ",\"progress\":" + collapse.Progress.CurrentValue.ToString(ci)
@@ -70,6 +76,13 @@ return "{"
     + ",\"colliderEnabled\":" + (collider.enabled ? "true" : "false")
     + ",\"colliderY\":" + collider.transform.position.y.ToString(ci)
     + ",\"duration\":" + s.Duration.ToString(ci)
+    + ",\"startCount\":" + startDistances.Count
+    + ",\"vertexCount\":" + vertexCount
+    + ",\"minStart\":" + minStart.ToString(ci)
+    + ",\"maxStart\":" + maxStart.ToString(ci)
+    + ",\"halfDiagonal\":" + (perSide * s.PlateSize * 0.5f * Mathf.Sqrt(2f)).ToString(ci)
+    + ",\"jitter\":" + s.Jitter.ToString(ci)
+    + ",\"front\":" + block.GetFloat("_CollapseFront").ToString(ci)
     + ",\"wave\":" + wave.CurrentWave.CurrentValue
     + ",\"pause\":" + (wave.IsWavePause.Value ? "true" : "false")
     + ",\"shopOpen\":" + (isShopOpen ? "true" : "false")
@@ -223,6 +236,11 @@ function ProbeRun {
     Assert-ProbeTrue -Name '崩壊中は進行度が進む' -Condition ($mid.phase -eq 'Collapsing' -and $mid.progress -gt $started.progress -and $mid.progress -lt 1) `
         -Detail "(progress=$($mid.progress))" | Out-Null
     Assert-ProbeValue -Name 'シェーダへ渡した進行度が DataStore と一致' -Actual $mid.shaderProgress -Expected $mid.progress | Out-Null
+    Assert-ProbeValue -Name 'プレートごとの開始距離（C# の計算）が全頂点に書き込まれている' -Actual $mid.startCount -Expected $mid.vertexCount | Out-Null
+    Assert-ProbeTrue -Name '開始距離は中心のプレートで0付近、最遠でも 対角の半分＋ずれ幅 以内' `
+        -Condition ($mid.minStart -ge 0 -and $mid.minStart -le ([double]$mid.jitter + 2) -and $mid.maxStart -le ([double]$mid.halfDiagonal + [double]$mid.jitter + 2)) `
+        -Detail "(min=$($mid.minStart) max=$($mid.maxStart) 対角の半分=$($mid.halfDiagonal) ずれ幅=$($mid.jitter))" | Out-Null
+    Assert-ProbeTrue -Name 'シェーダへ波の前線の位置（C# の計算）が渡っている' -Condition ($mid.front -gt 0) -Detail "(front=$($mid.front)m)" | Out-Null
 
     Start-Sleep -Seconds ([double]$mid.duration)
     $done = Get-FloorCollapseState

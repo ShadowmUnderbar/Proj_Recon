@@ -34,6 +34,9 @@ namespace App.Battle.Interface.DataStore
         /// <summary>今回の再生の見た目と動き</summary>
         FloorCollapseSettings Settings { get; }
 
+        /// <summary>今回の再生の波の計算（プレートごとに波が届く距離・前線の位置）。床の見た目もこの値で動かす</summary>
+        FloorCollapseWave Wave { get; }
+
         /// <summary>
         /// 崩壊が始まった瞬間に流れる（再生中にやり直したときも流れる）。
         /// 崩壊中はプレイヤーを操作不能にし、ショップは <see cref="OnCompleted"/> まで開かない

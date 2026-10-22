@@ -1,11 +1,10 @@
 using App.Battle.Data;
-using UnityEngine;
 
 namespace App.Battle.Interface
 {
     public interface IFloorCollapsePresenter
     {
-        void Begin(Vector3 origin, FloorCollapseSettings settings);
+        void Begin(FloorCollapseWave wave);
         void SetProgress(float progress);
         void Restore();
     }

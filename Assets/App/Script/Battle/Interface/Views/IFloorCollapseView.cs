@@ -1,5 +1,4 @@
 using App.Battle.Data;
-using UnityEngine;
 
 namespace App.Battle.Interface
 {
@@ -9,10 +8,10 @@ namespace App.Battle.Interface
     /// </summary>
     public interface IFloorCollapseView
     {
-        /// <summary>崩壊対象の床を隠し、<paramref name="origin"/> を中心にプレート床を敷く</summary>
-        void Begin(Vector3 origin, FloorCollapseSettings settings);
+        /// <summary>崩壊対象の床を隠し、<paramref name="wave"/> の格子でプレート床を敷く。プレートごとに波が届く距離も <paramref name="wave"/> から取る</summary>
+        void Begin(FloorCollapseWave wave);
 
-        /// <summary>全体の進行度（0〜1）を反映する</summary>
+        /// <summary>全体の進行度（0〜1）を反映する。波の前線の位置は Begin で受け取った波から求める</summary>
         void SetProgress(float progress);
 
         /// <summary>プレート床を片付け、隠していた床を元に戻す</summary>

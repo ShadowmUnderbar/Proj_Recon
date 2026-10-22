@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using App.Battle.Data;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -7,6 +8,7 @@ namespace App.Battle.Views.FloorCollapse
     /// <summary>
     /// 床崩壊用のプレート床のメッシュを組む。プレートごとに頂点を分けた（隣と共有しない）厚みのある板を並べ、1枚のメッシュにする。
     /// 各頂点にプレートの中心と乱数を持たせ、沈下・傾斜・スライドはシェーダがプレート単位の剛体変換として行う。
+    /// 波が届く距離は再生のたびに <see cref="WriteStartDistances"/> で UV1 へ書き込む（距離の式は <see cref="FloorCollapseWave"/> だけが持つ）。
     /// 元の床のUVや法線は使わない（見た目は真上からの投影で写す）
     /// </summary>
     public static class FloorCollapsePlateMeshBuilder
@@ -16,20 +18,17 @@ namespace App.Battle.Views.FloorCollapse
         // 上面2三角形＋側面4面×2三角形
         private const int IndicesPerPlate = (2 + 4 * 2) * 3;
 
-        // 乱数の種。プレートの並びが同じなら、毎回同じ崩れ方になる
-        private const uint HashSeedA = 0x9E3779B9u;
-        private const uint HashSeedB = 0x85EBCA6Bu;
-
         /// <summary>
-        /// 原点を中心に、一辺 <paramref name="fieldSize"/> の範囲へ一辺 <paramref name="plateSize"/> のプレートを敷き詰める。
-        /// 上面は y=0、厚みの分だけ下へ側面を張る
+        /// 原点を中心に、範囲（FieldSize）へ一辺 PlateSize のプレートを敷き詰める。
+        /// 上面は y=0、厚み（PlateThickness）の分だけ下へ側面を張る
         /// </summary>
         /// <returns>敷いたプレートの枚数</returns>
-        public static int Build(Mesh mesh, float plateSize, float fieldSize, float thickness)
+        public static int Build(Mesh mesh, FloorCollapseSettings settings)
         {
-            var platesPerSide = Mathf.Max(1, Mathf.CeilToInt(fieldSize / plateSize));
+            var plateSize = settings.PlateSize;
+            var thickness = settings.PlateThickness;
+            var platesPerSide = FloorCollapseWave.GetPlatesPerSide(settings);
             var plateCount = platesPerSide * platesPerSide;
-            var half = platesPerSide * plateSize * 0.5f;
             var halfPlate = plateSize * 0.5f;
 
             var vertices = new List<Vector3>(plateCount * VerticesPerPlate);
@@ -41,8 +40,11 @@ namespace App.Battle.Views.FloorCollapse
             {
                 for (var x = 0; x < platesPerSide; x++)
                 {
-                    var center = new Vector3(x * plateSize - half + halfPlate, 0f, z * plateSize - half + halfPlate);
-                    var data = new Vector4(center.x, center.z, Hash01(x, z, HashSeedA), Hash01(x, z, HashSeedB));
+                    var localCenter = FloorCollapseWave.PlateLocalCenter(x, z, platesPerSide, plateSize);
+                    var center = new Vector3(localCenter.x, 0f, localCenter.y);
+                    var data = new Vector4(center.x, center.z,
+                        FloorCollapseWave.PlateRandom(x, z, FloorCollapseWave.JitterSeed),
+                        FloorCollapseWave.PlateRandom(x, z, FloorCollapseWave.VariationSeed));
 
                     var minX = center.x - halfPlate;
                     var maxX = center.x + halfPlate;
@@ -80,6 +82,29 @@ namespace App.Battle.Views.FloorCollapse
             return plateCount;
         }
 
+        /// <summary>
+        /// 各プレートに波が届く距離[m]を UV1.x へ書き込む。崩壊の中心が変わるので再生のたびに呼ぶ。
+        /// プレートの並び（z ごとに x を並べ、1枚あたり <see cref="VerticesPerPlate"/> 頂点）は <see cref="Build"/> と同じ
+        /// </summary>
+        public static void WriteStartDistances(Mesh mesh, FloorCollapseWave wave, List<Vector2> buffer)
+        {
+            buffer.Clear();
+            var platesPerSide = wave.PlatesPerSide;
+            for (var z = 0; z < platesPerSide; z++)
+            {
+                for (var x = 0; x < platesPerSide; x++)
+                {
+                    var startDistance = new Vector2(wave.PlateStartDistance(x, z), 0f);
+                    for (var i = 0; i < VerticesPerPlate; i++)
+                    {
+                        buffer.Add(startDistance);
+                    }
+                }
+            }
+
+            mesh.SetUVs(1, buffer);
+        }
+
         /// <summary>時計回り（上から見て）に並べた4点で四角形を足す</summary>
         private static void AddQuad(List<Vector3> vertices, List<Vector3> normals, List<Vector4> plateData, List<int> indices,
             Vector4 data, Vector3 normal, Vector3 a, Vector3 b, Vector3 c, Vector3 d)
@@ -101,18 +126,6 @@ namespace App.Battle.Views.FloorCollapse
             indices.Add(start);
             indices.Add(start + 2);
             indices.Add(start + 3);
-        }
-
-        /// <summary>プレートの並びから0〜1の乱数を作る</summary>
-        private static float Hash01(int x, int z, uint seed)
-        {
-            var h = (uint)x * 0x27D4EB2Du ^ (uint)z * 0x165667B1u ^ seed;
-            h ^= h >> 15;
-            h *= 0x2C1B3C6Du;
-            h ^= h >> 12;
-            h *= 0x297A2D39u;
-            h ^= h >> 15;
-            return (h & 0xFFFFFF) / 16777216f;
         }
     }
 }

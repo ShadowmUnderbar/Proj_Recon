@@ -82,7 +82,7 @@ namespace App.Battle.UseCase
 
         private void OnStarted()
         {
-            _floorCollapsePresenter.Begin(_floorCollapseDataStore.Origin, _floorCollapseDataStore.Settings);
+            _floorCollapsePresenter.Begin(_floorCollapseDataStore.Wave);
             _gameInputDataStore.SetFocusInputEnable(false);
             _isFocusInputLocked = true;
         }

@@ -21,13 +21,14 @@ namespace App.Battle.DataStore
         public ReadOnlyReactiveProperty<float> Progress => _progress;
         public Observable<Unit> OnStarted => _onStarted;
         public Observable<Unit> OnCompleted => _onCompleted;
-        public Vector3 Origin { get; private set; }
-        public FloorCollapseSettings Settings { get; private set; } = FloorCollapseSettings.Default;
+        // 未再生のあいだは既定の設定・原点の波を置いておく（IsCollapsedAt は Phase で守っているので計算には使われない）
+        public FloorCollapseWave Wave { get; private set; } = new(Vector3.zero, FloorCollapseSettings.Default);
+        public Vector3 Origin => Wave.Origin;
+        public FloorCollapseSettings Settings => Wave.Settings;
 
         public void Begin(Vector3 origin, FloorCollapseSettings settings)
         {
-            Origin = origin;
-            Settings = settings;
+            Wave = new FloorCollapseWave(origin, settings);
             _progress.Value = 0f;
             // 再生中にやり直したときは Phase を Collapsing のまま保つ（Idle を挟むと、ショップの完了待ちなどが打ち切り扱いで消える）。
             // やり直しは OnStarted で知らせる
@@ -72,25 +73,7 @@ namespace App.Battle.DataStore
                     return true;
             }
 
-            // シェーダ（App/FloorCollapse）と同じ式で、波の位置と、そのプレートが動き出す距離を比べる。
-            // プレートごとの開始のずれ（乱数）はCPU側では分からないので、平均（ずれ幅の半分）で見る
-            var settings = Settings;
-            var travel = settings.MaxTravelDistance + settings.Stagger + settings.Jitter;
-            var front = _progress.Value / Mathf.Max(settings.BlackoutStart, Mathf.Epsilon) * travel;
-            var startOfMotion = settings.Stagger * settings.CrackPortion;
-            return front - Distance(worldPosition) - settings.Jitter * 0.5f >= startOfMotion;
-        }
-
-        /// <summary>崩壊の波が、その位置に届くまでに進む距離[m]（シェーダの FloorCollapse_Distance と同じ）</summary>
-        private float Distance(Vector3 worldPosition)
-        {
-            var fromOrigin = new Vector2(worldPosition.x - Origin.x, worldPosition.z - Origin.z);
-            if (Settings.Mode == FloorCollapseMode.Radial)
-            {
-                return fromOrigin.magnitude;
-            }
-
-            return Vector2.Dot(fromOrigin, Settings.NormalizedDirection) + Settings.MaxTravelDistance * 0.5f;
+            return Wave.IsCollapsedAt(worldPosition, _progress.Value);
         }
 
         public void ResetCollapse()
