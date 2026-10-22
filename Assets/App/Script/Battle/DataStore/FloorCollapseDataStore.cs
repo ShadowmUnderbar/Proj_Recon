@@ -62,6 +62,37 @@ namespace App.Battle.DataStore
             _onCompleted.OnNext(Unit.Default);
         }
 
+        public bool IsCollapsedAt(Vector3 worldPosition)
+        {
+            switch (_phase.Value)
+            {
+                case FloorCollapsePhase.Idle:
+                    return false;
+                case FloorCollapsePhase.Completed:
+                    return true;
+            }
+
+            // シェーダ（App/FloorCollapse）と同じ式で、波の位置と、そのプレートが動き出す距離を比べる。
+            // プレートごとの開始のずれ（乱数）はCPU側では分からないので、平均（ずれ幅の半分）で見る
+            var settings = Settings;
+            var travel = settings.MaxTravelDistance + settings.Stagger + settings.Jitter;
+            var front = _progress.Value / Mathf.Max(settings.BlackoutStart, Mathf.Epsilon) * travel;
+            var startOfMotion = settings.Stagger * settings.CrackPortion;
+            return front - Distance(worldPosition) - settings.Jitter * 0.5f >= startOfMotion;
+        }
+
+        /// <summary>崩壊の波が、その位置に届くまでに進む距離[m]（シェーダの FloorCollapse_Distance と同じ）</summary>
+        private float Distance(Vector3 worldPosition)
+        {
+            var fromOrigin = new Vector2(worldPosition.x - Origin.x, worldPosition.z - Origin.z);
+            if (Settings.Mode == FloorCollapseMode.Radial)
+            {
+                return fromOrigin.magnitude;
+            }
+
+            return Vector2.Dot(fromOrigin, Settings.NormalizedDirection) + Settings.MaxTravelDistance * 0.5f;
+        }
+
         public void ResetCollapse()
         {
             _progress.Value = 0f;

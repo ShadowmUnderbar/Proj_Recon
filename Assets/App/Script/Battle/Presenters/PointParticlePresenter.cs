@@ -29,6 +29,11 @@ namespace App.Battle.Presenters
             _pointParticleStoreView.AllRemove();
         }
 
+        public void RemoveWhere(System.Func<Vector3, bool> shouldRemove)
+        {
+            _pointParticleStoreView.RemoveWhere(shouldRemove);
+        }
+
         public void SetPause(bool isPaused)
         {
             _pointParticleStoreView.SetPause(isPaused);

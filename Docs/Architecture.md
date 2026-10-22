@@ -301,6 +301,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerShotUseCase` | トリガー → `PlayerBulletParameterDataStore` で弾データを作り `Shot`。フォーム（Normal/Merge/Waltz）と両手の可否。フリーズ／時止め中は撃たない | PlayerShotType, PlayerBulletParameter, CoreSkillUnlock |
 | `PlayerDodgeUseCase` | 回避入力 → 直線移動。通過した敵を接触として記録。フリーズ／時止め中は回避の入力・移動を止める | PlayerDodgeParameter, DodgeCounterAttack |
 | `FloorCollapseUseCase` | ウェーブクリア（`OnWaveAdvanced`）でプレイヤーの足元を中心に床崩壊を始め（`FloorCollapseConfig.PlayOnWaveClear`）、進行度を View へ渡す。崩壊中はフォーカス入力を止める（移動・射撃・回避はウェーブ間ポーズで止まっている）。次のウェーブ開始（ポーズ解除）で床とフォーカス入力を戻す。ショップより先に登録してウェーブ突破を先に購読する。落下シーケンスは `IFloorCollapseDataStore.OnCompleted` から始める想定で未実装 | FloorCollapse, WaveManager, PlayerState, GameInput |
+| `FloorCollapseSweepUseCase` | 床崩壊の波に合わせて、敵（撃破扱いにせず `RemoveEnemyData`）・弾（`IBulletStoreView.BeginSweep` / `SweepWhere`）・ポイント粒子（`RemoveWhere`）を中心に近い順に消す。判定は `IFloorCollapseDataStore.IsCollapsedAt`（真下の床が落ち始めたか。シェーダと同じ式）。崩壊しきったら残りもすべて消す。崩壊中の弾・粒子は `FreezeUseCase` がその場に止める（粒子は回収されない） | FloorCollapse, Enemy |
 | `DodgeCounterAttackUseCase` | 回避終了時の跳ね返し攻撃（扇形＋直線検索 → レイ演出 → フリーズ → ダメージ）。`DodgeCounterAttackConfig` | DodgeCounterAttack, Enemy, Freeze |
 | `PlayerGazeUseCase` | `EnemyStoreView` が更新した「視線から判定球までの距離」をアップグレードごとの半径で絞り込み、注視系（スネークアイズ／メデューサ／ガン飛ばし）を反映 | SnakeEyes, Medusa, MeanMug |
 | `PlayerHitUseCase` | 被弾 → `PlayerStateDataStore.TakeDamage`（回避中・時止め中は無効） | PlayerState, DodgeParameter, TimeStop |
@@ -447,8 +448,10 @@ EnemyDataStore.OnEnemyDead → SociopathUseCase → SociopathDataStore.NotifyKil
 WaveManagerDataStore.OnWaveAdvanced → FloorCollapseUseCase → FloorCollapseDataStore.Begin(プレイヤーの位置, FloorCollapseConfig.Settings)
  → Phase=Collapsing → FloorCollapsePresenter.Begin → FloorCollapseView(目印の床を隠しプレート床を出す)
  → Tick で進行度を進める → SetProgress → シェーダ(App/FloorCollapse)が亀裂→隙間→沈下・傾斜・スライド→データ片化→暗転
+ → WaveManagerUseCase は崩壊が始まったら弾・粒子をすぐには消さない（FreezeUseCase が止める）
  → 開始時に OnStarted（崩壊中はフォーカス入力を止める。ShopUseCase はショップを開かずに待つ）
- → 進行度1で OnCompleted → ShopUseCase がショップを開く（落下シーケンスもここから始める想定。未実装）
+ → Tick ごとに FloorCollapseSweepUseCase が、波が届いた敵・弾・粒子を中心から順に消す（敵は撃破扱いにしない）
+ → 進行度1で OnCompleted → 残りの敵・弾・粒子を消し、ShopUseCase がショップを開く（落下シーケンスもここから始める想定。未実装）
 IsWavePause=false（次のウェーブ開始）→ ResetCollapse → Phase=Idle → Restore(床を戻す)
 
 【オーバークロック】

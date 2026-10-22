@@ -46,6 +46,12 @@ namespace App.Battle.Interface.DataStore
         /// </summary>
         Observable<Unit> OnCompleted { get; }
 
+        /// <summary>
+        /// <paramref name="worldPosition"/> の真下の床が、崩壊の波に飲まれて落ち始めているか（亀裂だけの区間を過ぎたか）。
+        /// 敵・弾・粒子を中心に近い順に消すのに使う。崩壊中でなければ false、完了後は常に true
+        /// </summary>
+        bool IsCollapsedAt(Vector3 worldPosition);
+
         /// <summary><paramref name="origin"/> を中心に崩壊を始める。再生中に呼ぶと最初からやり直す</summary>
         void Begin(Vector3 origin, FloorCollapseSettings settings);
 

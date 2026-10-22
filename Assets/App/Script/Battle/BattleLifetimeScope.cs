@@ -252,6 +252,8 @@ namespace App.Battle
             // ウェーブクリアで床を崩し、次のウェーブ開始で戻す（見た目だけ。コライダーには触れない）。
             // ショップは崩壊しきってから開くため、ウェーブ突破の購読を ShopUseCase より先に済ませる（購読順＝登録順）
             builder.RegisterEntryPoint<FloorCollapseUseCase>();
+            // 床崩壊の波に合わせて敵・弾・粒子を中心から順に消す（崩壊の進行度を進めた後に Tick させる）
+            builder.RegisterEntryPoint<FloorCollapseSweepUseCase>();
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
