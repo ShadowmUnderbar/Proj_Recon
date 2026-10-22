@@ -531,6 +531,7 @@ IsWavePause=false（次のウェーブ開始）→ ResetCollapse → Phase=Idle 
 | `Tools/Boot/Battle から再生`（同上 `PlayBattle` / `PrepareBattle`） | Boot で初期化してから Battle を始める。自動テスト（`Request-BootToBattle`）・デバッグ対戦もこれを使う。遷移先の予約は EditorPrefs `BootDestination`、再生の終了で予約と再生開始シーンを片付ける |
 | `GameInputDataStore.Debug*` | `Shift+U` でショップを開く等のデバッグ入力（エディタのみ） |
 | uLoop MCP | Claude からのコンパイル・PlayMode・ログ取得 |
+| `Tools/Git/Switch-Branch.ps1` | Unity を開いたままブランチを切り替える。開いているシーンを控えて Boot へ移ってから `git switch` し、コンパイルを待って開き直す（開いているシーンがディスク上で書き換わると、Unity の再読み込みダイアログで uloop が止まるため）。Boot.unity がブランチ間で違うときは止まり、確認後に `-AllowBootSceneChange` で空のシーン経由で切り替える。Play モード中・未保存の変更があるときも止まる |
 | `Assets/App/Tests/EditMode`（`App.Tests.EditMode`） | EditMode の単体テスト（Unity Test Framework）。シーンを使わない plain C# のロジック（いまはボスの台本ランナー `BossPatternRunner` と行動段階 `BossActionPhaseMachine`）を数秒で確かめる。`uloop run-tests --test-mode EditMode` で回す |
 
 ---
