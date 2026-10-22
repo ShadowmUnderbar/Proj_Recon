@@ -388,7 +388,9 @@ return $"{{\"remain\":{storeView.transform.childCount},\"point\":{pointDataStore
         -Detail "(実測: $($beforeAdvance.remain)個)" | Out-Null
 
     # ウェーブ進行はUseCase側（Tick）で判定されるため、経過時間を進めて実際の進行経路を通す。
-    # DataStoreの AdvanceWave() を直接叩くと一括消去を含む AdvanceWaveInternal を通らない
+    # DataStoreの AdvanceWave() を直接叩くと一括消去を含む AdvanceWaveInternal を通らない。
+    # 切り替えで床崩壊が始まると粒子は崩壊の波に合わせて順に消える（FloorCollapseSweepUseCase）ので、
+    # 崩壊しきるまで待ってから「全部消えている」ことを見る
     Invoke-UnityCode -Snippet @'
 using UnityEngine;
 using VContainer;
@@ -407,6 +409,7 @@ return "advancing";
 '@ | Out-Null
 
     Start-Sleep -Milliseconds 400
+    Wait-FloorCollapse | Out-Null
 
     $afterAdvance = Invoke-UnityJson -Snippet @'
 

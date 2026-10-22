@@ -27,7 +27,8 @@ var wave = scope.Container.Resolve<IWaveManagerDataStore>();
 var gameState = scope.Container.Resolve<IGameStateDataStore>();
 var player = scope.Container.Resolve<IPlayerStateDataStore>();
 var runStart = scope.Container.Resolve<IRunStartDataStore>();
-return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"isCleared\":{gameState.IsCleared.CurrentValue.ToString().ToLower()},\"playerHealth\":{player.Health.Value},\"isSelectingRunStart\":{runStart.IsSelecting.CurrentValue.ToString().ToLower()}}}";
+var collapse = scope.Container.Resolve<IFloorCollapseDataStore>();
+return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave.IsWavePause.CurrentValue.ToString().ToLower()},\"elapsed\":{wave.ElapsedTime.CurrentValue},\"kill\":{wave.KillCount.CurrentValue},\"isGameOver\":{gameState.IsGameOver.CurrentValue.ToString().ToLower()},\"isCleared\":{gameState.IsCleared.CurrentValue.ToString().ToLower()},\"playerHealth\":{player.Health.Value},\"isSelectingRunStart\":{runStart.IsSelecting.CurrentValue.ToString().ToLower()},\"floorCollapsePhase\":\"{collapse.Phase.CurrentValue}\"}}";
 '@
     [System.IO.File]::WriteAllText($snippetPath, $snippet, (New-Object System.Text.UTF8Encoding($false)))
 
@@ -41,6 +42,23 @@ return $"{{\"currentWave\":{wave.CurrentWave.CurrentValue},\"isWavePause\":{wave
         Start-Sleep -Seconds 3
     }
     throw "ウェーブ状態の取得に失敗しました: $($result.ErrorMessage)"
+}
+
+# ウェーブ突破で始まる床崩壊（FloorCollapseConfig の Duration 秒、既定 5 秒）が終わるまで待つ。
+# 崩壊中はショップが開かず（ShopUseCase は OnCompleted で開く）、弾・粒子は崩壊の波に合わせて順に消えるため、
+# 「ポーズになった＝ショップが開いている」「切り替え直後に粒子が全部消えている」という前提で書くと落ちる。
+# 戻り値は待ち終わった時点の WaveState
+function Wait-FloorCollapse {
+    param([int]$TimeoutSeconds = 15)
+    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+    while ($true) {
+        $state = Get-WaveState
+        if ($state.floorCollapsePhase -ne 'Collapsing') { return $state }
+        if ((Get-Date) -gt $deadline) {
+            throw "床崩壊が $TimeoutSeconds 秒以内に終わりませんでした（phase=$($state.floorCollapsePhase)）"
+        }
+        Start-Sleep -Milliseconds 500
+    }
 }
 
 # VrUiFollowCanvasViewはカメラへ再ペアレントせず、ワールド座標で遅延追従する（VR向けの酔い対策）。
@@ -161,6 +179,9 @@ function Invoke-ShopCardClick {
 function Resolve-ShopIfOpen {
     param([Parameter(Mandatory)] $WaveState)
     if (-not $WaveState.isWavePause) { return $false }
+
+    # 床崩壊が終わるまでショップは開かないので、先に待つ
+    Wait-FloorCollapse | Out-Null
 
     # フロー: アップグレードを1つ選択 → 「次のウェーブへ」を押す
     # 候補は3Dカードで並ぶ（ShopView）。カードを並べられなかったときだけCanvasのボタンに落ちるため、

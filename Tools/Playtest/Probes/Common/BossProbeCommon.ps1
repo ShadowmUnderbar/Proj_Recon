@@ -171,7 +171,9 @@ function Invoke-BossSnippet {
 
 function Skip-BossProbeShop {
     # ショップで何も買わずに次のウェーブへ進める。Resolve-ShopIfOpen はランダムに1枚買うため、
-    # メデューサ（注視した Boss ランクをスタン）やスネークアイズ（減速）を引くとボスの行動が変わり、判定が揺れる
+    # メデューサ（注視した Boss ランクをスタン）やスネークアイズ（減速）を引くとボスの行動が変わり、判定が揺れる。
+    # ポーズ直後は床崩壊の最中でショップがまだ開いていない（崩壊しきってから開く）ので、終わるまで待ってから押す
+    Wait-FloorCollapse | Out-Null
     for ($attempt = 1; $attempt -le 3; $attempt++) {
         Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
             action = 'Click'; 'target-path' = $Global:PlaytestShopNextWaveButtonPath; 'bypass-raycast' = 'true'

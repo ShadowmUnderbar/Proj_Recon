@@ -91,7 +91,8 @@ Observable.EveryUpdate(UnityFrameProvider.PostLateUpdate).Subscribe(_ =>
     var newA = 0; var newB = 0; var minDotA = 1f; var minDotB = 1f;
     foreach (var bullet in UnityEngine.Object.FindObjectsOfType<App.Battle.Views.Enemy.Bullet.BaseBulletView>())
     {
-        if (!seenBullets.Add(bullet.GetInstanceID())) continue;
+        // 弾はプールで使い回されるので InstanceID では同じ弾に見える。貸出ごとに進む BulletId で見分ける
+        if (!seenBullets.Add(bullet.BulletId)) continue;
         var attacker = (int)attackerField.GetValue(bullet);
         var shooter = attacker == a?.EnemyId ? a : attacker == b?.EnemyId ? b : null;
         if (shooter == null) continue;
@@ -360,9 +361,14 @@ function Test-AxisSegment {
         [Math]::Abs((Get-AxisValue $_.$Actor $lineAxis) - $(if ($lineAxis -eq 'x') { $ex } else { $ez }))
     })
     Assert-ProbeValue -Name "$Label 弾幕役がプレイヤーから一定距離を保つ（弾幕中の $lineAxis 方向のずれの最大、m）" -Actual ($lineErrs | Measure-Object -Maximum).Maximum -Expected 0 -Tolerance 0.5 | Out-Null
+    # 弾幕役の移動幅はプレイヤーの移動幅と同じになる（並んでついてくる）。
+    # 固定のしきい値（旧: 3m 以上）だと弾幕の秒数（マスターデータ、8秒→1.5秒に調整済み）や
+    # 動かし始めのタイミングで届かなくなるので、同じ区間のプレイヤーの移動幅と比べる
     $moveValues = @($windowRows | ForEach-Object { Get-AxisValue $_.$Actor $moveAxis })
     $moved = ($moveValues | Measure-Object -Maximum).Maximum - ($moveValues | Measure-Object -Minimum).Minimum
-    Assert-ProbeTrue -Name "$Label 弾幕役は $moveAxis 方向へ動いている" -Condition ($moved -gt 3) -Detail "移動幅=$([Math]::Round($moved, 2))m" | Out-Null
+    $playerValues = @($windowRows | ForEach-Object { if ($moveAxis -eq 'x') { $_.px } else { $_.pz } })
+    $playerMoved = ($playerValues | Measure-Object -Maximum).Maximum - ($playerValues | Measure-Object -Minimum).Minimum
+    Assert-ProbeValue -Name "$Label 弾幕役の $moveAxis 方向の移動幅がプレイヤーの移動幅と同じ（m）" -Actual $moved -Expected $playerMoved -Tolerance 0.5 | Out-Null
     $alignErrs = @($windowRows | ForEach-Object { [Math]::Abs((Get-AxisValue $_.$Actor $moveAxis) - $(if ($moveAxis -eq 'x') { $_.px } else { $_.pz })) })
     Assert-ProbeValue -Name "$Label 弾幕役がプレイヤーと並び続ける（弾幕中の $moveAxis 方向のずれの最大、m）" -Actual ($alignErrs | Measure-Object -Maximum).Maximum -Expected 0 -Tolerance 0.5 | Out-Null
 

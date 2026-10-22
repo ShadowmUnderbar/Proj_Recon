@@ -108,7 +108,9 @@ Observable.EveryUpdate().Subscribe(_ =>
     var current = new Dictionary<int, Vector3>();
     foreach (var bullet in bullets)
     {
-        var id = bullet.GetInstanceID();
+        // 弾はプールで使い回されるので InstanceID では戻った弾と次に出た弾が同じに見える（出た瞬間の位置差が移動量に化ける）。
+        // 貸出ごとに進む BulletId で見分ける
+        var id = bullet.GetComponent<App.Battle.Views.Enemy.Bullet.BaseBulletView>().BulletId;
         var position = bullet.transform.position;
         current[id] = position;
         minDistance = Mathf.Min(minDistance, new Vector2(position.x - pp.x, position.z - pp.z).magnitude);
@@ -192,10 +194,17 @@ return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits
     })
     Write-Host "記録: $($rows.Count) 行 / 被弾の通知 $($hits.Count) 回"
 
-    # 配置のつき直しの時止めは除き、回りこみのステップで止まった区間だけを見る
-    $stopRows = @($rows | Where-Object { $_.ts -and $_.step -eq $config.stepIndex })
-    $firstStop = [Array]::IndexOf($rows, $stopRows[0])
-    $lastStop = [Array]::IndexOf($rows, $stopRows[-1])
+    # 配置のつき直しの時止めは除き、回りこみのステップで止まった区間だけを見る。
+    # 台本は一周して回りこみに戻ってくる（弾幕の秒数しだいでは記録の窓の中に2回目が入る）ので、
+    # 最初の連続した区間だけを取る（離れた2回分をつなぐと時止めの長さや角度が合わなくなる）
+    $firstStop = -1
+    for ($i = 0; $i -lt $rows.Count; $i++) {
+        if ($rows[$i].ts -and $rows[$i].step -eq $config.stepIndex) { $firstStop = $i; break }
+    }
+    if ($firstStop -lt 0) { throw "回りこみの時止めが記録に無い" }
+    $lastStop = $firstStop
+    while ($lastStop + 1 -lt $rows.Count -and $rows[$lastStop + 1].ts -and $rows[$lastStop + 1].step -eq $config.stepIndex) { $lastStop++ }
+    $stopRows = @($rows[$firstStop..$lastStop])
     $beforeRow = $rows[[Math]::Max(0, $firstStop - 1)]
     $startRow = $stopRows[0]
     $endRow = $rows[$lastStop + 1]
@@ -271,9 +280,13 @@ return $"{{\"log\":\"{string.Join(";", log)}\",\"hits\":\"{string.Join(";", hits
     # --- 一息と、終わったあと ---
     $breathRows = @($rows | Where-Object { $_.time -gt $endRow.time + 0.05 -and $_.time -lt $endRow.time + $config.breath - 0.1 })
     Assert-ProbeTrue -Name '時止めを解いてから一息の間、2体とも待機する' -Condition ($breathRows.Count -gt 0 -and @($breathRows | Where-Object { -not ($_.a.hold -and $_.b.hold) }).Count -eq 0) -Detail "記録 $($breathRows.Count) 行" | Out-Null
+    # 一息が明けた直後の行で見る（記録の末尾だと、台本が一周して次の回りこみに入っていることがある）
     $afterRows = @($rows | Where-Object { $_.time -gt $endRow.time + $config.breath + 0.3 })
-    Assert-ProbeTrue -Name '一息のあと待機を解いて台本の先頭へ戻る' -Condition ($afterRows.Count -gt 0 -and $afterRows[-1].step -ne $config.stepIndex -and -not $afterRows[-1].a.hold -and -not $afterRows[-1].b.hold) -Detail $(if ($afterRows.Count -gt 0) { "ステップ $($afterRows[-1].step) / 待機 A=$($afterRows[-1].a.hold) B=$($afterRows[-1].b.hold)" } else { '記録なし' }) | Out-Null
-    Assert-ProbeValue -Name '回りこみの時止めは1回だけ（解けたあとに回りこみのステップで止まった行数）' -Actual @($rows | Select-Object -Skip ($lastStop + 1) | Where-Object { $_.ts -and $_.step -eq $config.stepIndex }).Count -Expected 0 | Out-Null
+    $afterRow = if ($afterRows.Count -gt 0) { $afterRows[0] } else { $null }
+    Assert-ProbeTrue -Name '一息のあと待機を解いて台本の先頭へ戻る' -Condition ($null -ne $afterRow -and $afterRow.step -ne $config.stepIndex -and -not $afterRow.a.hold -and -not $afterRow.b.hold) -Detail $(if ($null -ne $afterRow) { "ステップ $($afterRow.step) / 待機 A=$($afterRow.a.hold) B=$($afterRow.b.hold)" } else { '記録なし' }) | Out-Null
+    # 解けてから一息の間に、回りこみのステップで止まり直さない（台本が一周して戻ってくる分は含めない）
+    $breathStopCount = @($rows | Where-Object { $_.time -gt $endRow.time -and $_.time -le $endRow.time + $config.breath + 0.3 -and $_.ts -and $_.step -eq $config.stepIndex }).Count
+    Assert-ProbeValue -Name '回りこみの時止めは一息の間に止まり直さない（解けたあと一息の間に回りこみのステップで止まった行数）' -Actual $breathStopCount -Expected 0 | Out-Null
 
     # --- 時止めの途中で全員倒すと時止めが解ける（解けないと次のウェーブでも動けなくなる） ---
     $state = $null
