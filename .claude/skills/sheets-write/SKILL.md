@@ -95,7 +95,7 @@ node sheets-cli.mjs get Upgrade --spreadsheet <ID>               # 全コマン�
    node sheets-cli.mjs set "UpgradeData!H150:J150" '[[1,1.1,1]]'
    # …L:M / O:P / R:S / U:V / X:Y も同様
    ```
-3. **補助列の数式を確かめて、空なら入れる**。G・K・N・Q・T・W は先の行まで数式が入っていることが多いが、**E列は行を足しても伸びず空になりやすい**。`get UpgradeData E{行}:W{行} --formula` で見て、空の列だけ上の表の数式を `set ... --formula` で入れる
+3. **補助列の数式を確かめて、空なら入れる**。E列は行を足しても伸びず空になりやすい。G・K・N・Q・T・W は先の行まで数式が入っていることがあるが、それも有限で、2026-10-22 時点で160行目以降は空だった。`get UpgradeData E{行}:W{行} --formula` で見て、空の列だけ上の表の数式を `set ... --formula` で入れる
    ```powershell
    node sheets-cli.mjs set "UpgradeData!E150:E152" '[["=vlookup(D150,UpgradeType!$A:$C,2,false)"],["=vlookup(D151,UpgradeType!$A:$C,2,false)"],["=vlookup(D152,UpgradeType!$A:$C,2,false)"]]' --formula
    ```

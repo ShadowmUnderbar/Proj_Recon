@@ -56,4 +56,5 @@ public enum UpgradeType
     AntiMaterial = 52, // アンチマテリアル
     DOS = 53, // DOS
     Invective = 54, // 毒舌
+    Rafflesia = 55, // ラフレシア
 }
