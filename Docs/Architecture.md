@@ -295,7 +295,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerAimUseCase` | 手のレイ／マウスから照準位置を決めフォーカス対象を追う | PlayerAim, PlayerFocus, ShotConflict |
 | `PlayerShotUseCase` | トリガー → `PlayerBulletParameterDataStore` で弾データを作り `Shot`。フォーム（Normal/Merge/Waltz）と両手の可否。フリーズ／時止め中は撃たない | PlayerShotType, PlayerBulletParameter, CoreSkillUnlock |
 | `PlayerDodgeUseCase` | 回避入力 → 直線移動。通過した敵を接触として記録。フリーズ／時止め中は回避の入力・移動を止める | PlayerDodgeParameter, DodgeCounterAttack |
-| `AfterimageUseCase` | 一時強化（`IBuffStateDataStore.IsTimedBuffActive`＝レイジ、HitCount / AfterDodge 条件のバフ）の発動中、`AfterimageConfig.SpawnDistance` 進むごとに残像を残す（距離は `AfterimageSpawnScheduler` で数える。移動・回避より後に Tick させる） | PlayerState, BuffState |
+| `AfterimageUseCase` | 一時強化（`IBuffStateDataStore.IsTimedBuffActive`＝レイジ、HitCount / AfterDodge 条件のバフ）の発動中、`AfterimageConfig.SpawnDistance` 進むか `SpawnInterval` 秒たつごとに残像を残す（`AfterimageSpawnScheduler` で数える。ショップ・フリーズ・時止め中は時間を進めない。移動・回避より後に Tick させる） | PlayerState, BuffState, WaveManager, Freeze, TimeStop |
 | `DodgeCounterAttackUseCase` | 回避終了時の跳ね返し攻撃（扇形＋直線検索 → レイ演出 → フリーズ → ダメージ）。`DodgeCounterAttackConfig` | DodgeCounterAttack, Enemy, Freeze |
 | `PlayerGazeUseCase` | `EnemyStoreView` が更新した「視線から判定球までの距離」をアップグレードごとの半径で絞り込み、注視系（スネークアイズ／メデューサ／ガン飛ばし）を反映 | SnakeEyes, Medusa, MeanMug |
 | `PlayerHitUseCase` | 被弾 → `PlayerStateDataStore.TakeDamage`（回避中・時止め中は無効） | PlayerState, DodgeParameter, TimeStop |
@@ -438,7 +438,7 @@ EnemyDataStore.OnEnemyDead → SociopathUseCase → SociopathDataStore.NotifyKil
  → どちらもレイジの残り時間1本に足す（例: 被弾で3秒 → ソシオパス L1 の撃破で +1秒 → 4秒）
 
 【残像】
-BuffStateDataStore.IsTimedBuffActive（レイジ・コンボ攻撃UP・カウンターステップ等）の間、Tick で SpawnDistance 進んだ → AfterimageUseCase
+BuffStateDataStore.IsTimedBuffActive（レイジ・コンボ攻撃UP・カウンターステップ等）の間、Tick で SpawnDistance 進んだか SpawnInterval 秒たった → AfterimageUseCase
  → AfterimagePresenter.SpawnPlayerAfterimage(AfterimageConfig.Style) → AfterimageStoreView.Spawn(PlayerAfterimageSourceView)
  → LateUpdate で体と今の頭を写し取り（AfterimageSnapshot）→ 寿命の間、不透明度と欠損量を曲線で動かして描く → 寿命で形状を手放して使い回す
 

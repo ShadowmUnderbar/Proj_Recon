@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: AfterimageConfig
   m_EditorClassIdentifier: 
   _spawnDistance: 1.2
+  _spawnInterval: 0.3
   _warpDistance: 5
   _maxCount: 6
   _lifetime: 0.45

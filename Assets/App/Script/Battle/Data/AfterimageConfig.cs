@@ -10,10 +10,13 @@ namespace App.Battle.Data
     public class AfterimageConfig : ScriptableObject
     {
         [Header("生成")]
-        [SerializeField, Tooltip("一時強化（レイジ・カウンターステップ等）の発動中、この距離[m]進むごとに残像を1体残す。立ち止まっている間は残さない")]
+        [SerializeField, Tooltip("一時強化（レイジ・カウンターステップ等）の発動中、前回からこの距離[m]進んだら残像を1体残す。0以下なら距離では残さない")]
         private float _spawnDistance = 1.2f;
 
-        [SerializeField, Tooltip("1フレームでこの距離[m]以上動いたら、ワープ（ボスウェーブ開始時の移動など）とみなして残像を残さず、その地点から数え直す")]
+        [SerializeField, Tooltip("一時強化の発動中、前回からこの秒数たったら残像を1体残す（立ち止まっていても残る）。距離と先に満たした方で残し、両方を数え直す。0以下なら時間では残さない")]
+        private float _spawnInterval = 0.3f;
+
+        [SerializeField, Tooltip("1フレームでこの距離[m]以上動いたら、ワープ（ボスウェーブ開始時の移動など）とみなして残像を残さず、その地点から数え直す。0以下ならワープとみなさない")]
         private float _warpDistance = 5f;
 
         [SerializeField, Tooltip("同時に表示する残像の上限。超えたら一番古いものを消して使い回す")]
@@ -37,6 +40,7 @@ namespace App.Battle.Data
         private AfterimageStyle _style = AfterimageStyle.Default;
 
         public float SpawnDistance => _spawnDistance;
+        public float SpawnInterval => _spawnInterval;
         public float WarpDistance => _warpDistance;
         public int MaxCount => _maxCount;
         public float Lifetime => _lifetime;
