@@ -241,6 +241,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `EnemyView` | 敵1体。Pose の公開・被弾フィードバック（`EnemyHitFeedbackView`）・ヒットボックス群 |
 | `Interface/Views/EnemyAI/EnemyAIBase` | NavMeshAgent ベースの AI 基底。`Idle / Battle / Dead` ステート、ポーズ・スタン・速度倍率・吹き飛ばし |
 | `Enemy/AI/Fire, Orbit, Rush, Satellite, Scout, Shield` | 6 種の AI。`Fire` 派生が弾を撃つ |
+| `Enemy/AI/Shield` + `KeepDistanceRoute`（plain C#） | プレイヤーの照準の先（攻撃距離の半分の位置＋ずれ）へ回り込む。プレイヤーから攻撃距離の半分の内側には入らない：行き先が内側なら外周へ押し出し、まっすぐ向かうと内側を横切るときは外周に沿って少し先の点を毎フレームの行き先にして回り込む。速度の慣性で切り込んだ分は外周まで押し戻し、内向きの速度を消す。向きは状態にかかわらず常にプレイヤーへ、攻撃ごとに選ぶ旋回速度（20〜60度/秒、出現時にも選ぶ）で向き直る |
 | `Enemy/AI/Boss/BossAIBase`（`IBossMemberView`） | ボスグループの台本から命令を受けて動くボス AI の基底。自分では攻撃を抽選せず、命令された行動を `BossActionPhaseMachine`（plain C#）で 予備動作 → 攻撃 → 硬直 と進める（秒数は `EnemyMasterData` の `WindupTime / ActiveTime / RecoveryTime`）。スタンで行動を打ち切る。待機（Hold）中は移動も止める |
 | `Enemy/AI/Boss/BossShooter` | 弾を撃つボス AI。行動番号ごとに弾数・広がり（0: 単発、1: 扇状 など） |
 | `BossLifeGaugeStoreView` | ボスごとの足元の体力ゲージを生成・破棄する。ゲージ本体はプレイヤーの `PlayerLifeGaugeView`（半円・CurvedWorld 対応のシェーダ）をそのまま複製し、バリアの弧は隠す。色（体力・低HP・空き部分）と大きさは `BossLifeGaugeConfig` で決め、ゲージごとに MaterialPropertyBlock で上書きする（マテリアルはプレイヤーと共有のまま） |
