@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlayerBaseParameterConfig
   m_EditorClassIdentifier: 
   _health: 100
-  _moveSpeed: 0.05
+  _moveSpeed: 4.5
   _baseDamage: 4
   _baseFireRate: 0.3
   _basePenetration: 1
