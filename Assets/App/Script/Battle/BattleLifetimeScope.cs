@@ -130,18 +130,15 @@ namespace App.Battle
                 .As<IBuffStateDataStore>();
             builder.Register<UpgradeEffectSimpleCalculatorDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IUpgradeEffectSimpleCalculatorDataStore>();
-            builder.Register<HealOnKillDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
-                .As<IHealOnKillDataStore>();
-            builder.Register<CriticalHitDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
-                .As<ICriticalHitDataStore>();
+            builder.Register<HealOnKillDataStore>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<CriticalHitDataStore>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<SnakeEyesDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ISnakeEyesDataStore>();
             builder.Register<MedusaDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IMedusaDataStore>();
             builder.Register<MeanMugDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IMeanMugDataStore>();
-            builder.Register<BullseyeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
-                .As<IBullseyeDataStore>();
+            builder.Register<BullseyeDataStore>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<DependencyNodeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IDependencyNodeDataStore>();
             builder.Register<DamageNodeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -154,8 +151,7 @@ namespace App.Battle
                 .As<IGritDataStore>();
             builder.Register<TenacityDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ITenacityDataStore>();
-            builder.Register<VampireDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
-                .As<IVampireDataStore>();
+            builder.Register<VampireDataStore>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<CachummyyyDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ICachummyyyDataStore>();
             builder.Register<HopStepsDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -164,14 +160,10 @@ namespace App.Battle
                 .As<IColasourDataStore>();
             builder.Register<SubscribeDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ISubscribeDataStore>();
-            builder.Register<AntiMaterialDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
-                .As<IAntiMaterialDataStore>();
-            builder.Register<DOSDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
-                .As<IDOSDataStore>();
-            builder.Register<InvectiveDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
-                .As<IInvectiveDataStore>();
-            builder.Register<RafflesiaDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
-                .As<IRafflesiaDataStore>();
+            builder.Register<AntiMaterialDataStore>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<DOSDataStore>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<InvectiveDataStore>(Lifetime.Singleton).AsImplementedInterfaces();
+            builder.Register<RafflesiaDataStore>(Lifetime.Singleton).AsImplementedInterfaces();
             builder.Register<MaliceDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IMaliceDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
@@ -13,24 +14,27 @@ using VContainer.Unity;
 
 namespace App.Battle.UseCase
 {
+    /// <summary>
+    /// 命中（<see cref="IBattleHitPresenter.OnHit"/>）と撃破（<see cref="IEnemyDataStore.OnEnemyDead"/>）の流れ。
+    /// アップグレードの効果は登録済みのフック（<see cref="IHitDamageMultiplierHook"/> / <see cref="IHitEffectHook"/> /
+    /// <see cref="IEnemyKillHook"/>）を順に呼ぶだけで、個々の効果はここでは知らない。
+    /// 命中の順: 倍率フック（<see cref="HitHookOrder"/> の順）→ 副作用フックの前処理 → 感電の伝播先確定
+    /// → <see cref="IEnemyDataStore.Damage"/>（弱点・耐性 → 最低保証）→ 副作用フックの後処理 → 感電の伝播。
+    /// 感電だけは伝播先に自分でダメージを入れ直す（演出も再生する）ため、フックではなくここで扱う
+    /// </summary>
     public class BattleHitUseCase : IInitializable, IDisposable
     {
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IBattleHitPresenter _battleHitPresenter;
         private readonly IEnemyPresenter _enemyPresenter;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
-        private readonly IBullseyeDataStore _bullseyeDataStore;
         private readonly IPlayerStateDataStore _playerStateDataStore;
-        private readonly IHealOnKillDataStore _healOnKillDataStore;
-        private readonly IVampireDataStore _vampireDataStore;
-        private readonly IAvalancheDataStore _avalancheDataStore;
-        private readonly IMeanMugDataStore _meanMugDataStore;
-        private readonly ICriticalHitDataStore _criticalHitDataStore;
         private readonly IElectricShockDataStore _electricShockDataStore;
-        private readonly IAntiMaterialDataStore _antiMaterialDataStore;
-        private readonly IDOSDataStore _dosDataStore;
-        private readonly IInvectiveDataStore _invectiveDataStore;
-        private readonly IRafflesiaDataStore _rafflesiaDataStore;
+
+        // 登録順に依存しないよう Order で並べ替えて持つ
+        private readonly IHitDamageMultiplierHook[] _damageMultiplierHooks;
+        private readonly IHitEffectHook[] _hitEffectHooks;
+        private readonly IEnemyKillHook[] _enemyKillHooks;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -44,36 +48,22 @@ namespace App.Battle.UseCase
             IBattleHitPresenter battleHitPresenter,
             IEnemyPresenter enemyPresenter,
             IWaveManagerDataStore waveManagerDataStore,
-            IBullseyeDataStore bullseyeDataStore,
             IPlayerStateDataStore playerStateDataStore,
-            IHealOnKillDataStore healOnKillDataStore,
-            IVampireDataStore vampireDataStore,
-            IAvalancheDataStore avalancheDataStore,
-            IMeanMugDataStore meanMugDataStore,
-            ICriticalHitDataStore criticalHitDataStore,
             IElectricShockDataStore electricShockDataStore,
-            IAntiMaterialDataStore antiMaterialDataStore,
-            IDOSDataStore dosDataStore,
-            IInvectiveDataStore invectiveDataStore,
-            IRafflesiaDataStore rafflesiaDataStore
+            IReadOnlyList<IHitDamageMultiplierHook> damageMultiplierHooks,
+            IReadOnlyList<IHitEffectHook> hitEffectHooks,
+            IReadOnlyList<IEnemyKillHook> enemyKillHooks
         )
         {
             _enemyDataStore = enemyDataStore;
             _battleHitPresenter = battleHitPresenter;
             _enemyPresenter = enemyPresenter;
             _waveManagerDataStore = waveManagerDataStore;
-            _bullseyeDataStore = bullseyeDataStore;
             _playerStateDataStore = playerStateDataStore;
-            _healOnKillDataStore = healOnKillDataStore;
-            _vampireDataStore = vampireDataStore;
-            _avalancheDataStore = avalancheDataStore;
-            _meanMugDataStore = meanMugDataStore;
-            _criticalHitDataStore = criticalHitDataStore;
             _electricShockDataStore = electricShockDataStore;
-            _antiMaterialDataStore = antiMaterialDataStore;
-            _dosDataStore = dosDataStore;
-            _invectiveDataStore = invectiveDataStore;
-            _rafflesiaDataStore = rafflesiaDataStore;
+            _damageMultiplierHooks = damageMultiplierHooks.OrderBy(hook => hook.Order).ToArray();
+            _hitEffectHooks = hitEffectHooks.OrderBy(hook => hook.Order).ToArray();
+            _enemyKillHooks = enemyKillHooks.ToArray();
         }
 
         public void Initialize()
@@ -95,44 +85,33 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            // 貫通ヒット数に応じたダメージ倍率（ブルズアイ）を適用する
-            hitData.Damage *= _bullseyeDataStore.GetDamageMultiplier(hitData.PenetrationIndex);
-
-            // ガン飛ばし: 視界中央に捉えている敵は受ける最終ダメージが増加する
-            hitData.Damage *= _meanMugDataStore.GetDamageMultiplier(hitData.DamagedId);
-
-            // クリティカルヒット（ラッキーチャンス・キリングコール・ターンテーブル）を命中ごとに抽選する
-            hitData.Damage *= _criticalHitDataStore.GetDamageMultiplier(hitData);
-
-            // アンチマテリアル: 射撃（プレイヤー・味方の弾）の命中は最低保証ダメージを引き上げる。
-            // 弱点・耐性方向の倍率の後で効かせるため、適用は EnemyDataStore.Damage に任せる
-            if (hitData.ShotType != null)
+            // 倍率は全て乗算（HitHookOrder の順）。弱点・耐性と最低保証は EnemyDataStore.Damage が掛ける
+            foreach (var hook in _damageMultiplierHooks)
             {
-                hitData.MinDamage = _antiMaterialDataStore.GetMinDamage();
+                hitData.Damage *= hook.GetDamageMultiplier(hitData);
             }
 
-            // マージショットの命中を雪崩へ通知する（次発のクールダウンを短縮する）
-            if (hitData.ShotType == ShotType.Merge)
+            foreach (var hook in _hitEffectHooks)
             {
-                _avalancheDataStore.NotifyMergeHit();
+                hook.OnBeforeDamage(hitData);
             }
 
             // 感電: ワルツ命中時に周囲の敵へダメージを伝播させる。
             // 本命中で対象が撃破される前に伝播先を確定させる（撃破演出中の敵を巻き込まないため）
             var hasChain = _electricShockDataStore.TryGetChain(hitData, out var chain);
 
-            // 毒舌が「実際に与えたダメージ」を使うので、命中前の体力を控えておく（弱点・耐性・最低保証の後の値になる）
+            // 「実際に与えたダメージ」を使う効果（毒舌）のために、命中前の体力を控えておく
             var healthBefore = _enemyDataStore.TryGetEnemyData(hitData.DamagedId, out var targetBefore) ? targetBefore.Hp : 0f;
 
             _enemyDataStore.Damage(hitData);
 
-            // 射撃の命中でウイルスを付与する（DOS: 確率で一定量 / 毒舌: 与えたダメージに応じた量）。
-            // この命中で撃破した敵には付けない
-            if (hitData.ShotType != null
-                && _enemyDataStore.TryGetEnemyData(hitData.DamagedId, out var target) && !target.IsDead)
+            var isTargetFound = _enemyDataStore.TryGetEnemyData(hitData.DamagedId, out var target);
+            var dealtDamage = isTargetFound ? healthBefore - target.Hp : 0f;
+            var isTargetAlive = isTargetFound && !target.IsDead;
+
+            foreach (var hook in _hitEffectHooks)
             {
-                _dosDataStore.TryInfect(hitData.DamagedId);
-                _invectiveDataStore.Infect(hitData.DamagedId, healthBefore - target.Hp);
+                hook.OnAfterDamage(hitData, dealtDamage, isTargetAlive);
             }
 
             if (hasChain)
@@ -182,20 +161,26 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            // 撃破時回復: ヴァンパイア（ランクを問わず一定量）とジャイアントキリング（撃破した敵のランクに応じた量）。
-            // 体力の書き換えが1回で済むよう合計してから回復する。
-            // 死亡演出の await より前に、敵データがまだ存在するうちに処理する。
-            var healAmount = _vampireDataStore.GetHealAmount();
-            if (_enemyDataStore.TryGetEnemyMasterData(enemyData.EnemyMasterDataId, out var deadEnemyMasterData))
+            // 撃破時回復（ヴァンパイア・ジャイアントキリング等）は合計してから1回で回復する（体力の書き換えを1回にするため）。
+            // 死亡演出の await より前に、敵データがまだ存在するうちに処理する
+            var rankType = _enemyDataStore.TryGetEnemyMasterData(enemyData.EnemyMasterDataId, out var deadEnemyMasterData)
+                ? deadEnemyMasterData.EnemyRankType
+                : EnemyRankType.None;
+
+            var healAmount = 0f;
+            foreach (var hook in _enemyKillHooks)
             {
-                healAmount += _healOnKillDataStore.GetHealAmount(deadEnemyMasterData.EnemyRankType);
+                healAmount += hook.GetHealAmount(rankType);
             }
 
             _playerStateDataStore.Heal(healAmount);
 
-            // ラフレシア: ウイルスを持ったまま撃破された敵から周りの敵へウイルスを広げる。
-            // 死亡演出がすぐ終わる敵は await の直後に消去され、ウイルスも取り除かれるので、ここで先に読む
-            _rafflesiaDataStore.Spread(enemyId);
+            // 撃破時の副作用（ラフレシアの伝播等）。
+            // 死亡演出がすぐ終わる敵は await の直後に消去され、ウイルスも取り除かれるので、ここで先に呼ぶ
+            foreach (var hook in _enemyKillHooks)
+            {
+                hook.OnEnemyKilled(enemyId);
+            }
 
             await _enemyPresenter.Dead(enemyId);
 

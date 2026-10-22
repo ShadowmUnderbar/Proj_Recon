@@ -17,10 +17,5 @@ namespace App.Battle.Interface.DataStore
         /// 注視中の敵IDを設定する（毎フレーム置き換える）。
         /// </summary>
         void SetGazedEnemies(IReadOnlyList<int> gazedEnemyIds);
-
-        /// <summary>
-        /// 指定した敵が受ける最終ダメージ倍率を返す。注視外・未所持は 1.0f。
-        /// </summary>
-        float GetDamageMultiplier(int enemyId);
     }
 }

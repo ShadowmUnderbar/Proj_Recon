@@ -6,7 +6,7 @@ using VContainer;
 
 namespace App.Battle.DataStore
 {
-    public class HealOnKillDataStore : IHealOnKillDataStore
+    public class HealOnKillDataStore : IEnemyKillHook
     {
         private readonly IUpgradeSessionDataStore _upgradeSessionDataStore;
         private readonly UpgradeDatabase _upgradeDatabase;

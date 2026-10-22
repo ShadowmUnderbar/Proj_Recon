@@ -11,7 +11,7 @@ namespace App.Battle.DataStore
     /// 広がった先の敵が撃破されれば、そこからさらに広がる。
     /// レベルは累積せず、所持中の最高レベルのみを採用する
     /// </summary>
-    public class RafflesiaDataStore : IRafflesiaDataStore
+    public class RafflesiaDataStore : IEnemyKillHook
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
@@ -32,7 +32,11 @@ namespace App.Battle.DataStore
             _virusDataStore = virusDataStore;
         }
 
-        public void Spread(int deadEnemyId)
+        /// <summary>
+        /// 撃破された敵がウイルスを持っていれば周りへ広げる。
+        /// 撃破された敵の敵データ・ウイルスが取り除かれる前（死亡演出の前）に呼ばれる
+        /// </summary>
+        public void OnEnemyKilled(int deadEnemyId)
         {
             if (!_upgradeEffectSimpleCalculatorDataStore
                     .TryGetHighestLevelUpgrade(UpgradeType.Rafflesia, out var upgrade))

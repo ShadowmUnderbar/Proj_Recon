@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using VContainer;
 
@@ -10,7 +11,7 @@ namespace App.Battle.DataStore
     /// 範囲外に出た敵は次のフレームで即座に効果外となる。
     /// レベルは累積せず、所持中の最高レベルのみを採用する。
     /// </summary>
-    public class MeanMugDataStore : IMeanMugDataStore, IRunResettable
+    public class MeanMugDataStore : IMeanMugDataStore, IHitDamageMultiplierHook, IRunResettable
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
 
@@ -52,9 +53,12 @@ namespace App.Battle.DataStore
             }
         }
 
-        public float GetDamageMultiplier(int enemyId)
+        public int Order => HitHookOrder.MeanMug;
+
+        /// <summary>命中した敵が注視中なら Value1 倍。注視外・未所持は 1.0f（射撃以外の命中にも掛かる）</summary>
+        public float GetDamageMultiplier(HitData hitData)
         {
-            if (!_gazedEnemyIds.Contains(enemyId))
+            if (!_gazedEnemyIds.Contains(hitData.DamagedId))
             {
                 return 1f;
             }

@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using App.Common.Data;
 using VContainer;
@@ -11,7 +12,7 @@ namespace App.Battle.DataStore
     /// 当て続ける限り高速連射が維持され、外すと弱体状態に戻る。
     /// レベルは累積せず、所持中の最高レベルのみを採用する。
     /// </summary>
-    public class AvalancheDataStore : IAvalancheDataStore, IRunResettable
+    public class AvalancheDataStore : IAvalancheDataStore, IHitEffectHook, IRunResettable
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
 
@@ -60,8 +61,16 @@ namespace App.Battle.DataStore
             _isPreviousMergeShotHit = false;
         }
 
-        public void NotifyMergeHit()
+        public int Order => HitHookOrder.Avalanche;
+
+        /// <summary>マージショットの命中で次発の強化フラグを立てる</summary>
+        public void OnBeforeDamage(HitData hitData)
         {
+            if (hitData.ShotType != ShotType.Merge)
+            {
+                return;
+            }
+
             _isPreviousMergeShotHit = true;
         }
     }

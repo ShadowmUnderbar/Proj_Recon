@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using UnityEngine;
 using VContainer;
@@ -10,7 +11,7 @@ namespace App.Battle.DataStore
     /// レイジ発動中は威力だけ Value2 倍にする（効果時間はそのまま）。
     /// レベルは累積せず、所持中の最高レベルのみを採用する
     /// </summary>
-    public class InvectiveDataStore : IInvectiveDataStore
+    public class InvectiveDataStore : IHitEffectHook
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly IBuffStateDataStore _buffStateDataStore;
@@ -28,7 +29,20 @@ namespace App.Battle.DataStore
             _virusDataStore = virusDataStore;
         }
 
-        public void Infect(int enemyId, float dealtDamage)
+        public int Order => HitHookOrder.Invective;
+
+        /// <summary>射撃（ShotType あり）の命中で、撃破されずに残った敵にだけ「実際に与えたダメージ」に応じて付与する</summary>
+        public void OnAfterDamage(HitData hitData, float dealtDamage, bool isTargetAlive)
+        {
+            if (hitData.ShotType == null || !isTargetAlive)
+            {
+                return;
+            }
+
+            Infect(hitData.DamagedId, dealtDamage);
+        }
+
+        private void Infect(int enemyId, float dealtDamage)
         {
             if (dealtDamage <= 0f)
             {
