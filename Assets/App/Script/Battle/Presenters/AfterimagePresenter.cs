@@ -16,7 +16,7 @@ namespace App.Battle.Presenters
             _afterimageStoreView = afterimageStoreView;
         }
 
-        public void SpawnPlayerAfterimage(AfterimageStyle style)
+        public void SpawnPlayerAfterimage(AfterimageStyle style, float backOffset)
         {
             var source = _playerView.AfterimageSource;
             if (source == null)
@@ -24,7 +24,7 @@ namespace App.Battle.Presenters
                 return;
             }
 
-            _afterimageStoreView.Spawn(source, style);
+            _afterimageStoreView.Spawn(source, style, backOffset);
         }
     }
 }

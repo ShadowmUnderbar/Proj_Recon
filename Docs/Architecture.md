@@ -225,8 +225,8 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerAimMuzzleView` / `PlayerShotView` / `PlayerBulletView` | マズル・発射・プレイヤー弾（`StraightBullet` 派生、即着弾） |
 | `PlayerDamageReceiverView` | プレイヤー側の `IHitBoxView`。被弾ダメージを `OnDamaged` で公開（`HitBoxStoreView` には登録しない） |
 | `PlayerLifeGaugeView` | 足元の半円ゲージ（シェーダ描画） |
-| `Afterimage/PlayerAfterimageSourceView` | 残像にする Renderer を差し出す（`IAfterimageSource`）。体の Renderer と頭の取り付け位置（今は `B-head` ボーン）を持ち、頭は呼ばれた時点でその下に表示されている Renderer を拾う。頭の差し替えの仕組みには関与しない |
-| `Afterimage/AfterimageStoreView` | 残像の生成・寿命・描画。上限数ぶんの `AfterimageInstance` を使い回し、形状の取得はアニメーション反映後の LateUpdate で行う。GameObject は作らず、`AfterimageDrawer`（plain C#）が `Graphics.RenderMesh` と MaterialPropertyBlock で描く（シェーダは `App/Afterimage`）。`AfterimageSnapshot`（plain C#）が SkinnedMeshRenderer を `BakeMesh(useScale: true)` で焼き、MeshRenderer は共有メッシュと `localToWorldMatrix` を写す |
+| `Afterimage/PlayerAfterimageSourceView` | 残像にする Renderer を差し出す（`IAfterimageSource`）。体の Renderer と頭の取り付け位置（今は `B-head` ボーン）を持ち、体の向き（体のモデルの Animator の水平の正面）も返す。頭は呼ばれた時点でその下に表示されている Renderer を拾う。頭の差し替えの仕組みには関与しない |
+| `Afterimage/AfterimageStoreView` | 残像の生成・寿命・描画。上限数ぶんの `AfterimageInstance` を使い回し、形状の取得はアニメーション反映後の LateUpdate で行う。GameObject は作らず、`AfterimageDrawer`（plain C#）が `Graphics.RenderMesh` と MaterialPropertyBlock で描く（シェーダは `App/Afterimage`）。`AfterimageSnapshot`（plain C#）が SkinnedMeshRenderer を `BakeMesh(useScale: true)` で焼き、MeshRenderer は共有メッシュと `localToWorldMatrix` を写す。ずらす場合は全パーツと基準点を同じだけ平行移動する |
 
 **敵**
 
@@ -295,7 +295,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerAimUseCase` | 手のレイ／マウスから照準位置を決めフォーカス対象を追う | PlayerAim, PlayerFocus, ShotConflict |
 | `PlayerShotUseCase` | トリガー → `PlayerBulletParameterDataStore` で弾データを作り `Shot`。フォーム（Normal/Merge/Waltz）と両手の可否。フリーズ／時止め中は撃たない | PlayerShotType, PlayerBulletParameter, CoreSkillUnlock |
 | `PlayerDodgeUseCase` | 回避入力 → 直線移動。通過した敵を接触として記録。フリーズ／時止め中は回避の入力・移動を止める | PlayerDodgeParameter, DodgeCounterAttack |
-| `AfterimageUseCase` | 一時強化（`IBuffStateDataStore.IsTimedBuffActive`＝レイジ、HitCount / AfterDodge 条件のバフ）の発動中、`AfterimageConfig.SpawnDistance` 進むか `SpawnInterval` 秒たつごとに残像を残す（`AfterimageSpawnScheduler` で数える。ショップ・フリーズ・時止め中は時間を進めない。移動・回避より後に Tick させる） | PlayerState, BuffState, WaveManager, Freeze, TimeStop |
+| `AfterimageUseCase` | 一時強化（`IBuffStateDataStore.IsTimedBuffActive`＝レイジ、HitCount / AfterDodge 条件のバフ）の発動中、`AfterimageConfig.SpawnDistance` 進むか `SpawnInterval` 秒たつごとに残像を残す。時間で残すときは実体と重ならないよう `IntervalBackOffset` だけ体の真後ろへずらす（`AfterimageSpawnScheduler` で数え、理由を返す。ショップ・フリーズ・時止め中は時間を進めない。移動・回避より後に Tick させる） | PlayerState, BuffState, WaveManager, Freeze, TimeStop |
 | `DodgeCounterAttackUseCase` | 回避終了時の跳ね返し攻撃（扇形＋直線検索 → レイ演出 → フリーズ → ダメージ）。`DodgeCounterAttackConfig` | DodgeCounterAttack, Enemy, Freeze |
 | `PlayerGazeUseCase` | `EnemyStoreView` が更新した「視線から判定球までの距離」をアップグレードごとの半径で絞り込み、注視系（スネークアイズ／メデューサ／ガン飛ばし）を反映 | SnakeEyes, Medusa, MeanMug |
 | `PlayerHitUseCase` | 被弾 → `PlayerStateDataStore.TakeDamage`（回避中・時止め中は無効） | PlayerState, DodgeParameter, TimeStop |

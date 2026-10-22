@@ -72,17 +72,22 @@ namespace App.Battle.UseCase
                                  _timeStopDataStore.IsTimeStopped.CurrentValue;
             var deltaTime = isPlayerPaused ? 0f : Time.deltaTime;
 
-            if (_scheduler.Advance(position, deltaTime, _config.SpawnDistance, _config.SpawnInterval,
-                    _config.WarpDistance))
+            var trigger = _scheduler.Advance(position, deltaTime, _config.SpawnDistance, _config.SpawnInterval,
+                _config.WarpDistance);
+            if (trigger == AfterimageSpawnScheduler.Trigger.None)
             {
-                Spawn();
+                return;
             }
+
+            // 時間で残すときはほとんど動いていないので、実体と重ならないよう後ろへずらす
+            var backOffset = trigger == AfterimageSpawnScheduler.Trigger.Interval ? _config.IntervalBackOffset : 0f;
+            Spawn(backOffset);
         }
 
-        private void Spawn()
+        private void Spawn(float backOffset)
         {
             // 見た目は残す時点の設定を読む。設定アセットを実行中に変えると、次に残す残像から反映される
-            _afterimagePresenter.SpawnPlayerAfterimage(_config.Style);
+            _afterimagePresenter.SpawnPlayerAfterimage(_config.Style, backOffset);
         }
     }
 }

@@ -8,8 +8,8 @@
 # 2. 頭を差し替えても、先に残した残像の頭は変わらない（新しい残像だけが新しい頭になる）
 # 3. 上限数を超えて残しても、残像と焼き込み用メッシュの数は上限で止まる（使い回される）
 # 4. 時間を戻すと寿命で全部消え、形状を手放す
-# 5. 一時強化なしで動いても残らない／レイジ発動中は動くと残り、立ち止まっていても時間で残る／レイジが切れると残らない
-# 6. 刻み（AfterimageSpawnScheduler 単体）: 距離・時間のどちらか先で残す／ワープでは残さず数え直す／経過時間 0 なら時間では残さない
+# 5. 一時強化なしで動いても残らない／レイジ発動中は動くと残り、立ち止まっていても時間で残る（体の向きの真後ろへずらして置く）／レイジが切れると残らない
+# 6. 刻み（AfterimageSpawnScheduler 単体）: 距離・時間のどちらか先で残し、理由を返す／ワープでは残さず数え直す／経過時間 0 なら時間では残さない
 #
 
 function ProbePrepare {
@@ -78,7 +78,7 @@ function ProbeRun {
     # --- 1. 体と頭を1体の残像として写し取る ---
     $spawn1 = Invoke-UnityCode -Snippet ((New-ProbeHeadSnippet 'ProbeHeadCube' 'Cube') + @'
 Time.timeScale = 0f;
-store.Spawn(source, AfterimageStyle.Default);
+store.Spawn(source, AfterimageStyle.Default, 0f);
 return "ok";
 '@)
     Assert-ProbeTrue -Name 'テスト用の頭（キューブ）を付けて残像を頼めた' -Condition ($spawn1 -eq 'ok') -Detail "($spawn1)" | Out-Null
@@ -136,7 +136,7 @@ UnityEngine.Object.DestroyImmediate(cubeRoot);
 return values;
 '@)
     $swap = Invoke-UnityCode -Snippet ((New-ProbeHeadSnippet 'ProbeHeadSphere' 'Sphere') + @'
-store.Spawn(source, AfterimageStyle.Default);
+store.Spawn(source, AfterimageStyle.Default, 0f);
 return "ok";
 '@)
     Assert-ProbeTrue -Name '頭をスフィアへ差し替えて2体目を頼めた' -Condition ($swap -eq 'ok') -Detail "($swap)" | Out-Null
@@ -171,7 +171,7 @@ return "{"
     # 同じフレームに頼んだ分は1体にまとめるため、1回ずつフレームを空けて頼む
     for ($i = 0; $i -lt 8; $i++) {
         Invoke-UnityCode -Snippet ($Global:ProbeAfterimagePrelude + @'
-store.Spawn(source, AfterimageStyle.Default);
+store.Spawn(source, AfterimageStyle.Default, 0f);
 return "ok";
 '@) | Out-Null
         Start-Sleep -Milliseconds 100
@@ -237,6 +237,21 @@ return "ok";
     $standingCount = [int](Invoke-UnityCode -Snippet $countSnippet)
     Assert-ProbeTrue -Name 'レイジ発動中は立ち止まっていても残る' -Condition ($standingCount -ge 1) -Detail "(表示中 $standingCount 体)" | Out-Null
 
+    # 時間で残した残像は、体の向きの真後ろへ IntervalBackOffset だけずれている（基準点で見る）。
+    # 生成後も待機モーションで体はわずかに動くので、体からの水平距離と後ろ向きの成分で見る
+    $standingOffset = Invoke-UnityJson -Snippet ($Global:ProbeAfterimagePrelude + @'
+var config = (AfterimageConfig)typeof(AfterimageStoreView)
+    .GetField("_config", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(store);
+var newest = instances.Where(x => x.IsAlive).OrderBy(x => x.Age).First();
+var delta = body.transform.position - newest.Snapshot.Pivot;
+delta.y = 0f;
+var back = Vector3.Dot(delta, source.Forward);
+return "{\"distance\":" + delta.magnitude.ToString(ci) + ",\"back\":" + back.ToString(ci)
+    + ",\"offset\":" + config.IntervalBackOffset.ToString(ci) + "}";
+'@)
+    Assert-ProbeValue -Name '立ち止まり中の残像は体から IntervalBackOffset だけ離れて置かれる' -Actual $standingOffset.distance -Expected $standingOffset.offset -Tolerance 0.03 | Out-Null
+    Assert-ProbeTrue -Name '立ち止まり中の残像は体の真後ろにある' -Condition ($standingOffset.back -ge $standingOffset.distance * 0.95) -Detail "(後ろへ $($standingOffset.back)m / 距離 $($standingOffset.distance)m)" | Out-Null
+
     # レイジの残り時間を0にして切れさせ、寿命が過ぎてから動かす
     $rageEnded = Invoke-UnityCode -Snippet ($Global:ProbeAfterimageScopePrelude + @'
 typeof(App.Battle.DataStore.BuffStateDataStore)
@@ -272,20 +287,20 @@ var paused = s.Advance(Vector3.forward * 20f, 0f, distance, interval, warp);
 var resumed = s.Advance(Vector3.forward * 20f, 0.25f, distance, interval, warp);
 s.End();
 var ended = s.Advance(Vector3.forward * 40f, 1f, distance, interval, warp);
-string B(bool b) => b ? "true" : "false";
+string B(AfterimageSpawnScheduler.Trigger t) => "\"" + t + "\"";
 return "{\"inactive\":" + B(inactive) + ",\"short1\":" + B(short1) + ",\"byTime\":" + B(byTime)
     + ",\"afterTime\":" + B(afterTime) + ",\"byDistance\":" + B(byDistance) + ",\"warped\":" + B(warped)
     + ",\"afterWarp\":" + B(afterWarp) + ",\"paused\":" + B(paused) + ",\"resumed\":" + B(resumed)
     + ",\"ended\":" + B(ended) + "}";
 '@
-    Assert-ProbeTrue -Name '刻み: Begin 前は残さない' -Condition (-not $scheduler.inactive) | Out-Null
-    Assert-ProbeTrue -Name '刻み: 立ち止まって間隔未満なら残さない' -Condition (-not $scheduler.short1) | Out-Null
-    Assert-ProbeTrue -Name '刻み: 立ち止まっていても間隔がたてば残す' -Condition ($scheduler.byTime) | Out-Null
-    Assert-ProbeTrue -Name '刻み: 残したら時間を数え直す' -Condition (-not $scheduler.afterTime) | Out-Null
-    Assert-ProbeTrue -Name '刻み: 間隔前でも距離を進めば残す' -Condition ($scheduler.byDistance) | Out-Null
-    Assert-ProbeTrue -Name '刻み: ワープでは間隔を過ぎていても残さない' -Condition (-not $scheduler.warped) | Out-Null
-    Assert-ProbeTrue -Name '刻み: ワープ後は時間も数え直す' -Condition (-not $scheduler.afterWarp) | Out-Null
-    Assert-ProbeTrue -Name '刻み: 経過時間 0（ショップ・フリーズ・時止め）では時間で残さない' -Condition (-not $scheduler.paused) | Out-Null
-    Assert-ProbeTrue -Name '刻み: 経過時間が戻れば時間で残す' -Condition ($scheduler.resumed) | Out-Null
-    Assert-ProbeTrue -Name '刻み: End 後は残さない' -Condition (-not $scheduler.ended) | Out-Null
+    Assert-ProbeTrue -Name '刻み: Begin 前は残さない' -Condition ($scheduler.inactive -eq 'None') | Out-Null
+    Assert-ProbeTrue -Name '刻み: 立ち止まって間隔未満なら残さない' -Condition ($scheduler.short1 -eq 'None') | Out-Null
+    Assert-ProbeTrue -Name '刻み: 立ち止まっていても間隔がたてば時間を理由に残す' -Condition ($scheduler.byTime -eq 'Interval') | Out-Null
+    Assert-ProbeTrue -Name '刻み: 残したら時間を数え直す' -Condition ($scheduler.afterTime -eq 'None') | Out-Null
+    Assert-ProbeTrue -Name '刻み: 間隔前でも距離を進めば距離を理由に残す' -Condition ($scheduler.byDistance -eq 'Distance') | Out-Null
+    Assert-ProbeTrue -Name '刻み: ワープでは間隔を過ぎていても残さない' -Condition ($scheduler.warped -eq 'None') | Out-Null
+    Assert-ProbeTrue -Name '刻み: ワープ後は時間も数え直す' -Condition ($scheduler.afterWarp -eq 'None') | Out-Null
+    Assert-ProbeTrue -Name '刻み: 経過時間 0（ショップ・フリーズ・時止め）では時間で残さない' -Condition ($scheduler.paused -eq 'None') | Out-Null
+    Assert-ProbeTrue -Name '刻み: 経過時間が戻れば時間で残す' -Condition ($scheduler.resumed -eq 'Interval') | Out-Null
+    Assert-ProbeTrue -Name '刻み: End 後は残さない' -Condition ($scheduler.ended -eq 'None') | Out-Null
 }

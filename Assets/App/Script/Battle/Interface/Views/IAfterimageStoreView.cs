@@ -6,8 +6,9 @@ namespace App.Battle.Interface
     public interface IAfterimageStoreView
     {
         /// <summary>
-        /// <paramref name="source"/> の今の姿で残像を1体残す。形状の取得はアニメーションが反映された後（同じフレームの LateUpdate）に行う
+        /// <paramref name="source"/> の今の姿で残像を1体残す。形状の取得はアニメーションが反映された後（同じフレームの LateUpdate）に行う。
+        /// 残像は <paramref name="backOffset"/>[m] だけ <see cref="IAfterimageSource.Forward"/> の逆向きへずらして置く
         /// </summary>
-        void Spawn(IAfterimageSource source, AfterimageStyle style);
+        void Spawn(IAfterimageSource source, AfterimageStyle style, float backOffset);
     }
 }

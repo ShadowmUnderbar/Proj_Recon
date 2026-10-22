@@ -25,6 +25,7 @@ namespace App.Battle.Views.Afterimage
         // 同じフレームに頼まれた分はまとめて1体にする（同じポーズを重ねて描いても見えない）
         private IAfterimageSource _pendingSource;
         private AfterimageStyle _pendingStyle;
+        private float _pendingBackOffset;
 
         private uint _nextSeed;
 
@@ -41,10 +42,11 @@ namespace App.Battle.Views.Afterimage
             _drawer = new AfterimageDrawer(config.Material, gameObject.layer, margin);
         }
 
-        public void Spawn(IAfterimageSource source, AfterimageStyle style)
+        public void Spawn(IAfterimageSource source, AfterimageStyle style, float backOffset)
         {
             _pendingSource = source;
             _pendingStyle = style;
+            _pendingBackOffset = backOffset;
         }
 
         private void LateUpdate()
@@ -90,7 +92,9 @@ namespace App.Battle.Views.Afterimage
             }
 
             var instance = Rent();
-            instance.Snapshot.Capture(_rendererBuffer);
+            // 向きは写し取る時点（アニメーション反映後）の体の向きで決める
+            var offset = -source.Forward * _pendingBackOffset;
+            instance.Snapshot.Capture(_rendererBuffer, offset);
             instance.Begin(_pendingStyle, _config.Lifetime, _nextSeed++);
             _rendererBuffer.Clear();
         }

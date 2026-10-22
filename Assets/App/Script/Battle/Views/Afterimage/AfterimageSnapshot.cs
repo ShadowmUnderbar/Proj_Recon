@@ -49,10 +49,10 @@ namespace App.Battle.Views.Afterimage
         public bool IsEmpty => _parts.Count == 0;
 
         /// <summary>
-        /// <paramref name="renderers"/> の今の形状と姿勢を写し取る。1つ目を体（基準点）として扱う。
-        /// 以前の内容は捨てるが、焼き込み用のメッシュは使い回す
+        /// <paramref name="renderers"/> の今の形状と姿勢を写し取り、全体を <paramref name="worldOffset"/> だけ平行移動して置く。
+        /// 1つ目を体（基準点）として扱う。以前の内容は捨てるが、焼き込み用のメッシュは使い回す
         /// </summary>
-        public void Capture(IReadOnlyList<Renderer> renderers)
+        public void Capture(IReadOnlyList<Renderer> renderers, Vector3 worldOffset)
         {
             _parts.Clear();
             if (renderers.Count == 0)
@@ -60,8 +60,11 @@ namespace App.Battle.Views.Afterimage
                 return;
             }
 
+            // 基準点も一緒に動かすので、欠損模様・水平線カーブの見え方はずらしても変わらない
+            var offsetMatrix = Matrix4x4.Translate(worldOffset);
+
             var body = renderers[0];
-            Pivot = body.transform.position;
+            Pivot = body.transform.position + worldOffset;
             RenderingLayerMask = body.renderingLayerMask;
 
             var bakedCount = 0;
@@ -107,7 +110,7 @@ namespace App.Battle.Views.Afterimage
                     var material = _materialBuffer.Count == 0
                         ? null
                         : _materialBuffer[Mathf.Min(subMeshIndex, _materialBuffer.Count - 1)];
-                    _parts.Add(new Part(mesh, subMeshIndex, localToWorld, GetBaseMap(material)));
+                    _parts.Add(new Part(mesh, subMeshIndex, offsetMatrix * localToWorld, GetBaseMap(material)));
                 }
 
                 if (hasBounds)
@@ -121,6 +124,7 @@ namespace App.Battle.Views.Afterimage
                 }
             }
 
+            bounds.center += worldOffset;
             WorldBounds = bounds;
         }
 

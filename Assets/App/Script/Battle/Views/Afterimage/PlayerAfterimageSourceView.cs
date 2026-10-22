@@ -19,6 +19,31 @@ namespace App.Battle.Views.Afterimage
 
         private readonly List<Renderer> _headRendererBuffer = new();
 
+        // 体の向きを持つ Transform（体のモデルの Animator。移動の向きに合わせてこれが回る）
+        private Transform _facingRoot;
+
+        public Vector3 Forward
+        {
+            get
+            {
+                if (_facingRoot == null && _bodyRenderer != null)
+                {
+                    var animator = _bodyRenderer.GetComponentInParent<Animator>();
+                    _facingRoot = animator != null ? animator.transform : _bodyRenderer.transform;
+                }
+
+                if (_facingRoot == null)
+                {
+                    return Vector3.zero;
+                }
+
+                // 真上・真下を向いていて水平の向きが決まらないときはずらさない
+                var forward = _facingRoot.forward;
+                forward.y = 0f;
+                return forward.sqrMagnitude > Mathf.Epsilon ? forward.normalized : Vector3.zero;
+            }
+        }
+
         public void CollectRenderers(List<Renderer> results)
         {
             if (!IsDrawable(_bodyRenderer))

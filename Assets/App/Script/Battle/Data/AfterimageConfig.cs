@@ -16,6 +16,9 @@ namespace App.Battle.Data
         [SerializeField, Tooltip("一時強化の発動中、前回からこの秒数たったら残像を1体残す（立ち止まっていても残る）。距離と先に満たした方で残し、両方を数え直す。0以下なら時間では残さない")]
         private float _spawnInterval = 0.3f;
 
+        [SerializeField, Tooltip("時間で残すとき（立ち止まり・ゆっくり移動中）、実体と重ならないよう体の向きの真後ろへずらす距離[m]。距離で残すときはずらさない")]
+        private float _intervalBackOffset = 0.4f;
+
         [SerializeField, Tooltip("1フレームでこの距離[m]以上動いたら、ワープ（ボスウェーブ開始時の移動など）とみなして残像を残さず、その地点から数え直す。0以下ならワープとみなさない")]
         private float _warpDistance = 5f;
 
@@ -41,6 +44,7 @@ namespace App.Battle.Data
 
         public float SpawnDistance => _spawnDistance;
         public float SpawnInterval => _spawnInterval;
+        public float IntervalBackOffset => _intervalBackOffset;
         public float WarpDistance => _warpDistance;
         public int MaxCount => _maxCount;
         public float Lifetime => _lifetime;

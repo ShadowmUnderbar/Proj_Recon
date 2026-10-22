@@ -10,6 +10,19 @@ namespace App.Battle.Data
     /// </summary>
     public class AfterimageSpawnScheduler
     {
+        /// <summary>残す理由</summary>
+        public enum Trigger
+        {
+            /// <summary>残さない</summary>
+            None,
+
+            /// <summary>一定距離進んだ（残像は実体から離れていく）</summary>
+            Distance,
+
+            /// <summary>一定時間たった（立ち止まっていると実体と重なる）</summary>
+            Interval,
+        }
+
         private Vector3 _lastSpawnPosition;
         private Vector3 _lastFramePosition;
         private float _elapsedSinceSpawn;
@@ -35,14 +48,14 @@ namespace App.Battle.Data
 
         /// <summary>
         /// 前回残してから <paramref name="spawnDistance"/> 以上進んだか、<paramref name="spawnInterval"/> 秒以上たっていれば、
-        /// この地点・この時点を起点に更新して true。どちらも 0 以下ならその条件では残さない。
+        /// この地点・この時点を起点に更新して残す理由を返す（両方満たしたら距離を優先）。どちらも 0 以下ならその条件では残さない。
         /// 前フレームから <paramref name="warpDistance"/> 以上飛んでいれば、残さずにこの地点・この時点を起点にする（0 以下ならワープとみなさない）
         /// </summary>
-        public bool Advance(Vector3 position, float deltaTime, float spawnDistance, float spawnInterval, float warpDistance)
+        public Trigger Advance(Vector3 position, float deltaTime, float spawnDistance, float spawnInterval, float warpDistance)
         {
             if (!_isActive)
             {
-                return false;
+                return Trigger.None;
             }
 
             var frameDelta = position - _lastFramePosition;
@@ -52,23 +65,31 @@ namespace App.Battle.Data
             {
                 _lastSpawnPosition = position;
                 _elapsedSinceSpawn = 0f;
-                return false;
+                return Trigger.None;
             }
 
             _elapsedSinceSpawn += deltaTime;
 
             var delta = position - _lastSpawnPosition;
             delta.y = 0f;
-            var isFarEnough = spawnDistance > 0f && delta.sqrMagnitude >= spawnDistance * spawnDistance;
-            var isLongEnough = spawnInterval > 0f && _elapsedSinceSpawn >= spawnInterval;
-            if (!isFarEnough && !isLongEnough)
+            var trigger = Trigger.None;
+            if (spawnDistance > 0f && delta.sqrMagnitude >= spawnDistance * spawnDistance)
             {
-                return false;
+                trigger = Trigger.Distance;
+            }
+            else if (spawnInterval > 0f && _elapsedSinceSpawn >= spawnInterval)
+            {
+                trigger = Trigger.Interval;
+            }
+
+            if (trigger == Trigger.None)
+            {
+                return Trigger.None;
             }
 
             _lastSpawnPosition = position;
             _elapsedSinceSpawn = 0f;
-            return true;
+            return trigger;
         }
     }
 }

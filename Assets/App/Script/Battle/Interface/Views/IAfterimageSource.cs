@@ -14,5 +14,8 @@ namespace App.Battle.Interface
         /// 1つ目は体。残像全体の基準点（欠損模様・水平線カーブの基準）に使う
         /// </summary>
         void CollectRenderers(List<Renderer> results);
+
+        /// <summary>体の向いている水平方向（正規化済み）。残像を後ろへずらす向きに使う</summary>
+        Vector3 Forward { get; }
     }
 }
