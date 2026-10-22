@@ -32,14 +32,16 @@ namespace App.Tests.EditMode
         // {value1}〜{value5}
         private static readonly Regex ValuePlaceholder = new(@"\{value[1-5]\}", RegexOptions.Compiled);
 
-        // enum にはあるがマスターデータの行を持たない既知の値。
-        // 回避系 3 種はホップステップに置き換わった旧タイプで、シート側で消す予定。新しく増やさないこと
+        // enum にはあるがマスターデータの行を持たない既知の値。新しく増やさないこと。
+        // - 回避系 3 種: ホップステップに置き換わった旧タイプ。シート側で消す予定
+        // - BombRange: 消費側（PlayerBulletParameterDataStore の爆破サイズ）はあるが行が無い。行を足すか消すかは未決
         private static readonly HashSet<UpgradeType> KnownRowlessTypes = new()
         {
             UpgradeType.None,
             UpgradeType.DodgeDistance,
             UpgradeType.DodgeCount,
             UpgradeType.DodgeCooldown,
+            UpgradeType.BombRange,
         };
 
         private UpgradeDatabase _database;
