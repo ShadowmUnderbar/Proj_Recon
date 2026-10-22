@@ -4,6 +4,7 @@ using App.Battle.Presenters;
 using App.Battle.UseCase;
 using App.Battle.Views;
 using App.Battle.Views.Ally;
+using App.Battle.Views.FloorCollapse;
 using App.Common.Data;
 using App.Common.Interface;
 using App.Common.Presenters;
@@ -56,6 +57,8 @@ namespace App.Battle
         [SerializeField] private EnemySpawnConfig _enemySpawnConfig;
         [SerializeField] private AllyStoreView _allyStoreView;
         [SerializeField] private AllyConfig _allyConfig;
+        [SerializeField] private FloorCollapseView _floorCollapseView;
+        [SerializeField] private FloorCollapseConfig _floorCollapseConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -191,6 +194,9 @@ namespace App.Battle
                 .As<IPointDropCalculatorDataStore>();
             builder.Register<StreamerCameraDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IStreamerCameraDataStore>();
+            // ステージ遷移用の床崩壊の進行度
+            builder.Register<FloorCollapseDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IFloorCollapseDataStore>();
             // デバッグ対戦で出した相手と出し直しの待ち（通常のランでは使われない）
             builder.Register<DebugArenaDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IDebugArenaDataStore>();
@@ -244,6 +250,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
             builder.RegisterEntryPoint<ShopUseCase>();
+            // ウェーブクリアで床を崩し、次のウェーブ開始で戻す（見た目だけ。コライダーには触れない）
+            builder.RegisterEntryPoint<FloorCollapseUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
             // ウイルス（敵への継続ダメージ）の時間経過と毎秒ダメージ
@@ -300,6 +308,8 @@ namespace App.Battle
                 .As<IAllyPresenter>();
             builder.Register<TutorialMessagePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ITutorialMessagePresenter>();
+            builder.Register<FloorCollapsePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IFloorCollapsePresenter>();
 
             #endregion
 
@@ -385,6 +395,10 @@ namespace App.Battle
             builder.RegisterComponentInNewPrefab(_bulletStoreView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IBulletStoreView>();
 
+            // 床崩壊の見た目（崩壊中だけ床を演出用のプレート床へ差し替える）
+            builder.RegisterComponentInNewPrefab(_floorCollapseView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<IFloorCollapseView>();
+
             builder.RegisterComponentInNewPrefab(_pointParticleStoreView, Lifetime.Singleton)
                 .UnderTransform(transform)
                 .AsImplementedInterfaces().As<IPointParticleStoreView>();
@@ -421,6 +435,8 @@ namespace App.Battle
             builder.RegisterInstance(_enemySpawnConfig);
             // 召喚する味方の種類ごとの体力・攻撃間隔・射程（AllyDataStore が利用）
             builder.RegisterInstance(_allyConfig);
+            // 床崩壊の再生条件・マテリアル・見た目と動き（FloorCollapseUseCase / FloorCollapseView が利用）
+            builder.RegisterInstance(_floorCollapseConfig);
 
             #endregion
         }

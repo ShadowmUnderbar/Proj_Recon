@@ -226,6 +226,13 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerDamageReceiverView` | プレイヤー側の `IHitBoxView`。被弾ダメージを `OnDamaged` で公開（`HitBoxStoreView` には登録しない） |
 | `PlayerLifeGaugeView` | 足元の半円ゲージ（シェーダ描画） |
 
+**ステージ**
+
+| クラス | 責務 |
+|---|---|
+| `FloorCollapse/FloorCollapseView` | ステージ遷移用の床崩壊の見た目。崩壊中だけ、目印（`FloorCollapseTargetView`）の付いた床の Renderer を隠し、演出用のプレート床（`FloorCollapsePlateMeshBuilder` が組む、プレートごとに頂点を分けた厚みのある板を1メッシュにしたもの）と、隙間から見える暗い空間を出す。沈下・傾斜・スライド・データ片化・亀裂の発光・暗転はシェーダ（`App/FloorCollapse`）が進行度1つから決め、ここは毎フレーム進行度を MaterialPropertyBlock で渡すだけ。床の見た目は元の床のテクスチャと色を真上からの投影で写す（元の UV・法線に依存しない）。コライダーには触れない |
+| `FloorCollapse/FloorCollapseTargetView` | 床崩壊の対象になる床の目印。バイオームごとの床（見た目用の Renderer）に付ける。Battle では `CurvedGround` |
+
 **敵**
 
 | クラス | 責務 |
@@ -280,6 +287,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | （共通）`RunStartPresenter` | `IRunStartView`（`Common/Presenters`） | |
 | `PlayerLifeGaugePresenter` / `PointParticlePresenter` / `StreamerCameraPresenter` | 各 View | |
 | `AllyPresenter` | `IAllyStoreView` | 味方の生成・破棄・射撃・停止、被弾と攻撃要求の通知 |
+| `FloorCollapsePresenter` | `IFloorCollapseView` | 床崩壊の開始・進行度・復帰 |
 | （共通）`TutorialMessagePresenter` | `ITutorialMessageView`（`Common/Presenters`） | |
 
 ### 3.5 UseCase（`Battle/UseCase`）
@@ -292,6 +300,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerAimUseCase` | 手のレイ／マウスから照準位置を決めフォーカス対象を追う | PlayerAim, PlayerFocus, ShotConflict |
 | `PlayerShotUseCase` | トリガー → `PlayerBulletParameterDataStore` で弾データを作り `Shot`。フォーム（Normal/Merge/Waltz）と両手の可否。フリーズ／時止め中は撃たない | PlayerShotType, PlayerBulletParameter, CoreSkillUnlock |
 | `PlayerDodgeUseCase` | 回避入力 → 直線移動。通過した敵を接触として記録。フリーズ／時止め中は回避の入力・移動を止める | PlayerDodgeParameter, DodgeCounterAttack |
+| `FloorCollapseUseCase` | ウェーブクリア（`OnWaveAdvanced`）でプレイヤーの足元を中心に床崩壊を始め（`FloorCollapseConfig.PlayOnWaveClear`）、進行度を View へ渡す。次のウェーブ開始（ポーズ解除）で床を戻す。落下シーケンスは `IFloorCollapseDataStore.OnCompleted` から始める想定で未実装 | FloorCollapse, WaveManager, PlayerState |
 | `DodgeCounterAttackUseCase` | 回避終了時の跳ね返し攻撃（扇形＋直線検索 → レイ演出 → フリーズ → ダメージ）。`DodgeCounterAttackConfig` | DodgeCounterAttack, Enemy, Freeze |
 | `PlayerGazeUseCase` | `EnemyStoreView` が更新した「視線から判定球までの距離」をアップグレードごとの半径で絞り込み、注視系（スネークアイズ／メデューサ／ガン飛ばし）を反映 | SnakeEyes, Medusa, MeanMug |
 | `PlayerHitUseCase` | 被弾 → `PlayerStateDataStore.TakeDamage`（回避中・時止め中は無効） | PlayerState, DodgeParameter, TimeStop |
@@ -343,6 +352,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `WaveManagerDataStore` | 現在ウェーブ・経過時間・キル数・ポーズ・`OnWaveAdvanced`。開始ウェーブは通常 1、デバッグ対戦は指定した番号 |
 | `BossGroupDataStore` / `BossPatternRunner` | 複数個体のボスの出現（メンバーを `EnemyDataStore` へ登録。`SharedHealth` なら体力を共有させる）と行動台本の進行。`BossPatternRunner`（plain C#）が個体の状態から `Act`（全員が行動可能になったら同じフレームで一斉に行動、`HoldOthers` で対象の行動・硬直が終わるまで他を待機）・`WaitActionable`（硬直・スタン明けを待つ）・`Wait`（秒数）・`CrossFormation`（対象をプレイヤーの縦方向・横方向へ交互に振り分けて配置し直す。どちらが縦か・正負の側はランダム。横へのずれの候補と「少なくとも1体は0」を指定できる）・`RandomLoop`（直前のいくつかのステップを合計 Min〜Max 回ランダムに繰り返す。入れ子不可）・`DiagonalFormation`（2体を隣り合う斜めの角へ。向きが直交して帯が×字になる。`CrossFormation` とも `MoveSeconds` が0より大きければ、全員の行動が明けてから対象以外を待機させて時を止め、その秒数で配置先へ移動させてから時止めを解く。0なら時を止めず瞬間移動）・`TimeStopOrbit`（全員の行動が明けたら対象以外を待機させて時を止め、対象の全員へ同じ向き（時計回りか反時計回りかはランダム）の回りこみを `Act` で命令する。ランダムな1体は `ActionIndex`（回りこみ連射）、残りは `PartnerActionIndex`（回りこむだけ）→ 全員が回りこみ終えたら時止めを解き、全員を待機させて `WaitSeconds` 待つ → 待機を解いて次へ。進み具合は `BossTimeStopOrbit`）を進め、命令（`BossDirectorCommand`）を出す。撃破されたメンバーは対象から外す（時止めの途中で全員いなくなったら、`BossGroupUseCase` が撃破・消去の通知を受けた時点で時止めを解く）。`BossGroupConfig.RageHealthRatio` 以下まで体力が減ったら台本を `RagePattern`（発狂フェイズ）へ差し替え、行動中の個体は `Cancel` で打ち切る |
 | `BossWaveDataStore` | 現在ウェーブがボスウェーブか・出現済みか・全員倒したか |
+| `FloorCollapseDataStore` | 床崩壊の進行（`Idle` / `Collapsing` / `Completed`）・全体の進行度・中心・今回の設定。秒数から進行度を出し、1で `OnCompleted` を流す。`SetProgress` で直接指定もできる（ラン開始で初期化） |
 | `DebugArenaDataStore` | デバッグ対戦で出した相手の敵Idと、全員いなくなってからの出し直しの待ち（ラン開始で初期化） |
 | `GameStateDataStore` / `RunStartDataStore` / `FreezeDataStore` | ゲームオーバー／セット選択中・保存済みセットを装備して始めたか（`HasLoadedBuild`）／フリーズ残時間 |
 | `OverclockDataStore` | オーバークロックのストック秒数・発動状態・残り時間・溜めたダメージ。しきい値は `OverclockConfig`。発動中は、時間で進む処理（バフ・デバフの効果時間、スポーン周期、ウェーブ経過時間、バリア再生、ケア・ノード）が `IsActive` を見て止まる。射撃・回避のクールダウンは止めない |
@@ -373,10 +383,10 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 
 | 種別 | クラス |
 |---|---|
-| ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle`, `BossWaveConfig`（ボスウェーブの番号・出すボスグループ・プレイヤー/ボスの位置、`MasterData/Boss`）, `BossLifeGaugeConfig`（ボスの体力ゲージの色・大きさ、`MasterData/Boss`。既定は紫）, `BossLineStrikeConfig`（ボスの帯の攻撃の幅・長さ・予兆/攻撃/硬直の秒数・連続攻撃の回数と間隔・ダメージ倍率・色、`MasterData/Boss`）, `BossGroupConfig`（ボスのメンバー・行動台本 `BossPatternStep[]`・体力共有、`MasterData/Boss`。`BossGroup_TwinShooter`＝交代と同時行動の確認用、`BossGroup_TickTock`＝体力共有の二人組）, `SepiaToneConfig`（セピアの色味。輝度1の色と輝度0＝黒の色の2点を結ぶので、黒い部分にも色が付く。`MasterData/SepiaTone`）, `SepiaTonePreset`（演出ごとの対象グループ・強さ・フェード秒数。オーバークロック用は `MasterData/Overclock/OverclockSepiaTonePreset`、時止め用は `MasterData/TimeStop/TimeStopSepiaTonePreset`）, `TimeStopConfig`（時止めの演出。セピア調プリセット、`MasterData/TimeStop`）, `AllyConfig`（召喚する味方の種類ごとの体力・攻撃間隔・射程・旋回速度・狙われるか、`MasterData/Ally`。タレットは体力60・0.5秒・40m・20度/秒） |
+| ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle`, `BossWaveConfig`（ボスウェーブの番号・出すボスグループ・プレイヤー/ボスの位置、`MasterData/Boss`）, `BossLifeGaugeConfig`（ボスの体力ゲージの色・大きさ、`MasterData/Boss`。既定は紫）, `BossLineStrikeConfig`（ボスの帯の攻撃の幅・長さ・予兆/攻撃/硬直の秒数・連続攻撃の回数と間隔・ダメージ倍率・色、`MasterData/Boss`）, `BossGroupConfig`（ボスのメンバー・行動台本 `BossPatternStep[]`・体力共有、`MasterData/Boss`。`BossGroup_TwinShooter`＝交代と同時行動の確認用、`BossGroup_TickTock`＝体力共有の二人組）, `SepiaToneConfig`（セピアの色味。輝度1の色と輝度0＝黒の色の2点を結ぶので、黒い部分にも色が付く。`MasterData/SepiaTone`）, `SepiaTonePreset`（演出ごとの対象グループ・強さ・フェード秒数。オーバークロック用は `MasterData/Overclock/OverclockSepiaTonePreset`、時止め用は `MasterData/TimeStop/TimeStopSepiaTonePreset`）, `TimeStopConfig`（時止めの演出。セピア調プリセット、`MasterData/TimeStop`）, `AllyConfig`（召喚する味方の種類ごとの体力・攻撃間隔・射程・旋回速度・狙われるか、`MasterData/Ally`。タレットは体力60・0.5秒・40m・20度/秒）, `FloorCollapseConfig`（床崩壊をウェーブクリアで再生するか・プレート／暗い空間のマテリアル・暗い空間の深さ・見た目と動き `FloorCollapseSettings`、`MasterData/FloorCollapse`） |
 | デバッグ設定（組み立て時に `DebugConfig` から作って注入） | `EnemyGazeDebugSettings`, `DebugArenaSettings`（デバッグ対戦の相手・出し直し・無敵。予約が無ければ `Disabled`。`Common/Data/DebugArenaRequest` が予約の中身） |
 | 定数 | `PlayerConstants.PlayerId`（**今回新設**）, `ThemeColors`, `SepiaToneRenderingLayer`（セピア調のグループと renderingLayerMask のビットの対応） |
-| POCO / struct | `EnemyData`, `AllyData`, `HitData`, `BossMemberStatus`, `BossDirectorCommand`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `VirusStatus`, `VirusDamage`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `UpgradeLocalizedText` |
+| POCO / struct | `FloorCollapseSettings`（床崩壊の秒数・進み方（同心円／一方向）と向き・分割密度・広さ・厚み・波の幅とずれ・亀裂の区間・沈下量・傾斜・スライド・隙間・データ片化・暗転・発光）, `EnemyData`, `AllyData`, `HitData`, `BossMemberStatus`, `BossDirectorCommand`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `VirusStatus`, `VirusDamage`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `UpgradeLocalizedText` |
 | enum | `AllyType`, `EnemyAIState`, `BossActionPhase`, `BossPatternStepType`, `BossFormationSlot`（プレイヤーの上下左右、ワールド軸）, `SepiaToneGroup`（Flags）, `HitBoxType`, `StreamerCameraShotType` |
 
 ### 3.8 主要データフロー
@@ -432,6 +442,13 @@ EnemyDataStore.OnEnemyDead → SociopathUseCase → SociopathDataStore.NotifyKil
  → BuffStateDataStore.GainRage(最高レベルの Value1 秒。獲得前に IsRageActive が true なら Value1 × Value2 秒。発動していないレイジは0から発動する。
    逆ギレ未所持なら BuffId のバフの効果で発動させる)
  → どちらもレイジの残り時間1本に足す（例: 被弾で3秒 → ソシオパス L1 の撃破で +1秒 → 4秒）
+
+【床崩壊（ステージ遷移）】
+WaveManagerDataStore.OnWaveAdvanced → FloorCollapseUseCase → FloorCollapseDataStore.Begin(プレイヤーの位置, FloorCollapseConfig.Settings)
+ → Phase=Collapsing → FloorCollapsePresenter.Begin → FloorCollapseView(目印の床を隠しプレート床を出す)
+ → Tick で進行度を進める → SetProgress → シェーダ(App/FloorCollapse)が亀裂→隙間→沈下・傾斜・スライド→データ片化→暗転
+ → 進行度1で OnCompleted（落下シーケンスへ渡す想定。未実装）
+IsWavePause=false（次のウェーブ開始）→ ResetCollapse → Phase=Idle → Restore(床を戻す)
 
 【オーバークロック】
 回避中の被弾 → PlayerHitUseCase → PlayerDodgeParameterDataStore.NotifyDamageBlocked → OnDamagedDuringDodge
