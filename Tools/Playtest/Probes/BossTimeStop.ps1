@@ -108,7 +108,9 @@ Observable.EveryUpdate().Subscribe(_ =>
     var current = new Dictionary<int, Vector3>();
     foreach (var bullet in bullets)
     {
-        var id = bullet.GetInstanceID();
+        // 弾はプールで使い回されるので InstanceID では戻った弾と次に出た弾が同じに見える（出た瞬間の位置差が移動量に化ける）。
+        // 貸出ごとに進む BulletId で見分ける
+        var id = bullet.GetComponent<App.Battle.Views.Enemy.Bullet.BaseBulletView>().BulletId;
         var position = bullet.transform.position;
         current[id] = position;
         minDistance = Mathf.Min(minDistance, new Vector2(position.x - pp.x, position.z - pp.z).magnitude);
