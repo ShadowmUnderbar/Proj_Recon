@@ -73,6 +73,21 @@ namespace App.Tests.EditMode
         }
 
         [Test]
+        public void 所持件数_レベル違いは1件と数え_タグなしも数え_nullは数えない()
+        {
+            var upgrades = new[]
+            {
+                CreateUpgrade("$Rage", UpgradeTag.Rage),
+                CreateUpgrade("$Rage", UpgradeTag.Rage),
+                CreateUpgrade("$BaseDamageUp"),
+                null,
+            };
+
+            Assert.That(UpgradeTagRanking.CountUpgrades(upgrades), Is.EqualTo(2));
+            Assert.That(UpgradeTagRanking.CountUpgrades(null), Is.EqualTo(0));
+        }
+
+        [Test]
         public void 流す表示_先頭で止まってから進み1周で先頭に戻る()
         {
             var scroller = new TagTickerScroller(speed: 2f, loopPause: 1f);

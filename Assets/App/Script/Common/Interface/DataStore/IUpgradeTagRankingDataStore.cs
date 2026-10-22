@@ -14,5 +14,11 @@ namespace App.Common.Interface
         /// 同じアップグレードのレベル違いは1件と数え、同数のタグは enum の定義順に並べる
         /// </summary>
         IReadOnlyList<UpgradeTagCount> GetTopTags(IEnumerable<string> upgradeIds, int maxCount);
+
+        /// <summary>
+        /// 所持アップグレード自体の件数を返す（タグの件数ではない）。
+        /// タグ集計と同じく、同じアップグレードのレベル違いは1件と数え、マスターデータに無い ID は数えない
+        /// </summary>
+        int CountUpgrades(IEnumerable<string> upgradeIds);
     }
 }

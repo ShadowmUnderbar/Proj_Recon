@@ -74,10 +74,11 @@ using UnityEngine;
 
 var label = GameObject.Find("OwnedTagRankingText");
 var text = label != null ? label.GetComponent<UnityEngine.UI.Text>().text : "(not found)";
-var expected = "所持タグ\n被ダメ ×2\nレイジ ×1\nスタン ×1\n注視 ×1";
+var expected = "所持アップグレード 3件\n所持タグ\n被ダメ ×2\nレイジ ×1\nスタン ×1\n注視 ×1";
 return $"{{\"matched\":{(text == expected).ToString().ToLower()},\"actual\":\"{text.Replace("\n", " | ")}\"}}";
 '@
-    Assert-ProbeTrue -Name '所持タグ上位がレベル違いを1件・件数順・同数は定義順で出る' -Condition ([bool]$ranking.matched) `
+    # 逆ギレ Lv1・Lv2 は1件と数えるので、所持アップグレードは 4 ID でも 3件
+    Assert-ProbeTrue -Name '所持件数（レベル違いは1件）と所持タグ上位（件数順・同数は定義順）が出る' -Condition ([bool]$ranking.matched) `
         -Detail "(実測: $($ranking.actual))" | Out-Null
 
     # --- 3. カードのタグ ---

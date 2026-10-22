@@ -8,7 +8,7 @@ using VContainer;
 namespace App.Common.DataStore
 {
     /// <summary>
-    /// アップグレードIDをマスターデータへ引き当て、<see cref="UpgradeTagRanking"/> でタグの件数順を求める
+    /// アップグレードIDをマスターデータへ引き当て、<see cref="UpgradeTagRanking"/> でタグの件数順・所持件数を求める
     /// </summary>
     public class UpgradeTagRankingDataStore : IUpgradeTagRankingDataStore
     {
@@ -22,6 +22,17 @@ namespace App.Common.DataStore
 
         public IReadOnlyList<UpgradeTagCount> GetTopTags(IEnumerable<string> upgradeIds, int maxCount)
         {
+            return UpgradeTagRanking.Top(ResolveUpgrades(upgradeIds), maxCount);
+        }
+
+        public int CountUpgrades(IEnumerable<string> upgradeIds)
+        {
+            return UpgradeTagRanking.CountUpgrades(ResolveUpgrades(upgradeIds));
+        }
+
+        /// <summary>ID をマスターデータへ引き当てる。見つからない ID は飛ばす</summary>
+        private List<UpgradeMasterData> ResolveUpgrades(IEnumerable<string> upgradeIds)
+        {
             var upgrades = new List<UpgradeMasterData>();
             if (upgradeIds != null)
             {
@@ -34,7 +45,7 @@ namespace App.Common.DataStore
                 }
             }
 
-            return UpgradeTagRanking.Top(upgrades, maxCount);
+            return upgrades;
         }
     }
 }

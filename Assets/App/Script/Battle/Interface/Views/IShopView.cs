@@ -40,8 +40,10 @@ namespace App.Battle.Interface
         /// </summary>
         void SetUpgradeTags(int index, IReadOnlyList<string> tagNames);
 
-        /// <summary>所持アップグレードのタグ上位（件数の多い順・件数つき）を表示する</summary>
-        void SetOwnedTagRanking(IReadOnlyList<LocalizedUpgradeTagCount> ranking);
+        /// <summary>
+        /// 所持アップグレードの件数（レベル違いは1件）と、タグ上位（件数の多い順・件数つき）を表示する
+        /// </summary>
+        void SetOwnedTagRanking(int upgradeCount, IReadOnlyList<LocalizedUpgradeTagCount> ranking);
 
         /// <summary>
         /// 3Dカードの掴み・確定判定に使う片手ぶんの入力を渡す（VRのみ。それ以外では無視される）
