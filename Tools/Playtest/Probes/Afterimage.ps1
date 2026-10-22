@@ -8,7 +8,7 @@
 # 2. 頭を差し替えても、先に残した残像の頭は変わらない（新しい残像だけが新しい頭になる）
 # 3. 上限数を超えて残しても、残像と焼き込み用メッシュの数は上限で止まる（使い回される）
 # 4. 時間を戻すと寿命で全部消え、形状を手放す
-# 5. 回避を始めると残像が残る
+# 5. 一時強化なしで動いても残らない／レイジ発動中に動くと残る／レイジが切れると残らない
 #
 
 function ProbePrepare {
@@ -38,6 +38,20 @@ var anchor = (Transform)typeof(PlayerAfterimageSourceView)
 var body = (Renderer)typeof(PlayerAfterimageSourceView)
     .GetField("_bodyRenderer", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(source);
 var ci = System.Globalization.CultureInfo.InvariantCulture;
+
+'@
+
+# 状態を動かすスニペット共通の取り出し（プレイヤーの位置・バフ状態）
+$Global:ProbeAfterimageScopePrelude = @'
+using VContainer;
+using VContainer.Unity;
+using UnityEngine;
+using App.Battle;
+using App.Battle.Interface.DataStore;
+
+var scope = LifetimeScope.Find<BattleLifetimeScope>();
+var state = scope.Container.Resolve<IPlayerStateDataStore>();
+var buff = scope.Container.Resolve<IBuffStateDataStore>();
 
 '@
 
@@ -192,24 +206,49 @@ return "{"
     Assert-ProbeValue -Name '寿命で全部消える' -Actual $expired.alive -Expected 0 | Out-Null
     Assert-ProbeValue -Name '消えた残像は形状を手放す' -Actual $expired.parts -Expected 0 | Out-Null
 
-    # --- 5. 回避を始めると残像が残る ---
-    # 寿命が短いので、回避の開始と数えるのを同じスニペットで行わず、直後の呼び出しで数える（寿命内に収まる）
-    Invoke-UnityCode -Snippet @'
-using VContainer;
-using VContainer.Unity;
-using UnityEngine;
-using App.Battle;
-using App.Battle.Interface.DataStore;
-
-var scope = LifetimeScope.Find<BattleLifetimeScope>();
-var dodge = scope.Container.Resolve<IPlayerDodgeParameterDataStore>();
-var state = scope.Container.Resolve<IPlayerStateDataStore>();
-var start = state.Position.Value;
-dodge.StartDodge(start, start + Vector3.forward * dodge.DodgeRange);
+    # --- 5. 一時強化の発動中だけ、動くと残像が残る ---
+    # 寿命が短いので、動かすのと数えるのを同じスニペットで行わず、直後の呼び出しで数える（寿命内に収まる）。
+    # 発動の検知は次フレームの Tick なので、発動させる呼び出しと動かす呼び出しも分ける
+    $moveSnippet = $Global:ProbeAfterimageScopePrelude + @'
+state.Position.Value += Vector3.forward * 3f;
 return "ok";
-'@ | Out-Null
-    $dodged = Invoke-UnityCode -Snippet ($Global:ProbeAfterimagePrelude + @'
+'@
+    $countSnippet = $Global:ProbeAfterimagePrelude + @'
 return instances.Count(x => x.IsAlive).ToString();
+'@
+
+    Invoke-UnityCode -Snippet $moveSnippet | Out-Null
+    $unbuffed = Invoke-UnityCode -Snippet $countSnippet
+    Assert-ProbeValue -Name '一時強化なしで動いても残らない' -Actual ([int]$unbuffed) -Expected 0 | Out-Null
+
+    Invoke-UnityCode -Snippet ($Global:ProbeAfterimageScopePrelude + @'
+var rage = UnityEditor.AssetDatabase.LoadAssetAtPath<App.Common.Data.MasterData.BuffMasterData>("Assets/App/MasterData/Buff/RageBuffL1.asset");
+buff.GainRage(30f, rage);
+return "ok";
+'@) | Out-Null
+    Invoke-UnityCode -Snippet $moveSnippet | Out-Null
+    $buffed = Invoke-UnityCode -Snippet $countSnippet
+    Assert-ProbeTrue -Name 'レイジ発動中に動くと残る' -Condition ([int]$buffed -ge 1) -Detail "(表示中 $buffed 体)" | Out-Null
+
+    # 1フレームで WarpDistance 以上飛んだらワープとみなして残さない（残っている分が寿命で消えてから飛ばす）
+    Start-Sleep -Seconds 1
+    Invoke-UnityCode -Snippet ($Global:ProbeAfterimageScopePrelude + @'
+state.WarpTo(state.Position.Value + Vector3.forward * 20f);
+return "ok";
+'@) | Out-Null
+    $warped = Invoke-UnityCode -Snippet $countSnippet
+    Assert-ProbeValue -Name 'レイジ発動中でもワープでは残らない' -Actual ([int]$warped) -Expected 0 | Out-Null
+
+    # レイジの残り時間を0にして切れさせ、寿命が過ぎてから動かす
+    $rageEnded = Invoke-UnityCode -Snippet ($Global:ProbeAfterimageScopePrelude + @'
+typeof(App.Battle.DataStore.BuffStateDataStore)
+    .GetField("_rageRemainingTime", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+    .SetValue(buff, 0f);
+return buff.IsTimedBuffActive ? "active" : "ok";
 '@)
-    Assert-ProbeTrue -Name '回避を始めると残像が残る' -Condition ([int]$dodged -ge 1) -Detail "(表示中 $dodged 体)" | Out-Null
+    Assert-ProbeTrue -Name 'レイジを切ると一時強化なしに戻る' -Condition ($rageEnded -eq 'ok') -Detail "($rageEnded)" | Out-Null
+    Start-Sleep -Seconds 2
+    Invoke-UnityCode -Snippet $moveSnippet | Out-Null
+    $ended = Invoke-UnityCode -Snippet $countSnippet
+    Assert-ProbeValue -Name 'レイジが切れると残らない' -Actual ([int]$ended) -Expected 0 | Out-Null
 }

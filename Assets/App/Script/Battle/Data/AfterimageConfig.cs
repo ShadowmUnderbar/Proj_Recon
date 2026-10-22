@@ -3,15 +3,18 @@ using UnityEngine;
 namespace App.Battle.Data
 {
     /// <summary>
-    /// プレイヤーの残像（回避中に残す、データが欠けたような過去の姿）の設定。
+    /// プレイヤーの残像（一時強化の発動中に残す、データが欠けたような過去の姿）の設定。
     /// 生成の間隔と上限、寿命、見た目、寿命に応じたフェード・欠損の変化を持つ。
     /// </summary>
     [CreateAssetMenu(fileName = "AfterimageConfig", menuName = "Config/AfterimageConfig")]
     public class AfterimageConfig : ScriptableObject
     {
         [Header("生成")]
-        [SerializeField, Tooltip("回避中、この距離[m]進むごとに残像を1体残す。回避の開始地点にも1体残す")]
+        [SerializeField, Tooltip("一時強化（レイジ・カウンターステップ等）の発動中、この距離[m]進むごとに残像を1体残す。立ち止まっている間は残さない")]
         private float _spawnDistance = 1.2f;
+
+        [SerializeField, Tooltip("1フレームでこの距離[m]以上動いたら、ワープ（ボスウェーブ開始時の移動など）とみなして残像を残さず、その地点から数え直す")]
+        private float _warpDistance = 5f;
 
         [SerializeField, Tooltip("同時に表示する残像の上限。超えたら一番古いものを消して使い回す")]
         private int _maxCount = 6;
@@ -34,6 +37,7 @@ namespace App.Battle.Data
         private AfterimageStyle _style = AfterimageStyle.Default;
 
         public float SpawnDistance => _spawnDistance;
+        public float WarpDistance => _warpDistance;
         public int MaxCount => _maxCount;
         public float Lifetime => _lifetime;
         public Material Material => _material;

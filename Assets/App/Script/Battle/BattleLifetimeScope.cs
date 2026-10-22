@@ -230,7 +230,7 @@ namespace App.Battle
             builder.RegisterEntryPoint<BattleHitUseCase>();
             builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
-            // 回避中の残像を残すタイミング（回避の移動より後に Tick させ、進んだ後の位置で判定する）
+            // 一時強化中の残像を残すタイミング（移動・回避より後に Tick させ、進んだ後の位置で判定する）
             builder.RegisterEntryPoint<AfterimageUseCase>();
             builder.RegisterEntryPoint<FreezeUseCase>();
             builder.RegisterEntryPoint<OverclockUseCase>();

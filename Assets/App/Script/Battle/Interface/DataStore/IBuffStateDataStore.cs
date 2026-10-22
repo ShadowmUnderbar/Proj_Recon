@@ -47,6 +47,12 @@ namespace App.Battle.Interface.DataStore
         float RageRemainingTime { get; }
 
         /// <summary>
+        /// 効果時間の間だけ効く一時強化が発動中か（レイジ、HitCount / AfterDodge 条件のバフ＝コンボ攻撃UP・カウンターステップ等）。
+        /// HP割合やスタックで決まる、時間で切れないバフは含めない
+        /// </summary>
+        bool IsTimedBuffActive { get; }
+
+        /// <summary>
         /// レイジの効果時間を得る。発動中なら残り時間に足し、発動していなければその秒数で発動させる。
         /// レイジ未所持なら rageWhenNotOwned のバフの効果で発動させる（レイジのアップグレードの効果である「被弾で延びる」は付かない）
         /// </summary>
