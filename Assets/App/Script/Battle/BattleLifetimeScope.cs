@@ -249,9 +249,10 @@ namespace App.Battle
             builder.RegisterEntryPoint<DodgeCounterAttackUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
-            builder.RegisterEntryPoint<ShopUseCase>();
-            // ウェーブクリアで床を崩し、次のウェーブ開始で戻す（見た目だけ。コライダーには触れない）
+            // ウェーブクリアで床を崩し、次のウェーブ開始で戻す（見た目だけ。コライダーには触れない）。
+            // ショップは崩壊しきってから開くため、ウェーブ突破の購読を ShopUseCase より先に済ませる（購読順＝登録順）
             builder.RegisterEntryPoint<FloorCollapseUseCase>();
+            builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
             // ウイルス（敵への継続ダメージ）の時間経過と毎秒ダメージ

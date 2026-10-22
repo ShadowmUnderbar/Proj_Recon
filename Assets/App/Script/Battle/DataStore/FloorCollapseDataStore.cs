@@ -14,10 +14,12 @@ namespace App.Battle.DataStore
     {
         private readonly ReactiveProperty<FloorCollapsePhase> _phase = new(FloorCollapsePhase.Idle);
         private readonly ReactiveProperty<float> _progress = new(0f);
+        private readonly Subject<Unit> _onStarted = new();
         private readonly Subject<Unit> _onCompleted = new();
 
         public ReadOnlyReactiveProperty<FloorCollapsePhase> Phase => _phase;
         public ReadOnlyReactiveProperty<float> Progress => _progress;
+        public Observable<Unit> OnStarted => _onStarted;
         public Observable<Unit> OnCompleted => _onCompleted;
         public Vector3 Origin { get; private set; }
         public FloorCollapseSettings Settings { get; private set; } = FloorCollapseSettings.Default;
@@ -27,9 +29,10 @@ namespace App.Battle.DataStore
             Origin = origin;
             Settings = settings;
             _progress.Value = 0f;
-            // 再生中にやり直したときも、購読側が開始をもう一度受け取れるよう一度戻す
-            _phase.Value = FloorCollapsePhase.Idle;
+            // 再生中にやり直したときは Phase を Collapsing のまま保つ（Idle を挟むと、ショップの完了待ちなどが打ち切り扱いで消える）。
+            // やり直しは OnStarted で知らせる
             _phase.Value = FloorCollapsePhase.Collapsing;
+            _onStarted.OnNext(Unit.Default);
         }
 
         public void Advance(float deltaTime)
@@ -74,6 +77,7 @@ namespace App.Battle.DataStore
         {
             _phase.Dispose();
             _progress.Dispose();
+            _onStarted.Dispose();
             _onCompleted.Dispose();
         }
     }

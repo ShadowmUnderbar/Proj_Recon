@@ -5,7 +5,9 @@
 #    - プレートの枚数は 分割密度（PlateSize）と広さ（FieldSize）どおり
 #    - 当たり判定（Stage/Plane のコライダー）には触れない
 # 2. 進行度がシェーダへ渡り、Duration 秒で完了して OnCompleted が流れる（完了後も床は崩れたまま）
-# 3. 次のウェーブが始まると床が元に戻り、プレート床が消える
+#    - 崩壊中はショップが開かず、フォーカス入力が止まる（移動・射撃・回避はウェーブ間ポーズで止まっている）
+#    - 開始（OnStarted）と終了（OnCompleted）が1回ずつ流れ、終了と同時にショップが開く
+# 3. 次のウェーブ（ショップの「次のウェーブへ」）で床が元に戻り、プレート床が消える
 # 4. もう一度再生でき、同じ分割ならメッシュを作り直さない
 #
 
@@ -40,6 +42,14 @@ var collider = GameObject.Find("Stage/Plane").GetComponent<Collider>();
 var block = new MaterialPropertyBlock();
 plates.GetPropertyBlock(block);
 var ci = System.Globalization.CultureInfo.InvariantCulture;
+var flags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance;
+// ショップが開いているかは「次のウェーブへ」ボタンが出ているかで見る（PlaytestCommon.ps1 と同じパス）
+var nextWaveButton = GameObject.Find("BattleLifetimeScope/ShopView(Clone)/ShopCanvas/Panel/NextWaveButton");
+var isShopOpen = nextWaveButton != null && nextWaveButton.activeInHierarchy;
+var input = scope.Container.Resolve<App.Common.Interface.IGameInputDataStore>();
+var isFocusInputEnabled = (bool)typeof(App.Common.DataStore.GameInputDataStore).GetField("_isFocusInputEnabled", flags).GetValue(input);
+var started = System.AppDomain.CurrentDomain.GetData("ProbeFloorCollapseStarted") as int? ?? 0;
+var completed = System.AppDomain.CurrentDomain.GetData("ProbeFloorCollapseCompleted") as int? ?? 0;
 
 '@
 
@@ -61,6 +71,10 @@ return "{"
     + ",\"duration\":" + s.Duration.ToString(ci)
     + ",\"wave\":" + wave.CurrentWave.CurrentValue
     + ",\"pause\":" + (wave.IsWavePause.Value ? "true" : "false")
+    + ",\"shopOpen\":" + (isShopOpen ? "true" : "false")
+    + ",\"focusInput\":" + (isFocusInputEnabled ? "true" : "false")
+    + ",\"started\":" + started
+    + ",\"completed\":" + completed
     + "}";
 '@)
 }
@@ -74,15 +88,42 @@ return "ok";
 '@) | Out-Null
 }
 
-# 次のウェーブを始める（ショップの「次のウェーブへ」と同じくポーズを解く）
+# 次のウェーブを始める。ショップが開いていれば「次のウェーブへ」ボタンを押し、開いていなければポーズだけ解く
 function Invoke-NextWave {
+    $state = Get-FloorCollapseState
+    if ($state.shopOpen) {
+        # 押してもポーズが解けなければ押し直す（Resolve-ShopIfOpen と同じ）
+        for ($attempt = 1; $attempt -le 3; $attempt++) {
+            Invoke-Uloop -Command 'simulate-mouse-ui' -Params @{
+                action = 'Click'; 'target-path' = $Global:PlaytestShopNextWaveButtonPath; 'bypass-raycast' = 'true'
+            } | Out-Null
+            Start-Sleep -Milliseconds 500
+            if (-not (Get-FloorCollapseState).pause) { return }
+        }
+        throw "ショップから次ウェーブへ遷移できませんでした（NextWaveButton押下後もポーズのまま）"
+    }
+
     Invoke-UnityCode -Snippet ($Global:ProbeFloorCollapsePrelude + @'
 wave.SetWavePause(false);
 return "ok";
 '@) | Out-Null
 }
 
+# 開始・終了の通知を数える（Play を止めるまで購読したままにする）
+function Register-FloorCollapseCounters {
+    Invoke-UnityCode -Snippet ($Global:ProbeFloorCollapsePrelude + @'
+System.AppDomain.CurrentDomain.SetData("ProbeFloorCollapseStarted", 0);
+System.AppDomain.CurrentDomain.SetData("ProbeFloorCollapseCompleted", 0);
+R3.ObservableSubscribeExtensions.Subscribe(collapse.OnStarted, _ =>
+    System.AppDomain.CurrentDomain.SetData("ProbeFloorCollapseStarted", (int)System.AppDomain.CurrentDomain.GetData("ProbeFloorCollapseStarted") + 1));
+R3.ObservableSubscribeExtensions.Subscribe(collapse.OnCompleted, _ =>
+    System.AppDomain.CurrentDomain.SetData("ProbeFloorCollapseCompleted", (int)System.AppDomain.CurrentDomain.GetData("ProbeFloorCollapseCompleted") + 1));
+return "ok";
+'@) | Out-Null
+}
+
 function ProbeRun {
+    Register-FloorCollapseCounters
     $before = Get-FloorCollapseState
     Assert-ProbeTrue -Name '開始前は床がそのまま（プレート床は出ていない）' `
         -Condition ($before.phase -eq 'Idle' -and $before.targetVisible -and -not $before.platesVisible) `
@@ -97,6 +138,9 @@ function ProbeRun {
     Assert-ProbeTrue -Name '目印の床が隠れ、プレート床が出る' -Condition ((-not $started.targetVisible) -and $started.platesVisible) | Out-Null
     Assert-ProbeValue -Name 'プレートの枚数が分割密度と広さどおり' -Actual $started.plateCount -Expected $started.expectedPlates | Out-Null
     Assert-ProbeTrue -Name '当たり判定のコライダーには触れない' -Condition ($started.colliderEnabled -and $started.colliderY -eq $before.colliderY) | Out-Null
+    Assert-ProbeValue -Name '開始の通知（OnStarted）が1回流れる' -Actual $started.started -Expected 1 | Out-Null
+    Assert-ProbeTrue -Name '崩壊中はショップが開かない' -Condition (-not $started.shopOpen) | Out-Null
+    Assert-ProbeTrue -Name '崩壊中はフォーカス入力が止まる' -Condition (-not $started.focusInput) | Out-Null
 
     # --- 2. 進行度がシェーダへ渡り、Duration 秒で完了する ---
     Start-Sleep -Seconds 1
@@ -110,6 +154,8 @@ function ProbeRun {
     Assert-ProbeTrue -Name 'Duration 秒で完了する' -Condition ($done.phase -eq 'Completed') -Detail "(phase=$($done.phase))" | Out-Null
     Assert-ProbeValue -Name '完了時の進行度は1' -Actual $done.shaderProgress -Expected 1 | Out-Null
     Assert-ProbeTrue -Name '完了後も床は崩れたまま（次の演出へ渡す）' -Condition ($done.platesVisible -and -not $done.targetVisible) | Out-Null
+    Assert-ProbeValue -Name '終了の通知（OnCompleted）が1回流れる' -Actual $done.completed -Expected 1 | Out-Null
+    Assert-ProbeTrue -Name '崩壊しきったらショップが開く' -Condition $done.shopOpen | Out-Null
 
     # --- 3. 次のウェーブで床が戻る ---
     Invoke-NextWave
@@ -118,6 +164,7 @@ function ProbeRun {
     Assert-ProbeTrue -Name '次のウェーブで床が元に戻る' `
         -Condition ($restored.phase -eq 'Idle' -and $restored.targetVisible -and -not $restored.platesVisible) `
         -Detail "(phase=$($restored.phase) target=$($restored.targetVisible) plates=$($restored.platesVisible))" | Out-Null
+    Assert-ProbeTrue -Name '次のウェーブではフォーカス入力が戻り、ショップは閉じている' -Condition ($restored.focusInput -and -not $restored.shopOpen) | Out-Null
 
     # --- 4. もう一度再生でき、メッシュは作り直さない ---
     Invoke-WaveClear
@@ -131,4 +178,17 @@ function ProbeRun {
     Start-Sleep -Milliseconds 300
     $end = Get-FloorCollapseState
     Assert-ProbeTrue -Name '途中でウェーブが始まっても床が戻る' -Condition ($end.phase -eq 'Idle' -and $end.targetVisible -and -not $end.platesVisible) | Out-Null
+    Assert-ProbeTrue -Name '打ち切ったときは終了の通知を流さず、ショップの待ちも消える' `
+        -Condition ($end.started -eq 2 -and $end.completed -eq 1 -and $end.focusInput -and -not $end.shopOpen) `
+        -Detail "(started=$($end.started) completed=$($end.completed) focus=$($end.focusInput) shop=$($end.shopOpen))" | Out-Null
+
+    # 打ち切った後のウェーブクリアでは、待ちが残っていなければ崩壊しきるまでショップは開かない
+    Invoke-WaveClear
+    Start-Sleep -Milliseconds 300
+    $third = Get-FloorCollapseState
+    Assert-ProbeTrue -Name '3回目の崩壊中もショップは開かない' -Condition ($third.phase -eq 'Collapsing' -and -not $third.shopOpen) | Out-Null
+    Start-Sleep -Seconds ([double]$third.duration + 0.5)
+    $thirdDone = Get-FloorCollapseState
+    Assert-ProbeTrue -Name '3回目も崩壊しきったらショップが開く' -Condition ($thirdDone.phase -eq 'Completed' -and $thirdDone.shopOpen) | Out-Null
+    Invoke-NextWave
 }

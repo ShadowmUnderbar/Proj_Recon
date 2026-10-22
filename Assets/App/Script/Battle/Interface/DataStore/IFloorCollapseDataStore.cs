@@ -34,7 +34,16 @@ namespace App.Battle.Interface.DataStore
         /// <summary>今回の再生の見た目と動き</summary>
         FloorCollapseSettings Settings { get; }
 
-        /// <summary>崩壊しきった瞬間に流れる。落下シーケンスなど次の演出はここから始める</summary>
+        /// <summary>
+        /// 崩壊が始まった瞬間に流れる（再生中にやり直したときも流れる）。
+        /// 崩壊中はプレイヤーを操作不能にし、ショップは <see cref="OnCompleted"/> まで開かない
+        /// </summary>
+        Observable<Unit> OnStarted { get; }
+
+        /// <summary>
+        /// 崩壊しきった瞬間に流れる（演出の終了）。ショップはここで開く。落下シーケンスなど次の演出もここから始める。
+        /// 途中で打ち切られた（<see cref="ResetCollapse"/>）ときは流れない
+        /// </summary>
         Observable<Unit> OnCompleted { get; }
 
         /// <summary><paramref name="origin"/> を中心に崩壊を始める。再生中に呼ぶと最初からやり直す</summary>

@@ -2,6 +2,7 @@ using System;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Interface.DataStore;
+using App.Common.Interface;
 using R3;
 using VContainer;
 using VContainer.Unity;
@@ -10,8 +11,10 @@ namespace App.Battle.UseCase
 {
     /// <summary>
     /// 床崩壊の再生をゲーム進行につなぐ。
-    /// ウェーブクリア（ショップを開く時点）でプレイヤーの足元を中心に崩壊を始め、次のウェーブが始まったら床を元に戻す。
-    /// 見た目の変形だけなので、コライダー・移動・当たり判定には手を入れない（ウェーブ間ポーズ中は敵も弾も止まっている）。
+    /// ウェーブクリアでプレイヤーの足元を中心に崩壊を始め、次のウェーブが始まったら床を元に戻す。
+    /// ショップは崩壊しきってから開く（<see cref="ShopUseCase"/> が <see cref="IFloorCollapseDataStore.OnCompleted"/> を待つ）。
+    /// 崩壊中はプレイヤーを操作不能にする。移動・射撃・回避はウェーブ間ポーズで止まっているので、ここではフォーカスの切り替えを止める。
+    /// 見た目の変形だけなので、コライダー・当たり判定には手を入れない。
     /// 崩壊しきった後の落下シーケンスは <see cref="IFloorCollapseDataStore.OnCompleted"/> から始める想定で、ここでは持たない
     /// </summary>
     public class FloorCollapseUseCase : IInitializable, ITickable, IDisposable
@@ -20,7 +23,11 @@ namespace App.Battle.UseCase
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IPlayerStateDataStore _playerStateDataStore;
         private readonly IFloorCollapsePresenter _floorCollapsePresenter;
+        private readonly IGameInputDataStore _gameInputDataStore;
         private readonly FloorCollapseConfig _config;
+
+        // 崩壊のためにフォーカス入力を止めたか。打ち切り・復帰で戻すときに、止めていなければ触らない
+        private bool _isFocusInputLocked;
 
         private readonly CompositeDisposable _disposables = new();
 
@@ -30,6 +37,7 @@ namespace App.Battle.UseCase
             IWaveManagerDataStore waveManagerDataStore,
             IPlayerStateDataStore playerStateDataStore,
             IFloorCollapsePresenter floorCollapsePresenter,
+            IGameInputDataStore gameInputDataStore,
             FloorCollapseConfig config
         )
         {
@@ -37,13 +45,21 @@ namespace App.Battle.UseCase
             _waveManagerDataStore = waveManagerDataStore;
             _playerStateDataStore = playerStateDataStore;
             _floorCollapsePresenter = floorCollapsePresenter;
+            _gameInputDataStore = gameInputDataStore;
             _config = config;
         }
 
         public void Initialize()
         {
+            // 開始（やり直しを含む）でプレート床を敷き直し、操作を止める
+            _floorCollapseDataStore.OnStarted
+                .Subscribe(_ => OnStarted())
+                .AddTo(_disposables);
+
+            // 床を戻す（次のウェーブ開始・打ち切り）
             _floorCollapseDataStore.Phase
-                .Subscribe(OnPhaseChanged)
+                .Where(phase => phase == FloorCollapsePhase.Idle)
+                .Subscribe(_ => OnRestored())
                 .AddTo(_disposables);
 
             _floorCollapseDataStore.Progress
@@ -51,8 +67,9 @@ namespace App.Battle.UseCase
                 .AddTo(_disposables);
 
             // ウェーブクリアでショップが開くのと同時に崩し始める
+            // マテリアルが無いと何も描かれないまま床が消えてショップも待たされるので、再生しない
             _waveManagerDataStore.OnWaveAdvanced
-                .Where(_ => _config.PlayOnWaveClear)
+                .Where(_ => _config.PlayOnWaveClear && _config.PlateMaterial != null)
                 .Subscribe(_ => _floorCollapseDataStore.Begin(_playerStateDataStore.Position.Value, _config.Settings))
                 .AddTo(_disposables);
 
@@ -63,17 +80,31 @@ namespace App.Battle.UseCase
                 .AddTo(_disposables);
         }
 
-        private void OnPhaseChanged(FloorCollapsePhase phase)
+        private void OnStarted()
         {
-            switch (phase)
+            _floorCollapsePresenter.Begin(_floorCollapseDataStore.Origin, _floorCollapseDataStore.Settings);
+            _gameInputDataStore.SetFocusInputEnable(false);
+            _isFocusInputLocked = true;
+        }
+
+        /// <summary>
+        /// 床を戻す。崩壊しきった後（Completed）もショップ中はフォーカスの切り替えを止めたままにし、ここで戻す
+        /// </summary>
+        private void OnRestored()
+        {
+            _floorCollapsePresenter.Restore();
+            UnlockFocusInput();
+        }
+
+        private void UnlockFocusInput()
+        {
+            if (!_isFocusInputLocked)
             {
-                case FloorCollapsePhase.Collapsing:
-                    _floorCollapsePresenter.Begin(_floorCollapseDataStore.Origin, _floorCollapseDataStore.Settings);
-                    break;
-                case FloorCollapsePhase.Idle:
-                    _floorCollapsePresenter.Restore();
-                    break;
+                return;
             }
+
+            _isFocusInputLocked = false;
+            _gameInputDataStore.SetFocusInputEnable(true);
         }
 
         public void Tick()
@@ -83,6 +114,7 @@ namespace App.Battle.UseCase
 
         public void Dispose()
         {
+            UnlockFocusInput();
             _disposables.Dispose();
         }
     }

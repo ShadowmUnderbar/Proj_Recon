@@ -198,7 +198,7 @@ WaveManagerUseCase: 経過時間が WaveConfig に達したら AdvanceWave（キ
 BossWaveUseCase  : ボスウェーブの開始（IsWavePause=false）で残った敵を撃破扱いせずに消し、
                    プレイヤーを BossWaveConfig.PlayerPosition へ移して BossGroupConfig のボスを出す。
                    ボスウェーブ中は EnemyRandomSpawnCycleDataStore が周期スポーンを止める
-ShopUseCase      : OnWaveAdvanced でショップを開く。UpgradeLotteryDataStore で抽選、ポイントで購入
+ShopUseCase      : OnWaveAdvanced でショップを開く（床崩壊が始まっていれば、崩壊しきる OnCompleted まで待つ）。UpgradeLotteryDataStore で抽選、ポイントで購入
                    → 「次のウェーブへ」で IsWavePause=false。開くときにウェーブ中のチュートリアルを消してから Shop を出し（既読で出なくても前の説明は残さない）、閉じるときにも消す
                    （ウェーブ再開より先に消すので、次のウェーブの説明は TutorialWaveUseCase が出せる）
 GameOverUseCase  : PlayerState.Health<=0 → 死亡演出（PlayerDeathConfig）→ RunResultUseCase.Show("GAME OVER")
@@ -300,7 +300,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerAimUseCase` | 手のレイ／マウスから照準位置を決めフォーカス対象を追う | PlayerAim, PlayerFocus, ShotConflict |
 | `PlayerShotUseCase` | トリガー → `PlayerBulletParameterDataStore` で弾データを作り `Shot`。フォーム（Normal/Merge/Waltz）と両手の可否。フリーズ／時止め中は撃たない | PlayerShotType, PlayerBulletParameter, CoreSkillUnlock |
 | `PlayerDodgeUseCase` | 回避入力 → 直線移動。通過した敵を接触として記録。フリーズ／時止め中は回避の入力・移動を止める | PlayerDodgeParameter, DodgeCounterAttack |
-| `FloorCollapseUseCase` | ウェーブクリア（`OnWaveAdvanced`）でプレイヤーの足元を中心に床崩壊を始め（`FloorCollapseConfig.PlayOnWaveClear`）、進行度を View へ渡す。次のウェーブ開始（ポーズ解除）で床を戻す。落下シーケンスは `IFloorCollapseDataStore.OnCompleted` から始める想定で未実装 | FloorCollapse, WaveManager, PlayerState |
+| `FloorCollapseUseCase` | ウェーブクリア（`OnWaveAdvanced`）でプレイヤーの足元を中心に床崩壊を始め（`FloorCollapseConfig.PlayOnWaveClear`）、進行度を View へ渡す。崩壊中はフォーカス入力を止める（移動・射撃・回避はウェーブ間ポーズで止まっている）。次のウェーブ開始（ポーズ解除）で床とフォーカス入力を戻す。ショップより先に登録してウェーブ突破を先に購読する。落下シーケンスは `IFloorCollapseDataStore.OnCompleted` から始める想定で未実装 | FloorCollapse, WaveManager, PlayerState, GameInput |
 | `DodgeCounterAttackUseCase` | 回避終了時の跳ね返し攻撃（扇形＋直線検索 → レイ演出 → フリーズ → ダメージ）。`DodgeCounterAttackConfig` | DodgeCounterAttack, Enemy, Freeze |
 | `PlayerGazeUseCase` | `EnemyStoreView` が更新した「視線から判定球までの距離」をアップグレードごとの半径で絞り込み、注視系（スネークアイズ／メデューサ／ガン飛ばし）を反映 | SnakeEyes, Medusa, MeanMug |
 | `PlayerHitUseCase` | 被弾 → `PlayerStateDataStore.TakeDamage`（回避中・時止め中は無効） | PlayerState, DodgeParameter, TimeStop |
@@ -352,7 +352,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `WaveManagerDataStore` | 現在ウェーブ・経過時間・キル数・ポーズ・`OnWaveAdvanced`。開始ウェーブは通常 1、デバッグ対戦は指定した番号 |
 | `BossGroupDataStore` / `BossPatternRunner` | 複数個体のボスの出現（メンバーを `EnemyDataStore` へ登録。`SharedHealth` なら体力を共有させる）と行動台本の進行。`BossPatternRunner`（plain C#）が個体の状態から `Act`（全員が行動可能になったら同じフレームで一斉に行動、`HoldOthers` で対象の行動・硬直が終わるまで他を待機）・`WaitActionable`（硬直・スタン明けを待つ）・`Wait`（秒数）・`CrossFormation`（対象をプレイヤーの縦方向・横方向へ交互に振り分けて配置し直す。どちらが縦か・正負の側はランダム。横へのずれの候補と「少なくとも1体は0」を指定できる）・`RandomLoop`（直前のいくつかのステップを合計 Min〜Max 回ランダムに繰り返す。入れ子不可）・`DiagonalFormation`（2体を隣り合う斜めの角へ。向きが直交して帯が×字になる。`CrossFormation` とも `MoveSeconds` が0より大きければ、全員の行動が明けてから対象以外を待機させて時を止め、その秒数で配置先へ移動させてから時止めを解く。0なら時を止めず瞬間移動）・`TimeStopOrbit`（全員の行動が明けたら対象以外を待機させて時を止め、対象の全員へ同じ向き（時計回りか反時計回りかはランダム）の回りこみを `Act` で命令する。ランダムな1体は `ActionIndex`（回りこみ連射）、残りは `PartnerActionIndex`（回りこむだけ）→ 全員が回りこみ終えたら時止めを解き、全員を待機させて `WaitSeconds` 待つ → 待機を解いて次へ。進み具合は `BossTimeStopOrbit`）を進め、命令（`BossDirectorCommand`）を出す。撃破されたメンバーは対象から外す（時止めの途中で全員いなくなったら、`BossGroupUseCase` が撃破・消去の通知を受けた時点で時止めを解く）。`BossGroupConfig.RageHealthRatio` 以下まで体力が減ったら台本を `RagePattern`（発狂フェイズ）へ差し替え、行動中の個体は `Cancel` で打ち切る |
 | `BossWaveDataStore` | 現在ウェーブがボスウェーブか・出現済みか・全員倒したか |
-| `FloorCollapseDataStore` | 床崩壊の進行（`Idle` / `Collapsing` / `Completed`）・全体の進行度・中心・今回の設定。秒数から進行度を出し、1で `OnCompleted` を流す。`SetProgress` で直接指定もできる（ラン開始で初期化） |
+| `FloorCollapseDataStore` | 床崩壊の進行（`Idle` / `Collapsing` / `Completed`）・全体の進行度・中心・今回の設定。開始で `OnStarted`、秒数から進行度を出して1で `OnCompleted` を流す（演出の開始・終了を外から検知する口。途中で打ち切ったときは `OnCompleted` を流さない）。`SetProgress` で直接指定もできる（ラン開始で初期化） |
 | `DebugArenaDataStore` | デバッグ対戦で出した相手の敵Idと、全員いなくなってからの出し直しの待ち（ラン開始で初期化） |
 | `GameStateDataStore` / `RunStartDataStore` / `FreezeDataStore` | ゲームオーバー／セット選択中・保存済みセットを装備して始めたか（`HasLoadedBuild`）／フリーズ残時間 |
 | `OverclockDataStore` | オーバークロックのストック秒数・発動状態・残り時間・溜めたダメージ。しきい値は `OverclockConfig`。発動中は、時間で進む処理（バフ・デバフの効果時間、スポーン周期、ウェーブ経過時間、バリア再生、ケア・ノード）が `IsActive` を見て止まる。射撃・回避のクールダウンは止めない |
@@ -447,7 +447,8 @@ EnemyDataStore.OnEnemyDead → SociopathUseCase → SociopathDataStore.NotifyKil
 WaveManagerDataStore.OnWaveAdvanced → FloorCollapseUseCase → FloorCollapseDataStore.Begin(プレイヤーの位置, FloorCollapseConfig.Settings)
  → Phase=Collapsing → FloorCollapsePresenter.Begin → FloorCollapseView(目印の床を隠しプレート床を出す)
  → Tick で進行度を進める → SetProgress → シェーダ(App/FloorCollapse)が亀裂→隙間→沈下・傾斜・スライド→データ片化→暗転
- → 進行度1で OnCompleted（落下シーケンスへ渡す想定。未実装）
+ → 開始時に OnStarted（崩壊中はフォーカス入力を止める。ShopUseCase はショップを開かずに待つ）
+ → 進行度1で OnCompleted → ShopUseCase がショップを開く（落下シーケンスもここから始める想定。未実装）
 IsWavePause=false（次のウェーブ開始）→ ResetCollapse → Phase=Idle → Restore(床を戻す)
 
 【オーバークロック】
