@@ -29,6 +29,7 @@ namespace App.Battle.UseCase
         private readonly IElectricShockDataStore _electricShockDataStore;
         private readonly IAntiMaterialDataStore _antiMaterialDataStore;
         private readonly IDOSDataStore _dosDataStore;
+        private readonly IInvectiveDataStore _invectiveDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -51,7 +52,8 @@ namespace App.Battle.UseCase
             ICriticalHitDataStore criticalHitDataStore,
             IElectricShockDataStore electricShockDataStore,
             IAntiMaterialDataStore antiMaterialDataStore,
-            IDOSDataStore dosDataStore
+            IDOSDataStore dosDataStore,
+            IInvectiveDataStore invectiveDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
@@ -68,6 +70,7 @@ namespace App.Battle.UseCase
             _electricShockDataStore = electricShockDataStore;
             _antiMaterialDataStore = antiMaterialDataStore;
             _dosDataStore = dosDataStore;
+            _invectiveDataStore = invectiveDataStore;
         }
 
         public void Initialize()
@@ -115,23 +118,24 @@ namespace App.Battle.UseCase
             // 本命中で対象が撃破される前に伝播先を確定させる（撃破演出中の敵を巻き込まないため）
             var hasChain = _electricShockDataStore.TryGetChain(hitData, out var chain);
 
+            // 毒舌が「実際に与えたダメージ」を使うので、命中前の体力を控えておく（弱点・耐性・最低保証の後の値になる）
+            var healthBefore = _enemyDataStore.TryGetEnemyData(hitData.DamagedId, out var targetBefore) ? targetBefore.Hp : 0f;
+
             _enemyDataStore.Damage(hitData);
 
-            // DOS: 射撃の命中で確率でウイルスを付与する。この命中で撃破した敵には付けない
-            if (hitData.ShotType != null && IsAlive(hitData.DamagedId))
+            // 射撃の命中でウイルスを付与する（DOS: 確率で一定量 / 毒舌: 与えたダメージに応じた量）。
+            // この命中で撃破した敵には付けない
+            if (hitData.ShotType != null
+                && _enemyDataStore.TryGetEnemyData(hitData.DamagedId, out var target) && !target.IsDead)
             {
                 _dosDataStore.TryInfect(hitData.DamagedId);
+                _invectiveDataStore.Infect(hitData.DamagedId, healthBefore - target.Hp);
             }
 
             if (hasChain)
             {
                 ApplyElectricShockChain(chain);
             }
-        }
-
-        private bool IsAlive(int enemyId)
-        {
-            return _enemyDataStore.TryGetEnemyData(enemyId, out var enemyData) && !enemyData.IsDead;
         }
 
         /// <summary>
