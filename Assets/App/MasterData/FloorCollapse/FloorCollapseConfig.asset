@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 655c853eba30fb444938d6d468d0e1d1, type: 3}
+  m_Name: FloorCollapseConfig
+  m_EditorClassIdentifier: 
+  _playOnWaveClear: 1
+  _plateMaterial: {fileID: 2100000, guid: f931a95d33a647349931bcaa51ed1d1e, type: 2}
+  _voidMaterial: {fileID: 2100000, guid: 4359b5037e3a05f468e179f74cb4f8a9, type: 2}
+  _voidDepth: 40
+  _settings:
+    Duration: 5
+    Mode: 0
+    Direction: {x: 0, y: 1}
+    PlateSize: 2.5
+    FieldSize: 56
+    PlateThickness: 0.4
+    Stagger: 10
+    Jitter: 4
+    CrackPortion: 0.35
+    SinkDepth: 8
+    TiltAngle: 40
+    SlideDistance: 3
+    GapRatio: 0.12
+    DissolveStart: 0.55
+    FragmentsPerPlate: 5
+    BlackoutStart: 0.8
+    GlowColor: {r: 0.4, g: 1.8, b: 2.4, a: 1}
+    LineWidth: 0.06
