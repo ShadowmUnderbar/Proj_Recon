@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using App.Battle.Interface.EnemyAI;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ namespace App.Battle.Views.Enemy.AI
 
         private bool _isMovingToTargetPosition1;
 
+        // プレイヤーとの間に保つ距離。照準の先へ回り込むときも、この内側には入らない
         private float JammingDistance => EnemyData.AttackDistanceRange * 0.5f;
 
         private float _rotationSpeed;
@@ -23,11 +25,20 @@ namespace App.Battle.Views.Enemy.AI
         private float RandomRotationSpeedMAx => 60f;
         private float RandomPositionOffset => 2.5f;
 
+        public override void Init(EnemyData enemyData, int enemyId)
+        {
+            base.Init(enemyData, enemyId);
+
+            // 最初の攻撃までも振り向けるよう、出現時に旋回速度を決めておく（攻撃のたびに選び直す）
+            _rotationSpeed = PickRotationSpeed();
+        }
+
         protected override void OnUpdateIdleState()
         {
             base.OnUpdateIdleState();
 
-            Agent.updateRotation = true;
+            // 進行方向ではなく、常にプレイヤーを向く（FacePlayer）
+            Agent.updateRotation = false;
         }
 
         protected override void OnUpdateBattleState()
@@ -41,7 +52,11 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.IdleState();
 
-            SetAgentDestination(PlayerTransform.position);
+            // 近づくときも一定距離の内側には入らない
+            SetAgentDestination(KeepDistanceRoute.NextDestination(
+                transform.position, PlayerTransform.position, PlayerTransform.position, JammingDistance));
+            KeepOutsideJammingDistance();
+            FacePlayer();
         }
 
         protected override void BattleState()
@@ -56,17 +71,58 @@ namespace App.Battle.Views.Enemy.AI
             _aimTargetPosition1 = PlayerTransform.position + -PlayerAimDirection1 * JammingDistance;
             _aimTargetPosition2 = PlayerTransform.position + -PlayerAimDirection2 * JammingDistance;
 
-            if (_isMovingToTargetPosition1)
+            var goal = (_isMovingToTargetPosition1 ? _aimTargetPosition1 : _aimTargetPosition2) + _positionOffset;
+
+            // 反対側の射線へ移るときもプレイヤーのそばを横切らず、一定距離を保って外周を回り込む
+            SetAgentDestination(KeepDistanceRoute.NextDestination(
+                transform.position, PlayerTransform.position, goal, JammingDistance));
+            KeepOutsideJammingDistance();
+
+            FacePlayer();
+        }
+
+        /// <summary>
+        /// 速度の慣性やプレイヤーの接近で一定距離の内側に入ったら、外周まで押し戻し、プレイヤーへ向かう速度を消す
+        /// </summary>
+        private void KeepOutsideJammingDistance()
+        {
+            if (IsPause || !Agent.isOnNavMesh)
             {
-                SetAgentDestination(_aimTargetPosition1 + _positionOffset);
+                return;
             }
-            else
+
+            if (!KeepDistanceRoute.TryGetPushOut(transform.position, PlayerTransform.position, JammingDistance,
+                    out var pushOut, out var outward))
             {
-                SetAgentDestination(_aimTargetPosition2 + _positionOffset);
+                return;
+            }
+
+            Agent.Move(pushOut);
+
+            var velocity = Agent.velocity;
+            var outwardSpeed = Vector3.Dot(velocity, outward);
+            if (outwardSpeed < 0f)
+            {
+                Agent.velocity = velocity - outward * outwardSpeed;
+            }
+        }
+
+        private float PickRotationSpeed() => Random.Range(RandomRotationSpeedMin, RandomRotationSpeedMAx);
+
+        /// <summary>設定された旋回速度で、プレイヤーの位置へ向き直る（停止中は向きも止める）</summary>
+        private void FacePlayer()
+        {
+            if (IsPause)
+            {
+                return;
             }
 
             var direction = PlayerTransform.position - transform.position;
             direction.y = 0f;
+            if (direction.sqrMagnitude < Mathf.Epsilon)
+            {
+                return;
+            }
 
             var targetRotation = Quaternion.LookRotation(direction);
 
@@ -85,7 +141,7 @@ namespace App.Battle.Views.Enemy.AI
             var distance2 = Vector3.Distance(transform.position, _aimTargetPosition2);
 
             _isMovingToTargetPosition1 = distance1 < distance2;
-            _rotationSpeed = Random.Range(RandomRotationSpeedMin, RandomRotationSpeedMAx);
+            _rotationSpeed = PickRotationSpeed();
 
             _positionOffset = new Vector3(
                 Random.Range(-RandomPositionOffset, RandomPositionOffset),

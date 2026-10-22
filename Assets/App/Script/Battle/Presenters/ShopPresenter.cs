@@ -53,9 +53,9 @@ namespace App.Battle.Presenters
             _shopView.SetUpgradeTags(index, tagNames);
         }
 
-        public void SetOwnedTagRanking(IReadOnlyList<LocalizedUpgradeTagCount> ranking)
+        public void SetOwnedTagRanking(int upgradeCount, IReadOnlyList<LocalizedUpgradeTagCount> ranking)
         {
-            _shopView.SetOwnedTagRanking(ranking);
+            _shopView.SetOwnedTagRanking(upgradeCount, ranking);
         }
 
         public void UpdateHandInput(in ShopHandInput input)

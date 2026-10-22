@@ -146,7 +146,7 @@ namespace App.Battle.UseCase
                 .Subscribe(_ => OnTagLocalizationChanged())
                 .AddTo(_disposable);
 
-            // 購入で所持アップグレードが増えたら所持タグ上位を数え直す
+            // 購入で所持アップグレードが増えたら所持件数と所持タグ上位を数え直す
             _upgradeSessionDataStore.OnChanged
                 .Where(_ => _isShopOpen)
                 .Subscribe(_ => RefreshOwnedTagRanking())
@@ -275,7 +275,9 @@ namespace App.Battle.UseCase
             }
         }
 
-        /// <summary>所持アップグレードのタグを件数の多い順に数え、上位を名前つきでViewへ反映する</summary>
+        /// <summary>
+        /// 所持アップグレードの件数と、タグを件数の多い順に数えた上位（名前つき）をViewへ反映する
+        /// </summary>
         private void RefreshOwnedTagRanking()
         {
             var ranking = _upgradeTagRankingDataStore.GetTopTags(
@@ -288,7 +290,8 @@ namespace App.Battle.UseCase
                     _tagLocalizationDataStore.GetName(ranking[i].Tag), ranking[i].Count);
             }
 
-            _shopPresenter.SetOwnedTagRanking(entries);
+            var upgradeCount = _upgradeTagRankingDataStore.CountUpgrades(_upgradeSessionDataStore.AppliedUpgrades);
+            _shopPresenter.SetOwnedTagRanking(upgradeCount, entries);
         }
 
         private void OnCurrentPointChanged()
