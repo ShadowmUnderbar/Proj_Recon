@@ -313,7 +313,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerLifeGaugeUseCase` | HP・バリアをゲージへ、位置を追従 | PlayerState, PlayerBarrier |
 | `EnemySpawnUseCase` / `EnemyRandomSpawnUseCase` | `EnemyDataStore` の生成要求を View へ（出現＝プレハブの読み込み・生成に失敗したら `OnEnemySpawnFailed` を受けて敵データを `RemoveEnemyData` で取り除く。倒せない敵を残さないため。ボスウェーブで進めなくなるのも防ぐ）／周期スポーン（`EnemyRandomSpawnCycleDataStore`）と出現位置 | Enemy, RandomSpawnCycle |
 | `EnemyControlUseCase` | プレイヤーの照準方向を敵 AI へ渡す | PlayerAim, Enemy |
-| `BattleHitUseCase` | `OnHit` → 倍率（貫通バフ／ガン飛ばし／クリティカル）→ 感電伝播 → `EnemyDataStore.Damage`。撃破時の回復（HealOnKill）等 | Enemy, BuffState, CriticalHit, ElectricShock |
+| `BattleHitUseCase` | `OnHit` → 倍率フック（`IHitDamageMultiplierHook`、`HitHookOrder` 順）→ 副作用フック前処理（`IHitEffectHook`）→ 感電の伝播先確定 → `EnemyDataStore.Damage` → 副作用フック後処理 → 感電伝播。撃破時は `IEnemyKillHook` の回復を合計して1回で `Heal` し、副作用を呼んでから死亡演出。個々のアップグレードはフックの実装として `AsImplementedInterfaces()` で登録するだけで、ここは触らない | Enemy, PlayerState, ElectricShock, 各フック |
 | `PointDropUseCase` | 撃破 → 粒子ドロップ、回収 → ポイント加算。`BattleHitUseCase` より先に登録（撃破地点を読むため） | Point, PointDropCalculator |
 | `BuffConditionUseCase` / `CareNodeUseCase` | バフ条件の入力（ヒット・HP割合・回避）／ケア・ノードの毎秒効果 | BuffState, CareNode |
 | `VirusUseCase` | ウイルス（敵への継続ダメージ）の時間を進め、1秒ごとに固定ダメージ（`HitData.IsFixedDamage`）で `EnemyDataStore.Damage`。ウェーブ間ポーズ・オーバークロック・ゲームオーバー中は停止。敵が消えたら状態を破棄。デバッグ設定（`VirusDebugSettings`、メニュー `App/デバッグ: ウイルスのログを出す`）で発生・重複・ダメージをログに出す | Virus, Enemy |
@@ -407,7 +407,7 @@ GameInputDataStore.IsRightTrigger
  → PlayerShotUseCase.Tick → PlayerBulletParameterDataStore.CanShot / GetBulletData
  → PlayerControlPresenter.Shot → BattlePlayerView → PlayerShotView → PlayerBulletView(即着弾 SphereCast)
  → HitBoxView.OnHit → HitBoxStoreView → BattleHitPresenter.OnHit
- → BattleHitUseCase(倍率・感電) → EnemyDataStore.Damage → OnEnemyDead
+ → BattleHitUseCase(倍率フック・副作用フック・感電) → EnemyDataStore.Damage → OnEnemyDead
      ├→ WaveManagerUseCase(キル数集計・ボス撃破判定) / PointDropUseCase(粒子) / BattleHitUseCase(撃破処理)
      └→ EnemyPresenter.UnSpawn
 

@@ -14,7 +14,7 @@ namespace App.Battle.DataStore
     /// 例: 確率350% → 基本400%ダメージ、50%の確率で500%ダメージ。
     /// いずれのアップグレードもレベルは累積せず、所持中の最高レベルのみを採用する。
     /// </summary>
-    public class CriticalHitDataStore : ICriticalHitDataStore
+    public class CriticalHitDataStore : IHitDamageMultiplierHook
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly IPlayerStateDataStore _playerStateDataStore;
@@ -32,6 +32,9 @@ namespace App.Battle.DataStore
             _playerStateDataStore = playerStateDataStore;
         }
 
+        public int Order => HitHookOrder.CriticalHit;
+
+        /// <summary>この命中に適用するクリティカルの倍率。非クリティカル時は 1.0f</summary>
         public float GetDamageMultiplier(HitData hitData)
         {
             var chance = GetCriticalChance(hitData);

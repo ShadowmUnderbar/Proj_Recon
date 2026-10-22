@@ -9,7 +9,7 @@ namespace App.Battle.DataStore
     /// Value1 = マイナー撃破時の回復量 / Value2 = メジャー撃破時の回復量。
     /// レベルは累積せず、所持中の最高レベルのみを採用する
     /// </summary>
-    public class HealOnKillDataStore : IHealOnKillDataStore
+    public class HealOnKillDataStore : IEnemyKillHook
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
 

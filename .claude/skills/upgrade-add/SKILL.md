@@ -14,6 +14,7 @@ RECONの**アップグレード**は、1回のゲームプレイサイクル中�
 | **A. 既存タイプにレベル/行を追加** | ダメージアップ Lv4 を足す | 不要（データのみ） |
 | **B. 新しい `UpgradeType`（新パラメータ）** | 「移動速度アップ」を新設 | **必須**（消費側コードを書く） |
 | **C. GrantBuff型（条件付き発動バフ）** | コンボ攻撃UP、低HP攻撃UP | 場合による（新条件/新効果なら必要） |
+| **D. 命中・撃破フック型** | ブルズアイ、DOS、ヴァンパイア | **必須**（DataStore を1つ書いてフックを実装する） |
 
 ## パイプライン全体像
 
@@ -63,11 +64,15 @@ Googleスプレッドシート（正本）
 
 ## 効果適用の仕組み（ここが要）
 
-獲得済みアップグレードの効果は `UpgradeEffectSimpleCalculatorDataStore` が合成する:
-- `CalcMultiply(UpgradeType)`: 該当タイプ全件の `Value1` を**乗算**（初期値 1.0）
-- `CalcAdd(UpgradeType)`: 該当タイプ全件の `Value1` を**加算**（初期値 0）
+獲得済みアップグレードの効果は `UpgradeEffectSimpleCalculatorDataStore` が合成する（所持が変わったときだけ種類ごとに集計し直すキャッシュ。毎フレーム呼んでよい）:
+- `CalcMultiply(UpgradeType)`: 該当タイプ全件の `Value1` を**乗算**（初期値 1.0）。レベルが累積する効果用
+- `CalcMax(UpgradeType)` / `CalcMaxLevel` / `TryGetHighestLevelUpgrade(UpgradeType, out 行)`: **最高レベルのみ採用**する効果用（複数の Value を読むならこれ）
 
-**消費側**が明示的にこれを呼んで初めて効果が出る。現状の接続済みは以下だけ:
+**消費側**が明示的にこれを呼んで初めて効果が出る。消費側は2系統:
+- **パラメータ系**: `PlayerBulletParameterDataStore` 等が基礎値に `CalcMultiply` を掛ける（パターンB）
+- **命中・撃破フック系**: アップグレードの DataStore が `IHitDamageMultiplierHook` / `IHitEffectHook` / `IEnemyKillHook` を実装し、`BattleHitUseCase` が登録済みの実装を順に呼ぶ（パターンD）。**`BattleHitUseCase` に効果ごとの分岐や注入は書かない**
+
+現状の接続済み:
 
 | UpgradeType | 消費箇所 |
 |---|---|
@@ -81,20 +86,20 @@ Googleスプレッドシート（正本）
 | `ChokePoint` / `BigMouse` / `Diversion` | `EnemyRandomSpawnUseCase`（スポーン挙動を変える系。抽選位置・湧き方に介入する） |
 | `HealOnKill` | `HealOnKillDataStore`（撃破時回復。Value2 併用） |
 | `PeaceMaker` | `PeaceMakerDataStore` → `PlayerBulletParameterDataStore.SetCoolDownTime`（`TryGetHighestLevelUpgrade` で最高レベルのみ採用。Value1=連続ノーマルショット数 / Value2=強化CD倍率 / Value3=ペナルティCD倍率） |
-| `Avalanche` | `AvalancheDataStore` → `PlayerBulletParameterDataStore.SetCoolDownTime`（Value1=通常CD倍率 / Value2=直前マージ命中時のCD倍率。命中通知は `BattleHitUseCase.NotifyMergeHit`） |
-| `LuckyChance` / `KillingCall` / `TurnTable` | `CriticalHitDataStore` → `BattleHitUseCase.OnHit`（3種の**クリティカル確率を合算**し、100%ごとに1段確定＋端数を抽選。1段=ダメージ+100%。いずれも `CalcMax` で最高レベルのみ採用。キリングコールは `HitData.FocusType`/`IsFocusTarget`/`PenetrationIndex==1` で条件判定、ターンテーブルは `IPlayerStateDataStore` のHP減少割合を参照） |
+| `Avalanche` | `AvalancheDataStore` → `PlayerBulletParameterDataStore.SetCoolDownTime`（Value1=通常CD倍率 / Value2=直前マージ命中時のCD倍率。命中通知は `IHitEffectHook.OnBeforeDamage`（順序 `HitHookOrder.Avalanche`）） |
+| `LuckyChance` / `KillingCall` / `TurnTable` | `CriticalHitDataStore`（`IHitDamageMultiplierHook`、順序 `HitHookOrder.CriticalHit`）（3種の**クリティカル確率を合算**し、100%ごとに1段確定＋端数を抽選。1段=ダメージ+100%。いずれも `CalcMax` で最高レベルのみ採用。キリングコールは `HitData.FocusType`/`IsFocusTarget`/`PenetrationIndex==1` で条件判定、ターンテーブルは `IPlayerStateDataStore` のHP減少割合を参照） |
 | `SnakeEyes` | `SnakeEyesDataStore` → `PlayerGazeUseCase` → `IEnemyPresenter.SetSpeedMultiplier` → `EnemyAIBase`（Value1=速度倍率 / Value2=注視半径 / Value3=解除猶予秒） |
 | `Medusa` | `MedusaDataStore` → `PlayerGazeUseCase` → `IEnemyPresenter.SetStun` → `EnemyAIBase`（Value1=スタン秒 / Value2=注視半径。Major/Boss/Irregular のみ・敵ごとに1度） |
-| `MeanMug` | `MeanMugDataStore` → `BattleHitUseCase.OnHit`（Value1=被ダメージ倍率 / Value2=注視半径。注視状態の更新は `PlayerGazeUseCase`） |
+| `MeanMug` | `MeanMugDataStore`（`IHitDamageMultiplierHook`、順序 `HitHookOrder.MeanMug`。射撃以外の命中にも掛かる）（Value1=被ダメージ倍率 / Value2=注視半径。注視状態の更新は `PlayerGazeUseCase`） |
 | `DependencyNode` | `DependencyNodeDataStore`（効果なし。α・β・γの3行を別NameKeyで持ち、**有効な種類数**を他ノード系へ提供する。無効化は実行時状態のみでセーブ内容に影響しない） |
 | `DamageNode` | `DamageNodeDataStore` → `PlayerBulletParameterDataStore.GetBulletDamage`（Value1=依存ノード1種あたりの加算率 / Value2=依存ノード0種時のデメリット倍率） |
 | `CareNode` | `CareNodeDataStore` → `CareNodeUseCase`（1秒ごと。Value1=依存ノード1種あたりの毎秒回復割合 / Value2=依存ノード0種時の毎秒ダメージ割合 / Value3=その最低ダメージ量。HPは1未満にならない） |
 | `EmergencyNode` | `EmergencyNodeDataStore` → `PlayerStateDataStore.TakeDamage`（致死ダメージを無効化し、依存ノードを1つ（α→β→γ）無効化して最大HP×Value1 まで回復） |
 | `Appraisal` | `ShopUseCase.GetUpgradeChoiceCount`（ショップの抽選数に加算。`CalcMax` で最高レベルのみ採用。上限 `MaxUpgradeChoiceCount`=12 は `ShopView.prefab` のボタン数と一致させること） |
 | `ExtraConflict` / `FocusConflict` / `MergeConflict` / `WaltzConflict` | `ShotConflictDataStore` → `PlayerBulletParameterDataStore`（Value1=ダメージ倍率 / Value2=クールダウン倍率）＋ `PlayerShotTypeDataStore`・`PlayerAimUseCase`・`PlayerFocusDataStore`（該当の射撃手段を封印）。**封印対象は `ShotConflictDataStore.Definitions` の1行で定義する**ので、新しいコンフリクトを足すときは定義行とCSV行だけでよく消費側の変更は不要。封印は論理和・倍率は積で合成する（重複所持でデメリット無しに強化だけ得られる組み合わせは仕様として許容）。エクスコンフリクトは二丁拳銃も封印し、利き手のみの射撃になる。**フォーカス封印は書き込み元の `PlayerAimUseCase.UpdateOnFocus` で止める**こと（`PlayerFocusDataStore.Tick` での解除は同フレーム内に `OnFocus` 通知で上書きされる） |
-| `ElectricShock` | `ElectricShockDataStore` → `BattleHitUseCase.OnHit`（ワルツ命中時に命中先の周囲へダメージを伝播。Value1=レベルごとの半径倍率 / Value2=伝播ダメージ割合 / Value3=基礎半径m。半径は Value3 × `CalcMultiply(HitRange)` × Value1。伝播は `ShotType=null` で与えるためフォーム条件のバフを二重に駆動しない） |
+| `ElectricShock` | `ElectricShockDataStore` → `BattleHitUseCase.OnHit`（**フックではなく唯一の直接呼び出し**。伝播先へ自分でダメージを入れ直し演出も再生するため。ワルツ命中時に命中先の周囲へダメージを伝播。Value1=レベルごとの半径倍率 / Value2=伝播ダメージ割合 / Value3=基礎半径m。半径は Value3 × `CalcMultiply(HitRange)` × Value1。伝播は `ShotType=null` で与えるためフォーム条件のバフを二重に駆動しない） |
 | `Fixation` | `UpgradeLotteryDataStore.DrawUpgrades`（取得済みと同じ `NameKey` の候補の抽選重みを `1 + Value1` 倍にする。`CalcMax` で最高レベルのみ採用） |
-| `Bullseye` | `BullseyeDataStore` → `BattleHitUseCase.OnHit`（Value1=1体貫通するごとに加算する倍率（1.3なら 2体目1.3倍・3体目1.6倍、1体目は常に1.0倍）。`TryGetHighestLevelUpgrade` で最高レベルのみ採用。何体目かは `HitData.PenetrationIndex`。以前は GrantBuff＋`PenetrationCount` 条件バフだったが、レベルが掛け算で重なるため専用タイプへ移した。検証は `playtest-run` の `BulletPenetration` プローブ） |
+| `Bullseye` | `BullseyeDataStore`（`IHitDamageMultiplierHook`、順序 `HitHookOrder.Bullseye`）（Value1=1体貫通するごとに加算する倍率（1.3なら 2体目1.3倍・3体目1.6倍、1体目は常に1.0倍）。`TryGetHighestLevelUpgrade` で最高レベルのみ採用。何体目かは `HitData.PenetrationIndex`。以前は GrantBuff＋`PenetrationCount` 条件バフだったが、レベルが掛け算で重なるため専用タイプへ移した。検証は `playtest-run` の `BulletPenetration` プローブ） |
 | `Overclock` | `OverclockUseCase` → `OverclockDataStore`（Value1=回避中の被弾無効化1回あたりの獲得秒数。`TryGetHighestLevelUpgrade` で最高レベルのみ採用。発動しきい値は `OverclockConfig` の SO。発動中の停止は `FreezeUseCase`・`BulletStoreView.SetOverclock`・`PlayerCameraPinView`、時間停止は各 DataStore が `IOverclockDataStore.IsActive` を見る。検証は `playtest-run` の `Overclock` プローブ） |
 | `SummonTurret` | `SummonTurretUseCase` → `SummonTurretDataStore` / `AllyDataStore`（マージショット時、その手の照準位置へタレットを召喚。Value1=クールダウン秒。`TryGetHighestLevelUpgrade` で最高レベルのみ採用。置ける場所が無く出せなかったときはクールダウンを消費しない。ウェーブ終了（ウェーブ間ポーズ）でクールダウンを解消する。検証は `playtest-run` の `SummonTurret` プローブ） |
 | `SummonDrone` | `SummonDroneUseCase` → `SummonDroneDataStore` / `AllyDataStore`（敵の撃破（誰の撃破でも）を数え、Value1 体ごとに Value2 体のドローンをプレイヤーの位置に召喚。最高レベルのみ採用。撃破数はウェーブをまたいで持ち越す。同時に出せる数は `AllyConfig` の最大数まで。検証は `playtest-run` の `SummonDrone` プローブ） |
@@ -103,15 +108,15 @@ Googleスプレッドシート（正本）
 | `AngerManagement` | `AngerManagementUseCase` → `AngerManagementDataStore` → `BuffStateDataStore.GainRage`（被弾（バリアで防いだ分も）から Value2 秒後に、受けたダメージ × Value1 秒のレイジを得る。秒数・待ち時間は被弾した時点の最高レベルの値で決め、予約として持つ（オーバークロック中・ウェーブ間ポーズ中は待ち時間も止める）。逆ギレ未所持でも BuffId（=逆ギレ L1 のバフ）の効果でレイジを発動させる。検証は `playtest-run` の `AngerManagement` プローブ） |
 | `Dokuga` | `DokugaDataStore` → `DodgeCounterAttackUseCase.ApplyPendingDamage`（回避中に体が触れた敵へ跳ね返し攻撃のダメージが入った後、その敵に `IVirusDataStore.Apply` でウイルスを付与する。扇形・直線だけで当たった敵や、そのダメージで撃破された敵には付けない。Value1=ウイルスの威力 / Value2=効果時間（秒）。最高レベルのみ採用。解放条件はブリッツ。検証は `playtest-run` の `Dokuga` プローブ） |
 | `Tenacity` | `TenacityDataStore` → `PlayerStateDataStore.TakeDamage`（被弾でHPが減ったとき、受けたダメージ × Value1 を即座に回復する。レイジ発動中なら × Value2。発動中かはこの被弾で得るレイジを含めないよう `OnDamaged` の通知より前に判定する。ダメージを受けてから回復し、体力0なら回復しない。バリアで防いだ・食いしばり／エマージェンシー・ノードで耐えた被弾では回復しない。最高レベルのみ採用。検証は `playtest-run` の `Tenacity` プローブ） |
-| `Vampire` | `VampireDataStore` → `BattleHitUseCase.OnEnemyDead`（敵を撃破するたびに体力を Value1 回復する。ランクを問わない。撃破は `EnemyDataStore.Damage` で体力0になったもの（味方の撃破も含む）。ジャイアントキリング（`HealOnKill`）の回復と合計して1回で `Heal` する。最高レベルのみ採用。検証は `playtest-run` の `Vampire` プローブ） |
+| `Vampire` | `VampireDataStore`（`IEnemyKillHook.GetHealAmount`）（敵を撃破するたびに体力を Value1 回復する。ランクを問わない。撃破は `EnemyDataStore.Damage` で体力0になったもの（味方の撃破も含む）。ジャイアントキリング（`HealOnKill`、同じく `IEnemyKillHook`）の回復と合計して `BattleHitUseCase` が1回で `Heal` する。最高レベルのみ採用。検証は `playtest-run` の `Vampire` プローブ） |
 | `Cachummyyy` | `CachummyyyDataStore` → `PointDropUseCase`（キャッシュ（ポイント粒子）を1個回収するたびに、粒子の値が Value1 以上なら体力を Value2 回復する（粒子の値に比例しない）。Value1=回復する粒子の最低値 / Value2=回復量。回収の通知は `IPointParticlePresenter.OnCollected`（オーバークロック中は粒子が止まり回収されない）。最高レベルのみ採用。検証は `playtest-run` の `Cachummyyy` プローブ） |
 | `HopSteps` | `HopStepsDataStore` → `PlayerDodgeParameterDataStore`（Value1=回避回数の上限に足す回数 / Value2=回避のクールダウンに掛ける倍率。最高レベルのみ採用。上限は `RefreshMaxDodgeCount` で再計算し、`UpgradeSideEffectApplier` が獲得時・セット読込時に呼ぶ（増えた分はその場で使える）。クールダウンは `SetCoolDownTime` で基礎値に掛ける。回避回数はクールダウンごとに1回ずつ戻る（回避するとクールダウンは最初から）。検証は `playtest-run` の `HopSteps` プローブ） |
 | `Colasour` | `ColasourDataStore` → `PlayerStateDataStore.TakeDamage`（致死ダメージを確率で無効化し、体力を減らさない。Value1=確率の初期値 / Value2=発動するたびに下がる確率。発動回数は `IWaveManagerDataStore.CurrentWave` が変わると数え直す。0.0001以下の確率は0とみなす。**復活系の中で最優先**（コーラサワー → 食いしばり → エマージェンシー・ノードの順に判定）。最高レベルのみ採用。検証は `playtest-run` の `Colasour` プローブ） |
 | `Subscribe` | `SubscribeUseCase` → `SubscribeDataStore` / `PointDataStore`（ウェーブクリア＝`IWaveManagerDataStore.OnWaveAdvanced`（ショップが開く前）で、所持キャッシュ × (Value1 - 1) を足す。増えた分の端数は切り捨て（1.3 が 1.2999… になる誤差で1少なくならないよう 0.001 足してから切り捨てる）。ボス撃破のクリア（ラン終了）ではウェーブが進まないので発動しない。最高レベルのみ採用。検証は `playtest-run` の `Subscribe` プローブ） |
-| `AntiMaterial` | `AntiMaterialDataStore` → `BattleHitUseCase.OnHit` → `EnemyDataStore.Damage`（射撃＝`HitData.ShotType` がある命中（プレイヤー・味方の弾）の `HitData.MinDamage` を Value1 にする。最低保証は弱点・耐性方向の倍率の後に `EnemyDataStore.Damage` で掛かる（既定は `HitData.DefaultMinDamage`=1。固定ダメージには掛けない）。感電の伝播・回避の跳ね返し・ウイルスは射撃ではないので1のまま。最高レベルのみ採用。検証は `playtest-run` の `AntiMaterial` プローブ） |
-| `DOS` | `DOSDataStore` → `BattleHitUseCase.OnHit` → `IVirusDataStore.Apply`（射撃＝`HitData.ShotType` がある命中のたびに、確率 Value1 でウイルス（威力 Value2・効果時間 Value3 秒）を付与する。命中のダメージを与えた後に判定し、その命中で撃破した敵には付けない。ウイルスのダメージは `BattleHitUseCase` を通らないので連鎖しない。最高レベルのみ採用。検証は `playtest-run` の `DOS` プローブ） |
-| `Invective` | `InvectiveDataStore` → `BattleHitUseCase.OnHit` → `IVirusDataStore.Apply`（射撃の命中で**実際に与えたダメージ**（命中前後の体力の差。弱点・耐性・最低保証の後）× Value1 を威力・効果時間（秒）とするウイルスを付与する。レイジ発動中（`IBuffStateDataStore.IsRageActive`）は威力だけ × Value2。撃破した命中には付けない。最高レベルのみ採用。検証は `playtest-run` の `Invective` プローブ） |
-| `Rafflesia` | `RafflesiaDataStore` → `BattleHitUseCase.OnEnemyDead`（ウイルスを持ったまま撃破された敵（誰の撃破でも・ウイルスのダメージでも）から、半径 Value1 m 以内の他の敵へ 威力 × Value2・効果時間「残り効果時間 + Value3 秒」のウイルスを広げる。広がった先が撃破されればさらに広がる。**撃破時に敵のウイルスを読む処理は `BattleHitUseCase.OnEnemyDead` の死亡演出の await より前に置く**（死亡演出がすぐ終わる敵は同じ `OnEnemyDead` の通知の中で敵データもウイルスも消えるので、別の購読者からは読めない）。最高レベルのみ採用。検証は `playtest-run` の `Rafflesia` プローブ） |
+| `AntiMaterial` | `AntiMaterialDataStore`（`IHitEffectHook.OnBeforeDamage`、順序 `HitHookOrder.AntiMaterial`）→ `EnemyDataStore.Damage`（射撃＝`HitData.ShotType` がある命中（プレイヤー・味方の弾）の `HitData.MinDamage` を Value1 にする。最低保証は弱点・耐性方向の倍率の後に `EnemyDataStore.Damage` で掛かる（既定は `HitData.DefaultMinDamage`=1。固定ダメージには掛けない）。感電の伝播・回避の跳ね返し・ウイルスは射撃ではないので1のまま。最高レベルのみ採用。検証は `playtest-run` の `AntiMaterial` プローブ） |
+| `DOS` | `DOSDataStore`（`IHitEffectHook.OnAfterDamage`、順序 `HitHookOrder.DOS`）→ `IVirusDataStore.Apply`（射撃＝`HitData.ShotType` がある命中のたびに、確率 Value1 でウイルス（威力 Value2・効果時間 Value3 秒）を付与する。命中のダメージを与えた後に判定し、その命中で撃破した敵には付けない。ウイルスのダメージは `BattleHitUseCase` を通らないので連鎖しない。最高レベルのみ採用。検証は `playtest-run` の `DOS` プローブ） |
+| `Invective` | `InvectiveDataStore`（`IHitEffectHook.OnAfterDamage`、順序 `HitHookOrder.Invective`。`dealtDamage` 引数が実際に与えたダメージ）→ `IVirusDataStore.Apply`（射撃の命中で**実際に与えたダメージ**（命中前後の体力の差。弱点・耐性・最低保証の後）× Value1 を威力・効果時間（秒）とするウイルスを付与する。レイジ発動中（`IBuffStateDataStore.IsRageActive`）は威力だけ × Value2。撃破した命中には付けない。最高レベルのみ採用。検証は `playtest-run` の `Invective` プローブ） |
+| `Rafflesia` | `RafflesiaDataStore`（`IEnemyKillHook.OnEnemyKilled`）（ウイルスを持ったまま撃破された敵（誰の撃破でも・ウイルスのダメージでも）から、半径 Value1 m 以内の他の敵へ 威力 × Value2・効果時間「残り効果時間 + Value3 秒」のウイルスを広げる。広がった先が撃破されればさらに広がる。**撃破時に敵のウイルスを読む処理は `IEnemyKillHook` で行う**（`BattleHitUseCase` が死亡演出の await より前に呼ぶ。死亡演出がすぐ終わる敵は同じ `OnEnemyDead` の通知の中で敵データもウイルスも消えるので、別の購読者からは読めない）。最高レベルのみ採用。検証は `playtest-run` の `Rafflesia` プローブ） |
 | `Malice` | `MaliceDataStore` → `VirusUseCase.Tick` → `IVirusDataStore.AddPower` / `HoldRemainingTime`（プレイヤーから半径 Value1 m 以内（水平距離）の敵は、毎フレーム `HoldRemainingTime` でウイルスの残り効果時間を止める（どのアップグレードで付いたウイルスも切れない）。1秒ごとに `AddPower` で、ウイルスが無ければ威力 Value2・効果時間 Value3 秒で付け、あれば威力だけ足す（効果時間に触れないので、ほかのウイルスの最長効果時間を短く置き換えて毎秒ダメージを跳ね上げない）。範囲内にいる間は威力が毎秒積み上がる（ユーザー確認済み）。止める指定は直後の1回の `Advance` にだけ効くので、`VirusUseCase.Tick` の中で `Advance` の直前に呼ぶ。最高レベルのみ採用。検証は `playtest-run` の `Malice` プローブと EditMode の `VirusDataStoreTests`） |
 
 > 📌 **バフ「レイジ」の扱い**: アップグレード「逆ギレ」（`$SnapBack`。旧名レイジ）は GrantBuff 型で、被弾で効果時間が延びる `BuffConditionType.OnDamaged` 条件のバフ「レイジ」（`$RageBuffL1`〜`L3`）を付与する。`BuffStateDataStore` はレイジを、逆ギレを何レベル持っていても獲得元が何でも**残り時間1本・効果1つ（攻撃倍率は重ねない）**の状態として持つ。被弾では最高レベルの `ConditionValue` × ダメージ秒を得る。**残り時間はオーバークロック中とウェーブ間ポーズ（ショップ・ラン開始前・ゲームオーバー）の間は減らない**。**レイジの発動を条件にするアップグレードは `IBuffStateDataStore.IsRageActive` で判定し、レイジを与えるなら `GainRage(秒, 逆ギレ未所持時のバフ)` を使う**（発動中なら残り時間に足し、切れていれば0から発動。逆ギレ未所持なら渡されたバフの効果で発動し、被弾では延びない）。レイジの見分けは `BuffStateDataStore.IsRageBuff`（`OnDamaged` 条件）の1か所に寄せてあるので、別の被弾条件バフを足すときはここを見直す
@@ -136,7 +141,7 @@ Googleスプレッドシート（正本）
 1. スプレッドシート `UpgradeData` シートに行追加（[`sheets-write`](../sheets-write/SKILL.md)）→ GASでエクスポート
 2. `Assets/App/MasterData/Origin/UpgradeData.csv` を追随（またはUnityメニュー `Tools/マスターデータ/インポート` でGAS出力の `UpgradeData.csv` を選ぶ。Originへのコピーとインポートを一度に行う）
 3. Unityで `Tools/マスターデータ/インポート（UpgradeData.csv を選択）` 実行 → アセット生成＋Database更新
-4. 消費側は既存の `CalcMultiply/CalcAdd` が自動で拾うため**コード変更不要**
+4. 消費側は既存の `CalcMultiply` / `TryGetHighestLevelUpgrade` が自動で拾うため**コード変更不要**
 5. [`playtest-run`](../playtest-run/SKILL.md) で獲得→効果反映を確認
 6. 新しい `NameKey` を足した場合は「ローカライズ表への追記」の3行を追加（レベル追加だけなら不要）
 
@@ -146,10 +151,34 @@ Googleスプレッドシート（正本）
 2. `UpgradeData.csv` に新タイプの行を追加 → パターンAの2〜3でインポート
 3. **消費側コードを実装**（このパターンの本体）:
    - 効果を効かせたい `Player*ParameterDataStore` に `IUpgradeEffectSimpleCalculatorDataStore` をDIで注入（VContainer。直接 `new` しない）
-   - 基礎値に `CalcMultiply(UpgradeType.新規)`（倍率系）か `CalcAdd(...)`（加算系）を掛ける/足す
+   - 基礎値に `CalcMultiply(UpgradeType.新規)`（倍率系）を掛ける。加算・減算を混ぜる式は実装前に提示して判断を仰ぐ
+   - 命中・撃破に反応する効果なら、ここではなく**パターンD**（フック）で書く
    - HP・回避系のように「基礎値を `PlayerBaseParameterConfig` から直接代入している箇所」がある場合、そこに補正を差し込む改修が要る（未接続タイプ問題と同じ轍を踏まないこと）
 4. 「ローカライズ表への追記」の3行を追加し、`{valueN}` を使うなら `UpgradeDescriptionFormatter.ValueFormats` に新タイプの変換規則を追加
 5. コンパイル（`uloop-compile` スキル）→ `playtest-run` で検証
+
+## パターンD: 命中・撃破フック型（DataStore を1つ書いてインターフェースを実装する）
+
+命中ダメージの倍率、命中時の副作用（最低保証・通知・ウイルス付与）、撃破時の回復・副作用はこの型。
+`BattleHitUseCase` は登録済みのフックを順に呼ぶだけなので、**触るのは DataStore 1 ファイル・`HitHookOrder` の定数・`BattleLifetimeScope` の登録 1 行**で済む（専用インターフェース `I○○DataStore` は作らない。他の UseCase からも呼びたいときだけ作る）。
+
+| フック | いつ呼ばれるか | 実装するメンバー |
+|---|---|---|
+| `IHitDamageMultiplierHook` | 命中ごと。倍率は全て乗算。`HitHookOrder` の小さい順に掛けた後、`EnemyDataStore.Damage` で弱点・耐性 → 最低保証 | `Order` / `GetDamageMultiplier(HitData)`（効果なしは 1.0f） |
+| `IHitEffectHook` | 倍率の後・`Damage` の前（`OnBeforeDamage`）と `Damage` の後（`OnAfterDamage(hitData, 実ダメージ, 生き残ったか)`）。要る方だけ実装 | `Order` ＋ どちらか |
+| `IEnemyKillHook` | 撃破ごと（死亡演出の前。敵データ・ウイルスはまだ残っている）。回復量は全フック合計を1回で `Heal` | `GetHealAmount(EnemyRankType)` / `OnEnemyKilled(enemyId)` の要る方 |
+
+手順:
+1. enum・CSV・インポートはパターンBの1〜2と同じ
+2. `Assets/App/Script/Battle/DataStore/○○DataStore.cs` を1つ書く。`IUpgradeEffectSimpleCalculatorDataStore` を注入して `TryGetHighestLevelUpgrade(UpgradeType.○○, out var upgrade)` で値を読み、上の表のフックを実装する。ランをまたぐ状態を持つなら `IRunResettable` も実装する
+   - 「射撃の命中だけ」に反応するなら `hitData.ShotType != null` を自分で見る（感電の伝播・ウイルスのダメージ・回避の跳ね返しは ShotType を持たない）
+   - 倍率に加算・減算を混ぜる式は実装前に提示して判断を仰ぐ（`feedback_damage_calc_additive`）
+3. `HitHookOrder` に定数を足す（既存のどれの前後に入るかを決める。100 刻み）
+4. `BattleLifetimeScope` に `builder.Register<○○DataStore>(Lifetime.Singleton).AsImplementedInterfaces();` を1行追加（`As<I○○>` は不要）
+5. ローカライズ表の3行と `UpgradeDescriptionFormatter.ValueFormats` を足す
+6. `uloop-compile` → `playtest-run` のプローブで検証（既存の `Vampire` / `DOS` / `Invective` / `Rafflesia` プローブが雛形）
+
+既存の例: 倍率＝`BullseyeDataStore`、副作用（前）＝`AntiMaterialDataStore` / `AvalancheDataStore`、副作用（後）＝`DOSDataStore` / `InvectiveDataStore`、撃破＝`VampireDataStore` / `HealOnKillDataStore` / `RafflesiaDataStore`。
 
 ## パターンC: GrantBuff型（条件付き・時限バフ）
 
@@ -217,7 +246,8 @@ BuffData.csv ヘッダー: `id,NameKey,ConditionType,ConditionValue,Duration,Eff
 ## 完了チェックリスト
 
 - [ ] enum変更はスプレッドシート側にも反映したか（`UpgradeType.cs` を手編集で終わらせていないか）
-- [ ] パターンB/C で新タイプ・新条件を足したなら、**消費側コードを書いたか**（データだけで満足していないか）
+- [ ] パターンB/C/D で新タイプ・新条件を足したなら、**消費側コードを書いたか**（データだけで満足していないか）
+- [ ] パターンDなら `BattleHitUseCase` を触っていないか（フックの実装と `HitHookOrder`・登録1行で済んでいるか）
 - [ ] `UpgradeDatabase.asset`（GrantBuffなら `BuffDatabase.asset` も）が配列更新されたか
 - [ ] 新しい `NameKey` の3行（`$Name` / `$Name_SimpleDesc` / `$Name_Desc`）をローカライズ表に追記したか（文言は大筋でよい・枠だけでも可）
 - [ ] パターンBで `{valueN}` を使うなら `UpgradeDescriptionFormatter.ValueFormats` に規則を足したか

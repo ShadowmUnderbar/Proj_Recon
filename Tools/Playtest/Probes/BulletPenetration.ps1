@@ -165,7 +165,9 @@ function Invoke-BullseyeCheck {
         $body = @'
 var session = scope.Container.Resolve<IUpgradeSessionDataStore>();
 var db = scope.Container.Resolve<App.Common.Data.Database.UpgradeDatabase>();
-var bullseye = scope.Container.Resolve<IBullseyeDataStore>();
+// ブルズアイは命中フック（IHitDamageMultiplierHook）の実装として登録されているので、フック一覧から取り出す
+var bullseye = scope.Container.Resolve<System.Collections.Generic.IReadOnlyList<IHitDamageMultiplierHook>>()
+    .OfType<App.Battle.DataStore.BullseyeDataStore>().First();
 
 var level = __LEVEL__;
 if (level > 0)
@@ -173,7 +175,10 @@ if (level > 0)
     // 付与の副作用は無いタイプなので、セッションへの追加だけで効果計算に反映される
     session.AddUpgrade(db.UpgradeMasterData.First(u => u.UpgradeType == UpgradeType.Bullseye && u.Level == level));
 }
-var values = string.Join(",", Enumerable.Range(1, 4).Select(i => bullseye.GetDamageMultiplier(i).ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)));
+// 倍率は HitData の PenetrationIndex（何体目か）で決まる。他の項目は見ないのでダミー
+var values = string.Join(",", Enumerable.Range(1, 4).Select(i => bullseye
+    .GetDamageMultiplier(new App.Battle.Data.HitData(0, 1f, default, penetrationIndex: i))
+    .ToString("0.000", System.Globalization.CultureInfo.InvariantCulture)));
 
 return $"{{\"values\":\"{values}\"}}";
 '@

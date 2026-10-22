@@ -1,3 +1,4 @@
+using App.Battle.Data;
 using App.Battle.Interface.DataStore;
 using UnityEngine;
 using VContainer;
@@ -10,7 +11,7 @@ namespace App.Battle.DataStore
     /// Value1 = 付与する確率 / Value2 = ウイルスの威力 / Value3 = ウイルスの効果時間（秒）。
     /// レベルは累積せず、所持中の最高レベルのみを採用する
     /// </summary>
-    public class DOSDataStore : IDOSDataStore
+    public class DOSDataStore : IHitEffectHook
     {
         private readonly IUpgradeEffectSimpleCalculatorDataStore _upgradeEffectSimpleCalculatorDataStore;
         private readonly IVirusDataStore _virusDataStore;
@@ -25,7 +26,21 @@ namespace App.Battle.DataStore
             _virusDataStore = virusDataStore;
         }
 
-        public void TryInfect(int enemyId)
+        public int Order => HitHookOrder.DOS;
+
+        /// <summary>射撃（ShotType あり）の命中で、撃破されずに残った敵にだけ付与する</summary>
+        public void OnAfterDamage(HitData hitData, float dealtDamage, bool isTargetAlive)
+        {
+            if (hitData.ShotType == null || !isTargetAlive)
+            {
+                return;
+            }
+
+            TryInfect(hitData.DamagedId);
+        }
+
+        /// <summary>所持中の最高レベルの確率（Value1）で、ウイルス（威力 Value2・効果時間 Value3 秒）を付与する</summary>
+        private void TryInfect(int enemyId)
         {
             if (!_upgradeEffectSimpleCalculatorDataStore
                     .TryGetHighestLevelUpgrade(UpgradeType.DOS, out var upgrade))

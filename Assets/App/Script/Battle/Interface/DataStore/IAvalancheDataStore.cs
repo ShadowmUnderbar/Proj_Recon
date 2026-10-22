@@ -15,8 +15,5 @@ namespace App.Battle.Interface.DataStore
 
         /// <summary>射撃したことを通知する（マージ射撃時に命中フラグを消費する）</summary>
         void NotifyShot(ShotType shotType);
-
-        /// <summary>マージショットが敵に命中したことを通知する（次発の強化フラグを立てる）</summary>
-        void NotifyMergeHit();
     }
 }
