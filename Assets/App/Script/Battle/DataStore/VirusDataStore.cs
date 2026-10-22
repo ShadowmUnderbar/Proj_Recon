@@ -11,7 +11,8 @@ namespace App.Battle.DataStore
     /// 敵ごとに威力・最長効果時間・残り効果時間と1秒周期の経過時間を持ち、
     /// 1秒経つごとに「威力÷最長効果時間」のダメージを発生させる（1以下なら整数に四捨五入）。
     /// 重複時は威力を加算し、新しい効果時間が残り効果時間より長いときだけ時間を置き換える。
-    /// 1秒周期の経過時間は重複しても引き継ぐ（付け直しのたびに周期が戻ってダメージが出なくなるのを防ぐ）
+    /// 1秒周期の経過時間は重複しても引き継ぐ（付け直しのたびに周期が戻ってダメージが出なくなるのを防ぐ）。
+    /// 威力だけを加算して時間に触れない付与（AddPower）と、残り効果時間をそのフレームだけ止める指定（HoldRemainingTime）もできる
     /// </summary>
     public class VirusDataStore : IVirusDataStore, IRunResettable, IDisposable
     {
@@ -38,6 +39,9 @@ namespace App.Battle.DataStore
 
         // 効果時間が切れた敵Idの一時バッファ（呼び出しごとに詰め直す）
         private readonly List<int> _expiredEnemyIds = new();
+
+        // 次の Advance で残り効果時間を減らさない敵Id（Advance のたびに空にする）
+        private readonly HashSet<int> _heldEnemyIds = new();
 
         private readonly Subject<VirusApplyResult> _onApplied = new();
 
@@ -79,6 +83,35 @@ namespace App.Battle.DataStore
                 CalcDamagePerSecond(state.Power, state.MaxDuration)));
         }
 
+        public void AddPower(int enemyId, float power, float durationIfNew)
+        {
+            if (!_viruses.TryGetValue(enemyId, out var state))
+            {
+                Apply(enemyId, power, durationIfNew);
+                return;
+            }
+
+            if (power <= 0f)
+            {
+                return;
+            }
+
+            var before = ToStatus(state);
+
+            state.Power += power;
+
+            _onApplied.OnNext(new VirusApplyResult(enemyId, power, 0f, false, before, ToStatus(state), false,
+                CalcDamagePerSecond(state.Power, state.MaxDuration)));
+        }
+
+        public void HoldRemainingTime(int enemyId)
+        {
+            if (_viruses.ContainsKey(enemyId))
+            {
+                _heldEnemyIds.Add(enemyId);
+            }
+        }
+
         public bool TryGetVirus(int enemyId, out VirusStatus status)
         {
             if (!_viruses.TryGetValue(enemyId, out var state))
@@ -102,6 +135,7 @@ namespace App.Battle.DataStore
 
             if (_viruses.Count == 0 || deltaTime <= 0f)
             {
+                _heldEnemyIds.Clear();
                 return;
             }
 
@@ -112,10 +146,16 @@ namespace App.Battle.DataStore
                 var enemyId = pair.Key;
                 var state = pair.Value;
 
+                // 残り時間を止めている敵は、1秒周期だけ進めて残り時間は減らさない（切れない）
+                var isHeld = _heldEnemyIds.Contains(enemyId);
+
                 // 残り時間を超えて進めない（切れる瞬間に最後の1回が届くようにする）
-                var step = Math.Min(deltaTime, state.RemainingTime);
+                var step = isHeld ? deltaTime : Math.Min(deltaTime, state.RemainingTime);
                 state.TickTimer += step;
-                state.RemainingTime -= step;
+                if (!isHeld)
+                {
+                    state.RemainingTime -= step;
+                }
 
                 while (state.TickTimer >= TickInterval - Epsilon)
                 {
@@ -128,11 +168,13 @@ namespace App.Battle.DataStore
                     }
                 }
 
-                if (state.RemainingTime <= Epsilon)
+                if (!isHeld && state.RemainingTime <= Epsilon)
                 {
                     _expiredEnemyIds.Add(enemyId);
                 }
             }
+
+            _heldEnemyIds.Clear();
 
             foreach (var enemyId in _expiredEnemyIds)
             {
@@ -148,6 +190,7 @@ namespace App.Battle.DataStore
         public void ResetRun()
         {
             _viruses.Clear();
+            _heldEnemyIds.Clear();
         }
 
         public void Dispose()
