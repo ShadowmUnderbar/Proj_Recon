@@ -154,6 +154,9 @@ namespace App.Battle.DataStore
 
             // Value1=広げる半径（m） / Value2=広げるウイルスの威力の倍率 / Value3=残り効果時間に足す秒数
             { UpgradeType.Rafflesia, RawValue1To3 },
+
+            // Value1=付与する半径（m） / Value2=ウイルスの威力 / Value3=ウイルスの効果時間（秒）
+            { UpgradeType.Malice, RawValue1To3 },
         };
 
         // 数値と一緒に装飾する直後の単位。「10%」の数字だけ色が変わって単位が浮かないようにまとめて囲む

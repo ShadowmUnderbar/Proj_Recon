@@ -14,12 +14,15 @@ namespace App.Battle.UseCase
     /// ウイルスの時間を進め、1秒ごとのダメージを敵へ与える。
     /// ウェーブ間ポーズ中・オーバークロック中・ゲームオーバー中は時間もダメージも止める。
     /// ダメージは固定ダメージ（方向倍率・最低保証なし）で、射撃フォームは渡さない（フォーム条件のバフを駆動させない）。
-    /// 敵が消えたらウイルスも取り除く（撃破演出中は残すので、死亡時にウイルスを参照できる）。
+    /// 敵が消えたらウイルスも取り除く（撃破の通知の時点では残っている。ただし死亡演出がすぐ終わる敵は同じ通知の中で消えるので、
+    /// 撃破時に読む処理は BattleHitUseCase.OnEnemyDead の死亡演出の await より前に置く）。
+    /// マリスの付与もここで駆動する（ウイルスと同じ時間の数え方にそろえ、付け直しより先にウイルスが切れないようにするため）。
     /// デバッグ設定でログを有効にすると、発生・重複の状態と1回ごとのダメージ量をログに出す
     /// </summary>
     public class VirusUseCase : IInitializable, ITickable, IDisposable
     {
         private readonly IVirusDataStore _virusDataStore;
+        private readonly IMaliceDataStore _maliceDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IOverclockDataStore _overclockDataStore;
@@ -34,6 +37,7 @@ namespace App.Battle.UseCase
         [Inject]
         public VirusUseCase(
             IVirusDataStore virusDataStore,
+            IMaliceDataStore maliceDataStore,
             IEnemyDataStore enemyDataStore,
             IWaveManagerDataStore waveManagerDataStore,
             IOverclockDataStore overclockDataStore,
@@ -42,6 +46,7 @@ namespace App.Battle.UseCase
         )
         {
             _virusDataStore = virusDataStore;
+            _maliceDataStore = maliceDataStore;
             _enemyDataStore = enemyDataStore;
             _waveManagerDataStore = waveManagerDataStore;
             _overclockDataStore = overclockDataStore;
@@ -72,6 +77,9 @@ namespace App.Battle.UseCase
             {
                 return;
             }
+
+            // マリスの付け直しは時間を進める前に行う（切れる瞬間のフレームでも、先に付け直して威力を積み上げる）
+            _maliceDataStore.Tick(Time.deltaTime);
 
             _virusDataStore.Advance(Time.deltaTime, _damages);
 
