@@ -225,6 +225,8 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerAimMuzzleView` / `PlayerShotView` / `PlayerBulletView` | マズル・発射・プレイヤー弾（`StraightBullet` 派生、即着弾） |
 | `PlayerDamageReceiverView` | プレイヤー側の `IHitBoxView`。被弾ダメージを `OnDamaged` で公開（`HitBoxStoreView` には登録しない） |
 | `PlayerLifeGaugeView` | 足元の半円ゲージ（シェーダ描画） |
+| `Afterimage/PlayerAfterimageSourceView` | 残像にする Renderer を差し出す（`IAfterimageSource`）。体の Renderer と頭の取り付け位置（今は `B-head` ボーン）を持ち、体の向き（体のモデルの Animator の水平の正面）も返す。頭は呼ばれた時点でその下に表示されている Renderer を拾う。頭の差し替えの仕組みには関与しない |
+| `Afterimage/AfterimageStoreView` | 残像の生成・寿命・描画。上限数ぶんの `AfterimageInstance` を使い回し、形状の取得はアニメーション反映後の LateUpdate で行う。GameObject は作らず、`AfterimageDrawer`（plain C#）が `Graphics.RenderMesh` と MaterialPropertyBlock で描く（シェーダは `App/Afterimage`）。`AfterimageSnapshot`（plain C#）が SkinnedMeshRenderer を `BakeMesh(useScale: true)` で焼き、MeshRenderer は共有メッシュと `localToWorldMatrix` を写す。ずらす場合は全パーツと基準点を同じだけ平行移動する |
 
 **ステージ**
 
@@ -289,6 +291,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerLifeGaugePresenter` / `PointParticlePresenter` / `StreamerCameraPresenter` | 各 View | |
 | `AllyPresenter` | `IAllyStoreView` | 味方の生成・破棄・射撃・停止、被弾と攻撃要求の通知 |
 | `FloorCollapsePresenter` | `IFloorCollapseView` | 床崩壊の開始・進行度・復帰 |
+| `AfterimagePresenter` | `IAfterimageStoreView` / `IBattlePlayerView` | プレイヤーの `AfterimageSource` を渡して残像を1体残す |
 | （共通）`TutorialMessagePresenter` | `ITutorialMessageView`（`Common/Presenters`） | |
 
 ### 3.5 UseCase（`Battle/UseCase`）
@@ -303,6 +306,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `PlayerDodgeUseCase` | 回避入力 → 直線移動。通過した敵を接触として記録。フリーズ／時止め中は回避の入力・移動を止める | PlayerDodgeParameter, DodgeCounterAttack |
 | `FloorCollapseUseCase` | ウェーブクリア（`OnWaveAdvanced`）でプレイヤーの足元を中心に床崩壊を始め（`FloorCollapseConfig.PlayOnWaveClear`）、進行度を View へ渡す。崩壊中はフォーカス入力を止める（移動・射撃・回避はウェーブ間ポーズで止まっている）。次のウェーブ開始（ポーズ解除）で床とフォーカス入力を戻す。ショップより先に登録してウェーブ突破を先に購読する。落下シーケンスは `IFloorCollapseDataStore.OnCompleted` から始める想定で未実装 | FloorCollapse, WaveManager, PlayerState, GameInput |
 | `FloorCollapseSweepUseCase` | 床崩壊の波に合わせて、敵（撃破扱いにせず `RemoveEnemyData`）・弾（`IBulletStoreView.BeginSweep` / `SweepWhere`）・ポイント粒子（`RemoveWhere`）を中心に近い順に消す。判定は `IFloorCollapseDataStore.IsCollapsedAt`（真下のプレートが落ち始めたか。`FloorCollapseWave` で床と同じ値を使う）。崩壊しきったら残りもすべて消す。崩壊中の弾・粒子は `FreezeUseCase` がその場に止める（粒子は回収されない） | FloorCollapse, Enemy |
+| `AfterimageUseCase` | 一時強化（`IBuffStateDataStore.IsTimedBuffActive`＝レイジ、HitCount / AfterDodge 条件のバフ）の発動中、`AfterimageConfig.SpawnDistance` 進むか `SpawnInterval` 秒たつごとに残像を残す。時間で残すときは実体と重ならないよう `IntervalBackOffset` だけ体の真後ろへずらす（`AfterimageSpawnScheduler` で数え、理由を返す。ショップ・フリーズ・時止め中は時間を進めない。移動・回避より後に Tick させる） | PlayerState, BuffState, WaveManager, Freeze, TimeStop |
 | `DodgeCounterAttackUseCase` | 回避終了時の跳ね返し攻撃（扇形＋直線検索 → レイ演出 → フリーズ → ダメージ）。`DodgeCounterAttackConfig` | DodgeCounterAttack, Enemy, Freeze |
 | `PlayerGazeUseCase` | `EnemyStoreView` が更新した「視線から判定球までの距離」をアップグレードごとの半径で絞り込み、注視系（スネークアイズ／メデューサ／ガン飛ばし）を反映 | SnakeEyes, Medusa, MeanMug |
 | `PlayerHitUseCase` | 被弾 → `PlayerStateDataStore.TakeDamage`（回避中・時止め中は無効） | PlayerState, DodgeParameter, TimeStop |
@@ -389,6 +393,10 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | デバッグ設定（組み立て時に `DebugConfig` から作って注入） | `EnemyGazeDebugSettings`, `DebugArenaSettings`（デバッグ対戦の相手・出し直し・無敵。予約が無ければ `Disabled`。`Common/Data/DebugArenaRequest` が予約の中身） |
 | 定数 | `PlayerConstants.PlayerId`（**今回新設**）, `ThemeColors`, `SepiaToneRenderingLayer`（セピア調のグループと renderingLayerMask のビットの対応） |
 | POCO / struct | `FloorCollapseWave`（床崩壊の波の計算をここだけに持つ。プレートの格子・プレートごとに波が届く距離・前線の位置。シェーダは距離の式を持たず、C# が書き込んだ開始距離（UV1）と前線 `_CollapseFront` を使う）, `FloorCollapseSettings`（床崩壊の秒数・進み方（同心円／一方向）と向き・分割密度・広さ・厚み・波の幅とずれ・亀裂の区間・沈下量・傾斜・スライド・隙間・データ片化・暗転・発光）, `EnemyData`, `AllyData`, `HitData`, `BossMemberStatus`, `BossDirectorCommand`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `VirusStatus`, `VirusDamage`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `UpgradeLocalizedText` |
+| ScriptableObject（`Assets/App/MasterData/**` に実体） | `PlayerBaseParameterConfig`（**今回新設**）, `DodgeCounterAttackConfig`, `PlayerDeathConfig`, `PointDropConfig`, `PointParticleConfig`, `StreamerCameraTriggerConfig`, `StreamerCameraShotData`, `TutorialWaveConfig`（ウェーブ番号 → `TutorialType`、`MasterData/Tutorial`）, `UpgradeDescriptionStyle`, `BossWaveConfig`（ボスウェーブの番号・出すボスグループ・プレイヤー/ボスの位置、`MasterData/Boss`）, `BossLifeGaugeConfig`（ボスの体力ゲージの色・大きさ、`MasterData/Boss`。既定は紫）, `BossLineStrikeConfig`（ボスの帯の攻撃の幅・長さ・予兆/攻撃/硬直の秒数・連続攻撃の回数と間隔・ダメージ倍率・色、`MasterData/Boss`）, `BossGroupConfig`（ボスのメンバー・行動台本 `BossPatternStep[]`・体力共有、`MasterData/Boss`。`BossGroup_TwinShooter`＝交代と同時行動の確認用、`BossGroup_TickTock`＝体力共有の二人組）, `SepiaToneConfig`（セピアの色味。輝度1の色と輝度0＝黒の色の2点を結ぶので、黒い部分にも色が付く。`MasterData/SepiaTone`）, `SepiaTonePreset`（演出ごとの対象グループ・強さ・フェード秒数。オーバークロック用は `MasterData/Overclock/OverclockSepiaTonePreset`、時止め用は `MasterData/TimeStop/TimeStopSepiaTonePreset`）, `TimeStopConfig`（時止めの演出。セピア調プリセット、`MasterData/TimeStop`）, `AllyConfig`（召喚する味方の種類ごとの体力・攻撃間隔・射程・旋回速度・狙われるか、`MasterData/Ally`。タレットは体力60・0.5秒・40m・20度/秒）, `AfterimageConfig`（残像の間隔・上限・寿命・寿命に応じた不透明度と欠損の曲線・マテリアル・見た目 `AfterimageStyle`、`MasterData/Afterimage`） |
+| デバッグ設定（組み立て時に `DebugConfig` から作って注入） | `EnemyGazeDebugSettings`, `DebugArenaSettings`（デバッグ対戦の相手・出し直し・無敵。予約が無ければ `Disabled`。`Common/Data/DebugArenaRequest` が予約の中身） |
+| 定数 | `PlayerConstants.PlayerId`（**今回新設**）, `ThemeColors`, `SepiaToneRenderingLayer`（セピア調のグループと renderingLayerMask のビットの対応） |
+| POCO / struct | `AfterimageStyle`（残像の色・彩度・不透明度・陰影のコントラスト・欠損量・模様の細かさと速さ・切り口）, `AfterimageSpawnScheduler`, `EnemyData`, `AllyData`, `HitData`, `BossMemberStatus`, `BossDirectorCommand`, `BulletData`(Common), `DodgeEndData`, `PlayerDamagedData`, `ElectricShockChain`, `VirusStatus`, `VirusDamage`, `ShopHandInput`, `ShopPointerInput`, `StreamerCameraShotRequest`, `UpgradeLocalizedText` |
 | enum | `AllyType`, `EnemyAIState`, `BossActionPhase`, `BossPatternStepType`, `BossFormationSlot`（プレイヤーの上下左右、ワールド軸）, `SepiaToneGroup`（Flags）, `HitBoxType`, `StreamerCameraShotType` |
 
 ### 3.8 主要データフロー
@@ -454,6 +462,10 @@ WaveManagerDataStore.OnWaveAdvanced → FloorCollapseUseCase → FloorCollapseDa
  → Tick ごとに FloorCollapseSweepUseCase が、波が届いた敵・弾・粒子を中心から順に消す（敵は撃破扱いにしない）
  → 進行度1で OnCompleted → 残りの敵・弾・粒子を消し、ShopUseCase がショップを開く（落下シーケンスもここから始める想定。未実装）
 IsWavePause=false（次のウェーブ開始）→ ResetCollapse → Phase=Idle → Restore(床を戻す)
+【残像】
+BuffStateDataStore.IsTimedBuffActive（レイジ・コンボ攻撃UP・カウンターステップ等）の間、Tick で SpawnDistance 進んだか SpawnInterval 秒たった → AfterimageUseCase
+ → AfterimagePresenter.SpawnPlayerAfterimage(AfterimageConfig.Style) → AfterimageStoreView.Spawn(PlayerAfterimageSourceView)
+ → LateUpdate で体と今の頭を写し取り（AfterimageSnapshot）→ 寿命の間、不透明度と欠損量を曲線で動かして描く → 寿命で形状を手放して使い回す
 
 【オーバークロック】
 回避中の被弾 → PlayerHitUseCase → PlayerDodgeParameterDataStore.NotifyDamageBlocked → OnDamagedDuringDodge

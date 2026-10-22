@@ -68,6 +68,9 @@ namespace App.Battle.Interface
 
         void Blitz(Vector3 startPos, Transform playerPos);
 
+        /// <summary>残像の元になる見た目（体といま付いている頭）。未設定なら null</summary>
+        IAfterimageSource AfterimageSource { get; }
+
         /// <summary>
         /// 回避時跳ね返し攻撃（カウンター）のレイ演出を再生する。
         /// 見た目と挙動は専用プレハブ（CounterTracerView）側で調整する。
