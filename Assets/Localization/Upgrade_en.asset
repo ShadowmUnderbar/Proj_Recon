@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 3707760238593
-    m_Localized: The base value of attack power increases by {value1}%.
+    m_Localized: Base attack power increases by {value1}%
     m_Metadata:
       m_Items: []
   - m_Id: 3707760238592
@@ -146,19 +146,6 @@ MonoBehaviour:
   - m_Id: 73184814613356544
     m_Localized: Each time a single bullet pierces a set number of enemies, its damage
       to the following enemies increases.
-    m_Metadata:
-      m_Items: []
-  - m_Id: 73184814613356545
-    m_Localized: Rage
-    m_Metadata:
-      m_Items: []
-  - m_Id: 73184814613356546
-    m_Localized: Taking damage raises attack power
-    m_Metadata:
-      m_Items: []
-  - m_Id: 73184814613356547
-    m_Localized: When hit, attack power increases by 20% for a duration based on
-      the damage taken.
     m_Metadata:
       m_Items: []
   - m_Id: 73184814613356548
@@ -568,18 +555,162 @@ MonoBehaviour:
     m_Localized: Waltz is sealed. In exchange, cooldown becomes {value2}x.
     m_Metadata:
       m_Items: []
-  - m_Id: 76890570466484224
-    m_Localized: Overclock
+  - m_Id: 82746026703413248
+    m_Localized: SnapBack
     m_Metadata:
       m_Items: []
-  - m_Id: 76890570487455744
-    m_Localized: Blocking hits with dodges stops time
+  - m_Id: 82746026741161984
+    m_Localized: Taking damage raises attack power
     m_Metadata:
       m_Items: []
-  - m_Id: 76890570487455745
-    m_Localized: Gain {value1}s of Overclock each time a dodge blocks a hit. Once
-      it exceeds 3s, enemies and enemy bullets stop for that many seconds. Damage
+  - m_Id: 82746026741161985
+    m_Localized: When hit, attack power increases by 20% for a duration based on
+      the damage taken.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550592
+    m_Localized: MatrixTime
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550593
+    m_Localized: Avoiding a hit grants <o>Overclock</o>.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550594
+    m_Localized: Gain {value1}s of <o>Overclock</o> each time a dodge blocks a hit.
+      Once it exceeds 3s, enemies and enemy bullets stop for that many seconds. Damage
       taken meanwhile is applied all at once when it ends.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550598
+    m_Localized: Summon Drone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550599
+    m_Localized: Defeating enemies summons ally drones
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550600
+    m_Localized: Every {value1} enemies defeated summons {value2} ally drone(s) that
+      follow you and automatically attack nearby enemies.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550601
+    m_Localized: Sociopath
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550602
+    m_Localized: Defeating enemies grants Rage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550603
+    m_Localized: Defeating an enemy grants {value1}s of Rage. If Rage is already
+      active, you gain {value2}x as much.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550604
+    m_Localized: Grit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550605
+    m_Localized: Survive a fatal blow with 1 HP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550606
+    m_Localized: When you take fatal damage, negate it and survive with 1 HP (up
+      to {value1} times per wave). If Rage is active, also heal HP equal to Rage
+      remaining seconds x{value2}.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550607
+    m_Localized: Anger Management
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550608
+    m_Localized: Gain Rage a while after taking damage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550609
+    m_Localized: When you take damage, gain Rage equal to {value1}% of the damage
+      taken after {value2}s.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550610
+    m_Localized: Venom Fang
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550611
+    m_Localized: Infect enemies you touch while dodging
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550612
+    m_Localized: When your dodge deals contact damage to an enemy you touched, infect
+      it with a Virus of {value1} power for {value2}s.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550613
+    m_Localized: Tenacity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550614
+    m_Localized: Recover part of the damage you take
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550615
+    m_Localized: When you take damage, instantly recover {value1}% of it. While Rage
+      is active, recover {value2}% instead.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550616
+    m_Localized: Vampire
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550617
+    m_Localized: Defeating enemies restores HP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550618
+    m_Localized: Restore {value1} HP each time you defeat an enemy.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550619
+    m_Localized: CACHUMMYYY!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550620
+    m_Localized: Picking up cash restores HP
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550621
+    m_Localized: Restore {value2} HP each time you pick up cash worth {value1} or
+      more.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550622
+    m_Localized: Hop Steps
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550623
+    m_Localized: You can <p>dodge more times</p> in a row
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550624
+    m_Localized: You can dodge {value1} more times in a row, and the dodge cooldown
+      is {value2}% shorter.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550625
+    m_Localized: Cola Sour
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550626
+    m_Localized: A chance to <p>avoid defeat</p>
+    m_Metadata:
+      m_Items: []
+  - m_Id: 82746026749550627
+    m_Localized: When you take damage that would reduce your HP to 0, there is a
+      {value1}% chance to nullify it. Each time it triggers, the chance drops by
+      {value2}%; it resets every wave.
     m_Metadata:
       m_Items: []
   references:

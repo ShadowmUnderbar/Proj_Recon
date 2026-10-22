@@ -237,5 +237,109 @@ namespace App.Tests.EditMode
 
             Assert.AreEqual(0, count);
         }
+
+        [Test]
+        public void 威力だけ加算する付与は効果時間に触れない()
+        {
+            _store.Apply(EnemyA, 30f, 6f);
+            Run(5f, 1f);
+
+            // 残り1秒・最長6秒のところへ、通常の付与なら最長が1.5秒に置き換わる値で足す
+            _store.AddPower(EnemyA, 1f, 1.5f);
+
+            Assert.IsTrue(_store.TryGetVirus(EnemyA, out var status));
+            Assert.AreEqual(31f, status.Power, Tolerance);
+            Assert.AreEqual(6f, status.MaxDuration, Tolerance);
+            Assert.AreEqual(1f, status.RemainingTime, Tolerance);
+        }
+
+        [Test]
+        public void 威力だけ加算する付与はウイルスが無ければ新しく付ける()
+        {
+            _store.AddPower(EnemyA, 1f, 1f);
+
+            Assert.IsTrue(_store.TryGetVirus(EnemyA, out var status));
+            Assert.AreEqual(1f, status.Power, Tolerance);
+            Assert.AreEqual(1f, status.MaxDuration, Tolerance);
+            Assert.AreEqual(1f, status.RemainingTime, Tolerance);
+        }
+
+        [Test]
+        public void 威力だけ加算する付与は重複として流れ時間は置き換えない()
+        {
+            _store.Apply(EnemyA, 10f, 5f);
+            var results = new List<VirusApplyResult>();
+            using var subscription = _store.OnApplied.Subscribe(results.Add);
+
+            _store.AddPower(EnemyA, 2f, 9f);
+
+            Assert.AreEqual(1, results.Count);
+            Assert.IsFalse(results[0].IsNew);
+            Assert.IsFalse(results[0].IsDurationReplaced);
+            Assert.AreEqual(12f, results[0].After.Power, Tolerance);
+            Assert.AreEqual(5f, results[0].After.MaxDuration, Tolerance);
+        }
+
+        [Test]
+        public void 残り効果時間を止めている間は切れずにダメージは出続ける()
+        {
+            _store.Apply(EnemyA, 10f, 2f);
+
+            // 毎フレーム止めながら5秒進める（止めなければ2秒で切れる）
+            var damages = new List<VirusDamage>();
+            for (var i = 0; i < 50; i++)
+            {
+                _store.HoldRemainingTime(EnemyA);
+                _store.Advance(0.1f, _buffer);
+                damages.AddRange(_buffer);
+            }
+
+            Assert.IsTrue(_store.TryGetVirus(EnemyA, out var status));
+            Assert.AreEqual(2f, status.RemainingTime, Tolerance);
+            Assert.AreEqual(5, damages.Count);
+            Assert.That(damages.All(d => System.Math.Abs(d.Damage - 5f) < Tolerance));
+        }
+
+        [Test]
+        public void 止める指定は次の1回の進行にだけ効く()
+        {
+            _store.Apply(EnemyA, 10f, 2f);
+
+            _store.HoldRemainingTime(EnemyA);
+            _store.Advance(1f, _buffer);
+            _store.Advance(1f, _buffer);
+
+            Assert.IsTrue(_store.TryGetVirus(EnemyA, out var status));
+            Assert.AreEqual(1f, status.RemainingTime, Tolerance);
+
+            _store.Advance(1f, _buffer);
+            Assert.IsFalse(_store.TryGetVirus(EnemyA, out _));
+        }
+
+        [Test]
+        public void 止める指定はほかの敵の残り効果時間に影響しない()
+        {
+            _store.Apply(EnemyA, 10f, 2f);
+            _store.Apply(EnemyB, 10f, 2f);
+
+            _store.HoldRemainingTime(EnemyA);
+            _store.Advance(1f, _buffer);
+
+            Assert.IsTrue(_store.TryGetVirus(EnemyA, out var a));
+            Assert.IsTrue(_store.TryGetVirus(EnemyB, out var b));
+            Assert.AreEqual(2f, a.RemainingTime, Tolerance);
+            Assert.AreEqual(1f, b.RemainingTime, Tolerance);
+        }
+
+        [Test]
+        public void ウイルスが無い敵を止めても後から付いたウイルスは止まらない()
+        {
+            _store.HoldRemainingTime(EnemyA);
+            _store.Apply(EnemyA, 10f, 2f);
+            _store.Advance(1f, _buffer);
+
+            Assert.IsTrue(_store.TryGetVirus(EnemyA, out var status));
+            Assert.AreEqual(1f, status.RemainingTime, Tolerance);
+        }
     }
 }

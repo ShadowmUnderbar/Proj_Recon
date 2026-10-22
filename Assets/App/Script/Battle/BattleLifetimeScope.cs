@@ -5,6 +5,7 @@ using App.Battle.UseCase;
 using App.Battle.Views;
 using App.Battle.Views.Afterimage;
 using App.Battle.Views.Ally;
+using App.Battle.Views.FloorCollapse;
 using App.Common.Data;
 using App.Common.Interface;
 using App.Common.Presenters;
@@ -57,6 +58,8 @@ namespace App.Battle
         [SerializeField] private EnemySpawnConfig _enemySpawnConfig;
         [SerializeField] private AllyStoreView _allyStoreView;
         [SerializeField] private AllyConfig _allyConfig;
+        [SerializeField] private FloorCollapseView _floorCollapseView;
+        [SerializeField] private FloorCollapseConfig _floorCollapseConfig;
         [SerializeField] private AfterimageStoreView _afterimageStoreView;
         [SerializeField] private AfterimageConfig _afterimageConfig;
 
@@ -175,6 +178,8 @@ namespace App.Battle
                 .As<IInvectiveDataStore>();
             builder.Register<RafflesiaDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IRafflesiaDataStore>();
+            builder.Register<MaliceDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IMaliceDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
@@ -194,6 +199,9 @@ namespace App.Battle
                 .As<IPointDropCalculatorDataStore>();
             builder.Register<StreamerCameraDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IStreamerCameraDataStore>();
+            // ステージ遷移用の床崩壊の進行度
+            builder.Register<FloorCollapseDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IFloorCollapseDataStore>();
             // デバッグ対戦で出した相手と出し直しの待ち（通常のランでは使われない）
             builder.Register<DebugArenaDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IDebugArenaDataStore>();
@@ -248,6 +256,11 @@ namespace App.Battle
             builder.RegisterEntryPoint<DodgeCounterAttackUseCase>();
             builder.RegisterEntryPoint<EnemyRandomSpawnUseCase>();
             builder.RegisterEntryPoint<WaveManagerUseCase>();
+            // ウェーブクリアで床を崩し、次のウェーブ開始で戻す（見た目だけ。コライダーには触れない）。
+            // ショップは崩壊しきってから開くため、ウェーブ突破の購読を ShopUseCase より先に済ませる（購読順＝登録順）
+            builder.RegisterEntryPoint<FloorCollapseUseCase>();
+            // 床崩壊の波に合わせて敵・弾・粒子を中心から順に消す（崩壊の進行度を進めた後に Tick させる）
+            builder.RegisterEntryPoint<FloorCollapseSweepUseCase>();
             builder.RegisterEntryPoint<ShopUseCase>();
             builder.RegisterEntryPoint<BuffConditionUseCase>();
             builder.RegisterEntryPoint<CareNodeUseCase>();
@@ -305,6 +318,8 @@ namespace App.Battle
                 .As<IAllyPresenter>();
             builder.Register<TutorialMessagePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ITutorialMessagePresenter>();
+            builder.Register<FloorCollapsePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IFloorCollapsePresenter>();
             builder.Register<AfterimagePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IAfterimagePresenter>();
 
@@ -392,6 +407,10 @@ namespace App.Battle
             builder.RegisterComponentInNewPrefab(_bulletStoreView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IBulletStoreView>();
 
+            // 床崩壊の見た目（崩壊中だけ床を演出用のプレート床へ差し替える）
+            builder.RegisterComponentInNewPrefab(_floorCollapseView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<IFloorCollapseView>();
+
             // プレイヤーの残像（写し取り・寿命・描画）。GameObject は作らず Graphics.RenderMesh で描く
             builder.RegisterComponentInNewPrefab(_afterimageStoreView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IAfterimageStoreView>();
@@ -432,6 +451,8 @@ namespace App.Battle
             builder.RegisterInstance(_enemySpawnConfig);
             // 召喚する味方の種類ごとの体力・攻撃間隔・射程（AllyDataStore が利用）
             builder.RegisterInstance(_allyConfig);
+            // 床崩壊の再生条件・マテリアル・見た目と動き（FloorCollapseUseCase / FloorCollapseView が利用）
+            builder.RegisterInstance(_floorCollapseConfig);
             // 残像の生成間隔・上限・寿命・見た目（AfterimageUseCase / AfterimageStoreView が利用）
             builder.RegisterInstance(_afterimageConfig);
 

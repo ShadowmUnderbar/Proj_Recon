@@ -14,12 +14,15 @@ namespace App.Battle.UseCase
     /// ウイルスの時間を進め、1秒ごとのダメージを敵へ与える。
     /// ウェーブ間ポーズ中・オーバークロック中・ゲームオーバー中は時間もダメージも止める。
     /// ダメージは固定ダメージ（方向倍率・最低保証なし）で、射撃フォームは渡さない（フォーム条件のバフを駆動させない）。
-    /// 敵が消えたらウイルスも取り除く（撃破演出中は残すので、死亡時にウイルスを参照できる）。
+    /// 敵が消えたらウイルスも取り除く（撃破の通知の時点では残っている。ただし死亡演出がすぐ終わる敵は同じ通知の中で消えるので、
+    /// 撃破時に読む処理は BattleHitUseCase.OnEnemyDead の死亡演出の await より前に置く）。
+    /// マリスもここで駆動する（範囲内の敵の残り効果時間を止める指定は、直後の Advance にだけ効くため）。
     /// デバッグ設定でログを有効にすると、発生・重複の状態と1回ごとのダメージ量をログに出す
     /// </summary>
     public class VirusUseCase : IInitializable, ITickable, IDisposable
     {
         private readonly IVirusDataStore _virusDataStore;
+        private readonly IMaliceDataStore _maliceDataStore;
         private readonly IEnemyDataStore _enemyDataStore;
         private readonly IWaveManagerDataStore _waveManagerDataStore;
         private readonly IOverclockDataStore _overclockDataStore;
@@ -34,6 +37,7 @@ namespace App.Battle.UseCase
         [Inject]
         public VirusUseCase(
             IVirusDataStore virusDataStore,
+            IMaliceDataStore maliceDataStore,
             IEnemyDataStore enemyDataStore,
             IWaveManagerDataStore waveManagerDataStore,
             IOverclockDataStore overclockDataStore,
@@ -42,6 +46,7 @@ namespace App.Battle.UseCase
         )
         {
             _virusDataStore = virusDataStore;
+            _maliceDataStore = maliceDataStore;
             _enemyDataStore = enemyDataStore;
             _waveManagerDataStore = waveManagerDataStore;
             _overclockDataStore = overclockDataStore;
@@ -72,6 +77,9 @@ namespace App.Battle.UseCase
             {
                 return;
             }
+
+            // マリス: 範囲内の敵の残り効果時間を止め、1秒ごとに威力を足す。止める指定は直後の Advance にだけ効く
+            _maliceDataStore.Tick(Time.deltaTime);
 
             _virusDataStore.Advance(Time.deltaTime, _damages);
 
@@ -108,7 +116,11 @@ namespace App.Battle.UseCase
             }
 
             var before = result.Before;
-            Debug.Log($"[Virus] 重複 敵={result.EnemyId} 付与(威力={result.AddedPower}, 効果時間={result.AddedDuration}秒) "
+            // 威力だけ足す付与（AddPower）は効果時間を渡さないので、0秒と出さずにそう書く
+            var added = result.AddedDuration > 0f
+                ? $"威力={result.AddedPower}, 効果時間={result.AddedDuration}秒"
+                : $"威力={result.AddedPower}, 威力だけ加算";
+            Debug.Log($"[Virus] 重複 敵={result.EnemyId} 付与({added}) "
                       + $"威力 {before.Power}→{after.Power} / 最長効果時間 {before.MaxDuration}→{after.MaxDuration}秒 / "
                       + $"残り効果時間 {before.RemainingTime:F2}→{after.RemainingTime:F2}秒"
                       + $"（時間は{(result.IsDurationReplaced ? "置き換え" : "そのまま")}） 毎秒ダメージ={damagePerSecond}");
