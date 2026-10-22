@@ -3,6 +3,7 @@ using App.Battle.Interface;
 using App.Battle.Presenters;
 using App.Battle.UseCase;
 using App.Battle.Views;
+using App.Battle.Views.Afterimage;
 using App.Battle.Views.Ally;
 using App.Common.Data;
 using App.Common.Interface;
@@ -56,6 +57,8 @@ namespace App.Battle
         [SerializeField] private EnemySpawnConfig _enemySpawnConfig;
         [SerializeField] private AllyStoreView _allyStoreView;
         [SerializeField] private AllyConfig _allyConfig;
+        [SerializeField] private AfterimageStoreView _afterimageStoreView;
+        [SerializeField] private AfterimageConfig _afterimageConfig;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -227,6 +230,8 @@ namespace App.Battle
             builder.RegisterEntryPoint<BattleHitUseCase>();
             builder.RegisterEntryPoint<PlayerHitUseCase>();
             builder.RegisterEntryPoint<PlayerDodgeUseCase>();
+            // 回避中の残像を残すタイミング（回避の移動より後に Tick させ、進んだ後の位置で判定する）
+            builder.RegisterEntryPoint<AfterimageUseCase>();
             builder.RegisterEntryPoint<FreezeUseCase>();
             builder.RegisterEntryPoint<OverclockUseCase>();
             // セピア調の強さをシェーダへ配る
@@ -300,6 +305,8 @@ namespace App.Battle
                 .As<IAllyPresenter>();
             builder.Register<TutorialMessagePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<ITutorialMessagePresenter>();
+            builder.Register<AfterimagePresenter>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IAfterimagePresenter>();
 
             #endregion
 
@@ -385,6 +392,10 @@ namespace App.Battle
             builder.RegisterComponentInNewPrefab(_bulletStoreView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IBulletStoreView>();
 
+            // プレイヤーの残像（写し取り・寿命・描画）。GameObject は作らず Graphics.RenderMesh で描く
+            builder.RegisterComponentInNewPrefab(_afterimageStoreView, Lifetime.Singleton).UnderTransform(transform)
+                .AsImplementedInterfaces().As<IAfterimageStoreView>();
+
             builder.RegisterComponentInNewPrefab(_pointParticleStoreView, Lifetime.Singleton)
                 .UnderTransform(transform)
                 .AsImplementedInterfaces().As<IPointParticleStoreView>();
@@ -421,6 +432,8 @@ namespace App.Battle
             builder.RegisterInstance(_enemySpawnConfig);
             // 召喚する味方の種類ごとの体力・攻撃間隔・射程（AllyDataStore が利用）
             builder.RegisterInstance(_allyConfig);
+            // 残像の生成間隔・上限・寿命・見た目（AfterimageUseCase / AfterimageStoreView が利用）
+            builder.RegisterInstance(_afterimageConfig);
 
             #endregion
         }
