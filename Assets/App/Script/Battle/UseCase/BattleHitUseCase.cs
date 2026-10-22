@@ -28,6 +28,7 @@ namespace App.Battle.UseCase
         private readonly ICriticalHitDataStore _criticalHitDataStore;
         private readonly IElectricShockDataStore _electricShockDataStore;
         private readonly IAntiMaterialDataStore _antiMaterialDataStore;
+        private readonly IDOSDataStore _dosDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -49,7 +50,8 @@ namespace App.Battle.UseCase
             IMeanMugDataStore meanMugDataStore,
             ICriticalHitDataStore criticalHitDataStore,
             IElectricShockDataStore electricShockDataStore,
-            IAntiMaterialDataStore antiMaterialDataStore
+            IAntiMaterialDataStore antiMaterialDataStore,
+            IDOSDataStore dosDataStore
         )
         {
             _enemyDataStore = enemyDataStore;
@@ -65,6 +67,7 @@ namespace App.Battle.UseCase
             _criticalHitDataStore = criticalHitDataStore;
             _electricShockDataStore = electricShockDataStore;
             _antiMaterialDataStore = antiMaterialDataStore;
+            _dosDataStore = dosDataStore;
         }
 
         public void Initialize()
@@ -114,10 +117,21 @@ namespace App.Battle.UseCase
 
             _enemyDataStore.Damage(hitData);
 
+            // DOS: 射撃の命中で確率でウイルスを付与する。この命中で撃破した敵には付けない
+            if (hitData.ShotType != null && IsAlive(hitData.DamagedId))
+            {
+                _dosDataStore.TryInfect(hitData.DamagedId);
+            }
+
             if (hasChain)
             {
                 ApplyElectricShockChain(chain);
             }
+        }
+
+        private bool IsAlive(int enemyId)
+        {
+            return _enemyDataStore.TryGetEnemyData(enemyId, out var enemyData) && !enemyData.IsDead;
         }
 
         /// <summary>

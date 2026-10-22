@@ -54,4 +54,5 @@ public enum UpgradeType
     Colasour = 50, // コーラサワー
     Subscribe = 51, // サブスク
     AntiMaterial = 52, // アンチマテリアル
+    DOS = 53, // DOS
 }

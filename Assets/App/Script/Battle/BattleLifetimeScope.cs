@@ -166,6 +166,8 @@ namespace App.Battle
                 .As<ISubscribeDataStore>();
             builder.Register<AntiMaterialDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IAntiMaterialDataStore>();
+            builder.Register<DOSDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
+                .As<IDOSDataStore>();
             builder.Register<PlayerBarrierDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
                 .As<IPlayerBarrierDataStore>();
             builder.Register<UpgradeLotteryDataStore>(Lifetime.Singleton).AsImplementedInterfaces()
