@@ -92,8 +92,14 @@ namespace App.Battle.UseCase
             var dominantHand = DebugConfig.IsVRMode ? _playerSettingDataStore.DominantHand.Value : HandType.Left;
             var nonDominantHand = dominantHand == HandType.Right ? HandType.Left : HandType.Right;
 
-            _playerControlPresenter.SetHandRayColor(dominantHand, _shotLineColorConfig.GetRayColor(shotType, rightFocusType));
-            _playerControlPresenter.SetAimRayColor(dominantHand, _shotLineColorConfig.GetRayColor(shotType, rightFocusType));
+            // フォーカス状態は手ごとに持っているので、利き手の設定に合わせて左右を選び直す
+            // （利き手が左のとき右手のフォーカスで色を決めてしまわないように）
+            var dominantFocusType = dominantHand == HandType.Right ? rightFocusType : leftFocusType;
+            var nonDominantFocusType = dominantHand == HandType.Right ? leftFocusType : rightFocusType;
+
+            var dominantRayColor = _shotLineColorConfig.GetRayColor(shotType, dominantFocusType);
+            _playerControlPresenter.SetHandRayColor(dominantHand, dominantRayColor);
+            _playerControlPresenter.SetAimRayColor(dominantHand, dominantRayColor);
 
             // 二丁拳銃が未解放、またはコンフリクト系で封印されている間は非利き手のレイを消す。
             // 封印はVRモードの発射制限（CanShot）と同条件にする（PCモードは二丁拳銃の概念自体が無い）
@@ -106,9 +112,9 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            _playerControlPresenter.SetHandRayColor(nonDominantHand,
-                _shotLineColorConfig.GetRayColor(shotType, leftFocusType));
-            _playerControlPresenter.SetAimRayColor(nonDominantHand, _shotLineColorConfig.GetRayColor(shotType, leftFocusType));
+            var nonDominantRayColor = _shotLineColorConfig.GetRayColor(shotType, nonDominantFocusType);
+            _playerControlPresenter.SetHandRayColor(nonDominantHand, nonDominantRayColor);
+            _playerControlPresenter.SetAimRayColor(nonDominantHand, nonDominantRayColor);
 
             _playerControlPresenter.SetAimEnableRay(nonDominantHand, shotType != ShotType.Merge);
             _playerControlPresenter.SetHandEnableRay(nonDominantHand, shotType != ShotType.Merge);

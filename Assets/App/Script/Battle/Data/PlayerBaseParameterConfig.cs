@@ -15,8 +15,8 @@ namespace App.Battle.Data
         [SerializeField, Min(1f), Tooltip("最大体力の基礎値。HP強化はこの値に倍率を掛ける")]
         private float _health = 100f;
 
-        [SerializeField, Min(0f), Tooltip("移動速度（1フレームあたりの移動量）。スティックの倒し量にこの値を掛ける")]
-        private float _moveSpeed = 0.05f;
+        [SerializeField, Min(0f), Tooltip("移動速度（m/秒）。スティックの倒し量にこの値とフレーム時間を掛ける")]
+        private float _moveSpeed = 4.5f;
 
         [SerializeField, Min(0f), Tooltip("弾ダメージの基礎値")]
         private float _baseDamage = 4f;
