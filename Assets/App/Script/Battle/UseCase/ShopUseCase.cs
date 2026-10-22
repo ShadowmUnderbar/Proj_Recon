@@ -45,6 +45,7 @@ namespace App.Battle.UseCase
         private readonly IUpgradeTagRankingDataStore _upgradeTagRankingDataStore;
         private readonly ITutorialMessageUseCase _tutorialMessageUseCase;
         private readonly DebugArenaSettings _debugArenaSettings;
+        private readonly IFloorCollapseDataStore _floorCollapseDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -53,6 +54,9 @@ namespace App.Battle.UseCase
 
         // ショップ表示中か。表示中だけ所持ポイントの変化をUIへ反映し、手の入力をViewへ流す
         private bool _isShopOpen;
+
+        // ウェーブ突破時に床崩壊（ステージ遷移）が始まっていたら、崩壊しきるまで開くのを待つ
+        private bool _isWaitingForStageTransition;
 
         [Inject]
         public ShopUseCase(
@@ -69,7 +73,8 @@ namespace App.Battle.UseCase
             ITagLocalizationDataStore tagLocalizationDataStore,
             IUpgradeTagRankingDataStore upgradeTagRankingDataStore,
             ITutorialMessageUseCase tutorialMessageUseCase,
-            DebugArenaSettings debugArenaSettings
+            DebugArenaSettings debugArenaSettings,
+            IFloorCollapseDataStore floorCollapseDataStore
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -86,13 +91,30 @@ namespace App.Battle.UseCase
             _upgradeTagRankingDataStore = upgradeTagRankingDataStore;
             _tutorialMessageUseCase = tutorialMessageUseCase;
             _debugArenaSettings = debugArenaSettings;
+            _floorCollapseDataStore = floorCollapseDataStore;
         }
 
         public void Initialize()
         {
-            // ウェーブ突破時（この時点で IsWavePause=true・敵/弾クリア済み）にショップを開く
+            // ウェーブ突破時（この時点で IsWavePause=true・敵/弾クリア済み）にショップを開く。
+            // 床崩壊が始まっていれば崩壊しきってから開く（FloorCollapseUseCase が先に購読して崩壊を始めている）
             _waveManagerDataStore.OnWaveAdvanced
-                .Subscribe(_ => OpenShop())
+                .Subscribe(_ => OnWaveAdvanced())
+                .AddTo(_disposable);
+
+            _floorCollapseDataStore.OnCompleted
+                .Where(_ => _isWaitingForStageTransition)
+                .Subscribe(_ =>
+                {
+                    _isWaitingForStageTransition = false;
+                    OpenShop();
+                })
+                .AddTo(_disposable);
+
+            // 崩壊が途中で打ち切られた（ラン初期化など）ら待ちも取り消す
+            _floorCollapseDataStore.Phase
+                .Where(phase => phase == FloorCollapsePhase.Idle)
+                .Subscribe(_ => _isWaitingForStageTransition = false)
                 .AddTo(_disposable);
 
             _shopPresenter.OnUpgradeSelected
@@ -124,11 +146,22 @@ namespace App.Battle.UseCase
                 .Subscribe(_ => OnTagLocalizationChanged())
                 .AddTo(_disposable);
 
-            // 購入で所持アップグレードが増えたら所持タグ上位を数え直す
+            // 購入で所持アップグレードが増えたら所持件数と所持タグ上位を数え直す
             _upgradeSessionDataStore.OnChanged
                 .Where(_ => _isShopOpen)
                 .Subscribe(_ => RefreshOwnedTagRanking())
                 .AddTo(_disposable);
+        }
+
+        private void OnWaveAdvanced()
+        {
+            if (_floorCollapseDataStore.Phase.CurrentValue == FloorCollapsePhase.Collapsing)
+            {
+                _isWaitingForStageTransition = true;
+                return;
+            }
+
+            OpenShop();
         }
 
         private void OpenShop()
@@ -242,7 +275,9 @@ namespace App.Battle.UseCase
             }
         }
 
-        /// <summary>所持アップグレードのタグを件数の多い順に数え、上位を名前つきでViewへ反映する</summary>
+        /// <summary>
+        /// 所持アップグレードの件数と、タグを件数の多い順に数えた上位（名前つき）をViewへ反映する
+        /// </summary>
         private void RefreshOwnedTagRanking()
         {
             var ranking = _upgradeTagRankingDataStore.GetTopTags(
@@ -255,7 +290,8 @@ namespace App.Battle.UseCase
                     _tagLocalizationDataStore.GetName(ranking[i].Tag), ranking[i].Count);
             }
 
-            _shopPresenter.SetOwnedTagRanking(entries);
+            var upgradeCount = _upgradeTagRankingDataStore.CountUpgrades(_upgradeSessionDataStore.AppliedUpgrades);
+            _shopPresenter.SetOwnedTagRanking(upgradeCount, entries);
         }
 
         private void OnCurrentPointChanged()

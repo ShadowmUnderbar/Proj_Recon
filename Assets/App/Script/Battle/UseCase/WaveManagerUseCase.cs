@@ -22,6 +22,7 @@ namespace App.Battle.UseCase
         private readonly IBossWaveDataStore _bossWaveDataStore;
         private readonly IGameStateDataStore _gameStateDataStore;
         private readonly DebugArenaSettings _debugArenaSettings;
+        private readonly IFloorCollapseDataStore _floorCollapseDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -36,7 +37,8 @@ namespace App.Battle.UseCase
             IOverclockDataStore overclockDataStore,
             IBossWaveDataStore bossWaveDataStore,
             IGameStateDataStore gameStateDataStore,
-            DebugArenaSettings debugArenaSettings
+            DebugArenaSettings debugArenaSettings,
+            IFloorCollapseDataStore floorCollapseDataStore
         )
         {
             _waveManagerDataStore = waveManagerDataStore;
@@ -49,6 +51,7 @@ namespace App.Battle.UseCase
             _bossWaveDataStore = bossWaveDataStore;
             _gameStateDataStore = gameStateDataStore;
             _debugArenaSettings = debugArenaSettings;
+            _floorCollapseDataStore = floorCollapseDataStore;
         }
 
         public void Initialize()
@@ -148,12 +151,19 @@ namespace App.Battle.UseCase
             _waveManagerDataStore.SetWavePause(true);
             // スポーン累積タイマーをリセットして次ウェーブの初期間隔から再開
             _enemyRandomSpawnCycleDataStore.ResetSpawnCycle();
+            // ウェーブ番号インクリメント＋進行通知（床崩壊はこの通知で始まる）
+            _waveManagerDataStore.AdvanceWave();
+
+            // 床崩壊が始まったら、弾・粒子・敵は崩壊の波に合わせて中心から順に消す（FloorCollapseSweepUseCase）
+            if (_floorCollapseDataStore.Phase.CurrentValue == FloorCollapsePhase.Collapsing)
+            {
+                return;
+            }
+
             // プレイヤー弾・敵弾を全消去
             _bulletStoreView.AllRemove();
             // 漂っているポイント粒子も全消去（未回収のぶんはウェーブ跨ぎで持ち越さない）
             _pointParticlePresenter.AllRemove();
-            // ウェーブ番号インクリメント＋進行通知
-            _waveManagerDataStore.AdvanceWave();
         }
 
         private void ClearRunInternal()

@@ -25,6 +25,7 @@ namespace App.Battle.UseCase
         private readonly IOverclockDataStore _overclockDataStore;
         private readonly ITimeStopDataStore _timeStopDataStore;
         private readonly IPointParticlePresenter _pointParticlePresenter;
+        private readonly IFloorCollapseDataStore _floorCollapseDataStore;
 
         private readonly CompositeDisposable _disposable = new();
 
@@ -37,7 +38,8 @@ namespace App.Battle.UseCase
             ITracerFreezeState tracerFreezeState,
             IOverclockDataStore overclockDataStore,
             ITimeStopDataStore timeStopDataStore,
-            IPointParticlePresenter pointParticlePresenter
+            IPointParticlePresenter pointParticlePresenter,
+            IFloorCollapseDataStore floorCollapseDataStore
         )
         {
             _freezeDataStore = freezeDataStore;
@@ -48,6 +50,7 @@ namespace App.Battle.UseCase
             _overclockDataStore = overclockDataStore;
             _timeStopDataStore = timeStopDataStore;
             _pointParticlePresenter = pointParticlePresenter;
+            _floorCollapseDataStore = floorCollapseDataStore;
         }
 
         public void Initialize()
@@ -67,16 +70,26 @@ namespace App.Battle.UseCase
                 .Subscribe(_ => ApplyProjectilePause())
                 .AddTo(_disposable);
 
+            // 床崩壊の間は、弾と粒子をその場に止めて波が届くのを待たせる（粒子は回収もさせない）
+            _floorCollapseDataStore.Phase
+                .Subscribe(_ => ApplyProjectilePause())
+                .AddTo(_disposable);
+
             _overclockDataStore.IsActive
+                .CombineLatest(_floorCollapseDataStore.Phase,
+                    (isOverclock, phase) => isOverclock || phase == FloorCollapsePhase.Collapsing)
+                .DistinctUntilChanged()
                 .Subscribe(_pointParticlePresenter.SetPause)
                 .AddTo(_disposable);
         }
 
-        /// <summary>弾と即着弾のレイ（曳光弾・カウンターのレイ）を、フリーズ中か時止め中なら止める</summary>
+        /// <summary>弾と即着弾のレイ（曳光弾・カウンターのレイ）を、フリーズ中か時止め中か床崩壊中なら止める</summary>
         private void ApplyProjectilePause()
         {
             // 片方の解除でもう片方の停止を解いてしまわないよう論理和で渡す
-            var isPaused = _freezeDataStore.IsFreezing.CurrentValue || _timeStopDataStore.IsTimeStopped.CurrentValue;
+            var isPaused = _freezeDataStore.IsFreezing.CurrentValue
+                           || _timeStopDataStore.IsTimeStopped.CurrentValue
+                           || _floorCollapseDataStore.Phase.CurrentValue == FloorCollapsePhase.Collapsing;
             _bulletStoreView.SetPause(isPaused);
             _tracerFreezeState.SetFreezing(isPaused);
         }

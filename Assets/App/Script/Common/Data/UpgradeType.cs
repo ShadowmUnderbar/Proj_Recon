@@ -57,4 +57,5 @@ public enum UpgradeType
     DOS = 53, // DOS
     Invective = 54, // 毒舌
     Rafflesia = 55, // ラフレシア
+    Malice = 56, // マリス
 }

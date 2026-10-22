@@ -4,11 +4,31 @@ using App.Common.Data.MasterData;
 namespace App.Common.Data
 {
     /// <summary>
-    /// 所持アップグレードのタグを件数の多い順に並べる計算。
+    /// 所持アップグレードのタグを件数の多い順に並べる計算と、所持アップグレード自体の件数。
     /// 同じアップグレード（NameKey）はレベル違いを複数持っていても1件と数え、同数のタグは enum の定義順に並べる
     /// </summary>
     public static class UpgradeTagRanking
     {
+        /// <summary>所持アップグレードの件数。タグ集計と同じく、レベル違いは1件と数え、null は数えない</summary>
+        public static int CountUpgrades(IEnumerable<UpgradeMasterData> upgrades)
+        {
+            if (upgrades == null)
+            {
+                return 0;
+            }
+
+            var countedNameKeys = new HashSet<string>();
+            foreach (var upgrade in upgrades)
+            {
+                if (upgrade != null)
+                {
+                    countedNameKeys.Add(upgrade.NameKey);
+                }
+            }
+
+            return countedNameKeys.Count;
+        }
+
         public static IReadOnlyList<UpgradeTagCount> Top(IEnumerable<UpgradeMasterData> upgrades, int maxCount)
         {
             var result = new List<UpgradeTagCount>();

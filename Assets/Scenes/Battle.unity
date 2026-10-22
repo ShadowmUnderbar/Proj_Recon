@@ -191,6 +191,8 @@ MonoBehaviour:
   _enemySpawnConfig: {fileID: 11400000, guid: ac2edac33dce57a41b32e9c440f8d849, type: 2}
   _allyStoreView: {fileID: 2829043756037600273, guid: ae5116e0bb8cc7947b6d39e8773e508c, type: 3}
   _allyConfig: {fileID: 11400000, guid: 19c976fed2f565e459232385806ad130, type: 2}
+  _floorCollapseView: {fileID: 147443578459992556, guid: 1522b2f5715e4a04cabcbccb3a8c9b3b, type: 3}
+  _floorCollapseConfig: {fileID: 11400000, guid: 81f311b6ccdc00048bf48eb2f6e5bb3e, type: 2}
 --- !u!4 &175168502
 Transform:
   m_ObjectHideFlags: 0
@@ -609,6 +611,7 @@ GameObject:
   - component: {fileID: 1770217223}
   - component: {fileID: 1770217222}
   - component: {fileID: 1770217226}
+  - component: {fileID: 1770217227}
   m_Layer: 0
   m_Name: CurvedGround
   m_TagString: Untagged
@@ -707,6 +710,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _group: 1
+--- !u!114 &1770217227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1770217221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7bcdae1f35f40f4abae64affca64bf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
