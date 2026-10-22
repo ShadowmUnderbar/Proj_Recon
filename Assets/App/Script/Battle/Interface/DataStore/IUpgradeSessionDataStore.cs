@@ -15,6 +15,12 @@ namespace App.Battle.Interface.DataStore
         /// </summary>
         Observable<Unit> OnChanged { get; }
 
+        /// <summary>
+        /// 所持内容が変わるたびに増える世代番号。
+        /// 購読の順序に依存せずキャッシュの鮮度を判定したいとき（計算基盤など）に、前回の値と比べて使う
+        /// </summary>
+        int Version { get; }
+
         /// <summary>このランで新たに獲得したアップグレードID（セット読込で最初から持っていた分は含まない）。メタ保存の対象</summary>
         IReadOnlyList<string> NewlyAcquiredUpgrades { get; }
 

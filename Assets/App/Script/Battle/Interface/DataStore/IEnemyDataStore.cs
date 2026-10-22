@@ -18,7 +18,9 @@ namespace App.Battle.Interface.DataStore
 
         /// <summary>ダメージが通った敵のIDを流す（撃破に至らない命中も含む）</summary>
         Observable<int> OnEnemyDamaged { get; }
-        List<EnemyData> Enemies { get; }
+
+        /// <summary>場にいる全ての敵（撃破演出中の敵も含む）。スポーン・消去のとき以外はアロケーションしない</summary>
+        IReadOnlyList<EnemyData> Enemies { get; }
 
         /// <summary>生存中の敵の数（撃破演出中の敵は含めない）。毎フレーム参照してもアロケーションしない</summary>
         int AliveEnemyCount { get; }
