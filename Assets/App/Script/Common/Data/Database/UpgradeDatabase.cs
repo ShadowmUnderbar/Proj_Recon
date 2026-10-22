@@ -1,5 +1,4 @@
-using System;
-using System.Linq;
+using System.Collections.Generic;
 using App.Common.Data.MasterData;
 using UnityEngine;
 
@@ -12,24 +11,55 @@ namespace App.Common.Data.Database
 
         public UpgradeMasterData[] UpgradeMasterData => _upgradeMasterData;
 
+        // ID→マスターデータの索引。毎フレーム・毎命中で ID 引きされるため線形探索を避ける。
+        // 配列の差し替え（インポート・Inspector編集）後に作り直せるよう遅延生成にする
+        private Dictionary<string, UpgradeMasterData> _idIndex;
+
         public bool TryGetUpgradeMasterData(string id, out UpgradeMasterData upgradeMasterData)
         {
-            upgradeMasterData =
-                _upgradeMasterData.FirstOrDefault(upgradeMasterData => upgradeMasterData.Id == id);
-            return upgradeMasterData != null;
-        }
-
-        public UpgradeMasterData[] GetSameLevelUpgrades(string id)
-        {
-            if (!TryGetUpgradeMasterData(id, out var upgradeMasterData))
+            if (string.IsNullOrEmpty(id))
             {
-                return Array.Empty<UpgradeMasterData>();
+                upgradeMasterData = null;
+                return false;
             }
 
-            var sameLevelUpgrades = _upgradeMasterData.Where(data =>
-                data.Level == upgradeMasterData.Level).ToArray();
+            _idIndex ??= BuildIdIndex();
+            return _idIndex.TryGetValue(id, out upgradeMasterData);
+        }
 
-            return sameLevelUpgrades;
+        private Dictionary<string, UpgradeMasterData> BuildIdIndex()
+        {
+            var index = new Dictionary<string, UpgradeMasterData>();
+            if (_upgradeMasterData == null)
+            {
+                return index;
+            }
+
+            foreach (var data in _upgradeMasterData)
+            {
+                if (data == null || string.IsNullOrEmpty(data.Id))
+                {
+                    continue;
+                }
+
+                // ID が重複していたら先勝ち（インポーターが重複を弾く前提。ここでは落とさない）
+                if (!index.TryAdd(data.Id, data))
+                {
+                    Debug.LogWarning($"[UpgradeDatabase] アップグレードID \"{data.Id}\" が重複しています（{data.name}）");
+                }
+            }
+
+            return index;
+        }
+
+        private void OnEnable()
+        {
+            _idIndex = null;
+        }
+
+        private void OnValidate()
+        {
+            _idIndex = null;
         }
     }
 }

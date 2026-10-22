@@ -378,6 +378,11 @@ namespace App.Battle.UseCase
 
             _isShopOpen = false;
             _currentCandidates.Clear();
+
+            // ショップ中に止めていたフォーカス入力も戻す。
+            // 戻さないと次のランでフォーカスが切り替えられないまま始まる（StartNextWave を通らないため）。
+            // ハンドレイはビルド選択を開く RunStartUseCase が自分で出し入れするのでここでは触らない
+            _gameInputDataStore.SetFocusInputEnable(true);
         }
 
         /// <summary>
