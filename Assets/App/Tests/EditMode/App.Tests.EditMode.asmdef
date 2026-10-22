@@ -8,7 +8,8 @@
         "App.Battle.DataStore",
         "App.Battle.Interfaces",
         "App.Battle.Views",
-        "App.Common.Data"
+        "App.Common.Data",
+        "Unity.Localization"
     ],
     "includePlatforms": [
         "Editor"
