@@ -1,4 +1,5 @@
 using App.Battle.Data;
+using App.Battle.Interface;
 using Cysharp.Threading.Tasks;
 using R3;
 using UnityEngine;
@@ -246,6 +247,28 @@ namespace App.Battle.Interface.EnemyAI
         public void SetAllyTargetProvider(IAllyTargetProvider allyTargetProvider)
         {
             _allyTargetProvider = allyTargetProvider;
+        }
+
+        // 弾の貸出口（EnemyStoreView が出現時に渡す）
+        private IBulletSpawner _bulletSpawner;
+
+        public void SetBulletSpawner(IBulletSpawner bulletSpawner)
+        {
+            _bulletSpawner = bulletSpawner;
+        }
+
+        /// <summary>
+        /// 弾をプールから借りる。貸出口が渡されていない（デバッグ配置など）ときはプレハブから生成する。
+        /// 借りた弾は <see cref="IBulletView.Spawn"/> で撃つ
+        /// </summary>
+        protected IBulletView RentBullet<TBullet>(TBullet prefab) where TBullet : MonoBehaviour, IBulletView
+        {
+            if (_bulletSpawner != null)
+            {
+                return _bulletSpawner.Rent(prefab);
+            }
+
+            return Instantiate(prefab);
         }
 
         /// <summary>

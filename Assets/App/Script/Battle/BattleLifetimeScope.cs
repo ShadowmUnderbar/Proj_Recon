@@ -33,6 +33,10 @@ namespace App.Battle
         [SerializeField] private BulletTracerView _bulletTracerView;
         [SerializeField] private CounterTracerView _counterTracerView;
         [SerializeField] private BulletStoreView _bulletStoreView;
+
+        // 曳光弾プールの初期数。射撃の曳光弾は毎発、回避カウンターのレイは回避ごとに出る
+        private const int TracerPoolInitialCount = 16;
+        private const int CounterTracerPoolInitialCount = 4;
         [SerializeField] private ShopView _shopView;
         [SerializeField] private GameOverView _gameOverView;
         [SerializeField] private PlayerLifeGaugeView _playerLifeGaugeView;
@@ -351,7 +355,8 @@ namespace App.Battle
 
             #region View
 
-            builder.Register<SimpleObjectFactory<IBulletView, PlayerBulletView>>(Lifetime.Singleton)
+            // プレイヤー・味方の弾はプール（BulletStoreView）から貸し出す
+            builder.Register<PooledBulletFactory>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<IBulletView>>()
                 .WithParameter("prefab", _playerBulletView);
 
@@ -383,18 +388,21 @@ namespace App.Battle
                 .As<ISimpleObjectFactory<BlitzEffectView>>()
                 .WithParameter("prefab", _blitzEffectView);
 
-            builder.Register<SimpleObjectFactory<BulletTracerView, BulletTracerView>>(Lifetime.Singleton)
+            // 曳光弾は撃つたびに出るのでプールから貸し出す
+            builder.Register<PooledObjectFactory<BulletTracerView, BulletTracerView>>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<BulletTracerView>>()
-                .WithParameter("prefab", _bulletTracerView);
+                .WithParameter("prefab", _bulletTracerView)
+                .WithParameter("initialCount", TracerPoolInitialCount);
 
             builder.Register<TracerFreezeState>(Lifetime.Singleton).As<ITracerFreezeState>();
 
             // セピア調のグローバル変数を配る（破棄時に効果なしへ戻す）
             builder.Register<SepiaToneView>(Lifetime.Singleton).As<ISepiaToneView>();
 
-            builder.Register<SimpleObjectFactory<CounterTracerView, CounterTracerView>>(Lifetime.Singleton)
+            builder.Register<PooledObjectFactory<CounterTracerView, CounterTracerView>>(Lifetime.Singleton)
                 .As<ISimpleObjectFactory<CounterTracerView>>()
-                .WithParameter("prefab", _counterTracerView);
+                .WithParameter("prefab", _counterTracerView)
+                .WithParameter("initialCount", CounterTracerPoolInitialCount);
 
             builder.RegisterComponentInNewPrefab(_bulletStoreView, Lifetime.Singleton).UnderTransform(transform)
                 .AsImplementedInterfaces().As<IBulletStoreView>();

@@ -1,5 +1,7 @@
+using System.Threading;
 using App.Battle.Interface;
 using App.Common.Views;
+using App.Framework.Utilities;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
@@ -14,7 +16,7 @@ namespace App.Battle.Views
     /// フリーズ中は保持時間・収縮のいずれも進めず、その場に止まる。
     /// 保持時間・収縮速度・太さ倍率はプレハブのインスペクタで調整する。
     /// </summary>
-    public class CounterTracerView : MonoBehaviour
+    public class CounterTracerView : MonoBehaviour, IPoolableView
     {
         [SerializeField] private LineRenderer _lineRenderer;
 
@@ -40,6 +42,45 @@ namespace App.Battle.Views
         // フリーズ中は時間を進めない
         private float DeltaTime => _tracerFreezeState is { IsFreezing: true } ? 0f : Time.deltaTime;
 
+        // 返却先のプールと、再生を打ち切るためのトークン（貸出ごとに作り直す）
+        private IViewReturner _returner;
+        private CancellationTokenSource _rentCts;
+
+        public void OnRent(IViewReturner returner)
+        {
+            _returner = returner;
+            _rentCts = new CancellationTokenSource();
+        }
+
+        public void OnReturn()
+        {
+            _rentCts?.Cancel();
+            _rentCts?.Dispose();
+            _rentCts = null;
+
+            // プレハブと同じく非表示に戻す（次の貸出で座標を入れ切るまで前の線を見せない）
+            _lineRenderer.enabled = false;
+            _lineRenderer.positionCount = 0;
+        }
+
+        private void OnDestroy()
+        {
+            _rentCts?.Cancel();
+            _rentCts?.Dispose();
+            _rentCts = null;
+        }
+
+        private void Finish()
+        {
+            if (_returner != null)
+            {
+                _returner.Return(this);
+                return;
+            }
+
+            Destroy(gameObject);
+        }
+
         /// <summary>
         /// レイを再生する。マテリアルはプレハブのLineRendererに設定したものを使う。
         /// </summary>
@@ -60,12 +101,15 @@ namespace App.Battle.Views
             // これで生成直後の1フレームにプレハブ既定の短い線が描かれることがない
             _lineRenderer.enabled = true;
 
-            await WaitAsync(_holdDuration);
+            // 貸出中に一括消去で戻されたら、以降の描画をやめる（再貸出された線を壊さないため）
+            var token = _rentCts != null ? _rentCts.Token : destroyCancellationToken;
+
+            await WaitAsync(_holdDuration, token);
 
             // 収縮速度が未設定なら保持後にそのまま消す
             if (_retractSpeed <= 0f)
             {
-                Destroy(gameObject);
+                Finish();
                 return;
             }
 
@@ -76,22 +120,22 @@ namespace App.Battle.Views
                 current = Vector3.MoveTowards(current, endPos, _retractSpeed * DeltaTime);
                 // 収縮中は点の数を保つ。長さが縮むたびに減らすと内部バッファが作り直される
                 CurvedWorldLine.SetLinePositionsKeepingCount(_lineRenderer, current, endPos);
-                await UniTask.Yield();
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
 
-            Destroy(gameObject);
+            Finish();
         }
 
         /// <summary>
         /// duration 秒待つ。フリーズ中は経過時間を進めない。
         /// </summary>
-        private async UniTask WaitAsync(float duration)
+        private async UniTask WaitAsync(float duration, CancellationToken token)
         {
             var elapsed = 0f;
 
             while (elapsed < duration)
             {
-                await UniTask.Yield();
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
                 elapsed += DeltaTime;
             }
         }

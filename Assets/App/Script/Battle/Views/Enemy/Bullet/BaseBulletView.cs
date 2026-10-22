@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using App.Battle.Data;
 using App.Battle.Interface;
 using App.Battle.Views;
@@ -13,7 +14,12 @@ using VContainer;
 
 namespace App.Battle.Views.Enemy.Bullet
 {
-    public class BaseBulletView : MonoBehaviour, IBulletView
+    /// <summary>
+    /// 弾の共通処理。プールから貸し出されて使い回されるため、状態は <see cref="OnRent"/> で毎回初期化し、
+    /// 役目を終えたら Destroy ではなく <see cref="ReturnToPool"/> でプールへ戻る。
+    /// 着弾後の待機は貸出ごとのトークンで打ち切る（返却後に再貸出された弾を古い待機が消さないように）
+    /// </summary>
+    public class BaseBulletView : MonoBehaviour, IBulletView, IPoolableView
     {
         [SerializeField] private TrailRenderer _trailRenderer;
         [SerializeField] private Layer _shooterLayer;
@@ -75,6 +81,25 @@ namespace App.Battle.Views.Enemy.Bullet
 
         private float _remainingLifetime = LifetimeSeconds;
 
+        // プレハブ設定のトレイル寿命と表示状態（着弾後に縮めるので、貸出のたびに戻す）
+        private float _trailTimeDefault;
+        private bool _trailEnabledDefault;
+
+        // 返却先のプール。プールを通さず生成された弾（null）は従来どおり Destroy する
+        private IViewReturner _returner;
+
+        // 着弾後の待機を打ち切るためのトークン（貸出ごとに作り直す）
+        private CancellationTokenSource _rentCts;
+
+        /// <summary>貸出ごとの通し番号。命中の重複判定が「同じ弾か」を見分けるのに使う（再利用で InstanceID は当てにならない）</summary>
+        public int BulletId { get; private set; }
+
+        /// <summary>プールから貸し出されて場にいるか</summary>
+        public bool IsRented { get; private set; }
+
+        // 命中の重複判定へ渡す弾の識別子。プールを通さず生成した弾（通し番号なし＝0）は InstanceID で代用する
+        private int ProjectileId => BulletId != 0 ? BulletId : gameObject.GetInstanceID();
+
         /// <summary>その場に止まっているか（移動を止める。当たり判定は生かしたまま）</summary>
         protected bool IsPause => _isFreezePause || _isOverclockPause;
 
@@ -100,6 +125,12 @@ namespace App.Battle.Views.Enemy.Bullet
             transform.localScale = Vector3.one * BulletData.Size;
             _remainingLifetime = LifetimeSeconds;
 
+            // 前回の位置から線が伸びないよう、置き直してから軌跡を消す
+            if (_trailRenderer != null)
+            {
+                _trailRenderer.Clear();
+            }
+
             // オーバークロック中に撃たれた自弾も、発動中は軌跡を残す（解除はBulletStoreViewが一括で行う）
             if (_tracerFreezeState is { IsOverclock: true })
             {
@@ -117,7 +148,9 @@ namespace App.Battle.Views.Enemy.Bullet
 
         protected virtual void Awake()
         {
-            _trailTime = _trailRenderer != null ? _trailRenderer.time : 0f;
+            _trailTimeDefault = _trailRenderer != null ? _trailRenderer.time : 0f;
+            _trailEnabledDefault = _trailRenderer != null && _trailRenderer.enabled;
+            _trailTime = _trailTimeDefault;
 
             _hitCollider.OnTriggerEnterAsObservable()
                 .Where(_ => CanHit)
@@ -139,7 +172,83 @@ namespace App.Battle.Views.Enemy.Bullet
                 return;
             }
 
+            ReturnToPool();
+        }
+
+        /// <summary>プールから貸し出された直後。前回の弾の状態を全て捨てる</summary>
+        public virtual void OnRent(IViewReturner returner)
+        {
+            _returner = returner;
+            IsRented = true;
+            _rentCts = new CancellationTokenSource();
+
+            CanHit = true;
+            _hitTargetIds.Clear();
+            _explosiveHitTargetIds.Clear();
+            _hitCount = 0;
+            _focusTargetId = 0;
+            _attackerId = 0;
+            _isExploded = false;
+            _isFreezePause = false;
+            _isOverclockPause = false;
+            _isOverclockHold = false;
+            TargetTransform = null;
+            _remainingLifetime = LifetimeSeconds;
+
+            _trailTime = _trailTimeDefault;
+            if (_trailRenderer != null)
+            {
+                _trailRenderer.time = _trailTimeDefault;
+                _trailRenderer.enabled = _trailEnabledDefault;
+                _trailRenderer.Clear();
+            }
+        }
+
+        /// <summary>プールへ戻る直前。着弾後の待機を打ち切り、軌跡を消す</summary>
+        public virtual void OnReturn()
+        {
+            IsRented = false;
+            CanHit = false;
+
+            _rentCts?.Cancel();
+            _rentCts?.Dispose();
+            _rentCts = null;
+
+            if (_trailRenderer != null)
+            {
+                _trailRenderer.Clear();
+                _trailRenderer.enabled = _trailEnabledDefault;
+            }
+        }
+
+        /// <summary>貸出ごとの通し番号を付ける（<see cref="IBulletSpawner"/> が貸出時に呼ぶ）</summary>
+        public void AssignBulletId(int bulletId)
+        {
+            BulletId = bulletId;
+        }
+
+        /// <summary>役目を終えた弾をプールへ戻す。プールを通していない弾は Destroy する</summary>
+        public void ReturnToPool()
+        {
+            if (_returner != null)
+            {
+                if (IsRented)
+                {
+                    _returner.Return(this);
+                }
+
+                return;
+            }
+
             Destroy(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            // シーン終了などでプールごと消えるとき、待機中の処理を止める
+            _rentCts?.Cancel();
+            _rentCts?.Dispose();
+            _rentCts = null;
         }
 
         /// <summary>
@@ -332,7 +441,7 @@ namespace App.Battle.Views.Enemy.Bullet
             // projectileId: この弾を一意に識別するId（同じ弾を重複カウントしないために使う）
             hitBox.OnHit(BulletData.Damage, _attackerId, transform.position, out var canPenetrable,
                 _hitTargetIds.Count, BulletData.ShotType, BulletData.FocusType, _focusTargetId == hitBox.Id, true,
-                gameObject.GetInstanceID());
+                ProjectileId);
 
             if (_focusTargetId == hitBox.Id)
             {
@@ -452,20 +561,20 @@ namespace App.Battle.Views.Enemy.Bullet
                 _trailRenderer.time = _trailTime;
             }
 
-            // トレイルが縮みきるまで待ってから消す。オーバークロック中は待機を進めず、軌跡を残したままにする。
-            // 待機中にgameObjectが破棄された場合（寿命切れやプレイモード終了等）に
-            // 破棄済みオブジェクトへアクセスしないよう、destroyCancellationTokenで待機をキャンセルする
+            // トレイルが縮みきるまで待ってから戻す。オーバークロック中は待機を進めず、軌跡を残したままにする。
+            // 待機中に寿命切れや一括消去で先に戻った（＝再貸出され得る）場合は、貸出トークンの取り消しで待機をやめる
+            var token = _rentCts != null ? _rentCts.Token : destroyCancellationToken;
             var elapsed = 0f;
             while (elapsed < _trailTime)
             {
-                await UniTask.Yield(PlayerLoopTiming.Update, destroyCancellationToken);
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
                 if (!IsTimeHold)
                 {
                     elapsed += Time.deltaTime;
                 }
             }
 
-            Destroy(gameObject);
+            ReturnToPool();
         }
     }
 }

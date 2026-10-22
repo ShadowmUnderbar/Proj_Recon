@@ -1,5 +1,7 @@
+using System.Threading;
 using App.Battle.Interface;
 using App.Common.Views;
+using App.Framework.Utilities;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer;
@@ -12,7 +14,7 @@ namespace App.Battle.Views
     /// 発射地点側からラインを収縮させて消す曳光弾風のエフェクト。
     /// フリーズ中は保持時間・収縮のいずれも進めず、その場に止まる。
     /// </summary>
-    public class BulletTracerView : MonoBehaviour
+    public class BulletTracerView : MonoBehaviour, IPoolableView
     {
         [SerializeField] private LineRenderer lineRenderer;
 
@@ -34,6 +36,42 @@ namespace App.Battle.Views
 
         // フリーズ中は時間を進めない
         private float DeltaTime => _tracerFreezeState is { IsFreezing: true } ? 0f : Time.deltaTime;
+
+        // 返却先のプールと、再生を打ち切るためのトークン（貸出ごとに作り直す）
+        private IViewReturner _returner;
+        private CancellationTokenSource _rentCts;
+
+        public void OnRent(IViewReturner returner)
+        {
+            _returner = returner;
+            _rentCts = new CancellationTokenSource();
+        }
+
+        public void OnReturn()
+        {
+            _rentCts?.Cancel();
+            _rentCts?.Dispose();
+            _rentCts = null;
+            lineRenderer.positionCount = 0;
+        }
+
+        private void OnDestroy()
+        {
+            _rentCts?.Cancel();
+            _rentCts?.Dispose();
+            _rentCts = null;
+        }
+
+        private void Finish()
+        {
+            if (_returner != null)
+            {
+                _returner.Return(this);
+                return;
+            }
+
+            Destroy(gameObject);
+        }
 
         /// <summary>
         /// トレーサーを再生する。
@@ -58,8 +96,11 @@ namespace App.Battle.Views
             // カーブ有効時は途中に点を足す。2点のままだと両端しか沈まず、間が浮く
             CurvedWorldLine.SetLine(lineRenderer, startPos, endPos);
 
+            // 貸出中に一括消去で戻されたら、以降の描画をやめる（再貸出された線を壊さないため）
+            var token = _rentCts != null ? _rentCts.Token : destroyCancellationToken;
+
             // 一瞬保持
-            await WaitAsync(HoldDuration);
+            await WaitAsync(HoldDuration, token);
 
             // 発射地点側の端点を一定速度で着弾地点へ寄せ、発射地点側から消していく
             var current = startPos;
@@ -68,22 +109,22 @@ namespace App.Battle.Views
                 current = Vector3.MoveTowards(current, endPos, RetractSpeed * DeltaTime);
                 // 収縮中は点の数を保つ。長さが縮むたびに減らすと内部バッファが作り直される
                 CurvedWorldLine.SetLinePositionsKeepingCount(lineRenderer, current, endPos);
-                await UniTask.Yield();
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
             }
 
-            Destroy(gameObject);
+            Finish();
         }
 
         /// <summary>
         /// duration 秒待つ。フリーズ中は経過時間を進めない。
         /// </summary>
-        private async UniTask WaitAsync(float duration)
+        private async UniTask WaitAsync(float duration, CancellationToken token)
         {
             var elapsed = 0f;
 
             while (elapsed < duration)
             {
-                await UniTask.Yield();
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
                 elapsed += DeltaTime;
             }
         }

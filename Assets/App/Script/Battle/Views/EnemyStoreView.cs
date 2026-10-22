@@ -16,6 +16,7 @@ namespace App.Battle.Views
     public class EnemyStoreView : MonoBehaviour, IEnemyStoreView
     {
         private IBattlePlayerView _playerView;
+        private IBulletSpawner _bulletSpawner;
         private IAllyTargetProvider _allyTargetProvider;
         private IHitBoxStoreView _hitBoxStoreView;
         private EnemyGazeDebugSettings _gazeDebugSettings;
@@ -63,12 +64,14 @@ namespace App.Battle.Views
             IHitBoxStoreView hitBoxStoreView,
             IBattlePlayerView playerView,
             IAllyTargetProvider allyTargetProvider,
+            IBulletSpawner bulletSpawner,
             EnemyGazeDebugSettings gazeDebugSettings
         )
         {
             _hitBoxStoreView = hitBoxStoreView;
             _playerView = playerView;
             _allyTargetProvider = allyTargetProvider;
+            _bulletSpawner = bulletSpawner;
             _gazeDebugSettings = gazeDebugSettings;
         }
 
@@ -109,6 +112,7 @@ namespace App.Battle.Views
                 .AddTo(view as MonoBehaviour);
             view.SetPlayerTransform(_playerView.PlayerTransform);
             view.SetAllyTargetProvider(_allyTargetProvider);
+            view.SetBulletSpawner(_bulletSpawner);
             // 非同期ロード中にポーズ状態が変わっていても現在の状態を反映する
             view.SetPause(_isPause);
 

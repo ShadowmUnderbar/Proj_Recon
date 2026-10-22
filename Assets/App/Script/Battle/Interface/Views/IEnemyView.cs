@@ -20,6 +20,9 @@ namespace App.Battle.Interface
         /// <summary>狙える味方の検索手段を渡す（プレイヤーより近い味方がいればそちらを狙う）</summary>
         void SetAllyTargetProvider(IAllyTargetProvider allyTargetProvider);
 
+        /// <summary>弾の貸出口を渡す（敵・ボスの弾もプールから出すため）</summary>
+        void SetBulletSpawner(IBulletSpawner bulletSpawner);
+
         void SetPlayerAimDirection(Vector3 aimDir1, Vector3 aimDir2);
         void SetPause(bool isPause);
 
