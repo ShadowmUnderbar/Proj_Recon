@@ -17,7 +17,7 @@ namespace App.Battle.Views.Enemy.AI
         {
             base.Attack();
 
-            var bullet = Instantiate(_bulletPrefab);
+            var bullet = RentBullet(_bulletPrefab);
             bullet.Spawn(EnemyId, _muzzleTransform.ToPose(), EnemyData.CreateBulletData(), -1, TargetTransform);
         }
     }

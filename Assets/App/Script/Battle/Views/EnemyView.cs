@@ -83,6 +83,16 @@ namespace App.Battle.Views
             EnemyAI.SetPlayerTransform(playerTransform);
         }
 
+        public void SetBulletSpawner(IBulletSpawner bulletSpawner)
+        {
+            if (EnemyAI == null)
+            {
+                return;
+            }
+
+            EnemyAI.SetBulletSpawner(bulletSpawner);
+        }
+
         public void SetAllyTargetProvider(IAllyTargetProvider allyTargetProvider)
         {
             if (EnemyAI == null)

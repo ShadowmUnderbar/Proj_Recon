@@ -252,7 +252,7 @@ RunResetUseCase  : IReadOnlyList<IRunResettable> を全部 ResetRun() → 敵・
 | `Enemy/Bullet/BaseBulletView, StraightBullet, HomingBullet` | 敵弾（`_shooterLayer` は `Framework.Layer`）。`PointParticle` レイヤーを除外して判定。撃ち手と同じレイヤーはすり抜ける。オーバークロックで止めるかは `_shooterLayer` が Player か（プレイヤー側の弾）で決める |
 | `EnemyAIBase` の狙う相手 | 通常の敵は `TargetTransform`（プレイヤーと狙える味方のうち近い方、0.5秒ごとに選び直す。味方は `IAllyTargetProvider` で探す）を追い・撃つ。盾（プレイヤーの照準を妨害）とボス（台本の配置がプレイヤー基準）は `CanTargetAllies=false` でプレイヤーだけを狙う |
 | `HitBoxView` / `HitBoxStoreView` | ヒットボックス。`OnHit` で `HitData` を作って流す。耐性方向で貫通可否を返す |
-| `BulletStoreView` / `BulletTracerView` / `CounterTracerView` / `BlitzEffectView` | 弾の一括管理・曳光弾・カウンター演出・ブリッツ演出。`TracerFreezeState` でフリーズ中に停止 |
+| `BulletStoreView` / `BulletTracerView` / `CounterTracerView` / `BlitzEffectView` | 弾のプール（プレハブごとの `ViewPool`、貸出口は `IBulletSpawner`。貸出中の一覧で停止・オーバークロック・一括消去・床崩壊を行い、タグ検索はしない）・曳光弾・カウンター演出・ブリッツ演出。弾と曳光弾は `IPoolableView` で、役目を終えたら Destroy ではなくプールへ戻る（着弾後の待機は貸出ごとのトークンで打ち切る）。プレイヤー・味方は `PooledBulletFactory`、敵・ボスは `EnemyAIBase.RentBullet` 経由。`TracerFreezeState` でフリーズ中に停止 |
 
 **召喚した味方（`Views/Ally`）**
 
@@ -527,7 +527,7 @@ BuffStateDataStore.IsTimedBuffActive（レイジ・コンボ攻撃UP・カウン
 
 ### 4.5 Framework（`Framework`）
 
-`SimpleObjectFactory<TInterface, TView>`（プレハブからの生成）、`Layer` 構造体（レイヤー選択用、Editor 依存は `#if UNITY_EDITOR` で分離済み）、拡張メソッド（`TransformExtensions.ToPose`, `RelativeYawExtension`, `TopdownVector2Extensions`）、`AssetPathAttribute` / `ReadOnlyAttribute`。
+`SimpleObjectFactory<TInterface, TView>`（プレハブからの生成）、`ViewPool<TView>` / `PooledObjectFactory` / `IPoolableView`（プレハブごとの使い回し。弾・曳光弾が使う）、`Layer` 構造体（レイヤー選択用、Editor 依存は `#if UNITY_EDITOR` で分離済み）、拡張メソッド（`TransformExtensions.ToPose`, `RelativeYawExtension`, `TopdownVector2Extensions`）、`AssetPathAttribute` / `ReadOnlyAttribute`。
 
 ---
 

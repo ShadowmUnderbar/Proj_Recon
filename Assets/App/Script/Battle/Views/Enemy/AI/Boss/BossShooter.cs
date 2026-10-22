@@ -80,7 +80,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
 
         private void SpawnBullet(Pose pose)
         {
-            var bullet = Instantiate(_bulletPrefab);
+            var bullet = RentBullet(_bulletPrefab);
             bullet.Spawn(EnemyId, pose, EnemyData.CreateBulletData(), -1, PlayerTransform);
         }
 

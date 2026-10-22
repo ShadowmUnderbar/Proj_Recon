@@ -407,7 +407,7 @@ namespace App.Battle.Views.Enemy.AI.Boss
             var position = _muzzleTransform.position;
             position.y = transform.position.y + _bulletHeight;
             var pose = new Pose(position, Quaternion.LookRotation(direction, Vector3.up));
-            var bullet = Instantiate(_bulletPrefab);
+            var bullet = RentBullet(_bulletPrefab);
             bullet.Spawn(EnemyId, pose, EnemyData.CreateBulletData(), -1, PlayerTransform);
 
             // 時止め中に生まれた弾は BulletStoreView の一括停止に間に合わないため、自分で止める
