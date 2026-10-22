@@ -20,7 +20,8 @@ namespace App.Battle.Interface.DataStore
         float MoveSpeed { get; }
         UnlockCoreSkillType UnlockCoreSkillType { get; }
 
-        void Move(Vector2 moveV2, float speed);
+        /// <summary>スティックの倒し量に今フレームの移動量（秒速×フレーム時間）を掛けて位置を進める</summary>
+        void Move(Vector2 moveV2, float distance);
 
         /// <summary>プレイヤーを指定位置へ瞬間移動させる（ボスウェーブ開始時など）</summary>
         void WarpTo(Vector3 position);

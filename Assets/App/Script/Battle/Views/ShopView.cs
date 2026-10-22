@@ -195,7 +195,7 @@ namespace App.Battle.Views
             }
         }
 
-        public void SetOwnedTagRanking(IReadOnlyList<LocalizedUpgradeTagCount> ranking)
+        public void SetOwnedTagRanking(int upgradeCount, IReadOnlyList<LocalizedUpgradeTagCount> ranking)
         {
             if (_ownedTagRankingLabel == null)
             {
@@ -203,6 +203,7 @@ namespace App.Battle.Views
             }
 
             _rankingBuilder.Clear();
+            _rankingBuilder.Append("所持アップグレード ").Append(upgradeCount).Append("件\n");
             _rankingBuilder.Append("所持タグ");
             if (ranking.Count == 0)
             {

@@ -19,6 +19,9 @@ namespace App.Battle.Interface
         /// </summary>
         void AllRemove();
 
+        /// <summary>位置が <paramref name="shouldRemove"/> を満たす粒子を、回収扱いにせず消す</summary>
+        void RemoveWhere(System.Func<Vector3, bool> shouldRemove);
+
         /// <summary>
         /// 粒子をその場で止める。止まっている間は漂い・吸い寄せ・回収のどれも起きず、弾が当たっても吸い込まない。
         /// 吸い込み途中の粒子は止まった位置から再開する。オーバークロック中に呼ばれる

@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 3776856170843482917}
   - component: {fileID: 1625927200718190950}
   - component: {fileID: 6271262555856537093}
+  - component: {fileID: 4152936140699407121}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -92,6 +93,7 @@ MonoBehaviour:
   _muzzles:
   - {fileID: 7752886480679326358}
   - {fileID: 5086770727077576014}
+  _afterimageSourceView: {fileID: 4152936140699407121}
 --- !u!114 &2787126200944847852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,6 +145,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _group: 4
+--- !u!114 &4152936140699407121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7840359772208140253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bb54e6959a1db14397a7c300ee10b30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _bodyRenderer: {fileID: 2526441356152853411}
+  _headAnchor: {fileID: 5635515356108408922}
 --- !u!1 &8529714038337989525
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,6 +433,16 @@ MonoBehaviour:
   _armReach: 0.6
   _alignHandRotation: 1
   _maxBackAngle: 110
+--- !u!137 &2526441356152853411 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4411386884177767155, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
+  m_PrefabInstance: {fileID: 2177453005255965008}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5635515356108408922 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5765314109888966922, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}
+  m_PrefabInstance: {fileID: 2177453005255965008}
+  m_PrefabAsset: {fileID: 0}
 --- !u!95 &6116164597338359577 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5392821630538825289, guid: 6206c14b6fb53694cb6b0bb8a41fcb9c, type: 3}

@@ -84,6 +84,25 @@ namespace App.Battle.Views
             }
         }
 
+        public void RemoveWhere(System.Func<Vector3, bool> shouldRemove)
+        {
+            for (var i = _particles.Count - 1; i >= 0; i--)
+            {
+                var particle = _particles[i];
+                if (particle != null && !shouldRemove(particle.transform.position))
+                {
+                    continue;
+                }
+
+                if (particle != null)
+                {
+                    Destroy(particle.gameObject);
+                }
+
+                _particles.RemoveAt(i);
+            }
+        }
+
         private void Update()
         {
             if (_particles.Count == 0)

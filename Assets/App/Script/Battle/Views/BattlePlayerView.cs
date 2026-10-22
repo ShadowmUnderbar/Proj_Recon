@@ -9,6 +9,7 @@ using R3;
 using App.Common.Data;
 using App.Common.Views;
 using App.Framework.Utilities.Extensions;
+using App.Battle.Views.Afterimage;
 using Cysharp.Threading.Tasks;
 
 namespace App.Battle.Views
@@ -21,6 +22,7 @@ namespace App.Battle.Views
         [SerializeField] private PlayerTopDownAimListView _playerTopDownAimListView;
         [SerializeField] private Transform[] _controllers;
         [SerializeField] private Transform[] _muzzles;
+        [SerializeField] private PlayerAfterimageSourceView _afterimageSourceView;
 
         private HandForwardRayView[] _handForwardRayViews;
 
@@ -268,6 +270,8 @@ namespace App.Battle.Views
             var effect = _blitzEffectView.Instantiate(transform);
             effect.Play(startPos, playerPos).Forget();
         }
+
+        public IAfterimageSource AfterimageSource => _afterimageSourceView;
 
         public void PlayCounterTracer(Vector3 startPos, Vector3 endPos, float width)
         {

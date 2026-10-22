@@ -104,9 +104,11 @@ namespace App.Battle.DataStore
                 : Mathf.Min(Health.Value, newMaxHealth);
         }
 
-        public void Move(Vector2 moveV2, float speed)
+        /// <param name="moveV2">スティックの倒し量（ワールドXZ）</param>
+        /// <param name="distance">今フレームの移動量（秒速×フレーム時間）。倒し量に掛ける</param>
+        public void Move(Vector2 moveV2, float distance)
         {
-            Position.Value += new Vector3(moveV2.x, 0, moveV2.y) * speed;
+            Position.Value += new Vector3(moveV2.x, 0, moveV2.y) * distance;
         }
 
         public void WarpTo(Vector3 position)

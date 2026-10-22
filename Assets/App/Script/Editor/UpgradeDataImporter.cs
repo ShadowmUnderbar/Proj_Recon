@@ -24,9 +24,10 @@ namespace App.Editor
         };
 
         // CSV列インデックス（GASエクスポーターのスキーマに対応）
-        // ヘッダー: id,NameKey,SimpleDescriptionKey,DescriptionKey,UpgradeType,PlayerUnlockType,Level,
+        // ヘッダー: id,NameKey,UpgradeType,PlayerUnlockType,Level,
         //          Value1,Value1ParameterType,Value2,Value2ParameterType,Value3,Value3ParameterType,
         //          Value4,Value4ParameterType,Value5,Value5ParameterType,BuffId,Cost
+        // （説明文のキーは NameKey から "_SimpleDesc" / "_Desc" を付けて引くため列は無い）
         private const int ColId = 0;
         private const int ColNameKey = 1;
         private const int ColUpgradeType = 2;
@@ -102,6 +103,10 @@ namespace App.Editor
             var importedAssets = new List<UpgradeMasterData>();
             var type = typeof(UpgradeMasterData);
 
+            // 重複検出用。id は実行時の所持管理キー、NameKey+Level はアセット名なので、どちらも1行に限る
+            var seenIds = new HashSet<string>();
+            var seenAssetNames = new HashSet<string>();
+
             for (var lineIdx = 0; lineIdx < dataLines.Count; lineIdx++)
             {
                 var cols = dataLines[lineIdx].Split(',');
@@ -120,6 +125,12 @@ namespace App.Editor
                     continue;
                 }
 
+                if (!seenIds.Add(id))
+                {
+                    errors.Add($"Row{rowNum}: id \"{id}\" が重複しています");
+                    continue;
+                }
+
                 if (!TryParseEnum<UpgradeType>(cols[ColUpgradeType].Trim(), rowNum, "UpgradeType", errors,
                         out var upgradeType))
                 {
@@ -135,6 +146,13 @@ namespace App.Editor
                 if (!int.TryParse(cols[ColLevel].Trim(), out var level))
                 {
                     errors.Add($"Row{rowNum}: Level のパース失敗 \"{cols[ColLevel].Trim()}\"");
+                    continue;
+                }
+
+                // アセット名（_L{Level}）と「最高レベルのみ採用」の判定が 1 始まりを前提にしている
+                if (level < 1)
+                {
+                    errors.Add($"Row{rowNum}: Level は 1 以上にしてください（実際: {level}）");
                     continue;
                 }
 
@@ -202,13 +220,22 @@ namespace App.Editor
                     continue;
                 }
 
-                // NameKey の $ を除いた名前をファイル名に使用
-                var assetName = cols[ColNameKey].Trim().TrimStart('$');
-                if (level >= 1)
+                // GrantBuff は BuffId が無いと実行時に何も起きない（警告だけ出る）ので、取り込み時に弾く
+                var buffId = cols.Length > ColBuffId ? cols[ColBuffId].Trim() : string.Empty;
+                if (upgradeType == UpgradeType.GrantBuff && string.IsNullOrEmpty(buffId))
                 {
-                    //かつレベルが1以上なら、ファイル名にレベルを付与して区別する
-                    assetName += $"_L{level}";
+                    errors.Add($"Row{rowNum}: UpgradeType が GrantBuff なのに BuffId が空です");
+                    continue;
                 }
+
+                // NameKey の $ を除いた名前にレベルを付けてファイル名にする（例: BaseDamageUp_L1）
+                var assetName = $"{cols[ColNameKey].Trim().TrimStart('$')}_L{level}";
+                if (!seenAssetNames.Add(assetName))
+                {
+                    errors.Add($"Row{rowNum}: NameKey と Level の組み合わせ \"{assetName}\" が重複しています");
+                    continue;
+                }
+
                 var assetPath = $"{OutputPath}/{assetName}.asset";
 
                 // 既存アセットを読み込む、なければ新規作成（同名なら上書き）
@@ -235,7 +262,6 @@ namespace App.Editor
                 type.GetField("_value4ParameterType", PrivateInstance).SetValue(masterData, value4Pt);
                 type.GetField("_value5", PrivateInstance).SetValue(masterData, value5);
                 type.GetField("_value5ParameterType", PrivateInstance).SetValue(masterData, value5Pt);
-                var buffId = cols.Length > ColBuffId ? cols[ColBuffId].Trim() : string.Empty;
                 type.GetField("_buffId", PrivateInstance).SetValue(masterData, buffId);
 
                 type.GetField("_cost", PrivateInstance).SetValue(masterData, cost);

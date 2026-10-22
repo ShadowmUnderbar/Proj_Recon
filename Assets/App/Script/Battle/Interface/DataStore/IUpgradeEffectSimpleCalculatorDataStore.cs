@@ -4,8 +4,11 @@ namespace App.Battle.Interface.DataStore
 {
     public interface IUpgradeEffectSimpleCalculatorDataStore
     {
+        /// <summary>
+        /// 指定タイプの全アップグレード Value1 を乗算合成して返す。効果なし時は 1.0f。
+        /// レベルが累積する効果（ダメージアップ・連射速度等）に使う
+        /// </summary>
         float CalcMultiply(UpgradeType upgradeType);
-        float CalcAdd(UpgradeType upgradeType);
 
         /// <summary>
         /// 指定タイプの全アップグレードのうち Value1 の最大値を返す。

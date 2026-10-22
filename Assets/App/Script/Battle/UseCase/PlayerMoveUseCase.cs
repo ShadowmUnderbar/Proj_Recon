@@ -70,9 +70,10 @@ namespace App.Battle.UseCase
                 return;
             }
 
-            // MoveSpeedはPlayerBaseParameterConfigの値（1フレームあたりの移動量）なので、そのまま使用
+            // MoveSpeed は秒速（m/秒）なので、フレーム時間を掛けて今フレームぶんの移動量にする
+            // （掛けないと Quest の 72/90/120Hz 切替や処理落ちで速さが変わる）
             _playerStateDataStore.Move(_gameInputDataStore.V2LeftAxis,
-                _playerStateDataStore.MoveSpeed);
+                _playerStateDataStore.MoveSpeed * Time.deltaTime);
 
             // ワールド入力を渡し、View側でモデルの向き基準にローカル化して移動モーションへ反映
             _playerControlPresenter.SetMoveAnimation(_gameInputDataStore.V2LeftAxis);
